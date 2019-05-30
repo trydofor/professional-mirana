@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import pro.fessional.mirana.pain.TimeoutRuntimeException;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static pro.fessional.mirana.id.LightIdUtil.validBlock;
 import static pro.fessional.mirana.id.LightIdUtil.validSequence;
@@ -20,9 +21,10 @@ public interface LightIdProvider {
      * @param name  Id名字
      * @param block 区块编号，生产中心，分库关键
      * @return LightId
-     * @throws IllegalArgumentException block超出范围或name不存在。
-     * @throws IllegalStateException    LightId超出范围，或者内部状态错误。
-     * @throws TimeoutRuntimeException  超时异常
+     * @throws NoSuchElementException   name不存在。
+     * @throws IllegalArgumentException block超出范围。
+     * @throws IllegalStateException    sequence超出范围，或者内部状态错误。
+     * @throws TimeoutRuntimeException  超时异常,默认1秒
      */
     default long next(@NotNull String name, int block) {
         return next(name, block, 1000);
@@ -35,8 +37,9 @@ public interface LightIdProvider {
      * @param block   区块编号，生产中心，分库关键
      * @param timeout 超时毫秒数，建议不要设置(0：无限等),尽量符合业务性能要求。
      * @return LightId
-     * @throws IllegalArgumentException block超出范围或name不存在。
-     * @throws IllegalStateException    LightId超出范围，或者内部状态错误。
+     * @throws NoSuchElementException   name不存在。
+     * @throws IllegalArgumentException block超出范围
+     * @throws IllegalStateException    sequence超出范围，或者内部状态错误。
      * @throws TimeoutRuntimeException  超时异常
      */
     long next(@NotNull String name, int block, long timeout);
@@ -45,7 +48,7 @@ public interface LightIdProvider {
     /**
      * LightId 加载器，通过Segment实现
      */
-    public static interface Loader {
+    interface Loader {
         /**
          * 返回总数量，不少于请求数量(可以多)的 sequence。
          * 如果count频繁大于数据库默认值，建议更新默认step。
@@ -54,25 +57,25 @@ public interface LightIdProvider {
          * @param block 区块编号，生产中心，分库关键
          * @param count 请求的数量，返回值不少于该数量
          * @return 可用的序号
+         * @throws NoSuchElementException   name不存在。
          */
         @NotNull
         Segment require(@NotNull String name, int block, int count);
 
         /**
-         * 预加载当前block下所有LightId，保证可用数量不少于count
+         * 预加载当前block下所有LightId，提供id的数量，生产者决定
          *
          * @param block 区块编号，生产中心，分库关键，不存在时，可以load全部或报错。
-         * @param count 请求的数量，返回值不少于该数量
          * @return 所有可用序号
          */
         @NotNull
-        List<Segment> preload(int block, int count);
+        List<Segment> preload(int block);
     }
 
     /**
      * LightId 片段
      */
-    public static class Segment {
+    class Segment {
         private final String name;
         private final int block;
         private final long head;
@@ -83,8 +86,8 @@ public interface LightIdProvider {
          *
          * @param name  名字
          * @param block 区块
-         * @param head 起点（包含）
-         * @param foot 终点（包含）
+         * @param head  起点（包含）
+         * @param foot  终点（包含）
          */
         public Segment(String name, int block, long head, long foot) {
             if (name == null) throw new NullPointerException("name is null");

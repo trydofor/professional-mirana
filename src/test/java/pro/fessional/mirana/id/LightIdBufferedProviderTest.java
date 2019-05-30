@@ -1,12 +1,17 @@
 package pro.fessional.mirana.id;
 
 import org.jetbrains.annotations.NotNull;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -17,6 +22,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class LightIdBufferedProviderTest {
 
     private final AtomicLong sleep = new AtomicLong(100);
+    private final AtomicBoolean s404 = new AtomicBoolean(true);
 
     private final LightIdProvider.Loader loader = new LightIdProvider.Loader() {
 
@@ -25,6 +31,12 @@ public class LightIdBufferedProviderTest {
         @NotNull
         @Override
         public LightIdProvider.Segment require(@NotNull String name, int block, int count) {
+            if (name.equals("404") && s404.get()) throw new NoSuchElementException("404");
+            if (name.equals("403")) {
+                System.out.println(Thread.currentThread().getName() + ">>>>403");
+                throw new IllegalStateException("403");
+            }
+
             if (sleep.get() > 0) {
                 try {
                     Thread.sleep(100);
@@ -38,15 +50,14 @@ public class LightIdBufferedProviderTest {
 
             long endin = sequence.addAndGet(count + 1) - 1;
             long start = endin - count;
-            // System.out.println(Thread.currentThread().getName() + " require " + count + "  start=" + start + " ,endin=" + endin);
 
             return new LightIdProvider.Segment(name, block, start, endin);
         }
 
         @NotNull
         @Override
-        public List<LightIdProvider.Segment> preload(int block, int count) {
-            return Collections.singletonList(require("test", block, count));
+        public List<LightIdProvider.Segment> preload(int block) {
+            return Collections.singletonList(require("test", block, 0));
         }
     };
 
@@ -57,10 +68,11 @@ public class LightIdBufferedProviderTest {
 
         @Override
         public long next(@NotNull String name, int block, long timeout) {
+            if (name.equals("404") && s404.get()) throw new NoSuchElementException("404");
+            if (name.equals("403")) throw new IllegalStateException("403");
             return sequence.getAndIncrement();
         }
     };
-
 
     @Test
     public void next() {
@@ -75,8 +87,66 @@ public class LightIdBufferedProviderTest {
         System.out.println("============= speed direct=" + (capacity / (System.currentTimeMillis() - s2)) + "/ms"); // 692/ms
     }
 
+    @Test
+    public void testErr() {
+        HashMap<Exception, Exception> err = new HashMap<>();
+        for (int i = 0; i < 10; i++) {
+            try {
+                long next = bufferedProvider.next("403", 0);
+            } catch (Exception e) {
+                err.put(e, e);
+            }
+        }
+        for (Exception key : err.keySet()) {
+            System.out.println("===============================");
+            key.printStackTrace();
+        }
+    }
+
+    @Test
+    public void test404() {
+        long s2 = System.currentTimeMillis();
+        try {
+            long next = directProvider.next("404", 0);
+        } catch (Exception e) {
+            Assert.assertTrue(e instanceof NoSuchElementException);
+        } finally {
+            System.out.println("direct 404 cost = " + (System.currentTimeMillis() - s2));
+        }
+
+        long s3 = System.currentTimeMillis();
+        try {
+            long next = bufferedProvider.next("404", 0);
+        } catch (Exception e) {
+            Assert.assertTrue(e instanceof NoSuchElementException);
+        } finally {
+            System.out.println("buffered-1 404 cost = " + (System.currentTimeMillis() - s3));
+        }
+
+        long s4 = System.currentTimeMillis();
+        try {
+            long next = bufferedProvider.next("404", 0);
+        } catch (Exception e) {
+            Assert.assertTrue(e instanceof NoSuchElementException);
+        } finally {
+            System.out.println("buffered-2 404 cost = " + (System.currentTimeMillis() - s4));
+        }
+
+        long s5 = System.currentTimeMillis();
+        try {
+            s404.set(false);
+            bufferedProvider.cleanError("404", 0);
+            long next = bufferedProvider.next("404", 0, 10000000);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            System.out.println("buffered-3 404 cost = " + (System.currentTimeMillis() - s5));
+        }
+    }
+
+
     private void run(final LightIdProvider provider, final int capacity, final long timeout, final boolean timeoutBreak) {
-        final ConcurrentHashMap<Long, Boolean> ids = new ConcurrentHashMap<>(capacity);
+        final LinkedHashMap<Long, String> ids = new LinkedHashMap<>(capacity);
         final AtomicInteger counter = new AtomicInteger(capacity);
         final int threads = 50;
 
@@ -97,15 +167,17 @@ public class LightIdBufferedProviderTest {
                                 if (timeoutBreak) {
                                     throw e;
                                 } else {
-                                    System.out.println(this.getName() + e.getMessage());
+                                    System.out.println(this.getName() + " error=" + e.getMessage());
                                     continue;
                                 }
                             }
-                            if (ids.containsKey(id)) {
-                                System.out.println(this.getName() + " duplicated id=" + LightIdUtil.toLightId(id));
-                                System.exit(-1);
-                            } else {
-                                ids.put(id, Boolean.TRUE);
+                            synchronized (ids) {
+                                if (ids.containsKey(id)) {
+                                    System.out.println(this.getName() + " duplicated id=" + LightIdUtil.toLightId(id));
+                                    System.exit(-1);
+                                } else {
+                                    ids.put(id, this.getName());
+                                }
                             }
                             //Thread.sleep(5);
                         }
@@ -120,6 +192,19 @@ public class LightIdBufferedProviderTest {
         }
         try {
             latchStop.await();
+            //
+            Map<String, Long> map = new HashMap<>();
+            for (Map.Entry<Long, String> entry : ids.entrySet()) {
+                Long id = entry.getKey();
+                String name = entry.getValue();
+                Long ck = map.get(name);
+                if (ck != null && id <= ck) {
+                    System.out.println(name + " not increasing id=" + LightIdUtil.toLightId(id) + "old=" + LightIdUtil.toLightId(ck));
+                    System.exit(-1);
+                }
+                map.put(name, id);
+            }
+
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

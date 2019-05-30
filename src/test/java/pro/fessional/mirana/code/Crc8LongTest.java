@@ -11,9 +11,6 @@ import java.util.Random;
  */
 public class Crc8LongTest {
 
-    private Crc8Long crc8System = new Crc8Long();
-    private Crc8Long crc8Custom = new Crc8Long(new int[]{56, 49, 42, 35, 28, 14, 7, 1});
-
     private Random random = new Random();
 
     private void checkRandom(Crc8Long crc8) {
@@ -42,13 +39,26 @@ public class Crc8LongTest {
 
     @Test
     public void testRandom() {
-        checkRandom(crc8System);
-        checkRandom(crc8Custom);
+        checkRandom(Crc8LongUtil.BIG);
+        checkRandom(Crc8LongUtil.MID);
+        checkRandom(Crc8LongUtil.LOW);
     }
 
     @Test
-    public void testound() {
-        checkBound(crc8System);
-        checkBound(crc8Custom);
+    public void testBound() {
+        checkBound(Crc8LongUtil.BIG);
+        checkBound(Crc8LongUtil.MID);
+        checkBound(Crc8LongUtil.LOW);
+    }
+
+    @Test
+    public void print() {
+        for (int i = 0; i < 100; i++) {
+            long b = Crc8LongUtil.BIG.encode(i);
+            long m = Crc8LongUtil.MID.encode(i);
+            long l = Crc8LongUtil.LOW.encode(i);
+
+            System.out.printf("\n%d\t\t\t%d\t\t\t%d\t\t\t%d", i, b, m, l);
+        }
     }
 }

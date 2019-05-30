@@ -1,10 +1,8 @@
 package pro.fessional.mirana.code;
 
 /**
- * 使用默认seed构造
- * @see Crc8Long
- *
  * @author trydofor
+ * @see Crc8Long
  * @since 2019-05-27
  */
 public class Crc8LongUtil {
@@ -12,27 +10,19 @@ public class Crc8LongUtil {
     private Crc8LongUtil() {
     }
 
-    private static final Crc8Long CRC = new Crc8Long();
 
     /**
-     * 编码，生成伪随机数字。<p/>
-     * 注意：通过比较{@link Long#MIN_VALUE}检测失败情况
-     *
-     * @param number 编码前数字。
-     * @return 成功时，返回编码后数字，失败时返回{@link Long#MIN_VALUE}。
+     * 高偶数位插入CRC bit，使数字变得很大。
      */
-    public static long encode(long number){
-        return CRC.encode(number);
-    }
+    public static final Crc8Long BIG = new Crc8Long(new int[]{60, 58, 56, 54, 50, 48, 46, 44});
+    /**
+     * 系统默认，平均质数位插入CRC bit。
+     */
+    public static final Crc8Long MID = new Crc8Long();
 
     /**
-     * 解码，从伪随机数字中找到编码前数字<p/>
-     * 注意：通过比较{@link Long#MIN_VALUE}检测失败情况
-     *
-     * @param value 伪随机数字
-     * @return 成功时，返回原始数字，解码或校验失败时返回 {@link Long#MIN_VALUE}。
+     * 低奇数位插入CRC bit，使数字变得不大。
      */
-    public static long decode(long value){
-        return CRC.decode(value);
-    }
+    public static final Crc8Long LOW = new Crc8Long(new int[]{15, 13, 11, 9, 7, 5, 3, 1});
+
 }
