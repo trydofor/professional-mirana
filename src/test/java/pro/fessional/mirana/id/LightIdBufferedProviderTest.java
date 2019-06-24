@@ -160,7 +160,7 @@ public class LightIdBufferedProviderTest {
                     try {
                         latchStart.await();
                         while (counter.getAndDecrement() > 0) {
-                            long id = 0;
+                            long id;
                             try {
                                 id = provider.next(name, 0, timeout);
                             } catch (RuntimeException e) {
