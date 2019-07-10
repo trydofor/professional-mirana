@@ -77,7 +77,7 @@ public class LightIdBufferedProviderTest {
     @Test
     public void next() {
         sleep.set(0);
-        int capacity = 10000000;
+        int capacity = 10_000_000;
         long s1 = System.currentTimeMillis();
         run(bufferedProvider, capacity, 0, false);
         System.out.println("============= speed buffer=" + (capacity / (System.currentTimeMillis() - s1)) + "/ms"); // 389/ms
@@ -136,7 +136,7 @@ public class LightIdBufferedProviderTest {
         try {
             s404.set(false);
             bufferedProvider.cleanError("404", 0);
-            long next = bufferedProvider.next("404", 0, 10000000);
+            long next = bufferedProvider.next("404", 0, 10_000_000);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

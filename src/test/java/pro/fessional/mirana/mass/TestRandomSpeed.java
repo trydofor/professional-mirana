@@ -12,7 +12,7 @@ public class TestRandomSpeed {
     public static void main(String[] args) {
 
         long s0 = System.nanoTime();
-        int times = 1000000;
+        int times = 1_000_000;
         for (int i = 0; i < times; i++) {
             long test = System.nanoTime();
         }
