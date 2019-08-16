@@ -192,9 +192,9 @@ public class LightIdBufferedProvider implements LightIdProvider {
         }
 
         private SegmentStatus(Segment seg) {
-            footSeq = seg.getFoot();
-            kneeSeq = (seg.getFoot() / 10) * 8; // 80%
             headSeq = seg.getHead();
+            footSeq = seg.getFoot();
+            kneeSeq = footSeq - (footSeq - headSeq) * 2 / 10; // 剩余20%
             startMs = System.currentTimeMillis();
             sequence = new AtomicLong(seg.getHead());
         }
