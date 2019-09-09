@@ -2,6 +2,7 @@ package pro.fessional.mirana.id;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Collections;
@@ -75,6 +76,7 @@ public class LightIdBufferedProviderTest {
     };
 
     @Test
+    @Ignore("手动执行，速度对比测试")
     public void next() {
         sleep.set(0);
         int capacity = 10_000_000;
