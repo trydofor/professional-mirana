@@ -2,6 +2,7 @@ package pro.fessional.mirana.data;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import pro.fessional.mirana.i18n.I18nString;
 
 /**
  * @author trydofor
@@ -23,4 +24,8 @@ public interface CodeEnum {
      */
     @Nullable
     String getMessage();
+
+    default I18nString toI18nString(Object... args) {
+        return new I18nString(getCode(), getMessage(), args);
+    }
 }

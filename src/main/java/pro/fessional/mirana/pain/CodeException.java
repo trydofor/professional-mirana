@@ -2,15 +2,19 @@ package pro.fessional.mirana.pain;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import pro.fessional.mirana.data.CodeEnum;
 import pro.fessional.mirana.data.CodeResult;
+import pro.fessional.mirana.i18n.I18nString;
 
 /**
  * @author trydofor
  * @since 2019-05-29
  */
-public class CodeException extends RuntimeException implements CodeResult<Exception> {
+public class CodeException extends RuntimeException implements CodeResult<CodeException> {
 
     private final String code;
+    private transient Object[] i18nArgs = I18nString.EMPTY_ARGS;
+
 
     public CodeException(String code) {
         this(code, code);
@@ -30,6 +34,16 @@ public class CodeException extends RuntimeException implements CodeResult<Except
         this.code = code == null ? "" : code;
     }
 
+    public CodeException(CodeEnum code) {
+        super(code == null ? "" : code.getMessage());
+        this.code = code == null ? "" : code.getCode();
+    }
+
+    public CodeException(CodeEnum code, Throwable cause) {
+        super(code == null ? "" : code.getMessage(), cause);
+        this.code = code == null ? "" : code.getCode();
+    }
+
     @NotNull
     public String getCode() {
         return code;
@@ -37,7 +51,7 @@ public class CodeException extends RuntimeException implements CodeResult<Except
 
     @Nullable
     @Override
-    public Exception getData() {
+    public CodeException getData() {
         return null;
     }
 
@@ -49,5 +63,18 @@ public class CodeException extends RuntimeException implements CodeResult<Except
     @Override
     public boolean hasData() {
         return false;
+    }
+
+    @Override
+    public CodeResult<CodeException> setI18nArgs(Object... args) {
+        if (args != null) {
+            this.i18nArgs = args;
+        }
+        return this;
+    }
+
+    @Override
+    public Object[] getI18nArgs() {
+        return i18nArgs;
     }
 }

@@ -2,6 +2,7 @@ package pro.fessional.mirana.data;
 
 
 import org.jetbrains.annotations.Nullable;
+import pro.fessional.mirana.i18n.I18nString;
 import pro.fessional.mirana.pain.ThrowableUtil;
 
 import java.nio.charset.StandardCharsets;
@@ -13,6 +14,8 @@ public class SimpleCodeResult<T> implements CodeResult<T> {
     private String message;
     private String code;
     private T data;
+
+    private Object[] i18nArgs = I18nString.EMPTY_ARGS;
 
     private SimpleCodeResult(boolean success, String message, String code, T data) {
         this.success = success;
@@ -26,8 +29,9 @@ public class SimpleCodeResult<T> implements CodeResult<T> {
         return success;
     }
 
-    public void setSuccess(boolean success) {
+    public SimpleCodeResult<T> setSuccess(boolean success) {
         this.success = success;
+        return this;
     }
 
     @Nullable
@@ -36,8 +40,9 @@ public class SimpleCodeResult<T> implements CodeResult<T> {
         return message;
     }
 
-    public void setMessage(String message) {
+    public SimpleCodeResult<T> setMessage(String message) {
         this.message = message;
+        return this;
     }
 
     @Nullable
@@ -46,8 +51,9 @@ public class SimpleCodeResult<T> implements CodeResult<T> {
         return data;
     }
 
-    public void setData(T data) {
+    public SimpleCodeResult<T> setData(T data) {
         this.data = data;
+        return this;
     }
 
     @Override
@@ -55,8 +61,22 @@ public class SimpleCodeResult<T> implements CodeResult<T> {
         return code;
     }
 
-    public void setCode(String code) {
+    public SimpleCodeResult<T> setCode(String code) {
         this.code = code;
+        return this;
+    }
+
+    @Override
+    public CodeResult<T> setI18nArgs(Object... args) {
+        if (args != null) {
+            this.i18nArgs = args;
+        }
+        return this;
+    }
+
+    @Override
+    public Object[] getI18nArgs() {
+        return i18nArgs;
     }
 
     @Override
