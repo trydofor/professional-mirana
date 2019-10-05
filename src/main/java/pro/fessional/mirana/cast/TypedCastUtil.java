@@ -19,8 +19,6 @@ import java.util.Set;
  * @since 2019-07-03
  */
 public class TypedCastUtil {
-    private TypedCastUtil() {
-    }
 
 
     /**

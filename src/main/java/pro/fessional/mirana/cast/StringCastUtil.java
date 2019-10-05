@@ -9,8 +9,6 @@ import java.math.BigDecimal;
  * @since 2019-07-20
  */
 public class StringCastUtil {
-    private StringCastUtil() {
-    }
 
     /**
      * true,t,yes,y,不区分大小写，认为是true
