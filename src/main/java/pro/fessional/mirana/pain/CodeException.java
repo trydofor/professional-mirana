@@ -39,9 +39,21 @@ public class CodeException extends RuntimeException implements CodeResult<CodeEx
         this.code = code == null ? "" : code.getCode();
     }
 
-    public CodeException(CodeEnum code, Throwable cause) {
+    public CodeException(Throwable cause, CodeEnum code) {
         super(code == null ? "" : code.getMessage(), cause);
         this.code = code == null ? "" : code.getCode();
+    }
+
+    public CodeException(CodeEnum code, Object... args) {
+        super(code == null ? "" : code.getMessage());
+        this.code = code == null ? "" : code.getCode();
+        if(args != null) this.i18nArgs = args;
+    }
+
+    public CodeException(Throwable cause, CodeEnum code, Object... args) {
+        super(code == null ? "" : code.getMessage(), cause);
+        this.code = code == null ? "" : code.getCode();
+        if(args != null) this.i18nArgs = args;
     }
 
     @NotNull
