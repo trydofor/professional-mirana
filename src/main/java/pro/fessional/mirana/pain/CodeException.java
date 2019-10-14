@@ -1,15 +1,14 @@
 package pro.fessional.mirana.pain;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import pro.fessional.mirana.data.CodeEnum;
-import pro.fessional.mirana.data.CodeResult;
+import pro.fessional.mirana.i18n.I18nAware;
 
 /**
  * @author trydofor
  * @since 2019-05-29
  */
-public class CodeException extends RuntimeException implements CodeResult<CodeException> {
+public class CodeException extends RuntimeException implements I18nAware {
 
     private final String code;
 
@@ -59,22 +58,6 @@ public class CodeException extends RuntimeException implements CodeResult<CodeEx
     @NotNull
     public String getCode() {
         return code;
-    }
-
-    @Nullable
-    @Override
-    public CodeException getData() {
-        return null;
-    }
-
-    @Override
-    public boolean isSuccess() {
-        return false;
-    }
-
-    @Override
-    public boolean hasData() {
-        return false;
     }
 
     // i18n

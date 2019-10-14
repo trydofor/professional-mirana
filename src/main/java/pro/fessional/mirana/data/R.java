@@ -2,6 +2,7 @@ package pro.fessional.mirana.data;
 
 
 import org.jetbrains.annotations.Nullable;
+import pro.fessional.mirana.i18n.I18nAware;
 import pro.fessional.mirana.pain.ThrowableUtil;
 
 import java.nio.charset.StandardCharsets;
@@ -16,20 +17,14 @@ import java.util.Base64;
  * <p>
  * i18nCode和i18nArgs用来处理I18N信息，一般用来替换Message
  *
- * @param <T>
+ * @param <T> Data的类型
  */
-public class R<T> implements CodeResult<T> {
+public class R<T> implements DataResult<T> {
 
-    private boolean success;
-    private String message;
-    private String code;
-    private T data;
-
-    private String i18nCode;
-    private Object[] i18nArgs;
-
-    private R() {
-    }
+    protected boolean success;
+    protected String message;
+    protected String code;
+    protected T data;
 
     protected R(boolean success, String message, String code, T data) {
         this.success = success;
@@ -44,7 +39,26 @@ public class R<T> implements CodeResult<T> {
         if (code != null) {
             this.message = code.getMessage();
             this.code = code.getCode();
-            this.i18nCode = code.getI18nCode();
+        }
+    }
+
+    public static class I<T> extends R<T> implements I18nAware {
+
+        private String i18nCode;
+        private Object[] i18nArgs;
+
+        protected I(boolean success, String message, String code, T data) {
+            super(success, message, code, data);
+        }
+
+        @Override
+        public String getI18nCode() {
+            return i18nCode;
+        }
+
+        @Override
+        public Object[] getI18nArgs() {
+            return i18nArgs;
         }
     }
 
@@ -91,20 +105,15 @@ public class R<T> implements CodeResult<T> {
     }
 
     // i18n
-    public R<T> withI18n(String code, Object... args) {
-        if (code != null) i18nCode = code;
-        if (args != null && args.length > 0) i18nArgs = args;
-        return this;
-    }
-
-    @Override
-    public String getI18nCode() {
-        return i18nCode;
-    }
-
-    @Override
-    public Object[] getI18nArgs() {
-        return i18nArgs;
+    public I<T> toI18n(String code, Object... args) {
+        I<T> r = new I<T>(this.success, this.message, this.code, this.data);
+        if (code != null && code.length() > 0) {
+            r.i18nCode = code;
+        }
+        if (args != null && args.length > 0) {
+            r.i18nArgs = args;
+        }
+        return r;
     }
 
     @Override
@@ -117,30 +126,7 @@ public class R<T> implements CodeResult<T> {
                 '}';
     }
 
-    public R<T> copy(DataResult<T> otherResult) {
-        this.setSuccess(otherResult.isSuccess());
-        this.setMessage(otherResult.getMessage());
-        this.setData(otherResult.getData());
-
-        if (otherResult instanceof CodeResult) {
-            this.code = ((CodeResult) otherResult).getCode();
-        }
-        if (otherResult instanceof R) {
-            R r = (R) otherResult;
-            this.i18nCode = r.i18nCode;
-            this.i18nArgs = r.i18nArgs;
-        }
-
-        return this;
-    }
-
     // /////////////////////
-
-    public static <T> R<T> of(DataResult<T> otherResult) {
-        R<T> result = new R<>();
-        result.copy(otherResult);
-        return result;
-    }
 
     public static <T> R<T> of(boolean success) {
         return new R<>(success, null, null, null);
@@ -166,6 +152,12 @@ public class R<T> implements CodeResult<T> {
         return new R<>(success, code, data);
     }
 
+    public static <T> R<T> of(boolean success, CodeEnum code, String message, T data) {
+        return new R<>(success, code, data).setMessage(message);
+    }
+
+    // /////////////////
+
     public static <T> R<T> ok() {
         return new R<>(true, null, null, null);
     }
@@ -190,9 +182,27 @@ public class R<T> implements CodeResult<T> {
         return new R<>(true, code, data);
     }
 
+    public static <T> R<T> okCode(String code) {
+        return new R<>(true, null, code, null);
+    }
+
+    public static <T> R<T> okCode(String code, String message) {
+        return new R<>(true, message, code, null);
+    }
+
+    public static <T> R<T> okCode(CodeEnum code, String message) {
+        return new R<T>(true, code, null).setMessage(message);
+    }
+
     public static <T> R<T> okData(T data) {
         return new R<>(true, null, null, data);
     }
+
+    public static <T> R<T> okData(T data, String code) {
+        return new R<>(true, null, code, data);
+    }
+
+    // /////////////////
 
     public static <T> R<T> ng() {
         return new R<>(false, null, null, null);
@@ -218,8 +228,24 @@ public class R<T> implements CodeResult<T> {
         return new R<>(false, code, data);
     }
 
+    public static <T> R<T> ngCode(String code) {
+        return new R<>(false, null, code, null);
+    }
+
+    public static <T> R<T> ngCode(String code, String message) {
+        return new R<>(false, message, code, null);
+    }
+
+    public static <T> R<T> ngCode(CodeEnum code, String message) {
+        return new R<T>(false, code, null).setMessage(message);
+    }
+
     public static <T> R<T> ngData(T data) {
         return new R<>(false, null, null, data);
+    }
+
+    public static <T> R<T> ngData(T data, String code) {
+        return new R<>(false, null, code, data);
     }
 
     public static R ng(Throwable t) {
@@ -234,8 +260,8 @@ public class R<T> implements CodeResult<T> {
         if (message == null) message = t.getMessage();
         String st = ThrowableUtil.rootString(t);
         String b64 = Base64.getUrlEncoder().encodeToString(st.getBytes(StandardCharsets.UTF_8));
-        if (code == null && t instanceof CodeResult) {
-            code = ((CodeResult) t).getCode();
+        if (code == null && t instanceof DataResult) {
+            code = ((DataResult) t).getCode();
         }
         return new R<>(false, message, code, b64);
     }

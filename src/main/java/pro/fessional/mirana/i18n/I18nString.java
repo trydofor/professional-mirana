@@ -1,6 +1,7 @@
 package pro.fessional.mirana.i18n;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.text.MessageFormat;
 import java.util.Arrays;
@@ -15,7 +16,7 @@ import java.util.Locale;
  * @author trydofor
  * @since 2019-09-19
  */
-public class I18nString {
+public class I18nString implements I18nAware {
 
     public static final Object[] EMPTY_ARGS = {};
 
@@ -70,6 +71,19 @@ public class I18nString {
 
     public boolean isEmpty() {
         return code.isEmpty();
+    }
+
+
+    @Nullable
+    @Override
+    public String getI18nCode() {
+        return code;
+    }
+
+    @Nullable
+    @Override
+    public Object[] getI18nArgs() {
+        return args;
     }
 
     @Override

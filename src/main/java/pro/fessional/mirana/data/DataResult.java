@@ -17,6 +17,13 @@ public interface DataResult<T> {
     String getMessage();
 
     /**
+     * 信息编码
+     *
+     * @return 信息编码
+     */
+    String getCode();
+
+    /**
      * 返回的数据
      *
      * @return 数据
