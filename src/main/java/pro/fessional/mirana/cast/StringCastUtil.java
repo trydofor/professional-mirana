@@ -1,6 +1,7 @@
 package pro.fessional.mirana.cast;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
 
@@ -17,7 +18,7 @@ public class StringCastUtil {
      * @param str 字符串
      * @return 结果
      */
-    public static boolean asTrue(String str) {
+    public static boolean asTrue(@Nullable String str) {
         if (str == null) return false;
         return "true".equalsIgnoreCase(str) ||
                 "t".equalsIgnoreCase(str) ||
@@ -32,7 +33,7 @@ public class StringCastUtil {
      * @param str 字符串
      * @return 结果
      */
-    public static boolean asFalse(String str) {
+    public static boolean asFalse(@Nullable String str) {
         if (str == null) return true;
         return "false".equalsIgnoreCase(str) ||
                 "f".equalsIgnoreCase(str) ||
@@ -50,7 +51,7 @@ public class StringCastUtil {
      * @throws NullPointerException  如果 str为null
      * @throws NumberFormatException 如果 解析失败
      */
-    public static long asLong(String str) {
+    public static long asLong(@NotNull String str) {
         if (str == null) throw new NullPointerException();
         return Long.parseLong(str);
     }
@@ -62,7 +63,7 @@ public class StringCastUtil {
      * @param elz 默认值
      * @return 成功的结果或默认值
      */
-    public static long asLong(String str, long elz) {
+    public static long asLong(@Nullable String str, long elz) {
         if (str == null) return elz;
         try {
             return Long.parseLong(str);
@@ -80,7 +81,7 @@ public class StringCastUtil {
      * @throws NumberFormatException 如果 解析失败
      */
     @NotNull
-    public static BigDecimal asDecimal(String str) {
+    public static BigDecimal asDecimal(@NotNull String str) {
         if (str == null) throw new NullPointerException();
         return new BigDecimal(str);
     }

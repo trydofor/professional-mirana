@@ -1,5 +1,9 @@
 package pro.fessional.mirana.bits;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import pro.fessional.mirana.data.Nulls;
+
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
@@ -15,9 +19,9 @@ public class Aes128 {
 
     private final SecretKeySpec keySpec;
     private final IvParameterSpec algSpec;
-    private final String cypName = "AES/CBC/PKCS5Padding";
+    private final String CYP_NAME = "AES/CBC/PKCS5Padding";
 
-    public Aes128(String secKey) {
+    public Aes128(@NotNull String secKey) {
         int len = 16;
         byte[] bs = secKey.getBytes(UTF_8);
         if (bs.length < len) {
@@ -35,19 +39,25 @@ public class Aes128 {
         this.algSpec = new IvParameterSpec(key);
     }
 
-    public byte[] encode(String plain) {
+    @NotNull
+    public byte[] encode(@Nullable String plain) {
+        if (plain == null) return Nulls.Bytes;
         byte[] bytes = plain.getBytes(UTF_8);
         return encode(bytes);
     }
 
-    public byte[] encode(InputStream plain, boolean close) {
+    @NotNull
+    public byte[] encode(@Nullable InputStream plain, boolean close) {
+        if (plain == null) return Nulls.Bytes;
         byte[] bytes = Bytes.toBytes(plain, close);
         return encode(bytes);
     }
 
-    public byte[] encode(byte[] plain) {
+    @NotNull
+    public byte[] encode(@Nullable byte[] plain) {
+        if (plain == null) return Nulls.Bytes;
         try {
-            Cipher ins = Cipher.getInstance(cypName);//"算法/模式/补码方式"
+            Cipher ins = Cipher.getInstance(CYP_NAME);//"算法/模式/补码方式"
             ins.init(Cipher.ENCRYPT_MODE, keySpec, algSpec);
             return ins.doFinal(plain);
         } catch (Exception e) {
@@ -55,14 +65,18 @@ public class Aes128 {
         }
     }
 
-    public byte[] decode(String cipher) {
+    @NotNull
+    public byte[] decode(@Nullable String cipher) {
+        if (cipher == null) return Nulls.Bytes;
         byte[] bytes = cipher.getBytes(UTF_8);
         return decode(bytes);
     }
 
-    public byte[] decode(byte[] cipher) {
+    @NotNull
+    public byte[] decode(@Nullable byte[] cipher) {
+        if (cipher == null) return Nulls.Bytes;
         try {
-            Cipher ins = Cipher.getInstance(cypName);//"算法/模式/补码方式"
+            Cipher ins = Cipher.getInstance(CYP_NAME);//"算法/模式/补码方式"
             ins.init(Cipher.DECRYPT_MODE, keySpec, algSpec);
             return ins.doFinal(cipher);
         } catch (Exception e) {
@@ -70,24 +84,31 @@ public class Aes128 {
         }
     }
 
-    public byte[] decode(InputStream cipher, boolean close) {
+    @NotNull
+    public byte[] decode(@Nullable InputStream cipher, boolean close) {
+        if (cipher == null) return Nulls.Bytes;
         byte[] bytes = Bytes.toBytes(cipher, close);
         return decode(bytes);
     }
 
-    public String encode64(String plain) {
+    @NotNull
+    public String encode64(@Nullable String plain) {
+        if (plain == null) return Nulls.Str;
         byte[] pb = plain.getBytes(UTF_8);
         byte[] cb = encode(pb);
         return Base64.encode(cb);
     }
 
-    public String decode64(String cipher) {
+    @NotNull
+    public String decode64(@Nullable String cipher) {
+        if (cipher == null) return Nulls.Str;
         byte[] cb = Base64.decode(cipher);
         byte[] pb = decode(cb);
         return new String(pb, UTF_8);
     }
 
-    public static Aes128 of(String secKey) {
+    @NotNull
+    public static Aes128 of(@NotNull String secKey) {
         return new Aes128(secKey);
     }
 

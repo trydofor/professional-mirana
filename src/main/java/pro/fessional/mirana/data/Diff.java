@@ -1,5 +1,8 @@
 package pro.fessional.mirana.data;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -26,7 +29,8 @@ public class Diff {
      * @param <E>  元素
      * @return A有B无，B有A无，AB都有
      */
-    public static <E> S<E> of(Collection<? extends E> setA, Collection<? extends E> setB) {
+    @NotNull
+    public static <E> S<E> of(@Nullable Collection<? extends E> setA, @Nullable Collection<? extends E> setB) {
         boolean hasA = has(setA);
         boolean hasB = has(setB);
 
@@ -44,7 +48,8 @@ public class Diff {
         } else {
             if (hasA) {
                 d.aNotB.addAll(setA);
-            } else {
+            }
+            if (hasB) {
                 d.bNotA.addAll(setB);
             }
         }
@@ -72,7 +77,9 @@ public class Diff {
      * @param <K>    主键
      * @return 增，删，改，未变化
      */
-    public static <E, K> D<E> of(Collection<? extends E> setNew, Collection<? extends E> setOld, Function<E, K> getPk, BiPredicate<E, E> same) {
+    @NotNull
+    public static <E, K> D<E> of(@Nullable Collection<? extends E> setNew, @Nullable Collection<? extends E> setOld,
+                                 @NotNull Function<E, K> getPk, @NotNull BiPredicate<E, E> same) {
         boolean hasA = has(setNew);
         boolean hasB = has(setOld);
 
@@ -106,7 +113,8 @@ public class Diff {
         } else {
             if (hasA) {
                 d.newInsert.addAll(setNew);
-            } else {
+            }
+            if (hasB) {
                 d.oldDelete.addAll(setOld);
             }
         }

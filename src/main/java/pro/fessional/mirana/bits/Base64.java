@@ -1,5 +1,9 @@
 package pro.fessional.mirana.bits;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import pro.fessional.mirana.data.Nulls;
+
 import java.io.InputStream;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -16,44 +20,62 @@ public class Base64 {
     private static final java.util.Base64.Encoder ENCODER = java.util.Base64.getUrlEncoder();
     private static final java.util.Base64.Decoder DECODER = java.util.Base64.getUrlDecoder();
 
-    public static String encode(String str) {
+    @NotNull
+    public static String encode(@Nullable String str) {
+        if (str == null) return Nulls.Str;
         return ENCODER.encodeToString(str.getBytes(UTF_8));
     }
 
-    public static String encode(InputStream ins, boolean close) {
+    @NotNull
+    public static String encode(@Nullable InputStream ins, boolean close) {
+        if (ins == null) return Nulls.Str;
         byte[] bytes = Bytes.toBytes(ins, close);
         return ENCODER.encodeToString(bytes);
     }
 
-    public static String encode(byte[] bytes) {
+    @NotNull
+    public static String encode(@Nullable byte[] bytes) {
+        if (bytes == null) return Nulls.Str;
         return ENCODER.encodeToString(bytes);
     }
 
-    public static String de2str(String str) {
+    @NotNull
+    public static String de2str(@Nullable String str) {
+        if (str == null) return Nulls.Str;
         byte[] bytes = DECODER.decode(str.getBytes(UTF_8));
         return new String(bytes, UTF_8);
     }
 
-    public static String de2str(byte[] bytes) {
+    @NotNull
+    public static String de2str(@Nullable byte[] bytes) {
+        if (bytes == null) return Nulls.Str;
         byte[] res = DECODER.decode(bytes);
         return new String(res, UTF_8);
     }
 
-    public static String de2str(InputStream ins, boolean close) {
+    @NotNull
+    public static String de2str(@Nullable InputStream ins, boolean close) {
+        if (ins == null) return Nulls.Str;
         byte[] bytes = Bytes.toBytes(ins, close);
         byte[] res = DECODER.decode(bytes);
         return new String(res, UTF_8);
     }
 
-    public static byte[] decode(String str) {
+    @NotNull
+    public static byte[] decode(@Nullable String str) {
+        if (str == null) return Nulls.Bytes;
         return DECODER.decode(str.getBytes(UTF_8));
     }
 
-    public static byte[] decode(byte[] bytes) {
+    @NotNull
+    public static byte[] decode(@Nullable byte[] bytes) {
+        if (bytes == null) return Nulls.Bytes;
         return DECODER.decode(bytes);
     }
 
-    public static byte[] decode(InputStream ins, boolean close) {
+    @NotNull
+    public static byte[] decode(@Nullable InputStream ins, boolean close) {
+        if (ins == null) return Nulls.Bytes;
         byte[] bytes = Bytes.toBytes(ins, close);
         return DECODER.decode(bytes);
     }

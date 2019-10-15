@@ -1,5 +1,9 @@
 package pro.fessional.mirana.bits;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import pro.fessional.mirana.data.Nulls;
+
 import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -12,17 +16,22 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  */
 public class Md5 {
 
-    public static String sum(String str) {
-        if (str == null) return "";
+    @NotNull
+    public static String sum(@Nullable String str) {
+        if (str == null) return Nulls.Str;
         return sum(str.getBytes(UTF_8));
     }
 
-    public static String sum(InputStream ins, boolean close) {
+    @NotNull
+    public static String sum(@Nullable InputStream ins, boolean close) {
+        if (ins == null) return Nulls.Str;
         byte[] bytes = Bytes.toBytes(ins, close);
         return sum(bytes);
     }
 
-    public static String sum(byte[] bytes) {
+    @NotNull
+    public static String sum(@Nullable byte[] bytes) {
+        if (bytes == null) return Nulls.Str;
         try {
             MessageDigest digest = MessageDigest.getInstance("MD5");
             digest.update(bytes);
@@ -33,21 +42,21 @@ public class Md5 {
         }
     }
 
-    public static boolean check(String sum, byte[] bytes) {
+    public static boolean check(@Nullable String sum, @Nullable byte[] bytes) {
         if (bytes == null || sum == null) return false;
         String md5 = sum(bytes);
         return sum.equalsIgnoreCase(md5);
     }
 
-    public static boolean check(String sum, String str) {
+    public static boolean check(@Nullable String sum, @Nullable String str) {
         if (str == null || sum == null) return false;
         String md5 = sum(str);
         return sum.equalsIgnoreCase(md5);
     }
 
-    public static boolean check(String sum, InputStream ins, boolean close) {
+    public static boolean check(@Nullable String sum, @Nullable InputStream ins, boolean close) {
+        if (ins == null || sum == null) return false;
         String md5 = sum(ins, close);
         return sum.equalsIgnoreCase(md5);
     }
-
 }

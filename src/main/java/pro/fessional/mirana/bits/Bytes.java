@@ -1,5 +1,9 @@
 package pro.fessional.mirana.bits;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import pro.fessional.mirana.data.Nulls;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,8 +20,9 @@ public class Bytes {
     private static final byte[] HEX_BYTE = new byte[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
     private static final char[] HEX_CHAR = new char[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
-
-    public static String hex(byte[] bytes) {
+    @NotNull
+    public static String hex(@Nullable byte[] bytes) {
+        if (bytes == null) return Nulls.Str;
         StringBuilder sb = new StringBuilder(bytes.length * 2);
         for (int i = 0; i < bytes.length; i++) {
             hex(sb, bytes[i]);
@@ -25,7 +30,7 @@ public class Bytes {
         return sb.toString();
     }
 
-    public static void hex(StringBuilder sb, byte b) {
+    public static void hex(@NotNull StringBuilder sb, byte b) {
         sb.append(HEX_CHAR[((b >>> 4) & 0x0F)]);
         sb.append(HEX_CHAR[(b & 0x0F)]);
     }
@@ -38,7 +43,9 @@ public class Bytes {
      * @param ob 长度大于等于6的byte数组
      * @return ob中字符数量，ascii时候是1，unicode是6
      */
-    public static int unicode(char c, byte[] ob) {
+    public static int unicode(char c, @Nullable byte[] ob) {
+        if (ob == null) return 0;
+
         if (c > Byte.MAX_VALUE) {
             final int x = c;
             ob[0] = '\\';
@@ -61,7 +68,9 @@ public class Bytes {
      * @param close 是否关闭
      * @return 数组
      */
-    public static byte[] toBytes(InputStream is, boolean close) {
+    @NotNull
+    public static byte[] toBytes(@Nullable InputStream is, boolean close) {
+        if (is == null) return Nulls.Bytes;
         final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         final byte[] buff = new byte[16384];
         int size;
@@ -88,7 +97,9 @@ public class Bytes {
      * @param close 是否关闭
      * @return 字符串
      */
-    public static String toString(InputStream is, boolean close) {
+    @NotNull
+    public static String toString(@Nullable InputStream is, boolean close) {
+        if (is == null) return Nulls.Str;
         final StringBuilder out = new StringBuilder();
         final InputStreamReader reader = new InputStreamReader(is, UTF_8);
         final char[] buff = new char[16384];
