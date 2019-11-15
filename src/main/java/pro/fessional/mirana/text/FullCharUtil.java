@@ -36,7 +36,7 @@ public class FullCharUtil {
         final int hfCnt = count * 2;
         StringBuilder sb = new StringBuilder(hfCnt);
 
-        for (int i = off < 0 ? 0 : off; i < str.length(); i++) {
+        for (int i = Math.max(off, 0); i < str.length(); i++) {
             char c = str.charAt(i);
             hzCnt += c <= Byte.MAX_VALUE ? 1 : 2;
             if (hzCnt == hfCnt) {

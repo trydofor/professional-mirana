@@ -1,5 +1,6 @@
 package pro.fessional.mirana.code;
 
+import net.jcip.annotations.ThreadSafe;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,6 +15,7 @@ import java.util.Random;
  * @author trydofor
  * @since 2019-05-20
  */
+@ThreadSafe
 public class LeapCode {
 
     public static final long MAX_NUMBER = Long.MAX_VALUE;

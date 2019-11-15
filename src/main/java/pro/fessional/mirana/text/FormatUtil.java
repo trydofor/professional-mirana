@@ -50,6 +50,58 @@ public class FormatUtil {
         return String.format(format, args);
     }
 
+    /**
+     * 左填充或左截断，保证固定位数
+     *
+     * @param obj 对象
+     * @param fix 固定位数
+     * @param pad 填充字符
+     * @return 处理后字符串
+     */
+    @NotNull
+    public static String leftFix(@Nullable Object obj, int fix, char pad) {
+        String str = obj == null ? NIL : obj.toString();
+        int len = str.length();
+        if (len == fix) {
+            return str;
+        } else if (len > fix) {
+            return str.substring(len - fix);
+        } else {
+            StringBuilder sb = new StringBuilder(fix);
+            for (int i = fix - len; i > 0; i--) {
+                sb.append(pad);
+            }
+            sb.append(str);
+            return sb.toString();
+        }
+    }
+
+    /**
+     * 右填充或右截断，保证固定位数
+     *
+     * @param obj 对象
+     * @param fix 固定位数
+     * @param pad 填充字符
+     * @return 处理后字符串
+     */
+    @NotNull
+    public static String rightFix(@Nullable Object obj, int fix, char pad) {
+        String str = obj == null ? NIL : obj.toString();
+        int len = str.length();
+        if (len == fix) {
+            return str;
+        } else if (len > fix) {
+            return str.substring(0, fix);
+        } else {
+            StringBuilder sb = new StringBuilder(fix);
+            sb.append(str);
+            for (int i = fix - len; i > 0; i--) {
+                sb.append(pad);
+            }
+            return sb.toString();
+        }
+    }
+
     private static int count(String format, String sub) {
         int off = 0;
         int cnt = 0;

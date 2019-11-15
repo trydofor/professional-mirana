@@ -1,5 +1,6 @@
 package pro.fessional.mirana.code;
 
+import net.jcip.annotations.ThreadSafe;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -10,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
  * @see <a href="https://github.com/optimasc/java-digests/blob/master/src/com/optimasc/digest/CRC8Digest.java">CRC8Digest.java</a>
  * @since 2019-05-20
  */
+@ThreadSafe
 public class Crc8Long {
 
     public static final long MAX_NUMBER = (1L << 55) - 1;

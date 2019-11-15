@@ -16,4 +16,17 @@ public class FormatUtilTest {
         assertEquals("1--%", FormatUtil.format(f, "1"));
         assertEquals("1--%", FormatUtil.format(f, "1",null));
     }
+
+    @Test
+    public void leftFix() {
+        assertEquals("0123456789", FormatUtil.leftFix("123456789", 10, '0'));
+        assertEquals("1234567890", FormatUtil.leftFix("1234567890", 10, '0'));
+        assertEquals("9012345678", FormatUtil.leftFix("123456789012345678", 10, '0'));
+    }
+    @Test
+    public void rightFix() {
+        assertEquals("1234567890", FormatUtil.rightFix("123456789", 10, '0'));
+        assertEquals("1234567890", FormatUtil.rightFix("1234567890", 10, '0'));
+        assertEquals("1234567890", FormatUtil.rightFix("123456789012345678", 10, '0'));
+    }
 }

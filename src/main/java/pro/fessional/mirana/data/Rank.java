@@ -31,6 +31,7 @@ public class Rank {
         ArrayList<E> result = new ArrayList<>(predicate.length);
         ArrayList<E> temp = new ArrayList<>(items);
         for (int i = 0; i < predicate.length; i++) {
+            result.add(null); // place holder
             Predicate<E> p = predicate[i];
             for (int j = 0; j < temp.size(); j++) {
                 E e = temp.get(j);

@@ -1,5 +1,6 @@
 package pro.fessional.mirana.id;
 
+import net.jcip.annotations.ThreadSafe;
 import org.jetbrains.annotations.NotNull;
 import pro.fessional.mirana.pain.TimeoutRuntimeException;
 
@@ -21,6 +22,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * @author trydofor
  * @since 2019-05-26
  */
+@ThreadSafe
 public class LightIdBufferedProvider implements LightIdProvider {
 
     private static final int MAX_COUNT = 10000;

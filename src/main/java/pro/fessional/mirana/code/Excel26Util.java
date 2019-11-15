@@ -1,5 +1,6 @@
 package pro.fessional.mirana.code;
 
+import net.jcip.annotations.ThreadSafe;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -9,6 +10,7 @@ import org.jetbrains.annotations.Nullable;
  * @author trydofor
  * @since 2019-05-22
  */
+@ThreadSafe
 public class Excel26Util {
 
     private Excel26Util() {
