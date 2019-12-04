@@ -4,13 +4,15 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pro.fessional.mirana.i18n.I18nString;
 
+import java.io.Serializable;
+
 /**
  * code 一般为业务code，也可以作为i18nCode
  *
  * @author trydofor
  * @since 2019-09-17
  */
-public interface CodeEnum {
+public interface CodeEnum extends Serializable {
     /**
      * 业务code
      *

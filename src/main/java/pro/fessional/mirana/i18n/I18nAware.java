@@ -3,11 +3,13 @@ package pro.fessional.mirana.i18n;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.Serializable;
+
 /**
  * @author trydofor
  * @since 2019-09-09
  */
-public interface I18nAware {
+public interface I18nAware extends Serializable {
 
     /**
      * 获得i18nCode，默认code

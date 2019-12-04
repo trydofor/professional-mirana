@@ -140,7 +140,7 @@ public class LeapCode {
 
         final int off;
         final char[] dict;
-        StringBuilder sb = new StringBuilder(len < 16 ? 16 : len);
+        StringBuilder sb = new StringBuilder(Math.max(len, 16));
 
         if (base == 26) {
             dict = dict26;

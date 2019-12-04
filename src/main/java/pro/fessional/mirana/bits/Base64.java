@@ -9,7 +9,8 @@ import java.io.InputStream;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
- * 默认使用 RFC4648_URLSAFE 和 UTF8
+ * 默认使用 RFC4648_URLSAFE 和 UTF8。
+ * 某些base64不标准，会出现非base64字符，如`\`，需要使用apache codec
  *
  * @author trydofor
  * @see java.util.Base64

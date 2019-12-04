@@ -68,4 +68,13 @@ public class LeapCodeTest {
             System.out.println("e=" + e + ",i=" + i);
         }
     }
+
+    @Test
+    public void printBound() {
+        System.out.println("max32=" + codeSystem.encode32(LeapCode.MAX_NUMBER));
+        System.out.println("min32=" + codeSystem.encode32(LeapCode.MIN_NUMBER));
+        System.out.println("max26=" + codeSystem.encode26(LeapCode.MAX_NUMBER));
+        System.out.println("min26=" + codeSystem.encode26(LeapCode.MIN_NUMBER));
+    }
+
 }

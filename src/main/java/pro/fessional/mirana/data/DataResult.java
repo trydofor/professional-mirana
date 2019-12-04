@@ -2,11 +2,13 @@ package pro.fessional.mirana.data;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.io.Serializable;
+
 /**
  * @author trydofor
  * @since 2015-12-24.
  */
-public interface DataResult<T> {
+public interface DataResult<T> extends Serializable {
 
     /**
      * 返回的消息

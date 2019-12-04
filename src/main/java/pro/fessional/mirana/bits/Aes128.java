@@ -12,6 +12,9 @@ import java.io.InputStream;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
+ * 默认使用 jdk AES/CBC/PKCS5Padding。
+ * 如果使用 AES/CBC/PKCS7Padding，用 bouncycastle
+ *
  * @author trydofor
  * @since 2016-12-03
  */

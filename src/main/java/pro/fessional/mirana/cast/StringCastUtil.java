@@ -73,6 +73,35 @@ public class StringCastUtil {
     }
 
     /**
+     * 转换成int
+     *
+     * @param str 字符串
+     * @return 结果
+     * @throws NullPointerException  如果 str为null
+     * @throws NumberFormatException 如果 解析失败
+     */
+    public static int asInt(@NotNull String str) {
+        if (str == null) throw new NullPointerException();
+        return Integer.parseInt(str);
+    }
+
+    /**
+     * 转换成long
+     *
+     * @param str 字符串
+     * @param elz 默认值
+     * @return 成功的结果或默认值
+     */
+    public static int asInt(@Nullable String str, int elz) {
+        if (str == null) return elz;
+        try {
+            return Integer.parseInt(str);
+        } catch (NumberFormatException e) {
+            return elz;
+        }
+    }
+
+    /**
      * 转换成BigDecimal
      *
      * @param str 字符串
