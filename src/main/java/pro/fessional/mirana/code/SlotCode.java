@@ -3,7 +3,9 @@ package pro.fessional.mirana.code;
 import net.jcip.annotations.ThreadSafe;
 
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 
 /**
  * 生成一个固定容量的随机数槽，
@@ -27,7 +29,7 @@ public class SlotCode {
     public final int size;
     private final int last;
     private final AtomicInteger[] slot;
-    private final Random rand = new Random();
+    private final Supplier<Random> rand;
 
     /**
      * 初始化一个固定容量[1,size]的随机槽
@@ -35,6 +37,20 @@ public class SlotCode {
      * @param size 设置code的最大值(包括)。
      */
     public SlotCode(int size) {
+        this(size, ThreadLocalRandom::current);
+    }
+
+    public SlotCode(int size, Random rand) {
+        this(size, () -> rand);
+    }
+
+    /**
+     * 初始化一个固定容量[1,size]的随机槽
+     *
+     * @param size 设置code的最大值(包括)。
+     * @param rand 随机数发生器。
+     */
+    public SlotCode(int size, Supplier<Random> rand) {
         final int page = (size - 1) / bits + 1;
         this.size = size;
         this.last = (1 << (bits - size % bits)) - 1;
@@ -42,6 +58,7 @@ public class SlotCode {
         //
         for (int i = 0; i < page; i++) slot[i] = new AtomicInteger(0);
         slot[page - 1].set(last);
+        this.rand = rand;
     }
 
     public void reset() {
@@ -72,7 +89,7 @@ public class SlotCode {
     // sync deal
     private int pickup(final AtomicInteger deal, int page) {
         int len = mask.length;
-        int off = rand.nextInt(len);
+        int off = rand.get().nextInt(len);
         int cur = deal.get();
         for (int i = 0; i < len; i++) {
             int idx = (off + i) % len;
@@ -88,7 +105,7 @@ public class SlotCode {
     // sync slot
     private int select() {
         int len = slot.length;
-        int off = rand.nextInt(len);
+        int off = rand.get().nextInt(len);
         // rand loop
         for (int i = 0; i < len; i++) {
             int idx = (off + i) % len;

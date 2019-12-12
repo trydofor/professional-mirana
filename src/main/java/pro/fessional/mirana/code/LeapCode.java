@@ -5,6 +5,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Supplier;
 
 /**
  * 提供26字符(A-Z)和32字符（0-9A-Z，去掉01OI）编码。
@@ -28,7 +30,8 @@ public class LeapCode {
     private final char[] dict26 = new char[26];
     private final char[] dict32 = new char[32];
 
-    private final Random random = new Random();
+    private final Supplier<Random> random;
+
 
     /**
      * 使用系统字符字典
@@ -37,13 +40,21 @@ public class LeapCode {
         this("BY2AH0IC9SX4UTV7GP5LNR6FK1WOE8ZQD3JM");
     }
 
+    public LeapCode(@NotNull String seed) {
+        this(seed, ThreadLocalRandom::current);
+    }
+
+    public LeapCode(@NotNull String seed, Random rand) {
+        this(seed, () -> rand);
+    }
+
     /**
      * 自定义字典编码，要求字典不重复字符不少于编码字符数。
      *
      * @param seed 混乱的26字母和10数字组合
      * @throws IllegalArgumentException 字典内唯一字符数量位数不足26+10。
      */
-    public LeapCode(@NotNull String seed) {
+    public LeapCode(@NotNull String seed, Supplier<Random> rand) {
 
         int max = 32;
         int idx32 = 0;
@@ -78,6 +89,7 @@ public class LeapCode {
         if (idx32 != max) {
             throw new IllegalArgumentException("seed=" + seed + " need " + max + " chars, [0-9A-Z]");
         }
+        this.random = rand;
     }
 
     /**
@@ -170,7 +182,8 @@ public class LeapCode {
         int ln = dict.length - 16;
         int[] uq = new int[ln / 2];
         int pt = 0;
-        for (int rnd = random.nextInt() & Integer.MAX_VALUE; sb.length() < len; pt++) {
+        Random rand = random.get();
+        for (int rnd = rand.nextInt() & Integer.MAX_VALUE; sb.length() < len; pt++) {
 
             int idx = -1;
             while (idx < 0) {
@@ -178,7 +191,7 @@ public class LeapCode {
                 rnd = rnd / ln;
 
                 if (rnd <= 0) {
-                    rnd = random.nextInt() & Integer.MAX_VALUE;
+                    rnd = rand.nextInt() & Integer.MAX_VALUE;
                 }
 
                 for (int i : uq) {
