@@ -2,6 +2,7 @@ package pro.fessional.mirana.code;
 
 import net.jcip.annotations.ThreadSafe;
 import pro.fessional.mirana.best.ArgsAssert;
+import pro.fessional.mirana.cast.BoxedCastUtil;
 import pro.fessional.mirana.data.Nulls;
 
 import java.nio.CharBuffer;
@@ -180,14 +181,9 @@ public class RandCode {
                 this.range = cb.array();
             }
 
-            int clen = chars.length;
-            LinkedHashSet<Character> charsUniq = new LinkedHashSet<>(clen);
-            for (char c : chars) {
-                charsUniq.add(c);
-            }
-
+            LinkedHashSet<Character> charsUniq = new LinkedHashSet<>(BoxedCastUtil.list(chars));
             int csiz = charsUniq.size();
-            if (csiz == clen) {
+            if (csiz == chars.length) {
                 this.chars = chars;
             } else {
                 this.chars = new char[csiz];
