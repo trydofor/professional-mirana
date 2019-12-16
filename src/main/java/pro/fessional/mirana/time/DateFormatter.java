@@ -34,22 +34,36 @@ public class DateFormatter {
 
     public static final String PTN_DATE_10 = "yyyy-MM-dd";
     public static final String PTN_TIME_08 = "HH:mm:ss";
+    public static final String PTN_TIME_12 = "HH:mm:ss.SSS";
     public static final String PTN_FULL_19 = "yyyy-MM-dd HH:mm:ss";
+    public static final String PTN_FULL_23 = "yyyy-MM-dd HH:mm:ss.SSS";
 
     // This class is immutable and thread-safe.
     public static final DateTimeFormatter FMT_DATE_10 = DateTimeFormatter.ofPattern(PTN_DATE_10);
     public static final DateTimeFormatter FMT_TIME_08 = DateTimeFormatter.ofPattern(PTN_TIME_08);
+    public static final DateTimeFormatter FMT_TIME_12 = DateTimeFormatter.ofPattern(PTN_TIME_12);
     public static final DateTimeFormatter FMT_FULL_19 = DateTimeFormatter.ofPattern(PTN_FULL_19);
+    public static final DateTimeFormatter FMT_FULL_23 = DateTimeFormatter.ofPattern(PTN_FULL_23);
 
 
-    public static final ThreadLocal<DateFormat> DATE_FORMAT = new ThreadLocal<>();
+    public static final ThreadLocal<DateFormat> DATE_FORMAT_19 = new ThreadLocal<>();
+    public static final ThreadLocal<DateFormat> DATE_FORMAT_23 = new ThreadLocal<>();
 
 
     public static DateFormat full19() {
-        DateFormat df = DATE_FORMAT.get();
+        DateFormat df = DATE_FORMAT_19.get();
         if (df == null) {
             df = new SimpleDateFormat(PTN_FULL_19);
-            DATE_FORMAT.set(df);
+            DATE_FORMAT_19.set(df);
+        }
+        return df;
+    }
+
+    public static DateFormat full23() {
+        DateFormat df = DATE_FORMAT_23.get();
+        if (df == null) {
+            df = new SimpleDateFormat(PTN_FULL_23);
+            DATE_FORMAT_23.set(df);
         }
         return df;
     }
@@ -77,6 +91,17 @@ public class DateFormatter {
     }
 
     /**
+     * 格式化成 yyyy-MM-dd HH:mm:ss.SSS 格式，null时返回空支付串
+     *
+     * @param date 日期
+     * @return 结果
+     */
+    @NotNull
+    public static String full23(@Nullable ZonedDateTime date) {
+        return full23(date, null);
+    }
+
+    /**
      * 格式化成 HH:mm:ss 格式，null时返回空支付串
      *
      * @param date 日期
@@ -85,6 +110,17 @@ public class DateFormatter {
     @NotNull
     public static String time08(@Nullable ZonedDateTime date) {
         return time08(date, null);
+    }
+
+    /**
+     * 格式化成 HH:mm:ss.SSS 格式，null时返回空支付串
+     *
+     * @param date 日期
+     * @return 结果
+     */
+    @NotNull
+    public static String time12(@Nullable ZonedDateTime date) {
+        return time12(date, null);
     }
 
     /**
@@ -120,6 +156,22 @@ public class DateFormatter {
     }
 
     /**
+     * 格式化成 yyyy-MM-dd HH:mm:ss.SSS 格式，null时返回空支付串
+     *
+     * @param date   日期
+     * @param zoneId 时区
+     * @return 结果
+     */
+    @NotNull
+    public static String full23(@Nullable ZonedDateTime date, @Nullable ZoneId zoneId) {
+        if (date == null) return "";
+        if (zoneId != null && !zoneId.equals(date.getZone())) {
+            date = date.withZoneSameInstant(zoneId);
+        }
+        return full23(date.getYear(), date.getMonthValue(), date.getDayOfMonth(), date.getHour(), date.getMinute(), date.getSecond(), date.getNano());
+    }
+
+    /**
      * 格式化成 HH:mm:ss 格式，null时返回空支付串
      *
      * @param date   日期
@@ -133,6 +185,22 @@ public class DateFormatter {
             date = date.withZoneSameInstant(zoneId);
         }
         return time08(date.getHour(), date.getMinute(), date.getSecond());
+    }
+
+    /**
+     * 格式化成 HH:mm:ss.SSS 格式，null时返回空支付串
+     *
+     * @param date   日期
+     * @param zoneId 时区
+     * @return 结果
+     */
+    @NotNull
+    public static String time12(@Nullable ZonedDateTime date, @Nullable ZoneId zoneId) {
+        if (date == null) return "";
+        if (zoneId != null && !zoneId.equals(date.getZone())) {
+            date = date.withZoneSameInstant(zoneId);
+        }
+        return time12(date.getHour(), date.getMinute(), date.getSecond(), date.getNano());
     }
 
     /**
@@ -160,6 +228,18 @@ public class DateFormatter {
     }
 
     /**
+     * 格式化成 yyyy-MM-dd HH:mm:ss.SSS 格式，null时返回空支付串
+     *
+     * @param date 日期
+     * @return 结果
+     */
+    @NotNull
+    public static String full23(@Nullable LocalDateTime date) {
+        if (date == null) return "";
+        return full23(date.getYear(), date.getMonthValue(), date.getDayOfMonth(), date.getHour(), date.getMinute(), date.getSecond(), date.getNano());
+    }
+
+    /**
      * 格式化成 HH:mm:ss 格式，null时返回空支付串
      *
      * @param date 日期
@@ -169,6 +249,18 @@ public class DateFormatter {
     public static String time08(@Nullable LocalDateTime date) {
         if (date == null) return "";
         return time08(date.getHour(), date.getMinute(), date.getSecond());
+    }
+
+    /**
+     * 格式化成 HH:mm:ss.SSS 格式，null时返回空支付串
+     *
+     * @param date 日期
+     * @return 结果
+     */
+    @NotNull
+    public static String time12(@Nullable LocalDateTime date) {
+        if (date == null) return "";
+        return time12(date.getHour(), date.getMinute(), date.getSecond(), date.getNano());
     }
 
 
@@ -196,6 +288,18 @@ public class DateFormatter {
         return time08(time.getHour(), time.getMinute(), time.getSecond());
     }
 
+    /**
+     * 格式化成 HH:mm:ss.SSS 格式，null时返回空支付串
+     *
+     * @param time 日期
+     * @return 结果
+     */
+    @NotNull
+    public static String time12(@Nullable LocalTime time) {
+        if (time == null) return "";
+        return time12(time.getHour(), time.getMinute(), time.getSecond(), time.getNano());
+    }
+
 
     /**
      * 格式化成 yyyy-MM-dd 格式，null时返回空支付串
@@ -220,6 +324,17 @@ public class DateFormatter {
     }
 
     /**
+     * 格式化成 yyyy-MM-dd HH:mm:ss.SSS 格式，null时返回空支付串
+     *
+     * @param date 日期
+     * @return 结果
+     */
+    @NotNull
+    public static String full23(@Nullable Date date) {
+        return full23().format(date);
+    }
+
+    /**
      * 格式化成 HH:mm:ss 格式，null时返回空支付串
      *
      * @param date 日期
@@ -228,6 +343,17 @@ public class DateFormatter {
     @NotNull
     public static String time08(@Nullable Date date) {
         return full19().format(date).substring(9);
+    }
+
+    /**
+     * 格式化成 HH:mm:ss.SSS 格式，null时返回空支付串
+     *
+     * @param date 日期
+     * @return 结果
+     */
+    @NotNull
+    public static String time12(@Nullable Date date) {
+        return full23().format(date).substring(9);
     }
 
 
@@ -260,6 +386,20 @@ public class DateFormatter {
     }
 
     /**
+     * 格式化成 yyyy-MM-dd HH:mm:ss.SSS 格式，null时返回空支付串
+     *
+     * @param date   日期
+     * @param zoneId 时区
+     * @return 结果
+     */
+    @NotNull
+    public static String full23(@Nullable Date date, @Nullable ZoneId zoneId) {
+        if (date == null) return "";
+        ZonedDateTime dateTime = zoned(date, zoneId);
+        return full23(dateTime, null);
+    }
+
+    /**
      * 格式化成 HH:mm:ss 格式，null时返回空支付串
      *
      * @param date   日期
@@ -271,6 +411,20 @@ public class DateFormatter {
         if (date == null) return "";
         ZonedDateTime dateTime = zoned(date, zoneId);
         return time08(dateTime, null);
+    }
+
+    /**
+     * 格式化成 HH:mm:ss.SSS 格式，null时返回空支付串
+     *
+     * @param date   日期
+     * @param zoneId 时区
+     * @return 结果
+     */
+    @NotNull
+    public static String time12(@Nullable Date date, @Nullable ZoneId zoneId) {
+        if (date == null) return "";
+        ZonedDateTime dateTime = zoned(date, zoneId);
+        return time12(dateTime, null);
     }
 
     /**
@@ -387,7 +541,18 @@ public class DateFormatter {
 
     private static String full19(int y, int m, int d, int h, int i, int s) {
         StringBuilder sb = new StringBuilder(19);
-        fixFull19(sb, y, m, d, h, i, s);
+        fixDate10(sb, y, m, d);
+        sb.append(' ');
+        fixTime08(sb, h, i, s);
+        return sb.toString();
+    }
+
+    private static String full23(int y, int m, int d, int h, int i, int s, int n) {
+        StringBuilder sb = new StringBuilder(19);
+        fixDate10(sb, y, m, d);
+        sb.append(' ');
+        fixTime08(sb, h, i, s);
+        fixNano(sb, n);
         return sb.toString();
     }
 
@@ -403,10 +568,11 @@ public class DateFormatter {
         return sb.toString();
     }
 
-    private static void fixFull19(StringBuilder buf, int y, int m, int d, int h, int i, int s) {
-        fixDate10(buf, y, m, d);
-        buf.append(' ');
-        fixTime08(buf, h, i, s);
+    private static String time12(int h, int m, int s, int n) {
+        StringBuilder sb = new StringBuilder(8);
+        fixTime08(sb, h, m, s);
+        fixNano(sb, n);
+        return sb.toString();
     }
 
     private static void fixDate10(StringBuilder buf, int y, int m, int d) {
@@ -423,6 +589,15 @@ public class DateFormatter {
         if (m < 10) buf.append('0');
         buf.append(m).append(':');
         if (s < 10) buf.append('0');
+        buf.append(s);
+    }
+
+    private static void fixNano(StringBuilder buf, int n) {
+        buf.append(".");
+        // the nano-of-second, from 0 to 999,999,999
+        int s = n / 1_000_000;
+        if (s < 10) buf.append('0');
+        if (s < 100) buf.append('0');
         buf.append(s);
     }
 }

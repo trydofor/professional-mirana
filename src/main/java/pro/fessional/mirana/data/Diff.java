@@ -58,10 +58,13 @@ public class Diff {
     }
 
     public static class D<E> {
+        // 集合new中新增和更新(不相同)的数据
         public final LinkedHashSet<E> newInsert = new LinkedHashSet<>();
         public final LinkedHashSet<E> newUpdate = new LinkedHashSet<>();
+        // 集合old中更新(不相同)和删除的数据
         public final LinkedHashSet<E> oldUpdate = new LinkedHashSet<>();
         public final LinkedHashSet<E> oldDelete = new LinkedHashSet<>();
+        // new和old集合中相等的数据
         public final LinkedHashSet<E> oldEqsNew = new LinkedHashSet<>();
     }
 
