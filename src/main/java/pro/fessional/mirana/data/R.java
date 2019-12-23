@@ -25,6 +25,7 @@ public class R<T> implements DataResult<T> {
     protected String message;
     protected String code;
     protected T data;
+    protected String error = null;
 
     protected R(boolean success, String message, String code, T data) {
         this.success = success;
@@ -104,9 +105,17 @@ public class R<T> implements DataResult<T> {
         return this;
     }
 
+    public void setError(String error) {
+        this.error = error;
+    }
+
+    public String getError() {
+        return error;
+    }
+
     // i18n
     public I<T> toI18n(String code, Object... args) {
-        I<T> r = new I<T>(this.success, this.message, this.code, this.data);
+        I<T> r = new I<>(this.success, this.message, this.code, this.data);
         if (code != null && code.length() > 0) {
             r.i18nCode = code;
         }
@@ -248,27 +257,31 @@ public class R<T> implements DataResult<T> {
         return new R<>(false, null, code, data);
     }
 
-    public static R ng(Throwable t) {
+    public static <T> R<T> ng(Throwable t) {
         return ng(t, null, null);
     }
 
-    public static R ng(Throwable t, String code) {
+    public static <T> R<T> ng(Throwable t, String code) {
         return ng(t, code, null);
     }
 
-    public static R ng(Throwable t, String code, String message) {
+    public static <T> R<T> ng(Throwable t, String code, String message) {
         if (message == null) message = t.getMessage();
         String st = ThrowableUtil.rootString(t);
         String b64 = Base64.getUrlEncoder().encodeToString(st.getBytes(StandardCharsets.UTF_8));
         if (code == null && t instanceof DataResult) {
             code = ((DataResult) t).getCode();
         }
-        return new R<>(false, message, code, b64);
+        R<T> tr = new R<>(false, message, code, null);
+        tr.error = b64;
+        return tr;
     }
 
-    public static R ng(Throwable t, CodeEnum code) {
+    public static <T> R<T> ng(Throwable t, CodeEnum code) {
         String st = ThrowableUtil.rootString(t);
         String b64 = Base64.getUrlEncoder().encodeToString(st.getBytes(StandardCharsets.UTF_8));
-        return new R<>(false, code, b64);
+        R<T> tr = new R<>(false, code, null);
+        tr.error = b64;
+        return tr;
     }
 }

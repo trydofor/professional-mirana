@@ -2,6 +2,7 @@ package pro.fessional.mirana.cast;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import pro.fessional.mirana.data.Nulls;
 
 import java.math.BigDecimal;
 
@@ -47,19 +48,6 @@ public class StringCastUtil {
      * 转换成long
      *
      * @param str 字符串
-     * @return 结果
-     * @throws NullPointerException  如果 str为null
-     * @throws NumberFormatException 如果 解析失败
-     */
-    public static long asLong(@NotNull String str) {
-        if (str == null) throw new NullPointerException();
-        return Long.parseLong(str);
-    }
-
-    /**
-     * 转换成long
-     *
-     * @param str 字符串
      * @param elz 默认值
      * @return 成功的结果或默认值
      */
@@ -70,19 +58,6 @@ public class StringCastUtil {
         } catch (NumberFormatException e) {
             return elz;
         }
-    }
-
-    /**
-     * 转换成int
-     *
-     * @param str 字符串
-     * @return 结果
-     * @throws NullPointerException  如果 str为null
-     * @throws NumberFormatException 如果 解析失败
-     */
-    public static int asInt(@NotNull String str) {
-        if (str == null) throw new NullPointerException();
-        return Integer.parseInt(str);
     }
 
     /**
@@ -102,17 +77,35 @@ public class StringCastUtil {
     }
 
     /**
-     * 转换成BigDecimal
+     * 转换成float
      *
      * @param str 字符串
-     * @return 结果
-     * @throws NullPointerException  如果 str为null
-     * @throws NumberFormatException 如果 解析失败
+     * @param elz 默认值
+     * @return 成功的结果或默认值
      */
-    @NotNull
-    public static BigDecimal asDecimal(@NotNull String str) {
-        if (str == null) throw new NullPointerException();
-        return new BigDecimal(str);
+    public static float asFloat(@Nullable String str, float elz) {
+        if (str == null) return elz;
+        try {
+            return Float.parseFloat(str);
+        } catch (NumberFormatException e) {
+            return elz;
+        }
+    }
+
+    /**
+     * 转换成double
+     *
+     * @param str 字符串
+     * @param elz 默认值
+     * @return 成功的结果或默认值
+     */
+    public static double asDouble(@Nullable String str, double elz) {
+        if (str == null) return elz;
+        try {
+            return Double.parseDouble(str);
+        } catch (NumberFormatException e) {
+            return elz;
+        }
     }
 
     /**
@@ -130,5 +123,35 @@ public class StringCastUtil {
         } catch (Exception e) {
             return elz;
         }
+    }
+
+    @NotNull
+    public static String string(Character v) {
+        return v == null ? Nulls.Str : String.valueOf(v);
+    }
+
+    @NotNull
+    public static String string(Integer v) {
+        return v == null ? Nulls.Str : String.valueOf(v);
+    }
+
+    @NotNull
+    public static String string(Long v) {
+        return v == null ? Nulls.Str : String.valueOf(v);
+    }
+
+    @NotNull
+    public static String string(Float v) {
+        return v == null ? Nulls.Str : String.valueOf(v);
+    }
+
+    @NotNull
+    public static String string(Double v) {
+        return v == null ? Nulls.Str : String.valueOf(v);
+    }
+
+    @NotNull
+    public static String string(BigDecimal v) {
+        return v == null ? Nulls.Str : String.valueOf(v);
     }
 }
