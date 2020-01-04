@@ -46,4 +46,28 @@ public class DateParserTest {
         assertEquals(LocalDateTime.of(2019, 5, 21, 12, 34, 56, 0), LocalDateTime.of(ld1, lt1));
         assertEquals(LocalDateTime.of(2019, 5, 21, 12, 34, 56, 789_000_000), LocalDateTime.of(ld2, lt2));
     }
+
+    @Test
+    public void parseM2d2y4() {
+        String str1 = "０５/２１/２０１９";
+        LocalDate ld1 = DateParser.parseDate(str1);
+        assertEquals(LocalDate.of(2019, 5, 21), ld1);
+    }
+
+    @Test
+    public void parseAppend() {
+        assertEquals(LocalDate.of(2019, 1, 1), DateParser.parseDate("2019-"));
+        assertEquals(LocalDate.of(2019, 1, 1), DateParser.parseDate("2019-1"));
+        assertEquals(LocalDate.of(2019, 1, 1), DateParser.parseDate("2019-01"));
+        assertEquals(LocalDate.of(2019, 1, 1), DateParser.parseDate("2019-01-1"));
+        assertEquals(LocalDate.of(2019, 1, 1), DateParser.parseDate("2019-01-0"));
+        assertEquals(LocalTime.of(1, 0, 0), DateParser.parseTime("1"));
+        assertEquals(LocalTime.of(1, 0, 0), DateParser.parseTime("01:"));
+        assertEquals(LocalTime.of(1, 0, 0), DateParser.parseTime("01:0"));
+        assertEquals(LocalTime.of(1, 0, 0), DateParser.parseTime("01:00:"));
+        assertEquals(LocalTime.of(1, 0, 0), DateParser.parseTime("01:00:0"));
+        assertEquals(LocalTime.of(1, 0, 0), DateParser.parseTime("01:00:00"));
+        assertEquals(LocalTime.of(1, 0, 0), DateParser.parseTime("01:00:00.0"));
+        assertEquals(LocalTime.of(1, 0, 0,0), DateParser.parseTime("01:00:00.00"));
+    }
 }

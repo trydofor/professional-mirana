@@ -10,9 +10,13 @@ import java.time.LocalTime;
 
 /**
  * 解析固定格式的，包含日期数字的字符串，支持以下格式<p/>
+ * 可以处理末尾的填充，日期以01填充，时间以00填充。<p/>
  * (date8) yyyyMMdd<p/>
  * (datetime14) yyyyMMddHHmmss<p/>
  * (datetime17) yyyyMMddHHmmssSSS<p/>
+ * (date8) MMddyyyy<p/>
+ * (datetime14) MMddyyyyHHmmss<p/>
+ * (datetime17) MMddyyyyHHmmssSSS<p/>
  * (time6) HHmmss<p/>
  * (time9) HHmmssSSS<p/>
  *
@@ -80,6 +84,7 @@ public class DateParser {
     /**
      * 把任意包含日期信息的数字变成日期，解析时只关注数字，忽略非数字字符<p/>
      * (date8) yyyyMMdd<p/>
+     * (date8) MMddyyyy<p/>
      *
      * @param str 任意包括全角或半角数字的字符串
      * @param off 数字位置偏移量，不考虑非数字
@@ -100,6 +105,8 @@ public class DateParser {
      * 把任意包含日期信息的数字变成日期，解析时只关注数字，忽略非数字字符<p/>
      * (datetime14) yyyyMMddHHmmss<p/>
      * (datetime17) yyyyMMddHHmmssSSS<p/>
+     * (datetime14) MMddyyyyHHmmss<p/>
+     * (datetime17) MMddyyyyHHmmssSSS<p/>
      *
      * @param str 任意包括全角或半角数字的字符串
      * @param off 数字位置偏移量，不考虑非数字
@@ -122,21 +129,79 @@ public class DateParser {
     public static String digit(@Nullable CharSequence str, int off, int max) {
         if (str == null) return "";
 
-        StringBuilder sb = new StringBuilder(max);
+        int idx = 0;
+        StringBuilder[] buff = new StringBuilder[4];
+        buff[idx] = new StringBuilder(max);
+
         int cnt = 0;
+        int nan = 0;
         for (int i = 0; i < str.length(); i++) {
             char c = HalfCharUtil.half(str.charAt(i));
             if (c >= '0' && c <= '9') {
                 cnt++;
                 if (cnt > off) {
-                    sb.append(c);
+                    buff[idx].append(c);
+                    nan = 1;
                 }
-                if (sb.length() >= max) {
-                    break;
+            } else {
+                if (nan == 1 && idx < 3) {
+                    buff[++idx] = new StringBuilder(max);
+                    nan = 2;
                 }
             }
         }
-        return sb.toString();
+
+        // 处理MMddyyyy
+        if (idx >= 2) {
+            if (buff[0].length() == 2 && buff[1].length() == 2 && buff[2].length() == 4) {
+                StringBuilder tp = buff[2];
+                buff[2] = buff[1];
+                buff[1] = buff[0];
+                buff[0] = tp;
+            }
+        }
+
+        StringBuilder sb = buff[0];
+        for (int i = 1; i <= idx; i++) {
+            sb.append(buff[i]);
+        }
+
+        // 处理填充，日期01填充，时间00填充
+        int len = sb.length();
+        int dst = max - len;
+        if (dst == 0) {
+            return sb.toString();
+        } else if (dst < 0) {
+            return sb.substring(0, max);
+        } else {
+            int ldx = len - 1;
+            if (max <= 8) { // 日期
+                if (len % 2 != 0) {
+                    if (sb.charAt(ldx) == '0') {
+                        sb.append('1');
+                    } else {
+                        sb.insert(ldx, '0');
+                    }
+                    dst--;
+                }
+                for (int i = 0; i < dst; i += 2) {
+                    sb.append('0').append('1');
+                }
+            } else { // 时间
+                if (len % 2 != 0) {
+                    if (sb.charAt(ldx) == '0') {
+                        sb.append('0');
+                    } else {
+                        sb.insert(ldx, '0');
+                    }
+                    dst--;
+                }
+                for (int i = 0; i < dst; i++) {
+                    sb.append('0');
+                }
+            }
+            return sb.toString();
+        }
     }
 
     // /////////////////////////////
