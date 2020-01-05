@@ -109,9 +109,10 @@ public class WhiteUtil {
     public static String space(CharSequence str) {
         if (str == null) return "";
 
-        StringBuilder sb = new StringBuilder(str.length());
+        int len = str.length();
+        StringBuilder sb = new StringBuilder(len);
         boolean ws = false;
-        for (int i = 0; i < str.length(); i++) {
+        for (int i = 0; i < len; i++) {
             char c = str.charAt(i);
             if (notWhiteSpace(c)) {
                 ws = false;
@@ -140,8 +141,9 @@ public class WhiteUtil {
     public static String delete(CharSequence str) {
         if (str == null) return "";
 
-        StringBuilder sb = new StringBuilder(str.length());
-        for (int i = 0; i < str.length(); i++) {
+        int len = str.length();
+        StringBuilder sb = new StringBuilder(len);
+        for (int i = 0; i < len; i++) {
             char c = str.charAt(i);
             if (notWhiteSpace(c)) {
                 sb.append(c);
@@ -159,7 +161,8 @@ public class WhiteUtil {
     public static boolean isAllWhite(CharSequence str) {
         if (str == null) return true;
 
-        for (int i = 0; i < str.length(); i++) {
+        int len = str.length();
+        for (int i = 0; i < len; i++) {
             char c = str.charAt(i);
             if (!notWhiteSpace(c)) {
                 return true;
@@ -185,10 +188,11 @@ public class WhiteUtil {
     @NotNull
     public static List<String> lines(CharSequence str) {
         String spd = space(str);
-        if (spd.length() == 0) return Collections.emptyList();
+        int len = spd.length();
+        if (len == 0) return Collections.emptyList();
 
         int cnt = 0;
-        for (int i = 0; i < spd.length(); i++) {
+        for (int i = 0; i < len; i++) {
             int idx = spd.indexOf(' ', i);
             if (idx > 0) {
                 cnt++;
@@ -198,7 +202,7 @@ public class WhiteUtil {
             }
         }
         List<String> result = new ArrayList<>(cnt + 1);
-        for (int i = 0; i < spd.length(); i++) {
+        for (int i = 0; i < len; i++) {
             int idx = spd.indexOf(' ', i);
             if (idx > 0) {
                 result.add(spd.substring(i, idx));

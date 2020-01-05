@@ -135,7 +135,8 @@ public class DateParser {
 
         int cnt = 0;
         int nan = 0;
-        for (int i = 0; i < str.length(); i++) {
+        int len = str.length();
+        for (int i = 0; i < len; i++) {
             char c = HalfCharUtil.half(str.charAt(i));
             if (c >= '0' && c <= '9') {
                 cnt++;
@@ -167,16 +168,16 @@ public class DateParser {
         }
 
         // 处理填充，日期01填充，时间00填充
-        int len = sb.length();
-        int dst = max - len;
+        int sbl = sb.length();
+        int dst = max - sbl;
         if (dst == 0) {
             return sb.toString();
         } else if (dst < 0) {
             return sb.substring(0, max);
         } else {
-            int ldx = len - 1;
+            int ldx = sbl - 1;
             if (max <= 8) { // 日期
-                if (len % 2 != 0) {
+                if (sbl % 2 != 0) {
                     if (sb.charAt(ldx) == '0') {
                         sb.append('1');
                     } else {
@@ -188,7 +189,7 @@ public class DateParser {
                     sb.append('0').append('1');
                 }
             } else { // 时间
-                if (len % 2 != 0) {
+                if (sbl % 2 != 0) {
                     if (sb.charAt(ldx) == '0') {
                         sb.append('0');
                     } else {

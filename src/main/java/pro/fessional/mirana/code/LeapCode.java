@@ -61,7 +61,8 @@ public class LeapCode {
         int idx26 = 0;
         int idx24 = 0;
 
-        for (int i = 0; i < seed.length() && idx32 < max; i++) {
+        int len = seed.length();
+        for (int i = 0; i < len && idx32 < max; i++) {
             char c = seed.charAt(i);
             if (c >= 'a' && c <= 'z') {
                 c = (char) (c - 32);

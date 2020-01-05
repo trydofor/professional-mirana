@@ -456,9 +456,10 @@ public class DateFormatter {
     public static String fixFull19(@Nullable String date) {
         if (date == null) return "1979-01-01";
 
-        StringBuilder tmp = new StringBuilder(date.length());
+        int len = date.length();
+        StringBuilder tmp = new StringBuilder(len);
         int seed = 0;
-        for (int i = 0; i < date.length(); i++) {
+        for (int i = 0; i < len; i++) {
             char c = HalfCharUtil.half(date.charAt(i));
             if (c >= '0' && c <= '9') {
                 tmp.append(c);
@@ -498,7 +499,8 @@ public class DateFormatter {
             int cnt = 0;
             int off = idx[1];
             idx[1] = -1;
-            for (int i = off; i < str.length(); i++) {
+            int len = str.length();
+            for (int i = off; i < len; i++) {
                 char c = str.charAt(i);
                 if (c >= '0' && c <= '9') {
                     if (cnt == 0) {

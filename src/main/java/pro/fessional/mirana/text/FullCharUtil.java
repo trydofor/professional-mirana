@@ -36,7 +36,8 @@ public class FullCharUtil {
         final int hfCnt = count * 2;
         StringBuilder sb = new StringBuilder(hfCnt);
 
-        for (int i = Math.max(off, 0); i < str.length(); i++) {
+        int len = str.length();
+        for (int i = Math.max(off, 0); i < len; i++) {
             char c = str.charAt(i);
             hzCnt += c <= Byte.MAX_VALUE ? 1 : 2;
             if (hzCnt == hfCnt) {
@@ -97,7 +98,8 @@ public class FullCharUtil {
     public static int countHalf(@Nullable CharSequence str) {
         if (str == null) return -1;
         int count = 0;
-        for (int i = 0; i < str.length(); i++) {
+        int len = str.length();
+        for (int i = 0; i < len; i++) {
             count += str.charAt(i) <= Byte.MAX_VALUE ? 1 : 2;
         }
         return count;

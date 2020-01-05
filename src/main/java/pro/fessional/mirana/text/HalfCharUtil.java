@@ -10,11 +10,11 @@ public class HalfCharUtil {
 
     public static String half(CharSequence cs) {
         if (cs == null) return null;
-        int length = cs.length();
-        if (length == 0) return "";
+        int len = cs.length();
+        if (len == 0) return "";
 
-        StringBuilder sb = new StringBuilder(length);
-        for (int i = 0; i < cs.length(); i++) {
+        StringBuilder sb = new StringBuilder(len);
+        for (int i = 0; i < len; i++) {
             char c = cs.charAt(i);
             if (c == '\u3000') {
                 c = ' ';
