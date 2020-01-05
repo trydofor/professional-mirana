@@ -73,7 +73,7 @@ public class DateParser {
      */
     @NotNull
     public static LocalTime parseTime(@NotNull CharSequence str, int off) {
-        String num = digit(str, off, 9);
+        String num = digit(str, off, Ptn.TIME);
         int len = num.length();
         if (len != 6 && len != 9) {
             throw new IllegalArgumentException("only support time6,time9 format");
@@ -92,7 +92,7 @@ public class DateParser {
      */
     @NotNull
     public static LocalDate parseDate(@NotNull CharSequence str, int off) {
-        String num = digit(str, off, 8);
+        String num = digit(str, off, Ptn.DATE);
         int len = num.length();
         if (len != 8) {
             throw new IllegalArgumentException("only support date8 format");
@@ -114,7 +114,7 @@ public class DateParser {
      */
     @NotNull
     public static LocalDateTime parseDateTime(@NotNull CharSequence str, int off) {
-        String num = digit(str, off, 17);
+        String num = digit(str, off, Ptn.FULL);
         int len = num.length();
         if (len != 14 && len != 17) {
             throw new IllegalArgumentException("only support datetime14,datetime17 format");
@@ -125,13 +125,27 @@ public class DateParser {
         return LocalDateTime.of(ld, lt);
     }
 
+    enum Ptn {
+        DATE(8, new String[]{"2000", "01", "01"}),
+        TIME(9, new String[]{"00", "00", "00", "000"}),
+        FULL(17, new String[]{"2000", "01", "01", "00", "00", "00", "000"}),
+        ;
+        final int len;
+        final String[] pad;
+
+        Ptn(int len, String[] pad) {
+            this.len = len;
+            this.pad = pad;
+        }
+    }
+
     @NotNull
-    public static String digit(@Nullable CharSequence str, int off, int max) {
+    public static String digit(@Nullable CharSequence str, int off, Ptn ptn) {
         if (str == null) return "";
 
         int idx = 0;
-        StringBuilder[] buff = new StringBuilder[4];
-        buff[idx] = new StringBuilder(max);
+        StringBuilder[] buff = new StringBuilder[ptn.pad.length];
+        buff[idx] = new StringBuilder(ptn.len);
 
         int cnt = 0;
         int nan = 0;
@@ -145,67 +159,78 @@ public class DateParser {
                     nan = 1;
                 }
             } else {
-                if (nan == 1 && idx < 3) {
-                    buff[++idx] = new StringBuilder(max);
+                if (nan == 1 && idx < ptn.pad.length - 1) {
+                    buff[++idx] = new StringBuilder(ptn.len);
                     nan = 2;
                 }
             }
         }
 
         // 处理MMddyyyy
-        if (idx >= 2) {
-            if (buff[0].length() == 2 && buff[1].length() == 2 && buff[2].length() == 4) {
-                StringBuilder tp = buff[2];
-                buff[2] = buff[1];
-                buff[1] = buff[0];
-                buff[0] = tp;
+        if (ptn != Ptn.TIME && idx >= 2 && buff[1].length() <= 2 && isMonth(buff[0]) && !isMonth(buff[2])) {
+            StringBuilder tp = buff[2];
+            buff[2] = buff[1];
+            buff[1] = buff[0];
+            buff[0] = tp;
+        }
+
+        // 处理填充
+        for (int i = 0; i < ptn.pad.length; i++) {
+            if (i <= idx) {
+                int cln = buff[i].length();
+                int sln = ptn.pad[i].length();
+                if (cln == sln) {
+                    continue;
+                } else if (cln > sln) {
+                    break;
+                }
+
+                boolean az = true;
+                for (int j = 0; j < cln; j++) {
+                    if (buff[i].charAt(j) != '0') {
+                        az = false;
+                        break;
+                    }
+                }
+                if (az) {
+                    buff[i].replace(0, cln, ptn.pad[i]);
+                } else {
+                    buff[i].insert(0, ptn.pad[i], 0, sln - cln);
+                }
+            } else {
+                buff[idx].append(ptn.pad[i]);
             }
         }
 
+        // 拼接
         StringBuilder sb = buff[0];
         for (int i = 1; i <= idx; i++) {
             sb.append(buff[i]);
         }
 
-        // 处理填充，日期01填充，时间00填充
-        int sbl = sb.length();
-        int dst = max - sbl;
-        if (dst == 0) {
-            return sb.toString();
-        } else if (dst < 0) {
-            return sb.substring(0, max);
-        } else {
-            int ldx = sbl - 1;
-            if (max <= 8) { // 日期
-                if (sbl % 2 != 0) {
-                    if (sb.charAt(ldx) == '0') {
-                        sb.append('1');
-                    } else {
-                        sb.insert(ldx, '0');
-                    }
-                    dst--;
-                }
-                for (int i = 0; i < dst; i += 2) {
-                    sb.append('0').append('1');
-                }
-            } else { // 时间
-                if (sbl % 2 != 0) {
-                    if (sb.charAt(ldx) == '0') {
-                        sb.append('0');
-                    } else {
-                        sb.insert(ldx, '0');
-                    }
-                    dst--;
-                }
-                for (int i = 0; i < dst; i++) {
-                    sb.append('0');
-                }
-            }
-            return sb.toString();
-        }
+        return sb.length() <= ptn.len ? sb.toString() : sb.substring(0, ptn.len);
     }
 
     // /////////////////////////////
+    private static boolean isMonth(CharSequence str) {
+        int len = str.length();
+        if (len == 1) {
+            char c = str.charAt(0);
+            return c >= '1' && c <= '9';
+        } else if (len == 2) {
+            char c1 = str.charAt(0);
+            char c2 = str.charAt(1);
+            if (c1 == '0' && c2 >= '1' && c2 <= '9') {
+                return true;
+            }
+            if (c1 == '1' && c2 >= '0' && c2 <= '2') {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private static LocalDate date(String num) {
         int y = Integer.parseInt(num.substring(0, 4));
         int m = Integer.parseInt(num.substring(4, 6));
