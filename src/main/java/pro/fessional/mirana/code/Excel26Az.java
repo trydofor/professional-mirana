@@ -3,6 +3,9 @@ package pro.fessional.mirana.code;
 import net.jcip.annotations.ThreadSafe;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
+import java.util.Map;
+
 /**
  * 用来转换Excel列坐标的工具栏，坐标从1开始，索引从0开始。
  *
@@ -73,5 +76,32 @@ public class Excel26Az {
     @NotNull
     public static String index(int idx) {
         return number(idx + 1);
+    }
+
+    /**
+     * 使用一列变成title和index的对应关系
+     *
+     * @param head   保持header和index关系的map
+     * @param rows   head值
+     * @param prefix 前缀
+     * @return 新增head数量，与rows.size()相等为无重复
+     */
+    public static int title(Map<String, Integer> head, Collection<String> rows, String prefix) {
+        int cnt = 0;
+        int idx = 0;
+
+        if (prefix == null || prefix.isEmpty()) {
+            for (String row : rows) {
+                Integer old = head.putIfAbsent(row, idx++);
+                if (old == null)  cnt++;
+            }
+        } else {
+            for (String row : rows) {
+                Integer old = head.putIfAbsent(prefix + row, idx++);
+                if (old == null)  cnt++;
+            }
+        }
+
+        return cnt;
     }
 }
