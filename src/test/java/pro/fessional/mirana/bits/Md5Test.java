@@ -18,8 +18,8 @@ public class Md5Test {
     @Test
     public void check() throws FileNotFoundException {
         File f = new File("src/test/java/pro/fessional/mirana/bits/Md5Test.java");
-        String sum = Md5.sum(new FileInputStream(f),true);
-        boolean check = Md5.check(sum, new FileInputStream(f),true);
+        String sum = Md5.sum(new FileInputStream(f));
+        boolean check = Md5.check(sum, new FileInputStream(f));
         Assert.assertTrue(check);
         System.out.println(sum);
     }

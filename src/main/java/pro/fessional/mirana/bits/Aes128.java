@@ -3,6 +3,7 @@ package pro.fessional.mirana.bits;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pro.fessional.mirana.data.Nulls;
+import pro.fessional.mirana.io.InputStreams;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -50,9 +51,9 @@ public class Aes128 {
     }
 
     @NotNull
-    public byte[] encode(@Nullable InputStream plain, boolean close) {
+    public byte[] encode(@Nullable InputStream plain) {
         if (plain == null) return Nulls.Bytes;
-        byte[] bytes = Bytes.toBytes(plain, close);
+        byte[] bytes = InputStreams.readBytes(plain);
         return encode(bytes);
     }
 
@@ -88,9 +89,9 @@ public class Aes128 {
     }
 
     @NotNull
-    public byte[] decode(@Nullable InputStream cipher, boolean close) {
+    public byte[] decode(@Nullable InputStream cipher) {
         if (cipher == null) return Nulls.Bytes;
-        byte[] bytes = Bytes.toBytes(cipher, close);
+        byte[] bytes = InputStreams.readBytes(cipher);
         return decode(bytes);
     }
 

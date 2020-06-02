@@ -4,13 +4,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pro.fessional.mirana.data.Nulls;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 /**
  * @author trydofor
  * @since 2019-06-24
@@ -24,8 +17,8 @@ public class Bytes {
     public static String hex(@Nullable byte[] bytes) {
         if (bytes == null) return Nulls.Str;
         StringBuilder sb = new StringBuilder(bytes.length * 2);
-        for (int i = 0; i < bytes.length; i++) {
-            hex(sb, bytes[i]);
+        for (byte b : bytes) {
+            hex(sb, b);
         }
         return sb.toString();
     }
@@ -47,77 +40,17 @@ public class Bytes {
         if (ob == null) return 0;
 
         if (c > Byte.MAX_VALUE) {
-            final int x = c;
+            final int i = c;
             ob[0] = '\\';
             ob[1] = 'u';
-            ob[2] = HEX_BYTE[(x >>> 12) & 0xF];
-            ob[3] = HEX_BYTE[(x >>> 8) & 0xF];
-            ob[4] = HEX_BYTE[(x >>> 4) & 0xF];
-            ob[5] = HEX_BYTE[x & 0xF];
+            ob[2] = HEX_BYTE[(i >>> 12) & 0xF];
+            ob[3] = HEX_BYTE[(i >>> 8) & 0xF];
+            ob[4] = HEX_BYTE[(i >>> 4) & 0xF];
+            ob[5] = HEX_BYTE[i & 0xF];
             return 6;
         } else {
             ob[0] = (byte) c;
             return 1;
         }
-    }
-
-    /**
-     * 把is读成数组
-     *
-     * @param is    流
-     * @param close 是否关闭
-     * @return 数组
-     */
-    @NotNull
-    public static byte[] toBytes(@Nullable InputStream is, boolean close) {
-        if (is == null) return Nulls.Bytes;
-        final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-        final byte[] buff = new byte[16384];
-        int size;
-        try {
-            while ((size = is.read(buff, 0, buff.length)) != -1) {
-                buffer.write(buff, 0, size);
-            }
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
-
-        try {
-            if (close) is.close();
-        } catch (IOException e) {
-            // ignore
-        }
-        return buffer.toByteArray();
-    }
-
-    /**
-     * 把is读成UTF8 字符串
-     *
-     * @param is    流
-     * @param close 是否关闭
-     * @return 字符串
-     */
-    @NotNull
-    public static String toString(@Nullable InputStream is, boolean close) {
-        if (is == null) return Nulls.Str;
-        final StringBuilder out = new StringBuilder();
-        final InputStreamReader reader = new InputStreamReader(is, UTF_8);
-        final char[] buff = new char[16384];
-        int size;
-        try {
-            while ((size = reader.read(buff, 0, buff.length)) != -1) {
-                out.append(buff, 0, size);
-            }
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
-
-        try {
-            if (close) is.close();
-        } catch (IOException e) {
-            // ignore
-        }
-
-        return out.toString();
     }
 }

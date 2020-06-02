@@ -3,6 +3,7 @@ package pro.fessional.mirana.bits;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pro.fessional.mirana.data.Nulls;
+import pro.fessional.mirana.io.InputStreams;
 
 import java.io.InputStream;
 
@@ -10,7 +11,25 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * 默认使用 RFC4648_URLSAFE 和 UTF8。
- * 某些base64不标准，会出现非base64字符，如`\`，需要使用apache codec
+ * <pre>
+ * This array is a lookup table that translates 6-bit positive integer
+ * index values into their "Base64 Alphabet" equivalents as specified
+ * in "Table 1: The Base64 Alphabet" of RFC 2045 (and RFC 4648).
+ * 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+ * 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+ * 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+ * 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+ * '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'
+ *
+ * It's the lookup table for "URL and Filename safe Base64" as specified
+ * in Table 2 of the RFC 4648, with the '+' and '/' changed to '-' and
+ * '_'. This table is used when BASE64_URL is specified.
+ * 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+ * 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+ * 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+ * 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+ * '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', '_'
+ * </pre>
  *
  * @author trydofor
  * @see java.util.Base64
@@ -18,66 +37,92 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  */
 public class Base64 {
 
-    private static final java.util.Base64.Encoder ENCODER = java.util.Base64.getUrlEncoder();
-    private static final java.util.Base64.Decoder DECODER = java.util.Base64.getUrlDecoder();
-
-    @NotNull
-    public static String encode(@Nullable String str) {
-        if (str == null) return Nulls.Str;
-        return ENCODER.encodeToString(str.getBytes(UTF_8));
+    public static java.util.Base64.Encoder getEncoder(boolean urlSafe) {
+        return urlSafe ? java.util.Base64.getUrlEncoder() : java.util.Base64.getEncoder();
     }
 
     @NotNull
-    public static String encode(@Nullable InputStream ins, boolean close) {
-        if (ins == null) return Nulls.Str;
-        byte[] bytes = Bytes.toBytes(ins, close);
-        return ENCODER.encodeToString(bytes);
+    public static String encode(@Nullable String str) {
+        return encode(str, true);
+    }
+
+    @NotNull
+    public static String encode(@Nullable InputStream ins) {
+        return encode(ins, true);
     }
 
     @NotNull
     public static String encode(@Nullable byte[] bytes) {
+        return encode(bytes, true);
+    }
+
+    @NotNull
+    public static String encode(@Nullable String str, boolean urlSafe) {
+        if (str == null) return Nulls.Str;
+        return getEncoder(urlSafe).encodeToString(str.getBytes(UTF_8));
+    }
+
+    @NotNull
+    public static String encode(@Nullable InputStream ins, boolean urlSafe) {
+        if (ins == null) return Nulls.Str;
+        byte[] bytes = InputStreams.readBytes(ins);
+        return getEncoder(urlSafe).encodeToString(bytes);
+    }
+
+    @NotNull
+    public static String encode(@Nullable byte[] bytes, boolean urlSafe) {
         if (bytes == null) return Nulls.Str;
-        return ENCODER.encodeToString(bytes);
+        return getEncoder(urlSafe).encodeToString(bytes);
     }
 
     @NotNull
     public static String de2str(@Nullable String str) {
         if (str == null) return Nulls.Str;
-        byte[] bytes = DECODER.decode(str.getBytes(UTF_8));
+        byte[] bytes = decode(str.getBytes(UTF_8));
         return new String(bytes, UTF_8);
     }
 
     @NotNull
     public static String de2str(@Nullable byte[] bytes) {
         if (bytes == null) return Nulls.Str;
-        byte[] res = DECODER.decode(bytes);
+        byte[] res = decode(bytes);
         return new String(res, UTF_8);
     }
 
     @NotNull
-    public static String de2str(@Nullable InputStream ins, boolean close) {
+    public static String de2str(@Nullable InputStream ins) {
         if (ins == null) return Nulls.Str;
-        byte[] bytes = Bytes.toBytes(ins, close);
-        byte[] res = DECODER.decode(bytes);
+        byte[] bytes = InputStreams.readBytes(ins);
+        byte[] res = decode(bytes);
         return new String(res, UTF_8);
     }
 
     @NotNull
     public static byte[] decode(@Nullable String str) {
         if (str == null) return Nulls.Bytes;
-        return DECODER.decode(str.getBytes(UTF_8));
+        return decode(str.getBytes(UTF_8));
     }
 
     @NotNull
     public static byte[] decode(@Nullable byte[] bytes) {
         if (bytes == null) return Nulls.Bytes;
-        return DECODER.decode(bytes);
+        boolean urlSafe = true;
+        for (byte c : bytes) {
+            if (c == '+' || c == '/') {
+                urlSafe = false;
+                break;
+            }
+        }
+        java.util.Base64.Decoder decoder = urlSafe ?
+                java.util.Base64.getUrlDecoder() :
+                java.util.Base64.getDecoder();
+        return decoder.decode(bytes);
     }
 
     @NotNull
-    public static byte[] decode(@Nullable InputStream ins, boolean close) {
+    public static byte[] decode(@Nullable InputStream ins) {
         if (ins == null) return Nulls.Bytes;
-        byte[] bytes = Bytes.toBytes(ins, close);
-        return DECODER.decode(bytes);
+        byte[] bytes = InputStreams.readBytes(ins);
+        return decode(bytes);
     }
 }

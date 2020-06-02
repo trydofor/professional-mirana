@@ -3,6 +3,7 @@ package pro.fessional.mirana.bits;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pro.fessional.mirana.data.Nulls;
+import pro.fessional.mirana.io.InputStreams;
 
 import java.io.InputStream;
 import java.security.MessageDigest;
@@ -23,9 +24,9 @@ public class Md5 {
     }
 
     @NotNull
-    public static String sum(@Nullable InputStream ins, boolean close) {
+    public static String sum(@Nullable InputStream ins) {
         if (ins == null) return Nulls.Str;
-        byte[] bytes = Bytes.toBytes(ins, close);
+        byte[] bytes = InputStreams.readBytes(ins);
         return sum(bytes);
     }
 
@@ -54,9 +55,9 @@ public class Md5 {
         return sum.equalsIgnoreCase(md5);
     }
 
-    public static boolean check(@Nullable String sum, @Nullable InputStream ins, boolean close) {
+    public static boolean check(@Nullable String sum, @Nullable InputStream ins) {
         if (ins == null || sum == null) return false;
-        String md5 = sum(ins, close);
+        String md5 = sum(ins);
         return sum.equalsIgnoreCase(md5);
     }
 }
