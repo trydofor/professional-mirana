@@ -86,5 +86,15 @@ public class LightIdUtil {
             return elze;
         }
     }
+
+    public static long sequence(long lightId) {
+        return lightId & LightId.MAX_SEQUENCE;
+    }
+
+    private static final long INT_MAX = Integer.MAX_VALUE;
+
+    public static int toInt(long lightId) {
+        return (int) (lightId & INT_MAX);
+    }
 }
 

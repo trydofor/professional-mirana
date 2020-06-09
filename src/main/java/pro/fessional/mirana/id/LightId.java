@@ -4,11 +4,13 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * 64 bit = 1bit(0 fixed) + 8bit (CRC8) + 55bit(block+sequence) <p/>
+ * 8bit for Crc8Long encode
  * 55 bit = block(10bit=1023) + sequence(45bit=35184372088831)<p/>
  * for 1023 block unstopped 50000 id/second, running<p/>
  * (2^45 -1)/(365*24*3600*50000) = 22.3 years<p/>
  *
  * @author trydofor
+ * @see pro.fessional.mirana.code.Crc8Long
  * @since 2019-05-20
  */
 public class LightId {
