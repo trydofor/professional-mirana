@@ -38,7 +38,7 @@ public class R<T> implements DataResult<T> {
         this.success = success;
         this.data = data;
         if (code != null) {
-            this.message = code.getMessage();
+            this.message = code.getHint();
             this.code = code.getCode();
         }
     }
@@ -270,7 +270,7 @@ public class R<T> implements DataResult<T> {
         String st = ThrowableUtil.rootString(t);
         String b64 = Base64.getUrlEncoder().encodeToString(st.getBytes(StandardCharsets.UTF_8));
         if (code == null && t instanceof DataResult) {
-            code = ((DataResult) t).getCode();
+            code = ((DataResult<?>) t).getCode();
         }
         R<T> tr = new R<>(false, message, code, null);
         tr.error = b64;

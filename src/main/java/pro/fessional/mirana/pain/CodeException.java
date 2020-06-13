@@ -34,23 +34,23 @@ public class CodeException extends RuntimeException implements I18nAware {
     }
 
     public CodeException(CodeEnum code) {
-        super(code == null ? "" : code.getMessage());
+        super(code == null ? "" : code.getHint());
         this.code = code == null ? "" : code.getCode();
     }
 
     public CodeException(Throwable cause, CodeEnum code) {
-        super(code == null ? "" : code.getMessage(), cause);
+        super(code == null ? "" : code.getHint(), cause);
         this.code = code == null ? "" : code.getCode();
     }
 
     public CodeException(CodeEnum code, Object... args) {
-        super(code == null ? "" : code.getMessage());
+        super(code == null ? "" : code.getHint());
         this.code = code == null ? "" : code.getCode();
         if (args != null) this.i18nArgs = args;
     }
 
     public CodeException(Throwable cause, CodeEnum code, Object... args) {
-        super(code == null ? "" : code.getMessage(), cause);
+        super(code == null ? "" : code.getHint(), cause);
         this.code = code == null ? "" : code.getCode();
         if (args != null) this.i18nArgs = args;
     }

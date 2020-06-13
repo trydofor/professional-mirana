@@ -28,6 +28,12 @@ public class I18nString implements I18nAware {
         this.code = code == null ? "" : code;
     }
 
+    public I18nString(String code, String hint) {
+        this.code = code == null ? "" : code;
+        if (hint != null) this.hint = hint;
+        this.args = EMPTY_ARGS;
+    }
+
     public I18nString(String code, String hint, Object... args) {
         this.code = code == null ? "" : code;
         if (hint != null) this.hint = hint;
