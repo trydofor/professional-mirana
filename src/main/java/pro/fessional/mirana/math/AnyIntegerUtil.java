@@ -1,6 +1,8 @@
 package pro.fessional.mirana.math;
 
 /**
+ * 自动处理 [-+]?[-_0-9,]+的字符串变成整数
+ *
  * @author trydofor
  * @since 2015-12-12.
  */
@@ -131,10 +133,25 @@ public class AnyIntegerUtil {
         return v.toString();
     }
 
+    /**
+     * 自动处理 [-+]?[-_0-9,]+的字符串变成整数
+     *
+     * @param str 字符串
+     * @return -?[0-9]+
+     */
     public static String trimToInteger(String str) {
-        int pos = str.indexOf('.');
-        if (pos == 0) return "0";
-        if (pos > 0) return str.substring(0, pos).trim();
-        return str.trim();
+        int len = str.length();
+        StringBuilder sb = new StringBuilder(len);
+        for (int i = 0; i < len; i++) {
+            char c = str.charAt(i);
+            if (c == '-' && sb.length() == 0) {
+                sb.append(c);
+            } else if (c >= '0' && c <= '9') {
+                sb.append(c);
+            } else if (c == '.') {
+                break;
+            }
+        }
+        return sb.toString();
     }
 }

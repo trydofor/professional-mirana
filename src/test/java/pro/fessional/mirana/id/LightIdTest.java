@@ -37,14 +37,14 @@ public class LightIdTest {
 
     @Test
     public void testBound() {
-        assertEquals(Integer.MAX_VALUE,LightIdUtil.toInt(LightId.MAX_SEQUENCE));
-        assertEquals(Integer.MAX_VALUE,LightIdUtil.toInt((1L << 33) -1));
-        assertEquals(Integer.MAX_VALUE,LightIdUtil.toInt(Long.MAX_VALUE));
-        assertEquals(0, LightIdUtil.toInt(Long.MIN_VALUE));
-        assertEquals(0, LightIdUtil.toInt(0));
+        assertEquals(Integer.MAX_VALUE,LightIdUtil.sequenceInt(LightId.MAX_SEQUENCE));
+        assertEquals(Integer.MAX_VALUE,LightIdUtil.sequenceInt((1L << 33) -1));
+        assertEquals(Integer.MAX_VALUE,LightIdUtil.sequenceInt(Long.MAX_VALUE));
+        assertEquals(0, LightIdUtil.sequenceInt(Long.MIN_VALUE));
+        assertEquals(0, LightIdUtil.sequenceInt(0));
         int seq = 1097;
         LightId id = new LightId(1, seq);
-        assertEquals(LightIdUtil.toInt(id.toLong()), seq);
+        assertEquals(LightIdUtil.sequenceInt(id.toLong()), seq);
     }
 
     @Test
