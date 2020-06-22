@@ -84,6 +84,27 @@ public class DateLocaling {
         }
     }
 
+    /**
+     * 把time从来源时区变为系统时区
+     *
+     * @param time 时间
+     * @param from 来源时区
+     * @return 系统时间
+     */
+    public static LocalDateTime fromZone(LocalDateTime time, ZoneId from) {
+        if (time == null) return null;
+        if (from == null) return time;
+        ZoneId to = ZoneId.systemDefault();
+        return toZone(time, from, to);
+    }
+
+    /**
+     * 把time从系统时区变为 to的时区
+     *
+     * @param time 时间
+     * @param to   目标时区
+     * @return 目标时间
+     */
     public static LocalDateTime toZone(LocalDateTime time, ZoneId to) {
         if (time == null) return null;
         if (to == null) return time;
@@ -91,6 +112,14 @@ public class DateLocaling {
         return toZone(time, from, to);
     }
 
+    /**
+     * 把时间从from变为to时区
+     *
+     * @param time 时间
+     * @param from 来源
+     * @param to   目标
+     * @return 目标时间
+     */
     public static LocalDateTime toZone(LocalDateTime time, ZoneId from, ZoneId to) {
         if (time == null) return null;
         if (to == null || from == null) return time;
@@ -101,6 +130,13 @@ public class DateLocaling {
         }
     }
 
+    /**
+     * 把时间变为to时区
+     *
+     * @param time 时间
+     * @param to   目标时区
+     * @return 目标时间
+     */
     public static LocalDateTime toZone(ZonedDateTime time, ZoneId to) {
         if (time == null) return null;
         if (to == null) return time.toLocalDateTime();
@@ -112,25 +148,21 @@ public class DateLocaling {
         }
     }
 
-    public static void main(String[] args) {
-        ZoneId from = ZoneId.of("Asia/Tokyo");
-        ZoneId to = ZoneId.of("America/New_York");
-        LocalDateTime ln = LocalDateTime.now();
-        ZonedDateTime zn = ZonedDateTime.now();
-        System.out.println(ln);
-        System.out.println(toZone(ln, to));
-        System.out.println(toZone(ln, from, to));
-        System.out.println(toZone(zn, to));
-        System.out.println(nowDateTime(to));
-        System.out.println(nowDateTime(from));
-        System.out.println("thisMonday=" + pastMonday(from));
-        System.out.println("thisSunday=" + pastSunday(from));
-        System.out.println("thisMonth=" + thisMonth(from));
-        System.out.println("today=" + today(from));
-        //
-        System.out.println("2020-01-31@2=" + LocalDate.of(2020, 1, 31).withMonth(2));
-        System.out.println("2020-01-31+1M=" + LocalDate.of(2020, 1, 31).plusMonths(1));
+    /**
+     * 把同一时间不同时区
+     *
+     * @param time 时间
+     * @param to   目标时区
+     * @return 目标时间
+     */
+    public static ZonedDateTime zoneZone(ZonedDateTime time, ZoneId to) {
+        if (time == null) return null;
+        if (to == null) return time;
 
-        System.out.printf("%,.2f%%", 300000.14159);
+        if (time.getZone().equals(to)) {
+            return time;
+        } else {
+            return time.withZoneSameInstant(to);
+        }
     }
 }
