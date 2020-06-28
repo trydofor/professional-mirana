@@ -14,12 +14,7 @@ public class SslTrustAll {
 
     public static final SSLSocketFactory SSL_SOCKET_FACTORY;
     public static final X509TrustManager X509_TRUST_MANAGER;
-    public static final HostnameVerifier HOSTNAME_VERIFIER = new HostnameVerifier() {
-        @Override
-        public boolean verify(String hostname, SSLSession session) {
-            return true;
-        }
-    };
+    public static final HostnameVerifier HOSTNAME_VERIFIER = (hostname, session) -> true;
 
     static {
         try {

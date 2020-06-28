@@ -12,10 +12,10 @@ import java.util.Random;
 public class LeapCodeTest {
 
 
-    private LeapCode codeSystem = new LeapCode();
-    private LeapCode codeCustom = new LeapCode();
+    private final LeapCode codeSystem = new LeapCode();
+    private final LeapCode codeCustom = new LeapCode();
 
-    private Random random = new Random();
+    private final Random random = new Random();
 
     private void checkRandom(int base, LeapCode code) {
         for (int i = 0; i < 100000; i++) {

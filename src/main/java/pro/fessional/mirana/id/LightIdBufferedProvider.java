@@ -352,6 +352,7 @@ public class LightIdBufferedProvider implements LightIdProvider {
                         }
 
                         try {
+                            // need busy wait
                             Thread.sleep(20);
                         } catch (InterruptedException e) {
                             Thread.currentThread().interrupt();  // ignore

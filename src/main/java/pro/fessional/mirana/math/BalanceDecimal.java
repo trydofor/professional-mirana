@@ -112,7 +112,7 @@ public class BalanceDecimal implements Iterator<BigDecimal> {
         }
     }
 
-    class Tuple2<T1, T2> {
+    static class Tuple2<T1, T2> {
         private final T1 t1;
         private final T2 t2;
 

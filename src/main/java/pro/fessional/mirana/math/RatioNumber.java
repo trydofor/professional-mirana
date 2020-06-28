@@ -230,7 +230,7 @@ public class RatioNumber {
     /**
      * one与use的进位关系
      */
-    public static enum Grade {
+    public enum Grade {
         /**
          * 分别计算，不进位，不退位
          */

@@ -11,7 +11,7 @@ import java.util.Random;
  */
 public class Crc8LongTest {
 
-    private Random random = new Random();
+    private final Random random = new Random();
 
     private void checkRandom(Crc8Long crc8) {
         for (int i = 0; i < 100000; i++) {

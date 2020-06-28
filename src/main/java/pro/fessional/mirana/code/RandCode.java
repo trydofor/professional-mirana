@@ -18,14 +18,14 @@ import java.util.concurrent.ThreadLocalRandom;
 @ThreadSafe
 public class RandCode {
 
-    public static Seed Num = Seed.range('0', '9');
-    public static Seed Low = Seed.range('a', 'z');
-    public static Seed Upr = Seed.range('A', 'Z');
-    public static Seed Sym = Seed.chars("~!@#$%^&*()_+{}:<>?-=[];,.".toCharArray());
+    public static final Seed Num = Seed.range('0', '9');
+    public static final Seed Low = Seed.range('a', 'z');
+    public static final Seed Upr = Seed.range('A', 'Z');
+    public static final Seed Sym = Seed.chars("~!@#$%^&*()_+{}:<>?-=[];,.".toCharArray());
 
-    private static Seed[] Man = new Seed[]{Seed.chars("23456789".toCharArray()),
-                                           Seed.chars("abcdefghjknqrty".toCharArray()),
-                                           Seed.chars("ABCDEFGHJKLMPQRSTUWXY".toCharArray())};
+    private static final Seed[] Man = new Seed[]{Seed.chars("23456789".toCharArray()),
+                                                 Seed.chars("abcdefghjknqrty".toCharArray()),
+                                                 Seed.chars("ABCDEFGHJKLMPQRSTUWXY".toCharArray())};
 
 
     /**

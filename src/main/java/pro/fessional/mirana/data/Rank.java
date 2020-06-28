@@ -35,7 +35,7 @@ public class Rank {
             Predicate<E> p = predicate[i];
             for (int j = 0; j < temp.size(); j++) {
                 E e = temp.get(j);
-                if (e != null && p.test(e)) {
+                if (e != null && p != null && p.test(e)) {
                     result.set(i, e);
                     temp.set(j, null);
                 }

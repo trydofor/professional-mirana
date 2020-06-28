@@ -13,7 +13,7 @@ import java.io.IOException;
  */
 public class InputStreamsTest {
 
-    private String pom = "./pom.xml";
+    private final String pom = "./pom.xml";
 
     @Test
     public void readText() throws IOException {
