@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 
 /**
  * null友好的BigDecimal工具类
@@ -452,6 +453,11 @@ public class BigDecimalUtil {
         public W(BigDecimal value, int scale) {
             this.value = value;
             this.scale = scale;
+        }
+
+        @NotNull
+        public BigDecimal result(RoundingMode mode) {
+            return value.setScale(scale, mode);
         }
 
         @NotNull
