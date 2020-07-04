@@ -2,6 +2,8 @@ package pro.fessional.mirana.data;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.math.BigDecimal;
+
 /**
  * @author trydofor
  * @since 2019-10-15
@@ -35,6 +37,8 @@ public class Nulls {
     public static final double[] Doubles = new double[0];
     @NotNull
     public static final Object[] Objects = new Object[0];
+    @NotNull
+    public static final BigDecimal[] BigDecimals = new BigDecimal[0];
 
     @NotNull
     public static final Boolean[] BoolArr = new Boolean[0];
