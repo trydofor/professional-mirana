@@ -17,31 +17,18 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.StampedLock;
 
 /**
- * <pre>
- * 轻量级锁，高性能，双缓冲 light-id 提供者。
- *
- * 共存在以下3类线程，且读线程会升级为写线程，甚至加载线程。
- * 同一时刻，有多个读线程，但只有唯一写线程，唯一的加载线程。
- *
- * - 读线程，正常的light-id调用者
- * - 写线程，读线程升级或加载线程，为buffer追加片段(segment)
- * - 加载线程，异步线程或读线程升级，通过loader加载segment
- *
- * 双缓冲的运行机制如下，会跟进id的使用量，自动控制预加载量，但不超过maxCount。
- *
- * - 当Id余量低于20%时，唯一异步预加载`60s内最大使用量`或`maxCount`
- * - 当Id余量用尽时，读线程升级为写线程，其他读线程等待，直到被唤醒或超时
- * - 当读线程升级写线程时，存在loader，此读线程自旋忙等后，切换buffer。
- *
- * </pre>
+ * 读写锁+busy wait
  *
  * @author trydofor
  * @since 2019-05-26
  */
 @ThreadSafe
-public class LightIdBufferedProvider implements LightIdProvider {
+public class LightIdStampedProvider implements LightIdProvider {
 
     private static final int MAX_COUNT = 10000;
     private static final int MAX_ERROR = 5;
@@ -62,7 +49,7 @@ public class LightIdBufferedProvider implements LightIdProvider {
      *
      * @param loader 序号加载器。
      */
-    public LightIdBufferedProvider(Loader loader) {
+    public LightIdStampedProvider(Loader loader) {
         this(loader, new ThreadPoolExecutor(3, 64, 60L, TimeUnit.SECONDS, new SynchronousQueue<>(), new ThreadFactory() {
             private final AtomicInteger counter = new AtomicInteger(1);
 
@@ -79,7 +66,7 @@ public class LightIdBufferedProvider implements LightIdProvider {
      * @param loader   序号加载器
      * @param executor 序号加载器的线程池
      */
-    public LightIdBufferedProvider(Loader loader, ExecutorService executor) {
+    public LightIdStampedProvider(Loader loader, ExecutorService executor) {
         this.loader = loader;
         this.executor = executor;
     }
@@ -219,19 +206,14 @@ public class LightIdBufferedProvider implements LightIdProvider {
             sequence = new AtomicLong(seg.getHead());
         }
 
-        public int count60s(int mul) {
+        private int count60s() {
             long ms = (System.currentTimeMillis() - startMs);
             long count = footSeq - headSeq + 1;
             if (ms > 0) {
                 count = count * 60000 / ms; //预留60秒
             }
-
-            if (mul > 1) {
-                count = count * mul;
-            }
-
             int max = loadMaxCount.get();
-            if (count < 0 || count > max) { // overflow
+            if (count > max) {
                 return max;
             } else if (count < 100) {
                 return 100;
@@ -246,18 +228,18 @@ public class LightIdBufferedProvider implements LightIdProvider {
         private final int block;
 
         private final LinkedList<Segment> segmentPool = new LinkedList<>();
-        private final AtomicReference<SegmentStatus> segmentSlot = new AtomicReference<>(new SegmentStatus());
+        private volatile SegmentStatus segmentSlot = new SegmentStatus();
 
         private final AtomicBoolean loaderIdle = new AtomicBoolean(true);
         private final AtomicBoolean switchIdle = new AtomicBoolean(true);
-        private final AtomicInteger awaitCount = new AtomicInteger(0);
+        private final StampedLock segmentLock = new StampedLock();
 
         // 载入时错误信息，不太需要一致性。
         private final AtomicInteger errorCount = new AtomicInteger(0);
         private final AtomicReference<RuntimeException> errorNewer = new AtomicReference<>();
         private final AtomicLong errorEpoch = new AtomicLong(0);
 
-        public SegmentBuffer(String name, int block) {
+        private SegmentBuffer(String name, int block) {
             this.name = name;
             this.block = block;
         }
@@ -265,8 +247,14 @@ public class LightIdBufferedProvider implements LightIdProvider {
         public long nextId(final long timeout) {
             checkError();
 
-            // not need sync
-            final SegmentStatus slot = segmentSlot.get();
+            final SegmentStatus slot;
+
+            long srl = segmentLock.readLock();
+            try {
+                slot = segmentSlot;
+            } finally {
+                segmentLock.unlockRead(srl);
+            }
             final long seq = slot.sequence.getAndIncrement();
 
             // 未初始化或序号枯竭，等待重装。
@@ -277,12 +265,11 @@ public class LightIdBufferedProvider implements LightIdProvider {
 
             // 预加载
             if (seq > slot.kneeSeq) {
-                loadSegment(slot.count60s(0), true);
+                loadSegment(slot.count60s(), true);
             }
 
             return LightIdUtil.toId(block, seq);
         }
-
 
         // 向pool末端补充
         public void fillSegment(final Segment seg) {
@@ -297,15 +284,17 @@ public class LightIdBufferedProvider implements LightIdProvider {
                 err = "difference name, name=" + name + ", block=" + block + ",seg.name=" + seg.getName();
             } else {
                 // 保证插入顺序，不可分读写
-                synchronized (segmentPool) {
+                final long swl = segmentLock.writeLock();
+                try {
                     if (!segmentPool.isEmpty() && seg.getHead() <= segmentPool.getLast().getFoot()) {
                         err = "seg.start must bigger than last.endin, name=" + name + ",block=" + block; // 可覆盖之前的err
                     } else {
-                        segmentPool.addLast(seg);
+                        segmentPool.add(seg);
                     }
+                } finally {
+                    segmentLock.unlockWrite(swl);
                 }
             }
-
             handleError(err == null ? null : new IllegalStateException(err));
         }
 
@@ -345,22 +334,17 @@ public class LightIdBufferedProvider implements LightIdProvider {
             }
         }
 
-        // 序号用尽，切换或加载+切换
+        // 序号用尽，切换
         private void pollSegment(long timeout) {
 
             final long throwMs = System.currentTimeMillis() + timeout;
 
-            // 一个切换线程，其他等待
+            // 一个切换线程，其他等待，必须在同步块内，否则wait死等
             if (!switchIdle.compareAndSet(true, false)) {
                 try {
-                    // 等待超时或成功切换时被唤醒
-                    synchronized (switchIdle) {
-                        if (switchIdle.get()) {
-                            return; // 不用检查超时
-                        } else {
-                            awaitCount.incrementAndGet();
-                            switchIdle.wait(timeout);
-                        }
+                    while (!switchIdle.get()) {
+                        // busy wait
+                        Thread.sleep(10);
                     }
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
@@ -368,32 +352,36 @@ public class LightIdBufferedProvider implements LightIdProvider {
                 }
                 long now = System.currentTimeMillis();
                 if (now > throwMs) {
-                    throw new TimeoutRuntimeException("waiting segment pollTimeout=" + (now - throwMs + timeout));
+                    throw new TimeoutRuntimeException("waiting segment loadTimeout=" + (now - throwMs + timeout));
                 } else {
                     return;
                 }
             }
 
             // 只有一个线程可达，升级①写线程，②load线程+写线程
+
             try {
                 while (true) {
                     checkError();
 
                     final SegmentStatus status;
-                    synchronized (segmentPool) {
+                    final long swl = segmentLock.writeLock();
+                    try {
                         Segment seg = segmentPool.poll();
                         if (seg == null) { // empty
-                            status = segmentSlot.get();
+                            status = segmentSlot;
                         } else {
-                            segmentSlot.set(new SegmentStatus(seg));
+                            segmentSlot = new SegmentStatus(seg);
                             status = null;
                         }
+                    } finally {
+                        segmentLock.unlockWrite(swl);
                     }
 
                     if (status == null) {
                         break; // 切换完毕，不检查超时
                     } else {
-                        loadSegment(status.count60s(awaitCount.get()), false); // 升级load线程
+                        loadSegment(status.count60s(), false); // 升级load线程
                     }
 
                     long now = System.currentTimeMillis();
@@ -402,11 +390,7 @@ public class LightIdBufferedProvider implements LightIdProvider {
                     }
                 }
             } finally {
-                synchronized (switchIdle) {
-                    switchIdle.set(true);
-                    awaitCount.set(0);
-                    switchIdle.notifyAll();
-                }
+                switchIdle.set(true);
             }
         }
 

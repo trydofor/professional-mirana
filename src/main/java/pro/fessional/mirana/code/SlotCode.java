@@ -4,7 +4,6 @@ import net.jcip.annotations.ThreadSafe;
 
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
 /**
@@ -28,8 +27,8 @@ public class SlotCode {
 
     public final int size;
     private final int last;
-    private final AtomicInteger[] slot;
-    private final Supplier<Random> rand;
+    private final Slot[] slot;
+    private final Random rand;
 
     /**
      * 初始化一个固定容量[1,size]的随机槽
@@ -40,8 +39,8 @@ public class SlotCode {
         this(size, ThreadLocalRandom::current);
     }
 
-    public SlotCode(int size, Random rand) {
-        this(size, () -> rand);
+    public SlotCode(int size, Supplier<Random> rand) {
+        this(size, rand.get());
     }
 
     /**
@@ -50,22 +49,21 @@ public class SlotCode {
      * @param size 设置code的最大值(包括)。
      * @param rand 随机数发生器。
      */
-    public SlotCode(int size, Supplier<Random> rand) {
+    public SlotCode(int size, Random rand) {
         final int page = (size - 1) / bits + 1;
         this.size = size;
         this.last = (1 << (bits - size % bits)) - 1;
-        this.slot = new AtomicInteger[page];
-        //
-        for (int i = 0; i < page; i++) slot[i] = new AtomicInteger(0);
-        slot[page - 1].set(last);
         this.rand = rand;
+        this.slot = new Slot[page];
+        for (int i = 0; i < page; i++) {
+            slot[i] = new Slot();
+        }
+        slot[page - 1].value = last;
     }
 
     public void reset() {
         synchronized (slot) {
-            int idx = slot.length - 1;
-            for (int i = 0; i < idx; i++) slot[i].set(0);
-            slot[idx].set(last);
+            resetSlot();
         }
     }
 
@@ -77,49 +75,52 @@ public class SlotCode {
                 idx = select();
             }
 
-            final AtomicInteger deal = slot[idx];
-            synchronized (deal) {
-                rst = pickup(deal, idx);
-            }
+            // sync deal
+            rst = slot[idx].pickup(rand, idx);
         }
 
         return rst;
     }
 
-    // sync deal
-    private int pickup(final AtomicInteger deal, int page) {
-        int len = mask.length;
-        int off = rand.get().nextInt(len);
-        int cur = deal.get();
-        for (int i = 0; i < len; i++) {
-            int idx = (off + i) % len;
-            int msk = mask[idx];
-            if ((cur & msk) == 0) {
-                deal.set(cur | msk);
-                return page * bits + idx + 1;
-            }
-        }
-        return -1;
-    }
-
     // sync slot
     private int select() {
         int len = slot.length;
-        int off = rand.get().nextInt(len);
+        int off = rand.nextInt(len);
         // rand loop
         for (int i = 0; i < len; i++) {
             int idx = (off + i) % len;
-            if (slot[idx].get() != full) return idx;
+            if (slot[idx].value != full) return idx;
         }
         // full & reset
-        // no need sync deal
-        int idx = slot.length - 1;
-        for (int i = 0; i < idx; i++) slot[i].set(0);
-        slot[idx].set(last);
+        resetSlot();
 
         return off;
     }
 
+    private void resetSlot() {
+        int idx = slot.length - 1;
+        for (int i = 0; i < idx; i++) slot[i].value = 0;
+        slot[idx].value = 0;
+    }
+
+    private static class Slot {
+        private volatile int value = 0;
+
+        public synchronized int pickup(final Random rand, int page) {
+            int len = mask.length;
+            int off = rand.nextInt(len);
+            int cur = value;
+            for (int i = 0; i < len; i++) {
+                int idx = (off + i) % len;
+                int msk = mask[idx];
+                if ((cur & msk) == 0) {
+                    value = (cur | msk);
+                    return page * bits + idx + 1;
+                }
+            }
+            return -1;
+        }
+    }
 
     public static void main(String[] args) {
         System.out.println(full);

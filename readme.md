@@ -128,10 +128,29 @@ ID能保证严格的`单调递增`(升序)，但不保证连续，其long型的6
  * 支持手动或定时清除错误。
  * 支持手动调整运行时参数。
 
-### LightId工具类
+### LightIdBufferedProvider - 高性能，轻量级锁，双缓冲
+ 
+轻量级锁，高性能，双缓冲 light-id 提供者。
 
- * LightIdBufferedProvider - 轻量级锁，双缓冲
- * LightIdUtil - 对lightId特征long操作
+实测性能，高于busy-wait+读写锁或大粒度的组合锁或同步块。
+效能瓶颈在loader的io上，需要根据消耗量，优化maxCount。
+
+共存在以下3类线程，且读线程会升级为写线程，甚至加载线程。
+同一时刻，有多个读线程，但只有唯一写线程，唯一的加载线程。
+
+ * 读线程，正常的light-id调用者
+ * 写线程，读线程升级或加载线程，为buffer追加片段(segment)
+ * 加载线程，异步线程或读线程升级，通过loader加载segment
+
+双缓冲的运行机制如下，会跟进id的使用量，自动控制预加载量，但不超过maxCount。
+
+ * 当Id余量低于20%时，唯一异步预加载`60s内最大使用量`或`maxCount`
+ * 当Id余量用尽时，读线程升级为写线程，其他读线程等待，直到被唤醒或超时
+ * 当读线程升级写线程时，存在loader，此读线程自旋忙等后，切换buffer。
+
+### LightIdUtil - 对lightId特征long操作
+
+对 lightId，long和sequence进行验证，转换的工具类。
 
 ## `img/` 主键
 
