@@ -6,6 +6,7 @@ import pro.fessional.mirana.data.Nulls;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -26,6 +27,15 @@ public class BoxedCastUtil {
         return b;
     }
 
+    public static char orZero(@Nullable Character n) {
+        return orElse(n, (char) 0);
+    }
+
+    public static char orElse(@Nullable Character n, char o) {
+        if (n == null) return o;
+        return n;
+    }
+
     public static byte orZero(@Nullable Byte n) {
         return orElse(n, (byte) 0);
     }
@@ -35,11 +45,11 @@ public class BoxedCastUtil {
         return n;
     }
 
-    public static char orZero(@Nullable Character n) {
-        return orElse(n, (char) 0);
+    public static short orZero(@Nullable Short n) {
+        return orElse(n, (short) 0);
     }
 
-    public static char orElse(@Nullable Character n, char o) {
+    public static short orElse(@Nullable Short n, short o) {
         if (n == null) return o;
         return n;
     }
@@ -102,17 +112,6 @@ public class BoxedCastUtil {
     }
 
     @NotNull
-    public static byte[] bytes(Collection<Byte> cols) {
-        if (cols == null || cols.isEmpty()) return Nulls.Bytes;
-        byte[] arr = new byte[cols.size()];
-        int i = 0;
-        for (Byte v : cols) {
-            arr[i++] = v == null ? (byte) 0 : v;
-        }
-        return arr;
-    }
-
-    @NotNull
     public static char[] chars(Collection<Character> cols) {
         if (cols == null || cols.isEmpty()) return Nulls.Chars;
         char[] arr = new char[cols.size()];
@@ -124,45 +123,67 @@ public class BoxedCastUtil {
     }
 
     @NotNull
-    public static int[] ints(Collection<Integer> cols) {
+    public static byte[] bytes(Collection<? extends Number> cols) {
+        if (cols == null || cols.isEmpty()) return Nulls.Bytes;
+        byte[] arr = new byte[cols.size()];
+        int i = 0;
+        for (Number v : cols) {
+            arr[i++] = v == null ? (byte) 0 : v.byteValue();
+        }
+        return arr;
+    }
+
+    @NotNull
+    public static short[] shorts(Collection<? extends Number> cols) {
+        if (cols == null || cols.isEmpty()) return Nulls.Shorts;
+        short[] arr = new short[cols.size()];
+        int i = 0;
+        for (Number v : cols) {
+            arr[i++] = v == null ? (short) 0 : v.shortValue();
+        }
+        return arr;
+    }
+
+    @NotNull
+    public static int[] ints(Collection<? extends Number> cols) {
         if (cols == null || cols.isEmpty()) return Nulls.Ints;
         int[] arr = new int[cols.size()];
         int i = 0;
-        for (Integer v : cols) {
-            arr[i++] = v == null ? 0 : v;
+        for (Number v : cols) {
+            arr[i++] = v == null ? 0 : v.intValue();
         }
         return arr;
     }
 
     @NotNull
-    public static long[] longs(Collection<Long> cols) {
+    public static long[] longs(Collection<? extends Number> cols) {
         if (cols == null || cols.isEmpty()) return Nulls.Longs;
         long[] arr = new long[cols.size()];
         int i = 0;
-        for (Long v : cols) {
-            arr[i++] = v == null ? 0L : v;
+        for (Number v : cols) {
+            arr[i++] = v == null ? 0L : v.longValue();
         }
         return arr;
     }
 
     @NotNull
-    public static float[] floats(Collection<Float> cols) {
+    public static float[] floats(Collection<? extends Number> cols) {
         if (cols == null || cols.isEmpty()) return Nulls.Floats;
         float[] arr = new float[cols.size()];
         int i = 0;
-        for (Float v : cols) {
-            arr[i++] = v == null ? 0F : v;
+        for (Number v : cols) {
+            arr[i++] = v == null ? 0F : v.floatValue();
         }
         return arr;
     }
 
     @NotNull
-    public static double[] doubles(Collection<Double> cols) {
+    public static double[] doubles(Collection<? extends Number> cols) {
         if (cols == null || cols.isEmpty()) return Nulls.Doubles;
         double[] arr = new double[cols.size()];
         int i = 0;
-        for (Double v : cols) {
-            arr[i++] = v == null ? 0D : v;
+        for (Number v : cols) {
+            arr[i++] = v == null ? 0D : v.doubleValue();
         }
         return arr;
     }
@@ -173,6 +194,17 @@ public class BoxedCastUtil {
 
         List<Boolean> lst = new ArrayList<>(arr.length);
         for (boolean b : arr) {
+            lst.add(b);
+        }
+        return lst;
+    }
+
+    @NotNull
+    public static List<Character> list(char[] arr) {
+        if (arr == null || arr.length == 0) return Collections.emptyList();
+
+        List<Character> lst = new ArrayList<>(arr.length);
+        for (char b : arr) {
             lst.add(b);
         }
         return lst;
@@ -190,11 +222,11 @@ public class BoxedCastUtil {
     }
 
     @NotNull
-    public static List<Character> list(char[] arr) {
+    public static List<Short> list(short[] arr) {
         if (arr == null || arr.length == 0) return Collections.emptyList();
 
-        List<Character> lst = new ArrayList<>(arr.length);
-        for (char b : arr) {
+        List<Short> lst = new ArrayList<>(arr.length);
+        for (short b : arr) {
             lst.add(b);
         }
         return lst;
@@ -242,5 +274,36 @@ public class BoxedCastUtil {
             lst.add(b);
         }
         return lst;
+    }
+
+    @NotNull
+    @SuppressWarnings("unchecked")
+    public static List<Object> list(Object obj) {
+        if (obj == null) return Collections.emptyList();
+
+        List<?> vs;
+        if (obj instanceof boolean[]) {
+            vs = BoxedCastUtil.list((boolean[]) obj);
+        } else if (obj instanceof byte[]) {
+            vs = BoxedCastUtil.list((byte[]) obj);
+        } else if (obj instanceof char[]) {
+            vs = BoxedCastUtil.list((char[]) obj);
+        } else if (obj instanceof int[]) {
+            vs = BoxedCastUtil.list((int[]) obj);
+        } else if (obj instanceof long[]) {
+            vs = BoxedCastUtil.list((long[]) obj);
+        } else if (obj instanceof float[]) {
+            vs = BoxedCastUtil.list((float[]) obj);
+        } else if (obj instanceof double[]) {
+            vs = BoxedCastUtil.list((double[]) obj);
+        } else if (obj instanceof Collection) {
+            vs = new ArrayList<>((Collection<?>) obj);
+        } else if (obj.getClass().isArray()) {
+            vs = Arrays.asList((Object[]) obj);
+        } else {
+            vs = Collections.singletonList(obj);
+        }
+
+        return (List<Object>) vs;
     }
 }

@@ -28,6 +28,8 @@ public class Nulls {
     @NotNull
     public static final char[] Chars = new char[0];
     @NotNull
+    public static final short[] Shorts = new short[0];
+    @NotNull
     public static final int[] Ints = new int[0];
     @NotNull
     public static final long[] Longs = new long[0];
@@ -44,6 +46,8 @@ public class Nulls {
     public static final Boolean[] BoolArr = new Boolean[0];
     @NotNull
     public static final Byte[] ByteArr = new Byte[0];
+    @NotNull
+    public static final Short[] ShortArr = new Short[0];
     @NotNull
     public static final Integer[] IntArr = new Integer[0];
     @NotNull
