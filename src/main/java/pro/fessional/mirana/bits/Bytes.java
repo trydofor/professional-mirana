@@ -2,7 +2,7 @@ package pro.fessional.mirana.bits;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import pro.fessional.mirana.data.Nulls;
+import pro.fessional.mirana.data.Null;
 
 /**
  * @author trydofor
@@ -15,7 +15,7 @@ public class Bytes {
 
     @NotNull
     public static String hex(@Nullable byte[] bytes) {
-        if (bytes == null) return Nulls.Str;
+        if (bytes == null) return Null.Str;
         StringBuilder sb = new StringBuilder(bytes.length * 2);
         for (byte b : bytes) {
             hex(sb, b);

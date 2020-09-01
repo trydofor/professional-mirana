@@ -2,7 +2,7 @@ package pro.fessional.mirana.bits;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import pro.fessional.mirana.data.Nulls;
+import pro.fessional.mirana.data.Null;
 import pro.fessional.mirana.io.InputStreams;
 
 import java.io.InputStream;
@@ -58,40 +58,40 @@ public class Base64 {
 
     @NotNull
     public static String encode(@Nullable String str, boolean urlSafe) {
-        if (str == null) return Nulls.Str;
+        if (str == null) return Null.Str;
         return getEncoder(urlSafe).encodeToString(str.getBytes(UTF_8));
     }
 
     @NotNull
     public static String encode(@Nullable InputStream ins, boolean urlSafe) {
-        if (ins == null) return Nulls.Str;
+        if (ins == null) return Null.Str;
         byte[] bytes = InputStreams.readBytes(ins);
         return getEncoder(urlSafe).encodeToString(bytes);
     }
 
     @NotNull
     public static String encode(@Nullable byte[] bytes, boolean urlSafe) {
-        if (bytes == null) return Nulls.Str;
+        if (bytes == null) return Null.Str;
         return getEncoder(urlSafe).encodeToString(bytes);
     }
 
     @NotNull
     public static String de2str(@Nullable String str) {
-        if (str == null) return Nulls.Str;
+        if (str == null) return Null.Str;
         byte[] bytes = decode(str.getBytes(UTF_8));
         return new String(bytes, UTF_8);
     }
 
     @NotNull
     public static String de2str(@Nullable byte[] bytes) {
-        if (bytes == null) return Nulls.Str;
+        if (bytes == null) return Null.Str;
         byte[] res = decode(bytes);
         return new String(res, UTF_8);
     }
 
     @NotNull
     public static String de2str(@Nullable InputStream ins) {
-        if (ins == null) return Nulls.Str;
+        if (ins == null) return Null.Str;
         byte[] bytes = InputStreams.readBytes(ins);
         byte[] res = decode(bytes);
         return new String(res, UTF_8);
@@ -99,13 +99,13 @@ public class Base64 {
 
     @NotNull
     public static byte[] decode(@Nullable String str) {
-        if (str == null) return Nulls.Bytes;
+        if (str == null) return Null.Bytes;
         return decode(str.getBytes(UTF_8));
     }
 
     @NotNull
     public static byte[] decode(@Nullable byte[] bytes) {
-        if (bytes == null) return Nulls.Bytes;
+        if (bytes == null) return Null.Bytes;
         boolean urlSafe = true;
         for (byte c : bytes) {
             if (c == '+' || c == '/') {
@@ -121,7 +121,7 @@ public class Base64 {
 
     @NotNull
     public static byte[] decode(@Nullable InputStream ins) {
-        if (ins == null) return Nulls.Bytes;
+        if (ins == null) return Null.Bytes;
         byte[] bytes = InputStreams.readBytes(ins);
         return decode(bytes);
     }

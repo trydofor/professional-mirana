@@ -2,12 +2,10 @@ package pro.fessional.mirana.text;
 
 import org.junit.Assert;
 import org.junit.Test;
-import pro.fessional.mirana.data.News;
+import pro.fessional.mirana.data.New;
 
 import java.util.Arrays;
 import java.util.List;
-
-import static org.junit.Assert.*;
 
 /**
  * @author trydofor
@@ -41,7 +39,7 @@ public class BuilderHelperTest {
     @Test
     public void join() {
         StringBuilder sb = new StringBuilder();
-        Object[] arr = News.array(1, "2", 3L, null, '5');
+        Object[] arr = New.array(1, "2", 3L, null, '5');
         BuilderHelper.join(sb, ",", arr);
         Assert.assertEquals("1,2,3,,5", sb.toString());
 

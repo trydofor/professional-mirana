@@ -2,7 +2,7 @@ package pro.fessional.mirana.bits;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import pro.fessional.mirana.data.Nulls;
+import pro.fessional.mirana.data.Null;
 import pro.fessional.mirana.io.InputStreams;
 
 import java.io.InputStream;
@@ -19,20 +19,20 @@ public class Md5 {
 
     @NotNull
     public static String sum(@Nullable String str) {
-        if (str == null) return Nulls.Str;
+        if (str == null) return Null.Str;
         return sum(str.getBytes(UTF_8));
     }
 
     @NotNull
     public static String sum(@Nullable InputStream ins) {
-        if (ins == null) return Nulls.Str;
+        if (ins == null) return Null.Str;
         byte[] bytes = InputStreams.readBytes(ins);
         return sum(bytes);
     }
 
     @NotNull
     public static String sum(@Nullable byte[] bytes) {
-        if (bytes == null) return Nulls.Str;
+        if (bytes == null) return Null.Str;
         try {
             MessageDigest digest = MessageDigest.getInstance("MD5");
             digest.update(bytes);

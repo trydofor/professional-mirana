@@ -1,7 +1,7 @@
 package pro.fessional.mirana.math;
 
 import org.jetbrains.annotations.NotNull;
-import pro.fessional.mirana.data.Nulls;
+import pro.fessional.mirana.data.Null;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -125,7 +125,7 @@ public class BigDecimalUtil {
      * @return 数字
      */
     public static BigDecimal[] objects(BigDecimal elz, Number... vs) {
-        if (vs == null || vs.length == 0) return Nulls.BigDecimals;
+        if (vs == null || vs.length == 0) return Null.BigDecimals;
         BigDecimal[] arr = new BigDecimal[vs.length];
         for (int i = 0; i < vs.length; i++) {
             arr[i] = object(vs[i], elz);
@@ -141,7 +141,7 @@ public class BigDecimalUtil {
      * @return 数字
      */
     public static BigDecimal[] objects(BigDecimal elz, String... vs) {
-        if (vs == null || vs.length == 0) return Nulls.BigDecimals;
+        if (vs == null || vs.length == 0) return Null.BigDecimals;
         BigDecimal[] arr = new BigDecimal[vs.length];
         for (int i = 0; i < vs.length; i++) {
             arr[i] = object(vs[i], elz);

@@ -3,51 +3,128 @@ package pro.fessional.mirana.text;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import pro.fessional.mirana.data.Null;
 
 import java.util.Arrays;
 
+import static pro.fessional.mirana.text.BuilderHelper.getBuilder;
+
 /**
+ * 安全且内存碎片少的formatter，能够处理 slf4j的`{}`和printf的`%`
+ *
  * @author trydofor
- * @see java.util.Formatter
- * @see String#format(String, Object...)
+ * @author Baoyi Chen
  * @since 2017-02-11.
  */
 public class FormatUtil {
 
-    private static final String NIL = "";
+    /**
+     * 处理slf4j的 `{}`占位符
+     * <pre>
+     * format(null, new Object[]{"a"}) return ""
+     * format("{} {} {a}", null) return "{null} {null} {a}"
+     * format("{} {} {a}", new Object[]{"b"}) return "{b} {null} {a}"
+     * format("{} {} {a}", new Object[]{"b", "c", "d"}) return "{b} {c} {a}"
+     * format("abc", new Object[]{"a"}) return "abc"
+     * format("{{}}", new Object[]{"a"}) return "{a}"
+     * format("\\{\\}", new Object[]{"a"}) return "{}"
+     * format("\\{}", new Object[]{"a"}) return "{}"
+     * format("\\\\", new Object[]{"a"}) return "\"
+     * format("{c", new Object[]{"a"}) return "{c"
+     * </pre>
+     *
+     * @param fmt  格式
+     * @param args 参数
+     * @return 格式化后的字符
+     */
+    @NotNull
+    public static String logback(CharSequence fmt, Object... args) {
+        if (fmt == null || fmt.length() == 0) return Null.Str;
+        StringBuilder builder = getBuilder();
+        char c;
+        boolean start = false;
+        for (int i = 0, j = 0, n = fmt.length(); j < n; j++) {
+
+            switch (c = fmt.charAt(j)) {
+                case '{':
+                    if (start) builder.append('{');
+                    else start = true;
+                    break;
+
+                case '}':
+                    if (!start) builder.append('}');
+                    else {
+                        Object arg = null;
+                        if (args != null && i < args.length) {
+                            arg = args[i++];
+                        }
+                        start = false;
+                        builder.append(arg);
+                    }
+                    break;
+
+                case '\\':
+                    if (start) {
+                        start = false;
+                        builder.append('{');
+                    }
+
+                    if (j + 1 >= n) {
+                        builder.append(c); /* last */
+                    } else {
+                        char x = fmt.charAt(++j);
+                        if (x == '\\' || (x == '{' || x == '}')) {
+                            builder.append(x); /* 'escape' */
+                        } else {
+                            builder.append(c);
+                            builder.append(x);
+                        }
+                    }
+                    break;
+
+                default:
+                    if (start) {
+                        start = false;
+                        builder.append('{');
+                    }
+                    builder.append(c);
+                    break;
+            }
+        }
+        if (start) builder.append('{');
+        return builder.toString();
+    }
 
     /**
-     * 安全的，自动补全的format
+     * 处理 printf的`%`占位符
+     * 安全的，自动补全的 String#format
      *
-     * @param format 格式
-     * @param args   参数
+     * @param fmt  格式
+     * @param args 参数
      * @return 格式化后的字符
+     * @see java.util.Formatter
      * @see String#format(String, Object...)
      */
     @NotNull
-    public static String format(@Nullable String format, Object... args) {
-        if (format == null) return "";
-        int count = count(format, "%");
-        if (count == 0) return format;
+    public static String format(CharSequence fmt, Object... args) {
+        if (fmt == null) return Null.Str;
+        if (args == null || args.length == 0) return fmt.toString();
 
-        if (args == null) args = new Object[]{};
-
+        int[] count = count(fmt, "%", "%%");
+        if (count[0] == 0) return fmt.toString();
         for (int i = 0; i < args.length; i++) {
-            if (args[i] == null) args[i] = NIL;
+            if (args[i] == null) args[i] = Null.Str;
         }
 
-        if (args.length < count) {
-            int escape = count(format, "%%");
-            count = count - escape * 2;
-            if (args.length < count) {
-                Object[] g = new Object[count];
-                Arrays.fill(g, NIL);
-                System.arraycopy(args, 0, g, 0, args.length);
-                args = g;
-            }
+        int holds = count[0] - count[1] * 2;
+        if (args.length < holds) {
+            Object[] g = new Object[holds];
+            Arrays.fill(g, Null.Str);
+            System.arraycopy(args, 0, g, 0, args.length);
+            args = g;
         }
 
-        return String.format(format, args);
+        return String.format(fmt.toString(), args);
     }
 
     /**
@@ -60,7 +137,7 @@ public class FormatUtil {
      */
     @NotNull
     public static String leftFix(@Nullable Object obj, int fix, char pad) {
-        String str = obj == null ? NIL : obj.toString();
+        String str = obj == null ? Null.Str : obj.toString();
         int len = str.length();
         if (len == fix) {
             return str;
@@ -86,7 +163,7 @@ public class FormatUtil {
      */
     @NotNull
     public static String rightFix(@Nullable Object obj, int fix, char pad) {
-        String str = obj == null ? NIL : obj.toString();
+        String str = obj == null ? Null.Str : obj.toString();
         int len = str.length();
         if (len == fix) {
             return str;
@@ -102,18 +179,65 @@ public class FormatUtil {
         }
     }
 
-    private static int count(String format, String sub) {
-        int off = 0;
-        int cnt = 0;
-        while (true) {
-            int i = format.indexOf(sub, off);
-            if (i < 0) {
-                break;
-            } else {
-                off = i + sub.length();
-                cnt++;
+    public static int count(CharSequence src, String sub) {
+        if (src == null || sub == null) return 0;
+        return count(null, src, sub)[0];
+    }
+
+    public static int[] count(CharSequence src, String... sub) {
+        return count(null, src, sub);
+    }
+
+    /**
+     * 统计字符窜出现次数
+     *
+     * @param viz 回调
+     * @param src 源
+     * @param sub 目标
+     * @return 次数数组
+     */
+    public static int[] count(V viz, CharSequence src, String... sub) {
+        if (sub == null) return Null.Ints;
+        final int[] ct = new int[sub.length];
+        final int len = src == null ? 0 : src.length();
+        if (len == 0) return ct;
+
+        final int[] ix = new int[sub.length];
+        for (int i = 0; i < len; i++) {
+            char c = src.charAt(i);
+            for (int j = 0; j < sub.length; j++) {
+                String s = sub[j];
+                if (s == null || ix[j] < 0) continue;
+
+                char r = s.charAt(ix[j]);
+                if (c == r) {
+                    ix[j] = ix[j] + 1;
+                    int ln = s.length();
+                    if (ln == ix[j]) {
+                        ix[j] = 0;
+                        ct[j] = ct[j] + 1;
+                        if (viz != null && !viz.visit(src, i - ln + 1, s, j)) {
+                            ix[j] = -1;
+                        }
+                    }
+                } else {
+                    if (ix[j] > 0) {
+                        ix[j] = 0;
+                    }
+                }
             }
         }
-        return cnt;
+        return ct;
+    }
+
+    public interface V {
+        /**
+         * @param src 查找源
+         * @param idx 在src中的index
+         * @param str 找到的str
+         * @param sub str在sub中的位置
+         * @return false时，终止sub后续查找
+         */
+        boolean visit(CharSequence src, int idx, String str, int sub);
     }
 }

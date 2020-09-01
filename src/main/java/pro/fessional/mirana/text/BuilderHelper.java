@@ -7,12 +7,26 @@ import java.util.function.Function;
 import java.util.stream.IntStream;
 
 /**
- * 对null友好的StringBuilder
+ * 对null友好的StringBuilder，内存碎片少的builder
  *
  * @author trydofor
  * @since 2017-02-05.
  */
 public class BuilderHelper {
+
+    private static final ThreadLocal<StringBuilder> BUILDER = ThreadLocal.withInitial(() -> new StringBuilder(256));
+
+    public static StringBuilder getBuilder() {
+        StringBuilder builder = BUILDER.get();
+        int len = builder.length();
+        if (len > 1024) {
+            builder = new StringBuilder(256);
+            BUILDER.set(builder); // shrink
+        } else if (len > 0) {
+            builder.setLength(0);
+        }
+        return builder;
+    }
 
     /**
      * append非null
@@ -39,7 +53,7 @@ public class BuilderHelper {
      */
     @NotNull
     public static StringBuilder delete(@NotNull StringBuilder sb) {
-        sb.delete(0, sb.length());
+        sb.setLength(0);
         return sb;
     }
 
@@ -52,9 +66,8 @@ public class BuilderHelper {
     @NotNull
     public static StringBuilder delete(@NotNull StringBuilder sb, int count) {
         if (count <= 0) return sb;
-        int len = sb.length();
-        int idx = len - count;
-        sb.delete(Math.max(idx, 0), len);
+        int len = sb.length() - count;
+        sb.setLength(Math.max(len, 0));
         return sb;
     }
 
@@ -166,7 +179,7 @@ public class BuilderHelper {
     }
 
     public static W w() {
-        return new W(new StringBuilder());
+        return new W();
     }
 
     public static W w(StringBuilder sb) {
@@ -174,10 +187,15 @@ public class BuilderHelper {
     }
 
     public static class W implements Appendable, CharSequence {
-        final StringBuilder builder;
+
+        public final StringBuilder builder;
+
+        public W() {
+            this.builder = getBuilder();
+        }
 
         public W(StringBuilder builder) {
-            this.builder = builder == null ? new StringBuilder() : builder;
+            this.builder = builder == null ? getBuilder() : builder;
         }
 
         public StringBuilder result() {

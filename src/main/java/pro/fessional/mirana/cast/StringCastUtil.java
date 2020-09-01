@@ -2,7 +2,7 @@ package pro.fessional.mirana.cast;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import pro.fessional.mirana.data.Nulls;
+import pro.fessional.mirana.data.Null;
 
 import java.math.BigDecimal;
 
@@ -127,31 +127,31 @@ public class StringCastUtil {
 
     @NotNull
     public static String string(Character v) {
-        return v == null ? Nulls.Str : String.valueOf(v);
+        return v == null ? Null.Str : String.valueOf(v);
     }
 
     @NotNull
     public static String string(Integer v) {
-        return v == null ? Nulls.Str : String.valueOf(v);
+        return v == null ? Null.Str : String.valueOf(v);
     }
 
     @NotNull
     public static String string(Long v) {
-        return v == null ? Nulls.Str : String.valueOf(v);
+        return v == null ? Null.Str : String.valueOf(v);
     }
 
     @NotNull
     public static String string(Float v) {
-        return v == null ? Nulls.Str : String.valueOf(v);
+        return v == null ? Null.Str : String.valueOf(v);
     }
 
     @NotNull
     public static String string(Double v) {
-        return v == null ? Nulls.Str : String.valueOf(v);
+        return v == null ? Null.Str : String.valueOf(v);
     }
 
     @NotNull
     public static String string(BigDecimal v) {
-        return v == null ? Nulls.Str : String.valueOf(v);
+        return v == null ? Null.Str : String.valueOf(v);
     }
 }

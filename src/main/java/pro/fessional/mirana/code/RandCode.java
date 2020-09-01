@@ -3,7 +3,7 @@ package pro.fessional.mirana.code;
 import net.jcip.annotations.ThreadSafe;
 import pro.fessional.mirana.best.ArgsAssert;
 import pro.fessional.mirana.cast.BoxedCastUtil;
-import pro.fessional.mirana.data.Nulls;
+import pro.fessional.mirana.data.Null;
 
 import java.nio.CharBuffer;
 import java.util.LinkedHashMap;
@@ -133,11 +133,11 @@ public class RandCode {
         private final char[] chars;
 
         public static Seed range(char... minmax) {
-            return new Seed(minmax, Nulls.Chars);
+            return new Seed(minmax, Null.Chars);
         }
 
         public static Seed chars(char... chars) {
-            return new Seed(Nulls.Chars, chars);
+            return new Seed(Null.Chars, chars);
         }
 
         public static Seed seeds(Seed... seeds) {
@@ -157,8 +157,8 @@ public class RandCode {
         }
 
         public Seed(char[] range, char[] chars) {
-            if (range == null) range = Nulls.Chars;
-            if (chars == null) chars = Nulls.Chars;
+            if (range == null) range = Null.Chars;
+            if (chars == null) chars = Null.Chars;
 
             int rlen = range.length;
             ArgsAssert.isTrue(rlen % 2 == 0, "range must be [min,max]*");

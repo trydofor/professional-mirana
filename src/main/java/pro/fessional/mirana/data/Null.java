@@ -8,7 +8,7 @@ import java.math.BigDecimal;
  * @author trydofor
  * @since 2019-10-15
  */
-public class Nulls {
+public class Null {
 
     public static final boolean Int01 = false;
     public static final byte Int08 = 0;
@@ -72,6 +72,10 @@ public class Nulls {
         return v == Int16;
     }
 
+    public static boolean asNull(short v) {
+        return v == Int16;
+    }
+
     public static boolean asNull(int v) {
         return v == Int32;
     }
@@ -100,6 +104,10 @@ public class Nulls {
         return v == null || v == Int16;
     }
 
+    public static boolean asNull(Short v) {
+        return v == null || v == Int16;
+    }
+
     public static boolean asNull(Integer v) {
         return v == null || v == Int32;
     }
@@ -116,7 +124,7 @@ public class Nulls {
         return v == null || v == Flt64;
     }
 
-    public static boolean asNull(String v) {
+    public static boolean asNull(CharSequence v) {
         return v == null || v.length() == 0;
     }
 
@@ -130,6 +138,10 @@ public class Nulls {
     }
 
     public static boolean asNull(char[] v) {
+        return v == null || v.length == 0;
+    }
+
+    public static boolean asNull(short[] v) {
         return v == null || v.length == 0;
     }
 
@@ -151,5 +163,95 @@ public class Nulls {
 
     public static boolean asNull(Object[] v) {
         return v == null || v.length == 0;
+    }
+
+    @NotNull
+    public static Boolean notNull(Boolean v) {
+        return v == null ? Int01 : v;
+    }
+
+    @NotNull
+    public static Byte notNull(Byte v) {
+        return v == null ? Int08 : v;
+    }
+
+    @NotNull
+    public static Character notNull(Character v) {
+        return v == null ? Int16 : v;
+    }
+
+    @NotNull
+    public static Short notNull(Short v) {
+        return v == null ? (short) Int16 : v;
+    }
+
+    @NotNull
+    public static Integer notNull(Integer v) {
+        return v == null ? Int32 : v;
+    }
+
+    @NotNull
+    public static Long notNull(Long v) {
+        return v == null ? Int64 : v;
+    }
+
+    @NotNull
+    public static Float notNull(Float v) {
+        return v == null ? Flt32 : v;
+    }
+
+    @NotNull
+    public static Double notNull(Double v) {
+        return v == null ? Flt64 : v;
+    }
+
+    @NotNull
+    public static String notNull(CharSequence v) {
+        return v == null ? Str : v.toString();
+    }
+
+    @NotNull
+    public static boolean[] notNull(boolean[] v) {
+        return v == null ? Bools : v;
+    }
+
+    @NotNull
+    public static byte[] notNull(byte[] v) {
+        return v == null ? Bytes : v;
+    }
+
+    @NotNull
+    public static char[] notNull(char[] v) {
+        return v == null ? Chars : v;
+    }
+
+    @NotNull
+    public static short[] notNull(short[] v) {
+        return v == null ? Shorts : v;
+    }
+
+    @NotNull
+    public static int[] notNull(int[] v) {
+        return v == null ? Ints : v;
+    }
+
+    @NotNull
+    public static long[] notNull(long[] v) {
+        return v == null ? Longs : v;
+    }
+
+    @NotNull
+    public static float[] notNull(float[] v) {
+        return v == null ? Floats : v;
+    }
+
+    @NotNull
+    public static double[] notNull(double[] v) {
+        return v == null ? Doubles : v;
+    }
+
+    @NotNull
+    public static Object[] notNull(Object[] v) {
+        return v == null ? Objects : v;
     }
 }

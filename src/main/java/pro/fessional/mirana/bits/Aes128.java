@@ -2,7 +2,7 @@ package pro.fessional.mirana.bits;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import pro.fessional.mirana.data.Nulls;
+import pro.fessional.mirana.data.Null;
 import pro.fessional.mirana.io.InputStreams;
 
 import javax.crypto.Cipher;
@@ -45,21 +45,21 @@ public class Aes128 {
 
     @NotNull
     public byte[] encode(@Nullable String plain) {
-        if (plain == null) return Nulls.Bytes;
+        if (plain == null) return Null.Bytes;
         byte[] bytes = plain.getBytes(UTF_8);
         return encode(bytes);
     }
 
     @NotNull
     public byte[] encode(@Nullable InputStream plain) {
-        if (plain == null) return Nulls.Bytes;
+        if (plain == null) return Null.Bytes;
         byte[] bytes = InputStreams.readBytes(plain);
         return encode(bytes);
     }
 
     @NotNull
     public byte[] encode(@Nullable byte[] plain) {
-        if (plain == null) return Nulls.Bytes;
+        if (plain == null) return Null.Bytes;
         try {
             Cipher ins = Cipher.getInstance(CYP_NAME);//"算法/模式/补码方式"
             ins.init(Cipher.ENCRYPT_MODE, keySpec, algSpec);
@@ -71,14 +71,14 @@ public class Aes128 {
 
     @NotNull
     public byte[] decode(@Nullable String cipher) {
-        if (cipher == null) return Nulls.Bytes;
+        if (cipher == null) return Null.Bytes;
         byte[] bytes = cipher.getBytes(UTF_8);
         return decode(bytes);
     }
 
     @NotNull
     public byte[] decode(@Nullable byte[] cipher) {
-        if (cipher == null) return Nulls.Bytes;
+        if (cipher == null) return Null.Bytes;
         try {
             Cipher ins = Cipher.getInstance(CYP_NAME);//"算法/模式/补码方式"
             ins.init(Cipher.DECRYPT_MODE, keySpec, algSpec);
@@ -90,14 +90,14 @@ public class Aes128 {
 
     @NotNull
     public byte[] decode(@Nullable InputStream cipher) {
-        if (cipher == null) return Nulls.Bytes;
+        if (cipher == null) return Null.Bytes;
         byte[] bytes = InputStreams.readBytes(cipher);
         return decode(bytes);
     }
 
     @NotNull
     public String encode64(@Nullable String plain) {
-        if (plain == null) return Nulls.Str;
+        if (plain == null) return Null.Str;
         byte[] pb = plain.getBytes(UTF_8);
         byte[] cb = encode(pb);
         return Base64.encode(cb);
@@ -105,7 +105,7 @@ public class Aes128 {
 
     @NotNull
     public String decode64(@Nullable String cipher) {
-        if (cipher == null) return Nulls.Str;
+        if (cipher == null) return Null.Str;
         byte[] cb = Base64.decode(cipher);
         byte[] pb = decode(cb);
         return new String(pb, UTF_8);

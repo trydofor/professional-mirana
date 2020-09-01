@@ -2,7 +2,7 @@ package pro.fessional.mirana.cast;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import pro.fessional.mirana.data.Nulls;
+import pro.fessional.mirana.data.Null;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -102,7 +102,7 @@ public class BoxedCastUtil {
 
     @NotNull
     public static boolean[] bools(Collection<Boolean> cols) {
-        if (cols == null || cols.isEmpty()) return Nulls.Bools;
+        if (cols == null || cols.isEmpty()) return Null.Bools;
         boolean[] arr = new boolean[cols.size()];
         int i = 0;
         for (Boolean v : cols) {
@@ -113,7 +113,7 @@ public class BoxedCastUtil {
 
     @NotNull
     public static char[] chars(Collection<Character> cols) {
-        if (cols == null || cols.isEmpty()) return Nulls.Chars;
+        if (cols == null || cols.isEmpty()) return Null.Chars;
         char[] arr = new char[cols.size()];
         int i = 0;
         for (Character v : cols) {
@@ -124,7 +124,7 @@ public class BoxedCastUtil {
 
     @NotNull
     public static byte[] bytes(Collection<? extends Number> cols) {
-        if (cols == null || cols.isEmpty()) return Nulls.Bytes;
+        if (cols == null || cols.isEmpty()) return Null.Bytes;
         byte[] arr = new byte[cols.size()];
         int i = 0;
         for (Number v : cols) {
@@ -135,7 +135,7 @@ public class BoxedCastUtil {
 
     @NotNull
     public static short[] shorts(Collection<? extends Number> cols) {
-        if (cols == null || cols.isEmpty()) return Nulls.Shorts;
+        if (cols == null || cols.isEmpty()) return Null.Shorts;
         short[] arr = new short[cols.size()];
         int i = 0;
         for (Number v : cols) {
@@ -146,7 +146,7 @@ public class BoxedCastUtil {
 
     @NotNull
     public static int[] ints(Collection<? extends Number> cols) {
-        if (cols == null || cols.isEmpty()) return Nulls.Ints;
+        if (cols == null || cols.isEmpty()) return Null.Ints;
         int[] arr = new int[cols.size()];
         int i = 0;
         for (Number v : cols) {
@@ -157,7 +157,7 @@ public class BoxedCastUtil {
 
     @NotNull
     public static long[] longs(Collection<? extends Number> cols) {
-        if (cols == null || cols.isEmpty()) return Nulls.Longs;
+        if (cols == null || cols.isEmpty()) return Null.Longs;
         long[] arr = new long[cols.size()];
         int i = 0;
         for (Number v : cols) {
@@ -168,7 +168,7 @@ public class BoxedCastUtil {
 
     @NotNull
     public static float[] floats(Collection<? extends Number> cols) {
-        if (cols == null || cols.isEmpty()) return Nulls.Floats;
+        if (cols == null || cols.isEmpty()) return Null.Floats;
         float[] arr = new float[cols.size()];
         int i = 0;
         for (Number v : cols) {
@@ -179,7 +179,7 @@ public class BoxedCastUtil {
 
     @NotNull
     public static double[] doubles(Collection<? extends Number> cols) {
-        if (cols == null || cols.isEmpty()) return Nulls.Doubles;
+        if (cols == null || cols.isEmpty()) return Null.Doubles;
         double[] arr = new double[cols.size()];
         int i = 0;
         for (Number v : cols) {

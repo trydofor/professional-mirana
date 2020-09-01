@@ -191,8 +191,8 @@ ID能保证严格的`单调递增`(升序)，但不保证连续，其long型的6
 
 ## `text/` 全半角，白字符，格式化工具
 
- * BuilderHelper - StringBuilder的 null 操作
- * FormatUtil - printf，截断填充
+ * BuilderHelper - null友好碎片少的StringBuilder操作
+ * FormatUtil - printf的`%`和logbak的`{}`，截断填充
  * FullCharUtil - 全角字符工具
  * HalfCharUtil - 半角字符工具
  * WhiteUtil - 弥补java trim的不足，更多Whitespace处理

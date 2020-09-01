@@ -1,7 +1,7 @@
 package pro.fessional.mirana.io;
 
 import org.jetbrains.annotations.NotNull;
-import pro.fessional.mirana.data.Nulls;
+import pro.fessional.mirana.data.Null;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -37,7 +37,7 @@ public class InputStreams {
      */
     @NotNull
     public static byte[] readBytes(InputStream is) {
-        if (is == null) return Nulls.Bytes;
+        if (is == null) return Null.Bytes;
 
         try {
             ByteArrayOutputStream buffer = new ByteArrayOutputStream(is.available());
@@ -70,7 +70,7 @@ public class InputStreams {
      */
     @NotNull
     public static String readText(InputStream is, Charset cs) {
-        if (is == null) return Nulls.Str;
+        if (is == null) return Null.Str;
         if (cs == null) cs = StandardCharsets.UTF_8;
 
         StringBuilder sb = new StringBuilder();
