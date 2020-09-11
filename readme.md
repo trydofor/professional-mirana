@@ -69,11 +69,11 @@ POM(.xml), 月女，她有一只神箭，她有一只大猫。
 
 ## `data/` 数据传递
 
+ * Arr - 一些Array的操作
  * CodeEnum - 业务code枚举，如多国语，状态
  * DataResult - 携带data的DTO
  * Diff - diff2个集合，如数据集中判断插入，更新，删除
- * News - 不是新闻，是一些 new XXX的语法糖
- * Nulls - 以`空`消除null是我们的目标。
+ * Null - 以`空`消除null是我们的目标。
  * PageUtil - 分页工具，使用`-1+1`算法，不是if-else
  * R - Result的场景类
  * Rank - 按多条件顺序来排序
@@ -192,6 +192,7 @@ ID能保证严格的`单调递增`(升序)，但不保证连续，其long型的6
 ## `text/` 全半角，白字符，格式化工具
 
  * BuilderHelper - null友好碎片少的StringBuilder操作
+ * CaseSwitcher - camel,snake,pascal,kebab命名转换
  * FormatUtil - printf的`%`和logbak的`{}`，截断填充
  * FullCharUtil - 全角字符工具
  * HalfCharUtil - 半角字符工具

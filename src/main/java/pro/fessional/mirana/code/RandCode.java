@@ -24,7 +24,7 @@ public class RandCode {
     public static final Seed Sym = Seed.chars("~!@#$%^&*()_+{}:<>?-=[];,.".toCharArray());
 
     private static final Seed[] Man = new Seed[]{Seed.chars("23456789".toCharArray()),
-                                                 Seed.chars("abcdefghjknqrty".toCharArray()),
+                                                 Seed.chars("abdefghqrt".toCharArray()),
                                                  Seed.chars("ABCDEFGHJKLMPQRSTUWXY".toCharArray())};
 
 
