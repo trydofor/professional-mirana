@@ -10,6 +10,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.Reader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -38,17 +39,31 @@ public class InputStreams {
     @NotNull
     public static byte[] readBytes(InputStream is) {
         if (is == null) return Null.Bytes;
+        try {
+            ByteArrayOutputStream os = new ByteArrayOutputStream(is.available());
+            readBytes(os, is);
+            return os.toByteArray();
+        } catch (Exception e) {
+            throw new IllegalStateException("failed to read text", e);
+        }
+    }
+
+    /**
+     * 读取全部Byte，并关闭
+     *
+     * @param os 输出流
+     * @param is 输入流
+     */
+    public static void readBytes(OutputStream os, InputStream is) {
+        if (is == null) return;
 
         try {
-            ByteArrayOutputStream buffer = new ByteArrayOutputStream(is.available());
             int len;
             byte[] data = new byte[DEFAULT_BUF_SIZE];
             while ((len = is.read(data)) != -1) {
-                buffer.write(data, 0, len);
+                os.write(data, 0, len);
             }
-
-            buffer.flush();
-            return buffer.toByteArray();
+            os.flush();
         } catch (Exception e) {
             throw new IllegalStateException("failed to read text", e);
         } finally {
@@ -74,6 +89,20 @@ public class InputStreams {
         if (cs == null) cs = StandardCharsets.UTF_8;
 
         StringBuilder sb = new StringBuilder();
+        readText(sb, is, cs);
+        return sb.toString();
+    }
+
+    /**
+     * 读取全部文本，并关闭
+     *
+     * @param is 输入流
+     * @param cs 字符集
+     */
+    public static void readText(StringBuilder sb, InputStream is, Charset cs) {
+        if (is == null) return;
+        if (cs == null) cs = StandardCharsets.UTF_8;
+
         char[] buf = new char[DEFAULT_BUF_SIZE];
         int len;
         try (Reader rd = new InputStreamReader(is, cs)) {
@@ -83,7 +112,6 @@ public class InputStreams {
         } catch (Exception e) {
             throw new IllegalStateException("failed to read text", e);
         }
-        return sb.toString();
     }
 
     @NotNull
@@ -105,17 +133,29 @@ public class InputStreams {
         if (cs == null) cs = StandardCharsets.UTF_8;
 
         List<String> rt = new ArrayList<>();
+        readLine(rt, is, cs);
+        return rt;
+    }
+
+    /**
+     * 读取全部文本行，并关闭
+     *
+     * @param is 输入流
+     * @param cs 字符集
+     */
+    public static void readLine(List<String> out, InputStream is, Charset cs) {
+        if (is == null) return;
+        if (cs == null) cs = StandardCharsets.UTF_8;
+
         try (BufferedReader rd = new BufferedReader(new InputStreamReader(is, cs))) {
             String line = rd.readLine();
             while (line != null) {
-                rt.add(line);
+                out.add(line);
                 line = rd.readLine();
             }
         } catch (Exception e) {
             throw new IllegalStateException("failed to read line", e);
         }
-
-        return rt;
     }
 
     @NotNull

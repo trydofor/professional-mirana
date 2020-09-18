@@ -161,6 +161,8 @@ ID能保证严格的`单调递增`(升序)，但不保证连续，其long型的6
 
 ## `io/` IO操作
 
+ * Exec - 单线程同步执行，高级功能用Apache Commons Exec
+ * Git - 对git提交按日期作者统计，或在mysql建表保存
  * InputStreams - 不使用commons的补位
 
 ## `jaxb/` xml
