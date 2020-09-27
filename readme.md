@@ -199,6 +199,7 @@ ID能保证严格的`单调递增`(升序)，但不保证连续，其long型的6
  * FullCharUtil - 全角字符工具
  * HalfCharUtil - 半角字符工具
  * WhiteUtil - 弥补java trim的不足，更多Whitespace处理
+ * Wildcard - 快速的通配符匹配，仅支持`?`和`*`
 
 ## `time/` 时间日期
 
