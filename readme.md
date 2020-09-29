@@ -74,7 +74,6 @@ POM(.xml), 月女，她有一只神箭，她有一只大猫。
  * DataResult - 携带data的DTO
  * Diff - diff2个集合，如数据集中判断插入，更新，删除
  * Null - 以`空`消除null是我们的目标。
- * PageUtil - 分页工具，使用`-1+1`算法，不是if-else
  * R - Result的场景类
  * Rank - 按多条件顺序来排序
  * U - 内部传递数据的tuple
@@ -182,6 +181,12 @@ ID能保证严格的`单调递增`(升序)，但不保证连续，其long型的6
 
  * SslTrustAll - 信任所以证书，使爬虫不报错
  * SslVersion - jdk-8-will-use-tls-12-as-default
+
+## `page/` 分页功能
+
+ * PageQuery - 分页查询
+ * PageResult - 分页结果
+ * PageUtil - 分页工具，使用`-1+1`算法，不是if-else
 
 ## `pain/` 异常痛苦
 
