@@ -1,13 +1,12 @@
 package pro.fessional.mirana.jaxb;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.io.FileOutputStream;
 import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.util.Map;
@@ -52,7 +51,7 @@ public class StringMapXmlWriterTest {
         marshallerObj.marshal(xml, writer);
         Map<String, String> tree = writer.getResultTree();
         System.out.println(tree);
-        System.out.println(new TreeMap(tree));
+        System.out.println(new TreeMap<>(tree));
     }
 
     @Test

@@ -1,10 +1,12 @@
 package pro.fessional.mirana.io;
 
-import org.junit.Assert;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author trydofor
@@ -19,13 +21,13 @@ public class CircleInputStreamTest {
         ByteArrayInputStream bis = new ByteArrayInputStream(str.getBytes());
         CircleInputStream cis = new CircleInputStream(bis);
         byte[] b1 = InputStreams.readBytes(cis);
-        Assert.assertEquals(str, new String(b1));
+        assertEquals(str, new String(b1));
 
         byte[] b2 = InputStreams.readBytes(cis);
-        Assert.assertEquals(str, new String(b2));
+        assertEquals(str, new String(b2));
 
         byte[] b3 = InputStreams.readBytes(cis);
-        Assert.assertEquals(str, new String(b3));
+        assertEquals(str, new String(b3));
     }
 
     @Test
@@ -36,19 +38,19 @@ public class CircleInputStreamTest {
         CircleInputStream cis = new CircleInputStream(new ByteArrayInputStream(bytes));
         int b0 = bis.available();
         int c0 = cis.available();
-        Assert.assertEquals(b0, c0);
-        Assert.assertEquals(bis.skip(5L), cis.skip(5L));
-        Assert.assertEquals(bis.available(), cis.available());
-        Assert.assertEquals(bis.skip(5L), cis.skip(5L));
-        Assert.assertEquals(bis.available(), cis.available());
-        Assert.assertEquals(bis.skip(5L), cis.skip(5L));
-        Assert.assertEquals(bis.available(), cis.available());
-        Assert.assertEquals(bis.skip(5L), cis.skip(5L));
-        Assert.assertEquals(bis.available(), cis.available());
-        Assert.assertEquals(-1, bis.read());
-        Assert.assertEquals(-1, cis.read());
-        Assert.assertEquals(0, bis.available());
-        Assert.assertEquals(b0, cis.available());
+        assertEquals(b0, c0);
+        assertEquals(bis.skip(5L), cis.skip(5L));
+        assertEquals(bis.available(), cis.available());
+        assertEquals(bis.skip(5L), cis.skip(5L));
+        assertEquals(bis.available(), cis.available());
+        assertEquals(bis.skip(5L), cis.skip(5L));
+        assertEquals(bis.available(), cis.available());
+        assertEquals(bis.skip(5L), cis.skip(5L));
+        assertEquals(bis.available(), cis.available());
+        assertEquals(-1, bis.read());
+        assertEquals(-1, cis.read());
+        assertEquals(0, bis.available());
+        assertEquals(b0, cis.available());
     }
 
     @Test
@@ -58,28 +60,28 @@ public class CircleInputStreamTest {
         ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
         CircleInputStream cis = new CircleInputStream(new ByteArrayInputStream(bytes));
         int b0 = bis.available();
-        Assert.assertEquals(bis.read(), cis.read());
+        assertEquals(bis.read(), cis.read());
         bis.reset();
         cis.reset();
-        Assert.assertEquals(b0, bis.available());
-        Assert.assertEquals(b0, cis.available());
+        assertEquals(b0, bis.available());
+        assertEquals(b0, cis.available());
 
-        Assert.assertEquals(bis.read(), cis.read());
+        assertEquals(bis.read(), cis.read());
         bis.mark(100);
         cis.mark(100);
-        Assert.assertEquals(bis.read(), cis.read());
+        assertEquals(bis.read(), cis.read());
         bis.reset();
         cis.reset();
-        Assert.assertEquals(b0 - 1, bis.available());
-        Assert.assertEquals(b0 - 1, cis.available());
+        assertEquals(b0 - 1, bis.available());
+        assertEquals(b0 - 1, cis.available());
 
         byte[] b1 = InputStreams.readBytes(bis);
-        Assert.assertEquals(str.substring(1), new String(b1));
+        assertEquals(str.substring(1), new String(b1));
 
         byte[] c1 = InputStreams.readBytes(cis);
-        Assert.assertEquals(str.substring(1), new String(c1));
+        assertEquals(str.substring(1), new String(c1));
 
         byte[] c2 = InputStreams.readBytes(cis);
-        Assert.assertEquals(str, new String(c2));
+        assertEquals(str, new String(c2));
     }
 }

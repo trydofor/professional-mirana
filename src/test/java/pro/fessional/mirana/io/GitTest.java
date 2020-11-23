@@ -1,8 +1,7 @@
 package pro.fessional.mirana.io;
 
 import com.mysql.cj.jdbc.MysqlDataSource;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -10,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static pro.fessional.mirana.io.Git.STAT_WEEK_YEAR;
 
 /**
@@ -57,6 +57,6 @@ public class GitTest {
 
         String s = Git.trimFile("Tst\\344\\270\\255\\346\\226\\207\\344\\271\\237\\345\\210\\206\\350\\241\\250Record.java");
         System.out.println(s);
-        Assert.assertEquals(x, s);
+        assertEquals(x, s);
     }
 }

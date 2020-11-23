@@ -79,6 +79,11 @@ POM(.xml), 月女，她有一只神箭，她有一只大猫。
  * U - 内部传递数据的tuple
  * Z - 第一个满足条件(如非null)的数据操作
 
+## `dync/` 动态编译
+
+ * Java - 动态编译和创建java
+ * Js - 使用java的ScriptEngine执行js代码
+
 ## `fake/` 伪装数据
 
  * FakeDate - 生成指定偏移量附近的伪随机日期，保证结果等幂。
@@ -164,7 +169,6 @@ ID能保证严格的`单调递增`(升序)，但不保证连续，其long型的6
  * Exec - 单线程同步执行，高级功能用Apache Commons Exec
  * Git - 对git提交按日期作者统计，或在mysql建表保存
  * InputStreams - 不使用commons的补位
- * Js - 使用java的ScriptEngine执行js代码
 
 ## `jaxb/` xml
 

@@ -1,12 +1,14 @@
 package pro.fessional.mirana.code;
 
-import org.junit.Assert;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author trydofor
@@ -49,8 +51,8 @@ public class SlotCodeTest {
                 }
             }
         }
-        Assert.assertEquals("exist", 0, cur);
-        Assert.assertEquals("total", cnt, size * ts);
+        assertEquals(0, cur, "exist");
+        assertEquals(cnt, size * ts, "total");
     }
 
     @Test
@@ -63,22 +65,18 @@ public class SlotCodeTest {
         final ConcurrentHashMap<Integer, AtomicInteger> count = new ConcurrentHashMap<>(size);
         final long sms = System.currentTimeMillis();
         for (int i = 0; i < ts; i++) {
-            new Thread() {
-                @Override
-                public void run() {
-                    try {
-                        start.await();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    for (int j = 0; j < size; j++) {
-                        Integer next = sc.next();
-                        count.computeIfAbsent(next, s -> new AtomicInteger(0)).incrementAndGet();
-                    }
-                    done.countDown();
+            new Thread(() -> {
+                try {
+                    start.await();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-
-            }.start();
+                for (int j = 0; j < size; j++) {
+                    Integer next = sc.next();
+                    count.computeIfAbsent(next, s -> new AtomicInteger(0)).incrementAndGet();
+                }
+                done.countDown();
+            }).start();
         }
         start.countDown();
         done.await();
@@ -94,7 +92,7 @@ public class SlotCodeTest {
                 }
             }
         }
-        Assert.assertEquals("exist", 0, cur);
-        Assert.assertEquals("total", cnt, size * ts);
+        assertEquals(0, cur, "exist");
+        assertEquals(cnt, size * ts, "total");
     }
 }

@@ -1,13 +1,13 @@
 package pro.fessional.mirana.data;
 
-import org.junit.Assert;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author trydofor
@@ -19,6 +19,6 @@ public class RankTest {
     public void lineup() {
         List<String> list = Arrays.asList("1", "2");
         ArrayList<String> lineup = Rank.lineup(list, e -> e.equals("2"), e -> e.equals("1"));
-        Assert.assertEquals("[2, 1]",lineup.toString());
+        assertEquals("[2, 1]",lineup.toString());
     }
 }

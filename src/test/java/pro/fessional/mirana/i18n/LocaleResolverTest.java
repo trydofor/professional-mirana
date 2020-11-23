@@ -1,6 +1,6 @@
 package pro.fessional.mirana.i18n;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Locale;
 

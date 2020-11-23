@@ -1,10 +1,13 @@
 package pro.fessional.mirana.page;
 
-import org.junit.Assert;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author trydofor
@@ -27,19 +30,19 @@ public class PageUtilTest {
         String od2 = PageUtil.sort()
                              .by(st1)
                              .build();
-        Assert.assertEquals(od1, od2);
-        Assert.assertEquals("key1,-key2,key3", od2);
+        assertEquals(od1, od2);
+        assertEquals("key1,-key2,key3", od2);
 
         List<PageUtil.By> st2 = PageUtil.sortBy(od1);
-        Assert.assertEquals(st1, st2);
+        assertEquals(st1, st2);
 
         List<PageUtil.By> st3 = PageUtil.sortBy("\tkey1  \r ,  \n  -key2   ,   key3     ");
-        Assert.assertEquals(st1, st3);
+        assertEquals(st1, st3);
 
         List<PageUtil.By> st4 = PageUtil.sortBy("\t  \r ,  \n  -   ,       ");
-        Assert.assertTrue(st4.isEmpty());
+        assertTrue(st4.isEmpty());
 
         List<PageUtil.By> st5 = PageUtil.sortBy("");
-        Assert.assertTrue(st5.isEmpty());
+        assertTrue(st5.isEmpty());
     }
 }

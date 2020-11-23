@@ -1,6 +1,6 @@
 package pro.fessional.mirana.fake;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

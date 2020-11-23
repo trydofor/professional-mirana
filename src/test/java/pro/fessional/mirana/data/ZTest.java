@@ -1,11 +1,13 @@
 package pro.fessional.mirana.data;
 
-import org.junit.Assert;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author trydofor
@@ -22,7 +24,7 @@ public class ZTest {
                 U.of(2, "B")
         );
         List<U.Two<Integer, String>> uniq = Z.uniq(list, U.Two::one, U.Two::two);
-        Assert.assertEquals(uniq, Arrays.asList(
+        assertEquals(uniq, Arrays.asList(
                 U.of(1, "A"),
                 U.of(2, "B")));
     }
@@ -32,12 +34,12 @@ public class ZTest {
         U.Two<Integer, String> u = Z.find(it -> it.one() == 1, U.of(1, "A"),
                 U.of(2, "B"),
                 U.of(1, "A"));
-        Assert.assertEquals(u, U.of(1, "A"));
+        assertEquals(u, U.of(1, "A"));
     }
 
     @Test
     public void testMake() {
         BigDecimal d = Z.make(BigDecimal::new, "null", null, "1");
-        Assert.assertEquals(d, BigDecimal.ONE);
+        assertEquals(d, BigDecimal.ONE);
     }
 }

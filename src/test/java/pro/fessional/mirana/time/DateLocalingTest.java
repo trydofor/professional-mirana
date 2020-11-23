@@ -1,13 +1,13 @@
 package pro.fessional.mirana.time;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static pro.fessional.mirana.time.DateLocaling.fromZone;
 import static pro.fessional.mirana.time.DateLocaling.nowDateTime;
 import static pro.fessional.mirana.time.DateLocaling.pastMonday;
@@ -50,13 +50,13 @@ public class DateLocalingTest {
     public void testFromZone() {
         LocalDateTime ldtJp = fromZone(toZone(zn, jp), jp);
         LocalDateTime ldtCn = fromZone(toZone(zn, cn), cn);
-        Assert.assertEquals(ldtCn, ldtJp);
+        assertEquals(ldtCn, ldtJp);
     }
 
     @Test
     public void testToZone() {
         LocalDateTime ldtJp = toZone(ln, jp);
         LocalDateTime ldtCn = toZone(ln, cn);
-        Assert.assertEquals(ldtCn.plusHours(1), ldtJp);
+        assertEquals(ldtCn.plusHours(1), ldtJp);
     }
 }

@@ -1,10 +1,12 @@
 package pro.fessional.mirana.math;
 
-import org.junit.Assert;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author trydofor
@@ -17,10 +19,10 @@ public class ComparableUtilTest {
         String a = null;
         String b = "1";
         String c = "2";
-        Assert.assertEquals(ComparableUtil.min(a, b), b);
-        Assert.assertEquals(ComparableUtil.min(a, b, c), b);
-        Assert.assertEquals(ComparableUtil.max(a, b), b);
-        Assert.assertEquals(ComparableUtil.max(a, b, c), c);
+        assertEquals(ComparableUtil.min(a, b), b);
+        assertEquals(ComparableUtil.min(a, b, c), b);
+        assertEquals(ComparableUtil.max(a, b), b);
+        assertEquals(ComparableUtil.max(a, b, c), c);
     }
 
     @Test
@@ -29,10 +31,10 @@ public class ComparableUtilTest {
         Integer b = 1;
         Integer c = 2;
 
-        Assert.assertEquals(ComparableUtil.min(a, b), b);
-        Assert.assertEquals(ComparableUtil.min(a, b, c), b);
-        Assert.assertEquals(ComparableUtil.max(a, b), b);
-        Assert.assertEquals(ComparableUtil.max(a, b, c), c);
+        assertEquals(ComparableUtil.min(a, b), b);
+        assertEquals(ComparableUtil.min(a, b, c), b);
+        assertEquals(ComparableUtil.max(a, b), b);
+        assertEquals(ComparableUtil.max(a, b, c), c);
     }
 
     @Test
@@ -42,10 +44,10 @@ public class ComparableUtilTest {
         Date c = new Date(2000);
 
         Date r = ComparableUtil.min(a, b);
-        Assert.assertEquals(r, b);
-        Assert.assertEquals(ComparableUtil.min(a, b, c), b);
-        Assert.assertEquals(ComparableUtil.max(a, b), b);
-        Assert.assertEquals(ComparableUtil.max(a, b, c), c);
+        assertEquals(r, b);
+        assertEquals(ComparableUtil.min(a, b, c), b);
+        assertEquals(ComparableUtil.max(a, b), b);
+        assertEquals(ComparableUtil.max(a, b, c), c);
     }
 
     @Test
@@ -55,9 +57,9 @@ public class ComparableUtilTest {
         LocalDateTime c = b.plusDays(1);
 
         LocalDateTime r = ComparableUtil.min(a, b);
-        Assert.assertEquals(r, b);
-        Assert.assertEquals(ComparableUtil.min(a, b, c), b);
-        Assert.assertEquals(ComparableUtil.max(a, b), b);
-        Assert.assertEquals(ComparableUtil.max(a, b, c), c);
+        assertEquals(r, b);
+        assertEquals(ComparableUtil.min(a, b, c), b);
+        assertEquals(ComparableUtil.max(a, b), b);
+        assertEquals(ComparableUtil.max(a, b, c), c);
     }
 }

@@ -1,6 +1,6 @@
 package pro.fessional.mirana.code;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author trydofor

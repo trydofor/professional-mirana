@@ -1,7 +1,9 @@
 package pro.fessional.mirana.math;
 
-import org.junit.Assert;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class RatioNumberTest {
 
@@ -20,8 +22,8 @@ public class RatioNumberTest {
         // 卖出 13 个订单
         RatioNumber is1 = a1.sub(13, r1, RatioNumber.Grade.Isolated);
         System.out.println(is1);
-        Assert.assertEquals(RatioNumber.number(10, -12), is1);
-        Assert.assertEquals(RatioNumber.number(7, 3), is1.grade(r1));
+        assertEquals(RatioNumber.number(10, -12), is1);
+        assertEquals(RatioNumber.number(7, 3), is1.grade(r1));
     }
 
     @Test
@@ -37,11 +39,11 @@ public class RatioNumberTest {
         RatioNumber is1 = a1.sub(30 * 40, r1, RatioNumber.Grade.Isolated);
         System.out.println(is1);
 
-        Assert.assertEquals(RatioNumber.number(2, 600), ps1);
-        Assert.assertEquals(RatioNumber.number(2, -300), is1);
+        assertEquals(RatioNumber.number(2, 600), ps1);
+        assertEquals(RatioNumber.number(2, -300), is1);
 
-        Assert.assertEquals(RatioNumber.number(3, 100), ps1.grade(r1));
-        Assert.assertEquals(RatioNumber.number(1, 200), is1.grade(r1));
+        assertEquals(RatioNumber.number(3, 100), ps1.grade(r1));
+        assertEquals(RatioNumber.number(1, 200), is1.grade(r1));
     }
 
     @Test
@@ -56,10 +58,10 @@ public class RatioNumberTest {
         System.out.println(is1);
         System.out.println(ps1);
 
-        Assert.assertEquals(RatioNumber.number(2, -100), is1);
-        Assert.assertEquals(RatioNumber.number(1, 400), ps1);
-        Assert.assertEquals(RatioNumber.number(3, 400), a1.grade(r1));
-        Assert.assertEquals(RatioNumber.number(1, 400), is1.grade(r1));
+        assertEquals(RatioNumber.number(2, -100), is1);
+        assertEquals(RatioNumber.number(1, 400), ps1);
+        assertEquals(RatioNumber.number(3, 400), a1.grade(r1));
+        assertEquals(RatioNumber.number(1, 400), is1.grade(r1));
     }
 
     @Test
@@ -71,14 +73,14 @@ public class RatioNumberTest {
         RatioNumber ps1 = a1.sub(1, r1, RatioNumber.Grade.Positive);
         RatioNumber ps2 = a1.sub(2, r1, RatioNumber.Grade.Positive);
         System.out.println(ps1);
-        Assert.assertEquals(RatioNumber.number(10, 0).grade(r1), ps1);
-        Assert.assertEquals(RatioNumber.number(8, 3), ps1);
-        Assert.assertEquals(RatioNumber.number(8, 2), ps2);
-        Assert.assertEquals(RatioNumber.number(8, 3), ps1.grade(r1));
-        Assert.assertEquals(RatioNumber.number(8, 2), ps2.grade(r1));
+        assertEquals(RatioNumber.number(10, 0).grade(r1), ps1);
+        assertEquals(RatioNumber.number(8, 3), ps1);
+        assertEquals(RatioNumber.number(8, 2), ps2);
+        assertEquals(RatioNumber.number(8, 3), ps1.grade(r1));
+        assertEquals(RatioNumber.number(8, 2), ps2.grade(r1));
 
         RatioNumber pa1 = a1.add(RatioNumber.number(5, 10), r1, RatioNumber.Grade.Positive);
-        Assert.assertEquals(RatioNumber.number(15, 11), pa1);
-        Assert.assertEquals(RatioNumber.number(21, 2), pa1.grade(r1));
+        assertEquals(RatioNumber.number(15, 11), pa1);
+        assertEquals(RatioNumber.number(21, 2), pa1.grade(r1));
     }
 }

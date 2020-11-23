@@ -1,9 +1,11 @@
 package pro.fessional.mirana.code;
 
-import org.junit.Assert;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 
 import java.util.Random;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author trydofor
@@ -21,24 +23,24 @@ public class LeapCodeTest {
         for (int i = 0; i < 100000; i++) {
             String e = code.encode(base, i, 30);
             long d = code.decode(e);
-            Assert.assertEquals(i, d);
+            assertEquals(i, d);
         }
         for (int i = 0; i < 100000; i++) {
             long n = random.nextLong() & Crc8Long.MAX_NUMBER;
             String e = code.encode(base, n, 30);
             long d = code.decode(e);
-            Assert.assertEquals(n, d);
+            assertEquals(n, d);
         }
     }
 
     private void checkBound(int base, LeapCode code) {
         String e2 = code.encode(base, LeapCode.MAX_NUMBER, 30);
         long d2 = code.decode(e2);
-        Assert.assertEquals(LeapCode.MAX_NUMBER, d2);
+        assertEquals(LeapCode.MAX_NUMBER, d2);
 
         String e1 = code.encode(base, LeapCode.MIN_NUMBER, 30);
         long d1 = code.decode(e1);
-        Assert.assertEquals(LeapCode.MIN_NUMBER, d1);
+        assertEquals(LeapCode.MIN_NUMBER, d1);
     }
 
     @Test

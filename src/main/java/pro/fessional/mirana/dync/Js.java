@@ -1,4 +1,4 @@
-package pro.fessional.mirana.io;
+package pro.fessional.mirana.dync;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -11,7 +11,7 @@ import java.util.Map;
  * Map<String, Object> args = new HashMap<>();
  * args.put("name","mirana");
  * String rst = Js.run("var msg = 'hello ' + name; msg;", args);
- * Assert.assertEquals("hello mirana", rst);
+ * assertEquals("hello mirana", rst);
  * </pre>
  *
  * @author trydofor
@@ -80,7 +80,7 @@ public class Js {
      * Map<String, Object> args = new HashMap<>();
      * args.put("name","mirana");
      * String rst = Js.run("var msg = 'hello ' + name; msg;", args);
-     * Assert.assertEquals("hello mirana", rst);
+     * assertEquals("hello mirana", rst);
      * </pre>
      *
      * @param engine js引擎

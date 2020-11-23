@@ -1,7 +1,8 @@
 package pro.fessional.mirana.page;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author trydofor
@@ -16,8 +17,8 @@ public class PageQueryTest {
           .setPageSize(-1)
           .setSortBy(null);
 
-        Assert.assertEquals(1, pq.getPageNumber());
-        Assert.assertEquals(1, pq.getPageSize());
-        Assert.assertEquals("", pq.getSortBy());
+        assertEquals(1, pq.getPageNumber());
+        assertEquals(1, pq.getPageSize());
+        assertEquals("", pq.getSortBy());
     }
 }

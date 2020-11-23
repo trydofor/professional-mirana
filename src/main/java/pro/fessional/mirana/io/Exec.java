@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.BiConsumer;
 
@@ -40,6 +42,7 @@ public class Exec {
         };
         return run(workDir, handler, cmd);
     }
+
     /**
      * 同步执行一个命令
      *
@@ -74,6 +77,7 @@ public class Exec {
         };
         return run(workDir, handler, cmd);
     }
+
     /**
      * 同步执行一个命令
      *
@@ -103,6 +107,7 @@ public class Exec {
         ProcessBuilder builder = new ProcessBuilder(cmd).directory(workDir);
         return run(builder, handler);
     }
+
     /**
      * 同步执行一个命令
      *
@@ -159,5 +164,72 @@ public class Exec {
         } finally {
             if (p != null) p.destroy();
         }
+    }
+
+    /**
+     * 按空白解析命令行，支持引号块和转义 "one\" arg"
+     *
+     * @param line 参数行
+     * @return 解析后命令行
+     */
+    public static List<String> arg(String line) {
+        if (line == null || line.isEmpty()) return Collections.emptyList();
+        List<String> args = new ArrayList<>();
+        int len = line.length();
+        StringBuilder buf = new StringBuilder(len);
+        char qto = 0;
+        boolean esc = false;
+        for (int i = 0; i < len; i++) {
+            char c = line.charAt(i);
+            if (c == '\\') {
+                if (esc) {
+                    buf.append(c);
+                    esc = false;
+                } else {
+                    esc = true;
+                }
+            } else if (c == '"' || c == '\'') {
+                if (esc) {
+                    buf.append(c);
+                    esc = false;
+                } else {
+                    if (qto == 0) {
+                        qto = c;
+                    } else {
+                        if (qto == c) {
+                            args.add(buf.toString());
+                            buf.setLength(0);
+                            qto = 0;
+                        } else {
+                            buf.append(c);
+                        }
+                    }
+                }
+            } else if (c == ' ' || c == '\t') {
+                if (qto > 0) {
+                    buf.append(c);
+                } else {
+                    if (buf.length() > 0) {
+                        args.add(buf.toString());
+                        buf.setLength(0);
+                    }
+                }
+            } else {
+                if (esc) {
+                    buf.append('\\');
+                    esc = false;
+                }
+                buf.append(c);
+            }
+        }
+
+        if (buf.length() > 0) {
+            if (esc) {
+                buf.append('\\');
+            }
+            args.add(buf.toString());
+        }
+
+        return args;
     }
 }

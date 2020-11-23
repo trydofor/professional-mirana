@@ -1,11 +1,8 @@
 package pro.fessional.mirana.cast;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
-import java.util.List;
-
-import static org.junit.Assert.*;
 
 /**
  * @author trydofor

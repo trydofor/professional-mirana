@@ -1,9 +1,9 @@
 package pro.fessional.mirana.code;
 
-import org.junit.Assert;
-import org.junit.Test;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author trydofor
@@ -12,10 +12,10 @@ import static org.junit.Assert.*;
 public class Mod10CodeTest {
     @Test
     public void check() {
-        Assert.assertTrue(Mod10Code.check("9101123456789000000013"));
-        Assert.assertTrue(Mod10Code.check("92750902212248000000409253"));
-        Assert.assertTrue(Mod10Code.check("92001902643733000106138567"));
-        Assert.assertTrue(Mod10Code.check("92001902643733000106190169"));
-        Assert.assertTrue(Mod10Code.check("92001902643733000106211963"));
+        assertTrue(Mod10Code.check("9101123456789000000013"));
+        assertTrue(Mod10Code.check("92750902212248000000409253"));
+        assertTrue(Mod10Code.check("92001902643733000106138567"));
+        assertTrue(Mod10Code.check("92001902643733000106190169"));
+        assertTrue(Mod10Code.check("92001902643733000106211963"));
     }
 }

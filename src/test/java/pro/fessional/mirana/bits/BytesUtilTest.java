@@ -1,8 +1,6 @@
 package pro.fessional.mirana.bits;
 
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author trydofor

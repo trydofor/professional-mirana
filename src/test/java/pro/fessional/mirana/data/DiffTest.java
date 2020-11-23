@@ -1,10 +1,12 @@
 package pro.fessional.mirana.data;
 
-import org.junit.Assert;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author trydofor
@@ -18,9 +20,9 @@ public class DiffTest {
         List<String> b = Arrays.asList("AB", "B1");
         Diff.S<String> s = Diff.of(a, b);
 
-        Assert.assertTrue(s.aAndB.contains("AB") && s.aAndB.size() == 1);
-        Assert.assertTrue(s.aNotB.contains("A1") && s.aNotB.size() == 1);
-        Assert.assertTrue(s.bNotA.contains("B1") && s.bNotA.size() == 1);
+        assertTrue(s.aAndB.contains("AB") && s.aAndB.size() == 1);
+        assertTrue(s.aNotB.contains("A1") && s.aNotB.size() == 1);
+        assertTrue(s.bNotA.contains("B1") && s.bNotA.size() == 1);
     }
 
     @Test
@@ -32,10 +34,10 @@ public class DiffTest {
             if (s.equalsIgnoreCase("1")) return null;
             return s;
         }, String::equalsIgnoreCase);
-        Assert.assertTrue(d.newInsert.contains("1N") && d.newInsert.size() == 1);
-        Assert.assertTrue(d.newUpdate.contains("3N") && d.newUpdate.size() == 1);
-        Assert.assertTrue(d.oldDelete.contains("4D") && d.oldDelete.size() == 1);
-        Assert.assertTrue(d.oldUpdate.contains("3O") && d.oldUpdate.size() == 1);
-        Assert.assertTrue(d.oldEqsNew.contains("2N") && d.oldEqsNew.size() == 1);
+        assertTrue(d.newInsert.contains("1N") && d.newInsert.size() == 1);
+        assertTrue(d.newUpdate.contains("3N") && d.newUpdate.size() == 1);
+        assertTrue(d.oldDelete.contains("4D") && d.oldDelete.size() == 1);
+        assertTrue(d.oldUpdate.contains("3O") && d.oldUpdate.size() == 1);
+        assertTrue(d.oldEqsNew.contains("2N") && d.oldEqsNew.size() == 1);
     }
 }

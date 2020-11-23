@@ -1,9 +1,8 @@
 package pro.fessional.mirana.id;
 
 import org.jetbrains.annotations.NotNull;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -19,6 +18,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author trydofor
@@ -118,7 +119,7 @@ public class LightIdBufferedProviderTest {
         try {
             long next = directProvider.next("404", 0);
         } catch (Exception e) {
-            Assert.assertTrue(e instanceof NoSuchElementException);
+            assertTrue(e instanceof NoSuchElementException);
         } finally {
             System.out.println("direct 404 cost = " + (System.currentTimeMillis() - s2));
         }
@@ -128,7 +129,7 @@ public class LightIdBufferedProviderTest {
         try {
             long next = bufferedProvider.next("404", 0);
         } catch (Exception e) {
-            Assert.assertTrue(e instanceof NoSuchElementException);
+            assertTrue(e instanceof NoSuchElementException);
         } finally {
             System.out.println("buffered-1 404 cost = " + (System.currentTimeMillis() - s3));
         }
@@ -137,7 +138,7 @@ public class LightIdBufferedProviderTest {
         try {
             long next = bufferedProvider.next("404", 0);
         } catch (Exception e) {
-            Assert.assertTrue(e instanceof NoSuchElementException);
+            assertTrue(e instanceof NoSuchElementException);
         } finally {
             System.out.println("buffered-2 404 cost = " + (System.currentTimeMillis() - s4));
         }
@@ -193,7 +194,7 @@ public class LightIdBufferedProviderTest {
     [4089, sleep= 9, step= 45000] speed(ms), BufferedTest=35971, Buffered=24271, Stamped= 7012
      */
     @Test
-    @Ignore("手动执行，速度对比测试")
+    @Disabled("手动执行，速度对比测试")
     public void testSpeed() {
         int capacity = 500_0000;
         int threads = 500;
