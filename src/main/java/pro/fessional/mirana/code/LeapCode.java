@@ -51,6 +51,7 @@ public class LeapCode {
     /**
      * 自定义字典编码，要求字典不重复字符不少于编码字符数。
      *
+     * @param rand 随机数
      * @param seed 混乱的26字母和10数字组合
      * @throws IllegalArgumentException 字典内唯一字符数量位数不足26+10。
      */

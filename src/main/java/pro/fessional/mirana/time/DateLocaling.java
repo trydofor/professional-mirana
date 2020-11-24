@@ -69,6 +69,7 @@ public class DateLocaling {
      * 当前或过去的周几的 0:0:0.0
      *
      * @param to 时区
+     * @param day 星期
      * @return 日时
      */
     public static LocalDateTime pastWeek(ZoneId to, DayOfWeek day) {

@@ -33,6 +33,7 @@ public class BuilderHelper {
      *
      * @param sb  builder
      * @param obj 对象
+     * @return 当前builder
      */
     @NotNull
     public static StringBuilder append(@NotNull StringBuilder sb, Object obj) {
@@ -50,6 +51,7 @@ public class BuilderHelper {
      * 清空
      *
      * @param sb builder
+     * @return 当前builder
      */
     @NotNull
     public static StringBuilder delete(@NotNull StringBuilder sb) {
@@ -62,6 +64,7 @@ public class BuilderHelper {
      *
      * @param sb    builder
      * @param count 数量
+     * @return 当前builder
      */
     @NotNull
     public static StringBuilder delete(@NotNull StringBuilder sb, int count) {
@@ -74,6 +77,10 @@ public class BuilderHelper {
     /**
      * skipNull=false, null as empty
      *
+     * @param sb  builder
+     * @param jn  joiner
+     * @param arr 数组
+     * @return 当前builder
      * @see #join(StringBuilder, boolean, String, Object...)
      */
     @NotNull
@@ -82,13 +89,14 @@ public class BuilderHelper {
     }
 
     /**
-     * 使用jn链接，如 [1,null,3] -> "1,,3", [1,null,3] -> "1,3"。
+     * 使用jn链接，如 [1,null,3] -&gt; "1,,3", [1,null,3] -&gt; "1,3"。
      * null当空字符串处理，还是跳过
      *
      * @param sb       builder
      * @param skipNull null是跳过，还是当空
      * @param jn       joiner
      * @param arr      数组
+     * @return 当前builder
      */
     @NotNull
     public static StringBuilder join(@NotNull StringBuilder sb, boolean skipNull, String jn, Object... arr) {
@@ -110,6 +118,10 @@ public class BuilderHelper {
     /**
      * skipNull=false, null as empty
      *
+     * @param sb  builder
+     * @param jn  joiner
+     * @param arr 数组
+     * @return 当前builder
      * @see #join(StringBuilder, boolean, String, Collection)
      */
     @NotNull
@@ -118,13 +130,14 @@ public class BuilderHelper {
     }
 
     /**
-     * 使用jn链接，如 [1,null,3] -> "1,,3", [1,null,3] -> "1,3"。
+     * 使用jn链接，如 [1,null,3] -&gt; "1,,3", [1,null,3] -&gt; "1,3"。
      * null当空字符串处理，还是跳过
      *
      * @param sb       builder
-     * @param skipNull null是跳过，还是当空
+     * @param skipNull 跳过空
      * @param jn       joiner
      * @param arr      数组
+     * @return 当前builder
      */
     @NotNull
     public static StringBuilder join(@NotNull StringBuilder sb, boolean skipNull, String jn, Collection<?> arr) {
@@ -145,6 +158,13 @@ public class BuilderHelper {
     /**
      * skipNull=false, null as empty
      *
+     * @param sb  builder
+     * @param jn  joiner
+     * @param arr 数组
+     * @param fn  T-&gt;R
+     * @param <T> fun输入类型
+     * @param <R> fun返回类型
+     * @return 当前builder
      * @see #join(StringBuilder, boolean, String, Collection, Function)
      */
     @NotNull
@@ -153,14 +173,17 @@ public class BuilderHelper {
     }
 
     /**
-     * 使用jn链接，如 [1,null,3] -> "1,,3", [1,null,3] -> "1,3"。
+     * 使用jn链接，如 [1,null,3] -&gt; "1,,3", [1,null,3] -&gt; "1,3"。
      * null当空字符串处理，还是跳过
      *
      * @param sb       builder
      * @param skipNull null是跳过，还是当空
      * @param jn       joiner
      * @param arr      数组
-     * @param fn       T->R
+     * @param fn       T-&gt;R
+     * @param <T>      fun输入类型
+     * @param <R>      fun返回类型
+     * @return 当前builder
      */
     @NotNull
     public static <T, R> StringBuilder join(@NotNull StringBuilder sb, boolean skipNull, String jn, Collection<T> arr, Function<T, R> fn) {

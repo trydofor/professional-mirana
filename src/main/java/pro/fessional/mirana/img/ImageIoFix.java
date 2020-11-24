@@ -13,6 +13,10 @@ public class ImageIoFix {
 
     /**
      * https://stackoverflow.com/questions/4386446/problem-using-imageio-write-jpg-file
+     *
+     * @param photo 图片
+     * @return fixed 图片流
+     * @throws IOException 读异常
      */
     public static BufferedImage read(InputStream photo) throws IOException {
         BufferedImage image = ImageIO.read(photo);

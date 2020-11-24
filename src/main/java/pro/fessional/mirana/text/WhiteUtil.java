@@ -8,9 +8,9 @@ import java.util.List;
 
 /**
  * 更多的白字符Whitespace处理
+ * https://en.wikipedia.org/wiki/Whitespace_character
  *
  * @author trydofor
- * @link `https://en.wikipedia.org/wiki/Whitespace_character`
  * @since 2016-12-14
  */
 public class WhiteUtil {

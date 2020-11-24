@@ -29,7 +29,7 @@ public class Bytes {
     }
 
     /**
-     * 把一个char变成java的unicode转移格式，`我`(25105)=>'\u6211'
+     * 把一个char变成java的unicode转移格式，`我`(25105)=&gt;'\u6211'
      * 效率不高，更多场合，参考StringEscapeUtil，ByteBuffer
      *
      * @param c  字符

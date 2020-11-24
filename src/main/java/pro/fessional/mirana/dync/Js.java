@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * 通过java内置的script engine执行es6，返回js的最后一个求值结果
  * <pre>
- * Map<String, Object> args = new HashMap<>();
+ * Map&lt;String, Object&gt; args = new HashMap&lt;&gt;();
  * args.put("name","mirana");
  * String rst = Js.run("var msg = 'hello ' + name; msg;", args);
  * assertEquals("hello mirana", rst);
@@ -33,6 +33,10 @@ public class Js {
     /**
      * 每次以新的引擎执行
      *
+     * @param js   js脚本
+     * @param vars 出事的变量
+     * @param <T>  返回值类型
+     * @return 脚本的最后一个语句的求值
      * @see #run(ScriptEngine, String, Map)
      */
     public static <T> T run(String js, Map<String, Object> vars) {
@@ -42,6 +46,9 @@ public class Js {
     /**
      * 每次以新的引擎执行
      *
+     * @param js  js脚本
+     * @param <T> 返回值类型
+     * @return 脚本的最后一个语句的求值
      * @see #run(ScriptEngine, String, Map)
      */
     public static <T> T run(String js) {
@@ -51,16 +58,25 @@ public class Js {
     /**
      * 是否以使用ThreadLocal的引擎执行
      *
+     * @param js     js脚本
+     * @param thread 是否缓存引擎
+     * @param <T>    返回值类型
+     * @return 脚本的最后一个语句的求值
      * @see #run(ScriptEngine, String, Map)
      */
-    public static <T> T run(boolean useThreadLocal, String js) {
-        ScriptEngine engine = useThreadLocal ? getEngine() : newEngine();
+    public static <T> T run(boolean thread, String js) {
+        ScriptEngine engine = thread ? getEngine() : newEngine();
         return run(engine, js, null);
     }
 
     /**
      * 是否以使用ThreadLocal的引擎执行
      *
+     * @param js     js脚本
+     * @param vars   出事的变量
+     * @param thread 是否thread缓存
+     * @param <T>    返回值类型
+     * @return 脚本的最后一个语句的求值
      * @see #run(ScriptEngine, String, Map)
      */
     public static <T> T run(boolean thread, String js, Map<String, Object> vars) {
@@ -69,6 +85,10 @@ public class Js {
     }
 
     /**
+     * @param engine js引擎
+     * @param js     js脚本
+     * @param <T>    返回值类型
+     * @return 脚本的最后一个语句的求值
      * @see #run(ScriptEngine, String, Map)
      */
     public static <T> T run(ScriptEngine engine, String js) {
@@ -77,7 +97,7 @@ public class Js {
 
     /**
      * <pre>
-     * Map<String, Object> args = new HashMap<>();
+     * Map&lt;String, Object&gt; args = new HashMap&lt;&gt;();
      * args.put("name","mirana");
      * String rst = Js.run("var msg = 'hello ' + name; msg;", args);
      * assertEquals("hello mirana", rst);
@@ -85,6 +105,7 @@ public class Js {
      *
      * @param engine js引擎
      * @param js     js脚本
+     * @param <T>    返回值类型
      * @param vars   出事的变量
      * @return 脚本的最后一个语句的求值
      */

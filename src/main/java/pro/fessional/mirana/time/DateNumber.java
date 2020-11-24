@@ -9,14 +9,14 @@ import java.time.ZonedDateTime;
 
 
 /**
- * 日期转化成数字的双向转化，支持以下格式<p/>
- * (date8) yyyyMMdd<p/>
- * (datetime14) yyyyMMddHHmmss<p/>
- * (datetime17) yyyyMMddHHmmssSSS<p/>
- * (time6) HHmmss<p/>
- * (time9) HHmmssSSS<p/>
- * <p>
- * 解析时支持以上所有日期格式，进行半角转化。
+ * <p>日期转化成数字的双向转化，支持以下格式
+ * <p>(date8) yyyyMMdd</p>
+ * <p>(datetime14) yyyyMMddHHmmss</p>
+ * <p>(datetime17) yyyyMMddHHmmssSSS</p>
+ * <p>(time6) HHmmss</p>
+ * <p>(time9) HHmmssSSS</p>
+ *
+ * <p>解析时支持以上所有日期格式，进行半角转化。</p>
  *
  * @author trydofor
  * @see DateParser

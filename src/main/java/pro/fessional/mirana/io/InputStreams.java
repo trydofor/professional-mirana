@@ -20,9 +20,10 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * 更多参考 apache IOUtils 和
+ * guava CharStreams
+ *
  * @author trydofor
- * @link apache IOUtils
- * @link guava CharStreams
  * @since 2020-06-02
  */
 public class InputStreams {
@@ -96,6 +97,7 @@ public class InputStreams {
     /**
      * 读取全部文本，并关闭
      *
+     * @param sb 缓冲
      * @param is 输入流
      * @param cs 字符集
      */
@@ -140,8 +142,9 @@ public class InputStreams {
     /**
      * 读取全部文本行，并关闭
      *
-     * @param is 输入流
-     * @param cs 字符集
+     * @param out 行接收器
+     * @param is  输入流
+     * @param cs  字符集
      */
     public static void readLine(List<String> out, InputStream is, Charset cs) {
         if (is == null) return;

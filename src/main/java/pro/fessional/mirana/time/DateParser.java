@@ -9,16 +9,16 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 /**
- * 解析固定格式的，包含日期数字的字符串，支持以下格式<p/>
- * 可以处理末尾的填充，日期以01填充，时间以00填充。<p/>
- * (date8) yyyyMMdd<p/>
- * (datetime14) yyyyMMddHHmmss<p/>
- * (datetime17) yyyyMMddHHmmssSSS<p/>
- * (date8) MMddyyyy<p/>
- * (datetime14) MMddyyyyHHmmss<p/>
- * (datetime17) MMddyyyyHHmmssSSS<p/>
- * (time6) HHmmss<p/>
- * (time9) HHmmssSSS<p/>
+ * 解析固定格式的，包含日期数字的字符串，支持以下格式<p>
+ * 可以处理末尾的填充，日期以01填充，时间以00填充。<p>
+ * (date8) yyyyMMdd<p>
+ * (datetime14) yyyyMMddHHmmss<p>
+ * (datetime17) yyyyMMddHHmmssSSS<p>
+ * (date8) MMddyyyy<p>
+ * (datetime14) MMddyyyyHHmmss<p>
+ * (datetime17) MMddyyyyHHmmssSSS<p>
+ * (time6) HHmmss<p>
+ * (time9) HHmmssSSS<p>
  *
  * @author trydofor
  * @see DateNumber
@@ -63,9 +63,9 @@ public class DateParser {
     }
 
     /**
-     * 把任意包含日期信息的数字变成日期，解析时只关注数字，忽略非数字字符<p/>
-     * (time6) HHmmss<p/>
-     * (time9) HHmmssSSS<p/>
+     * 把任意包含日期信息的数字变成日期，解析时只关注数字，忽略非数字字符<p>
+     * (time6) HHmmss<p>
+     * (time9) HHmmssSSS<p>
      *
      * @param str 任意包括全角或半角数字的字符串
      * @param off 数字位置偏移量，不考虑非数字
@@ -82,9 +82,9 @@ public class DateParser {
     }
 
     /**
-     * 把任意包含日期信息的数字变成日期，解析时只关注数字，忽略非数字字符<p/>
-     * (date8) yyyyMMdd<p/>
-     * (date8) MMddyyyy<p/>
+     * 把任意包含日期信息的数字变成日期，解析时只关注数字，忽略非数字字符<p>
+     * (date8) yyyyMMdd<p>
+     * (date8) MMddyyyy<p>
      *
      * @param str 任意包括全角或半角数字的字符串
      * @param off 数字位置偏移量，不考虑非数字
@@ -102,11 +102,11 @@ public class DateParser {
     }
 
     /**
-     * 把任意包含日期信息的数字变成日期，解析时只关注数字，忽略非数字字符<p/>
-     * (datetime14) yyyyMMddHHmmss<p/>
-     * (datetime17) yyyyMMddHHmmssSSS<p/>
-     * (datetime14) MMddyyyyHHmmss<p/>
-     * (datetime17) MMddyyyyHHmmssSSS<p/>
+     * 把任意包含日期信息的数字变成日期，解析时只关注数字，忽略非数字字符<p>
+     * (datetime14) yyyyMMddHHmmss<p>
+     * (datetime17) yyyyMMddHHmmssSSS<p>
+     * (datetime14) MMddyyyyHHmmss<p>
+     * (datetime17) MMddyyyyHHmmssSSS<p>
      *
      * @param str 任意包括全角或半角数字的字符串
      * @param off 数字位置偏移量，不考虑非数字
@@ -223,9 +223,7 @@ public class DateParser {
             if (c1 == '0' && c2 >= '1' && c2 <= '9') {
                 return true;
             }
-            if (c1 == '1' && c2 >= '0' && c2 <= '2') {
-                return true;
-            }
+            return c1 == '1' && c2 >= '0' && c2 <= '2';
         }
 
         return false;

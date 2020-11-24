@@ -26,11 +26,11 @@ public class Wildcard {
     /**
      * <pre>
      * 按`*`分割成数组，`**` 按`*`处理，`*?` 按`?*`处理
-     * `*.doc` -> [`*`,`.doc`]
-     * `abc?.doc` -> [`abc?.doc`]
-     * `**.doc` -> [`*`,`.doc`]
-     * `??*.doc` -> [`??`,`*`,`.doc`]
-     * `**?**.doc` -> [`?`,`*`,`.doc`]
+     * `*.doc` = [`*`,`.doc`]
+     * `abc?.doc` = [`abc?.doc`]
+     * `**.doc` = [`*`,`.doc`]
+     * `??*.doc` = [`??`,`*`,`.doc`]
+     * `**?**.doc` = [`?`,`*`,`.doc`]
      * </pre>
      *
      * @param str 模式
@@ -160,6 +160,9 @@ public class Wildcard {
     /**
      * 不区分大小写，从头匹配
      *
+     * @param str 字符
+     * @param ptn 模式
+     * @return 查找结果，-1表示没有找到
      * @see #index(boolean, CharSequence, int, String)
      */
     public static int index(@NotNull CharSequence str, @NotNull String ptn) {
@@ -169,6 +172,10 @@ public class Wildcard {
     /**
      * 从头匹配
      *
+     * @param igc 忽略大小写
+     * @param str 字符
+     * @param ptn 模式
+     * @return 查找结果，-1表示没有找到
      * @see #index(boolean, CharSequence, int, String)
      */
     public static int index(boolean igc, @NotNull CharSequence str, @NotNull String ptn) {

@@ -101,13 +101,13 @@ public class LightIdBufferedProviderTest {
         LightIdBufferedProvider provider = bufferedProvider();
         for (int i = 0; i < 10; i++) {
             try {
-                long next = provider.next("403", 0);
+                provider.next("403", 0);
             } catch (Exception e) {
                 err.put(e, e);
             }
         }
         for (Exception key : err.keySet()) {
-            System.out.println("===============================");
+            System.out.println("============ print for 403 ===================");
             key.printStackTrace();
         }
     }

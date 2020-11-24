@@ -14,13 +14,14 @@ import java.io.InputStream;
 public class Watermark {
 
     public static final String WATER_MARK = "/image/watermark-clearance.png";
-    public static final int    MAX_SIZE   = 1024;
-    public static final double ROTATE     = Math.toRadians(90);
+    public static final int MAX_SIZE = 1024;
+    public static final double ROTATE = Math.toRadians(90);
 
     /**
      * 生成默认水印，并进行等比例缩放(长宽之一不超过#MAX_SIZE)，默认不做横屏旋转。
      *
      * @param photo 原始图片
+     * @return 图片
      * @throws IOException if io exception
      */
     public static BufferedImage exec(String photo) throws IOException {
@@ -31,8 +32,9 @@ public class Watermark {
      * 生成默认水印，并进行等比例缩放(长宽之一不超过#MAX_SIZE)。
      * 横版（landscape），会把竖板顺时针90度旋转。
      *
-     * @param photo 原始图片
+     * @param photo     原始图片
      * @param landscape 是否横屏
+     * @return 图片
      * @throws IOException if io exception
      */
     public static BufferedImage exec(String photo, boolean landscape) throws IOException {
@@ -45,9 +47,10 @@ public class Watermark {
      * 生成默认水印，并进行等比例缩放(长宽之一不超过最大值)。
      * 横版（landscape），会把竖板顺时针90度旋转。
      *
-     * @param photo 原始图片
-     * @param maxSize 最大尺寸
+     * @param photo     原始图片
+     * @param maxSize   最大尺寸
      * @param landscape 是否横屏
+     * @return 图片
      * @throws IOException if io exception
      */
     public static BufferedImage exec(String photo, int maxSize, boolean landscape) throws IOException {
@@ -60,8 +63,9 @@ public class Watermark {
      * 生成默认水印，并进行等比例缩放(长宽之一不超过#MAX_SIZE)。
      * 横版（landscape），会把竖板顺时针90度旋转。
      *
-     * @param photo 原始图片
+     * @param photo     原始图片
      * @param landscape 是否横屏
+     * @return 图片
      * @throws IOException if io exception
      */
     public static BufferedImage exec(InputStream photo, boolean landscape) throws IOException {
@@ -72,9 +76,10 @@ public class Watermark {
      * 生成默认水印，并进行等比例缩放(长宽之一不超过最大值)。
      * 横版（landscape），会把竖板顺时针90度旋转。
      *
-     * @param photo 原始图片
-     * @param maxSize 最大尺寸
+     * @param photo     原始图片
+     * @param maxSize   最大尺寸
      * @param landscape 是否横屏
+     * @return 图片
      * @throws IOException if io exception
      */
     public static BufferedImage exec(InputStream photo, int maxSize, boolean landscape) throws IOException {
@@ -83,13 +88,12 @@ public class Watermark {
     }
 
     /**
-     *
      * 生成水印，并进行等比例缩放(长宽之一不超过最大值)。
      * 横版（landscape），会把竖板顺时针90度旋转。
      *
-     * @param photo 原始图片
+     * @param photo     原始图片
      * @param watermark 水印图片
-     * @param maxSize 最大尺寸
+     * @param maxSize   最大尺寸
      * @param landscape 是否横屏
      * @return 处理后的图片
      * @throws IOException if io exception
@@ -121,9 +125,9 @@ public class Watermark {
         if (landscape && widthPhoto < heightPhoto) {
             bufferImg = new BufferedImage(heightPhoto, widthPhoto, photoImg.getType());
             graphics = bufferImg.createGraphics();
-            float offset = (heightPhoto - widthPhoto) / 2;
+            double offset = (heightPhoto - widthPhoto) / 2D;
             graphics.translate(offset, -offset);
-            graphics.rotate(ROTATE, widthPhoto / 2, heightPhoto / 2);
+            graphics.rotate(ROTATE, widthPhoto / 2D, heightPhoto / 2D);
         } else {
             bufferImg = new BufferedImage(widthPhoto, heightPhoto, photoImg.getType());
             graphics = bufferImg.createGraphics();
@@ -167,6 +171,7 @@ public class Watermark {
      * 生成默认水印，并进行等比例缩放(长宽之一不超过#MAX_SIZE)，默认不做横屏旋转。
      *
      * @param photo 原始图片
+     * @return 图片
      * @throws IOException if io exception
      */
     public BufferedImage exec(InputStream photo) throws IOException {

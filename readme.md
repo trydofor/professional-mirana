@@ -5,6 +5,32 @@ POM(.xml), 月女，她有一只神箭，她有一只大猫。
 
 ![mirana](./mirana_full.png)
 
+## 如何使用
+
+① 自己`clone`和`install`最豪横。
+
+② 使用 maven central 比较稳妥。
+``` xml
+<dependency>
+    <groupId>pro.fessional</groupId>
+    <artifactId>mirana</artifactId>
+    <version>2.0.0</version>
+</dependency>
+```
+
+③ 使用 SNAPSHOT 与时俱进。
+``` xml
+<!-- 2.0.0-SNAPSHOT -->
+<repository>
+    <id>oss-sonatype</id>
+    <name>oss-sonatype</name>
+    <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+    <snapshots>
+        <enabled>true</enabled>
+    </snapshots>
+</repository>
+```
+
 ## Naming 命名约定
 
 * Null 等效于null的默认值。

@@ -16,13 +16,13 @@ import java.util.Date;
 
 /**
  * 线程安全的，比正常formatter要快
- * <p/>
- * DateTimeFormatter is immutable and thread-safe.<p/>
- * DateFormat is not thread-safe.<p/>
+ * <p>https://javarevisited.blogspot.com/2013/01/threadlocal-memory-leak-in-java-web.html
+ * <p>https://stackoverflow.com/questions/17968803/threadlocal-memory-leak
+ * <p>
+ * DateTimeFormatter is immutable and thread-safe.<p>
+ * DateFormat is not thread-safe.<p>
  *
  * @author trydofor
- * @link https://javarevisited.blogspot.com/2013/01/threadlocal-memory-leak-in-java-web.html
- * @link https://stackoverflow.com/questions/17968803/threadlocal-memory-leak
  * @since 2019-07-03
  */
 

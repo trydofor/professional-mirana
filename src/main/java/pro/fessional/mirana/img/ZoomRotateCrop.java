@@ -6,8 +6,9 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
+ * http://fengyuanchen.github.io/cropper/#overview
+ *
  * @author trydofor
- * @link `http://fengyuanchen.github.io/cropper/#overview`
  * @since 2016-11-01
  */
 public class ZoomRotateCrop {
@@ -122,7 +123,7 @@ public class ZoomRotateCrop {
         BufferedImage result = new BufferedImage(newW, newH, image.getType());
         Graphics2D g = result.createGraphics();
         g.translate((newW - oldW) / 2, (newH - oldH) / 2);
-        g.rotate(angle, oldW / 2, oldH / 2);
+        g.rotate(angle, oldW / 2D, oldH / 2D);
         g.drawRenderedImage(image, null);
         g.dispose();
 

@@ -152,6 +152,8 @@ public class BigDecimalUtil {
     // ////// avg //////
 
     /**
+     * @param vs var args
+     * @return 平均数
      * @see #avg(BigDecimal...)
      */
     @NotNull
@@ -160,6 +162,8 @@ public class BigDecimalUtil {
     }
 
     /**
+     * @param vs var args
+     * @return 平均数
      * @see #avg(BigDecimal...)
      */
     @NotNull
@@ -181,6 +185,9 @@ public class BigDecimalUtil {
     }
 
     /**
+     * @param skipNull 是否忽略null
+     * @param vs       数字
+     * @return 平均数
      * @see #avg(boolean, BigDecimal...)
      */
     @NotNull
@@ -189,6 +196,9 @@ public class BigDecimalUtil {
     }
 
     /**
+     * @param skipNull 是否忽略null
+     * @param vs       数字
+     * @return 平均数
      * @see #avg(boolean, BigDecimal...)
      */
     @NotNull
@@ -223,6 +233,8 @@ public class BigDecimalUtil {
     // ////// sum //////
 
     /**
+     * @param vs 数字
+     * @return 求和
      * @see #sum(BigDecimal...)
      */
     @NotNull
@@ -231,6 +243,8 @@ public class BigDecimalUtil {
     }
 
     /**
+     * @param vs 数字
+     * @return 求和
      * @see #sum(BigDecimal...)
      */
     @NotNull
@@ -258,6 +272,11 @@ public class BigDecimalUtil {
     // ////// prd //////
 
     /**
+     * 联乘，忽略null或当零处理
+     *
+     * @param skipNull 忽略null或当零处理
+     * @param vs       数字
+     * @return 积
      * @see #prd(boolean, BigDecimal...)
      */
     @NotNull
@@ -266,6 +285,11 @@ public class BigDecimalUtil {
     }
 
     /**
+     * 联乘，忽略null或当零处理
+     *
+     * @param skipNull 忽略null或当零处理
+     * @param vs       数字
+     * @return 积
      * @see #prd(boolean, BigDecimal...)
      */
     @NotNull
@@ -278,7 +302,7 @@ public class BigDecimalUtil {
      *
      * @param skipNull 忽略null或当零处理
      * @param vs       数字
-     * @return 和
+     * @return 积
      */
     @NotNull
     public static BigDecimal prd(boolean skipNull, BigDecimal... vs) {
@@ -329,6 +353,11 @@ public class BigDecimalUtil {
     // ////// max //////
 
     /**
+     * 求最大值，null忽略
+     *
+     * @param a 数字
+     * @param b 数字
+     * @return 最大值
      * @see #max(BigDecimal, BigDecimal)
      */
     public static BigDecimal max(BigDecimal a, String b) {
@@ -336,6 +365,11 @@ public class BigDecimalUtil {
     }
 
     /**
+     * 求最大值，null忽略
+     *
+     * @param a 数字
+     * @param b 数字
+     * @return 最大值
      * @see #max(BigDecimal, BigDecimal)
      */
     public static BigDecimal max(BigDecimal a, Number b) {
@@ -358,6 +392,11 @@ public class BigDecimalUtil {
     // ////// min //////
 
     /**
+     * 最小值，null忽略
+     *
+     * @param a 数字
+     * @param b 数字
+     * @return 最小值
      * @see #min(BigDecimal, BigDecimal)
      */
     public static BigDecimal min(BigDecimal a, String b) {
@@ -365,6 +404,11 @@ public class BigDecimalUtil {
     }
 
     /**
+     * 最小值，null忽略
+     *
+     * @param a 数字
+     * @param b 数字
+     * @return 最小值
      * @see #min(BigDecimal, BigDecimal)
      */
     public static BigDecimal min(BigDecimal a, Number b) {
@@ -387,6 +431,9 @@ public class BigDecimalUtil {
     // ///////// add /////////
 
     /**
+     * @param a 数字
+     * @param b 数字
+     * @return 结果
      * @see #add(BigDecimal, BigDecimal, BigDecimal)
      */
     @NotNull
@@ -395,6 +442,9 @@ public class BigDecimalUtil {
     }
 
     /**
+     * @param a 数字
+     * @param b 数字
+     * @return 结果
      * @see #add(BigDecimal, BigDecimal, BigDecimal)
      */
     @NotNull
@@ -403,6 +453,9 @@ public class BigDecimalUtil {
     }
 
     /**
+     * @param a 数字
+     * @param b 数字
+     * @return 结果
      * @see #add(BigDecimal, BigDecimal, BigDecimal)
      */
     @NotNull
@@ -411,6 +464,9 @@ public class BigDecimalUtil {
     }
 
     /**
+     * @param a 数字
+     * @param b 数字
+     * @return 结果
      * @see #add(BigDecimal, BigDecimal, BigDecimal)
      */
     @NotNull
@@ -419,6 +475,9 @@ public class BigDecimalUtil {
     }
 
     /**
+     * @param a 数字
+     * @param b 数字
+     * @return 结果
      * @see #add(BigDecimal, BigDecimal, BigDecimal)
      */
     @NotNull
@@ -427,6 +486,9 @@ public class BigDecimalUtil {
     }
 
     /**
+     * @param a 数字
+     * @param b 数字
+     * @return 结果
      * @see #add(BigDecimal, BigDecimal, BigDecimal)
      */
     @NotNull
@@ -435,6 +497,10 @@ public class BigDecimalUtil {
     }
 
     /**
+     * @param a 数字
+     * @param b 数字
+     * @param c 数字
+     * @return 结果
      * @see #add(BigDecimal, BigDecimal, BigDecimal)
      */
     @NotNull
@@ -443,6 +509,10 @@ public class BigDecimalUtil {
     }
 
     /**
+     * @param a 数字
+     * @param b 数字
+     * @param c 数字
+     * @return 结果
      * @see #add(BigDecimal, BigDecimal, BigDecimal)
      */
     @NotNull
@@ -496,6 +566,9 @@ public class BigDecimalUtil {
     // ///////// sub /////////
 
     /**
+     * @param a 数字
+     * @param b 数字
+     * @return 结果
      * @see #sub(BigDecimal, BigDecimal, BigDecimal)
      */
     @NotNull
@@ -504,6 +577,9 @@ public class BigDecimalUtil {
     }
 
     /**
+     * @param a 数字
+     * @param b 数字
+     * @return 结果
      * @see #sub(BigDecimal, BigDecimal, BigDecimal)
      */
     @NotNull
@@ -512,6 +588,9 @@ public class BigDecimalUtil {
     }
 
     /**
+     * @param a 数字
+     * @param b 数字
+     * @return 结果
      * @see #sub(BigDecimal, BigDecimal, BigDecimal)
      */
     @NotNull
@@ -520,6 +599,9 @@ public class BigDecimalUtil {
     }
 
     /**
+     * @param a 数字
+     * @param b 数字
+     * @return 结果
      * @see #sub(BigDecimal, BigDecimal, BigDecimal)
      */
     @NotNull
@@ -528,6 +610,9 @@ public class BigDecimalUtil {
     }
 
     /**
+     * @param a 数字
+     * @param b 数字
+     * @return 结果
      * @see #sub(BigDecimal, BigDecimal, BigDecimal)
      */
     @NotNull
@@ -536,6 +621,9 @@ public class BigDecimalUtil {
     }
 
     /**
+     * @param a 数字
+     * @param b 数字
+     * @return 结果
      * @see #sub(BigDecimal, BigDecimal, BigDecimal)
      */
     @NotNull
@@ -544,6 +632,10 @@ public class BigDecimalUtil {
     }
 
     /**
+     * @param a 数字
+     * @param b 数字
+     * @param c 数字
+     * @return 结果
      * @see #sub(BigDecimal, BigDecimal, BigDecimal)
      */
     @NotNull
@@ -552,6 +644,10 @@ public class BigDecimalUtil {
     }
 
     /**
+     * @param a 数字
+     * @param b 数字
+     * @param c 数字
+     * @return 结果
      * @see #sub(BigDecimal, BigDecimal, BigDecimal)
      */
     @NotNull
@@ -605,6 +701,9 @@ public class BigDecimalUtil {
     // ///////// mul /////////
 
     /**
+     * @param a 数字
+     * @param b 数字
+     * @return 结果
      * @see #mul(BigDecimal, BigDecimal, BigDecimal)
      */
     @NotNull
@@ -613,6 +712,9 @@ public class BigDecimalUtil {
     }
 
     /**
+     * @param a 数字
+     * @param b 数字
+     * @return 结果
      * @see #mul(BigDecimal, BigDecimal, BigDecimal)
      */
     @NotNull
@@ -621,6 +723,9 @@ public class BigDecimalUtil {
     }
 
     /**
+     * @param a 数字
+     * @param b 数字
+     * @return 结果
      * @see #mul(BigDecimal, BigDecimal, BigDecimal)
      */
     @NotNull
@@ -629,6 +734,9 @@ public class BigDecimalUtil {
     }
 
     /**
+     * @param a 数字
+     * @param b 数字
+     * @return 结果
      * @see #mul(BigDecimal, BigDecimal, BigDecimal)
      */
     @NotNull
@@ -637,6 +745,9 @@ public class BigDecimalUtil {
     }
 
     /**
+     * @param a 数字
+     * @param b 数字
+     * @return 结果
      * @see #mul(BigDecimal, BigDecimal, BigDecimal)
      */
     @NotNull
@@ -645,6 +756,9 @@ public class BigDecimalUtil {
     }
 
     /**
+     * @param a 数字
+     * @param b 数字
+     * @return 结果
      * @see #mul(BigDecimal, BigDecimal, BigDecimal)
      */
     @NotNull
@@ -653,6 +767,10 @@ public class BigDecimalUtil {
     }
 
     /**
+     * @param a 数字
+     * @param b 数字
+     * @param c 数字
+     * @return 结果
      * @see #mul(BigDecimal, BigDecimal, BigDecimal)
      */
     @NotNull
@@ -661,6 +779,10 @@ public class BigDecimalUtil {
     }
 
     /**
+     * @param a 数字
+     * @param b 数字
+     * @param c 数字
+     * @return 结果
      * @see #mul(BigDecimal, BigDecimal, BigDecimal)
      */
     @NotNull
@@ -706,6 +828,9 @@ public class BigDecimalUtil {
     // ///////// div /////////
 
     /**
+     * @param a 数字
+     * @param b 数字
+     * @return 结果
      * @see #div(BigDecimal, BigDecimal, BigDecimal)
      */
     @NotNull
@@ -714,6 +839,9 @@ public class BigDecimalUtil {
     }
 
     /**
+     * @param a 数字
+     * @param b 数字
+     * @return 结果
      * @see #div(BigDecimal, BigDecimal, BigDecimal)
      */
     @NotNull
@@ -722,6 +850,9 @@ public class BigDecimalUtil {
     }
 
     /**
+     * @param a 数字
+     * @param b 数字
+     * @return 结果
      * @see #div(BigDecimal, BigDecimal, BigDecimal)
      */
     @NotNull
@@ -730,6 +861,9 @@ public class BigDecimalUtil {
     }
 
     /**
+     * @param a 数字
+     * @param b 数字
+     * @return 结果
      * @see #div(BigDecimal, BigDecimal, BigDecimal)
      */
     @NotNull
@@ -738,6 +872,9 @@ public class BigDecimalUtil {
     }
 
     /**
+     * @param a 数字
+     * @param b 数字
+     * @return 结果
      * @see #div(BigDecimal, BigDecimal, BigDecimal)
      */
     @NotNull
@@ -746,6 +883,9 @@ public class BigDecimalUtil {
     }
 
     /**
+     * @param a 数字
+     * @param b 数字
+     * @return 结果
      * @see #div(BigDecimal, BigDecimal, BigDecimal)
      */
     @NotNull
@@ -754,6 +894,10 @@ public class BigDecimalUtil {
     }
 
     /**
+     * @param a 数字
+     * @param b 数字
+     * @param c 数字
+     * @return 结果
      * @see #div(BigDecimal, BigDecimal, BigDecimal)
      */
     @NotNull
@@ -762,6 +906,10 @@ public class BigDecimalUtil {
     }
 
     /**
+     * @param a 数字
+     * @param b 数字
+     * @param c 数字
+     * @return 结果
      * @see #div(BigDecimal, BigDecimal, BigDecimal)
      */
     @NotNull
@@ -960,6 +1108,9 @@ public class BigDecimalUtil {
     }
 
     /**
+     * @param value 数值
+     * @param unit  单位
+     * @return 处理结果
      * @see #unitUp(BigDecimal, BigDecimal, BigDecimal)
      */
     @NotNull
@@ -971,8 +1122,8 @@ public class BigDecimalUtil {
      * <pre>
      * 以单位向上取整, null 当零处理, scale以unit为准。
      * 以称重计价为例，称的精度0.01，每0.5计价
-     * 当x > 0.1时，按0.5处理，否则按0处理
-     * 当x > 0.6时，按1处理，否则按0.5处理
+     * 当x &gt; 0.1时，按0.5处理，否则按0处理
+     * 当x &gt; 0.6时，按1处理，否则按0.5处理
      * </pre>
      *
      * @param value 数值
@@ -1004,6 +1155,9 @@ public class BigDecimalUtil {
 
     /**
      * @see #unitDown(BigDecimal, BigDecimal, BigDecimal)
+     * @param value 数值
+     * @param unit  单位
+     * @return 处理结果
      */
     @NotNull
     public static BigDecimal unitDown(BigDecimal value, BigDecimal unit) {
@@ -1014,10 +1168,10 @@ public class BigDecimalUtil {
      * <pre>
      * 以单位向下取整, null 当零处理, scale以unit为准。
      * 以称重计价为例，称的精度0.01，每0.5计价
-     * 当x >= 0.4时，按0.5处理，否则按0处理
-     * 当x >= 0.9时，按1处理，否则按0.5处理
+     * 当x &gt;= 0.4时，按0.5处理，否则按0处理
+     * 当x &gt;= 0.9时，按1处理，否则按0.5处理
      * </pre>
-
+     *
      * @param value 数值
      * @param unit  单位
      * @param upto  单位后余数，大于等于该值则进位
@@ -1045,6 +1199,9 @@ public class BigDecimalUtil {
     }
 
     /**
+     * @param a 数字
+     * @param b 数字
+     * @return 结果
      * @see #compareTo(BigDecimal, BigDecimal)
      */
     public static int compareTo(BigDecimal a, String b) {
@@ -1052,6 +1209,9 @@ public class BigDecimalUtil {
     }
 
     /**
+     * @param a 数字
+     * @param b 数字
+     * @return 结果
      * @see #compareTo(BigDecimal, BigDecimal)
      */
     public static int compareTo(BigDecimal a, Number b) {
@@ -1073,6 +1233,11 @@ public class BigDecimalUtil {
     }
 
     /**
+     * @param a     数字
+     * @param b     数字
+     * @param scale 小数点位数，如2为0.00
+     * @param mode  舍入类型
+     * @return 结果
      * @see #compareTo(BigDecimal, BigDecimal, int, RoundingMode)
      */
     public static int compareTo(BigDecimal a, String b, int scale, RoundingMode mode) {
@@ -1080,6 +1245,11 @@ public class BigDecimalUtil {
     }
 
     /**
+     * @param a     数字
+     * @param b     数字
+     * @param scale 小数点位数，如2为0.00
+     * @param mode  舍入类型
+     * @return 结果
      * @see #compareTo(BigDecimal, BigDecimal, int, RoundingMode)
      */
     public static int compareTo(BigDecimal a, Number b, int scale, RoundingMode mode) {
@@ -1123,6 +1293,9 @@ public class BigDecimalUtil {
     }
 
     /**
+     * @param a 数字
+     * @param b 数字
+     * @return 结果
      * @see #equalsValue(BigDecimal, BigDecimal)
      */
     public static boolean equalsValue(BigDecimal a, String b) {
@@ -1130,6 +1303,9 @@ public class BigDecimalUtil {
     }
 
     /**
+     * @param a 数字
+     * @param b 数字
+     * @return 结果
      * @see #equalsValue(BigDecimal, BigDecimal)
      */
     public static boolean equalsValue(BigDecimal a, Number b) {
@@ -1149,6 +1325,11 @@ public class BigDecimalUtil {
     }
 
     /**
+     * @param a     数字
+     * @param b     数字
+     * @param scale 小数点位数，如2为0.00
+     * @param mode  舍入类型
+     * @return 结果
      * @see #equalsValue(BigDecimal, BigDecimal, int, RoundingMode)
      */
     public static boolean equalsValue(BigDecimal a, String b, int scale, RoundingMode mode) {
@@ -1156,6 +1337,11 @@ public class BigDecimalUtil {
     }
 
     /**
+     * @param a     数字
+     * @param b     数字
+     * @param scale 小数点位数，如2为0.00
+     * @param mode  舍入类型
+     * @return 结果
      * @see #equalsValue(BigDecimal, BigDecimal, int, RoundingMode)
      */
     public static boolean equalsValue(BigDecimal a, Number b, int scale, RoundingMode mode) {

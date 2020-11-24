@@ -58,6 +58,7 @@ public class ThrowableUtil {
      *
      * @param t 具体异常对象
      * @param e 需要匹配的异常类型
+     * @return 结果
      */
     public static boolean contains(Throwable t, Class<? extends Throwable> e) {
         if (t == null || e == null) return false;
