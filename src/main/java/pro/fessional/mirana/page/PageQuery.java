@@ -7,30 +7,33 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * pageNumber，从1开始，不小于1。
- * pageSize，从1开始，不小于1。
- * orderBy ""表示null
+ * <pre>
+ * org.springframework.data.domain.Page很强大，不过依赖较重
+ * page，从1开始，不小于1。
+ * size，从1开始，不小于1。
+ * sort ""表示null，`,`分隔，'key1,-key2' means key asc, key2 desc.
+ * </pre>
  *
  * @author trydofor
  * @since 2020-09-29
  */
 public class PageQuery implements Serializable {
-    private int pageNumber = 1;
-    private int pageSize = 1;
-    private String sortBy = Null.Str;
+    private int page = 1;
+    private int size = 1;
+    private String sort = Null.Str;
 
     public PageQuery() {
     }
 
-    public PageQuery(int pageNumber, int pageSize) {
-        this.pageNumber = pageNumber;
-        this.pageSize = pageSize;
+    public PageQuery(int page, int size) {
+        this.page = page;
+        this.size = size;
     }
 
-    public PageQuery(int pageNumber, int pageSize, String sortBy) {
-        this.pageNumber = pageNumber;
-        this.pageSize = pageSize;
-        this.sortBy = sortBy == null ? Null.Str : sortBy;
+    public PageQuery(int page, int size, String sort) {
+        this.page = page;
+        this.size = size;
+        this.sort = sort == null ? Null.Str : sort;
     }
 
     /**
@@ -38,12 +41,12 @@ public class PageQuery implements Serializable {
      *
      * @return 页码
      */
-    public int getPageNumber() {
-        return pageNumber;
+    public int getPage() {
+        return page;
     }
 
-    public PageQuery setPageNumber(int pageNumber) {
-        this.pageNumber = Math.max(pageNumber, 1);
+    public PageQuery setPage(int page) {
+        this.page = Math.max(page, 1);
         return this;
     }
 
@@ -52,29 +55,29 @@ public class PageQuery implements Serializable {
      *
      * @return 大小
      */
-    public int getPageSize() {
-        return pageSize;
+    public int getSize() {
+        return size;
     }
 
-    public PageQuery setPageSize(int pageSize) {
-        this.pageSize = Math.max(pageSize, 1);
+    public PageQuery setSize(int size) {
+        this.size = Math.max(size, 1);
         return this;
     }
 
     /**
      * 固定格式的排序条件。
      *
-     * @see PageUtil#sortBy(String)
      * @return 排序条件
+     * @see PageUtil#sort(String)
      */
 
     @NotNull
-    public String getSortBy() {
-        return sortBy;
+    public String getSort() {
+        return sort;
     }
 
-    public PageQuery setSortBy(String sortBy) {
-        this.sortBy = sortBy == null ? Null.Str : sortBy;
+    public PageQuery setSort(String sort) {
+        this.sort = sort == null ? Null.Str : sort;
         return this;
     }
 
@@ -84,15 +87,15 @@ public class PageQuery implements Serializable {
      * @return 偏移量
      */
     public int toOffset() {
-        return PageUtil.dataIndex(pageNumber, pageSize);
+        return PageUtil.dataIndex(page, size);
     }
 
     @Override
     public String toString() {
         return "PageQuery{" +
-                "pageNumber=" + pageNumber +
-                ", pageSize=" + pageSize +
-                ", sortBy='" + sortBy + '\'' +
+                "page=" + page +
+                ", size=" + size +
+                ", sort='" + sort + '\'' +
                 '}';
     }
 
@@ -101,13 +104,13 @@ public class PageQuery implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PageQuery pageQuery = (PageQuery) o;
-        return pageNumber == pageQuery.pageNumber &&
-                pageSize == pageQuery.pageSize &&
-                sortBy.equals(pageQuery.sortBy);
+        return page == pageQuery.page &&
+                size == pageQuery.size &&
+                sort.equals(pageQuery.sort);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(pageNumber, pageSize, sortBy);
+        return Objects.hash(page, size, sort);
     }
 }

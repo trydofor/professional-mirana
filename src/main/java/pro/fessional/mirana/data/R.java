@@ -12,6 +12,7 @@ import java.util.Base64;
  * 基础结果类，
  * success 判定操作成功|失败。
  * message 用户消息，有则显示。
+ * error 内部错误，用于跟踪
  * code 业务code，有则判定。
  * data 业务数据，有则使用。
  * <p>

@@ -167,6 +167,7 @@ public class Zipper {
      *
      * @param zip zip file
      * @throws IOException exception
+     * @return mapped result
      */
     public static Map<String, byte[]> unzip(InputStream zip) throws IOException {
         Map<String, byte[]> entries = new HashMap<>();

@@ -7,23 +7,31 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 /**
- * pageNumber，从1开始，不小于1。
- * pageSize，从1开始，不小于1。
- * totalPage，不小于1。
+ * 不建议构造之后，修改页内数据，因此应最后构造。
+ * <pre>
+ * page，从1开始，不小于1。
+ * size，从1开始，不小于1。
+ * totalPage，不小于1，计算所得。
  * totalData 不小于0，超过21亿的数字不可想象。
+ * </pre>
  *
  * @author trydofor
  * @since 2020-09-29
  */
-public class PageResult<E> implements Serializable {
-    private int pageNumber = 1;
-    private int pageSize = 1;
+public class PageResult<E> implements Iterable<E>, Serializable {
+
+    private final List<E> empty = Collections.emptyList();
+
+    private int page = 1;
+    private int size = 1;
     private int totalPage = Null.Int32;
     private int totalData = Null.Int32;
-    private List<E> data = Collections.emptyList();
+    @NotNull
+    private Collection<E> data = empty;
 
     public PageResult() {
     }
@@ -33,12 +41,12 @@ public class PageResult<E> implements Serializable {
      *
      * @return 页码
      */
-    public int getPageNumber() {
-        return pageNumber;
+    public int getPage() {
+        return page;
     }
 
-    public PageResult<E> setPageNumber(int pageNumber) {
-        this.pageNumber = Math.max(pageNumber, 1);
+    public PageResult<E> setPage(int page) {
+        this.page = Math.max(page, 1);
         return this;
     }
 
@@ -47,8 +55,8 @@ public class PageResult<E> implements Serializable {
      *
      * @return 大小
      */
-    public int getPageSize() {
-        return pageSize;
+    public int getSize() {
+        return size;
     }
 
     /**
@@ -69,6 +77,29 @@ public class PageResult<E> implements Serializable {
         return totalData;
     }
 
+    /**
+     * 获取数据
+     *
+     * @return 数据
+     */
+    @NotNull
+    public Collection<E> getData() {
+        return data;
+    }
+
+    /**
+     * 获取数据
+     *
+     * @return 数据
+     */
+    @NotNull
+    public List<E> toList() {
+        if (data instanceof List<?>) {
+            return (List<E>) data;
+        } else {
+            return new ArrayList<>(data);
+        }
+    }
 
     /**
      * 设置总数据量和页大小，从而计算总页数
@@ -78,40 +109,35 @@ public class PageResult<E> implements Serializable {
      * @return this
      */
     public PageResult<E> setTotalInfo(int totalData, int pageSize) {
-        this.pageSize = Math.max(pageSize, 1);
+        this.size = Math.max(pageSize, 1);
         this.totalData = Math.max(totalData, 0);
         this.totalPage = PageUtil.totalPage(totalData, pageSize);
         return this;
     }
 
-    @NotNull
-    public List<? extends E> getData() {
-        return data == null ? Collections.emptyList() : data;
-    }
-
-    public PageResult<E> setData(Collection<E> ds) {
-        if (ds != null && ds.size() > 0) {
-            if (ds instanceof List) {
-                data = (List<E>) ds;
-            } else {
-                data = new ArrayList<>(ds);
-            }
+    @SuppressWarnings("unchecked")
+    public PageResult<E> setData(Collection<? extends E> ds) {
+        if (ds == null || ds.isEmpty()) {
+            data = empty;
+        } else {
+            data = (Collection<E>) ds;
         }
         return this;
     }
 
-    public PageResult<E> addData(E d) {
-        if (d != null) {
-            if (data == null) data = new ArrayList<>(pageSize > 0 ? pageSize : 20);
-            data.add(d);
+    public PageResult<E> addData(E e) {
+        if (e != null) {
+            if (data == empty) {
+                data = new ArrayList<>(size > 0 ? size : 20);
+            }
+            data.add(e);
         }
-
         return this;
     }
 
     public PageResult<E> addData(Collection<E> ds) {
         if (ds != null && ds.size() > 0) {
-            if (data == null) {
+            if (data == empty) {
                 data = new ArrayList<>(ds);
             } else {
                 data.addAll(ds);
@@ -120,49 +146,28 @@ public class PageResult<E> implements Serializable {
         return this;
     }
 
-    public static <T> PageResult<T> of(int totalData, Collection<T> data, PageQuery pg) {
-        return new PageResult<T>()
-                .setData(data)
-                .setPageNumber(pg.getPageNumber())
-                .setTotalInfo(totalData, pg.getPageSize());
+    public boolean hasData() {
+        return data.size() > 0;
     }
 
-    public static <T> PageResult<T> of(int totalData, Collection<T> data, int pageNumber, int pageSize) {
+    @NotNull
+    @Override
+    public Iterator<E> iterator() {
+        return data.iterator();
+    }
+
+    // ////////
+    public static <T> PageResult<T> of(int totalData, Collection<? extends T> data, PageQuery pg) {
         return new PageResult<T>()
                 .setData(data)
-                .setPageNumber(pageNumber)
+                .setPage(pg.getPage())
+                .setTotalInfo(totalData, pg.getSize());
+    }
+
+    public static <T> PageResult<T> of(int totalData, Collection<? extends T> data, int pageNumber, int pageSize) {
+        return new PageResult<T>()
+                .setData(data)
+                .setPage(pageNumber)
                 .setTotalInfo(totalData, pageSize);
-    }
-
-    public static final PageResult<?> EMPTY = new PageResult<Object>() {
-        @Override
-        public PageResult<Object> setPageNumber(int pageNumber) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public PageResult<Object> setTotalInfo(int totalData, int pageSize) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public PageResult<Object> setData(Collection<Object> ds) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public PageResult<Object> addData(Object d) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public PageResult<Object> addData(Collection<Object> ds) {
-            throw new UnsupportedOperationException();
-        }
-    };
-
-    @SuppressWarnings("unchecked")
-    public static <T> PageResult<T> empty() {
-        return (PageResult<T>) EMPTY;
     }
 }

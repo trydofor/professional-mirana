@@ -17,12 +17,12 @@ import java.util.regex.Pattern;
 /**
  * 增加字符串拼接的可读性，同时可避免replace值中存在被替换字符串的尴尬
  * <pre>
- * StringTemplate.fix("https://api.weixin.qq.com/cgi-bin/user/info?access_token=ACCESS_TOKEN&openid=OPENID&lang=en")
+ * StringTemplate.fix("https://api.weixin.qq.com/cgi-bin/user/info?access_token=ACCESS_TOKEN&amp;openid=OPENID&amp;lang=en")
  *     .bindStr("ACCESS_TOKEN", token)
  *     .bindStr("OPENID", openid)
  *     .toString();
  * 的执行效率和效果等同于
- * "https://api.weixin.qq.com/cgi-bin/user/info?access_token="+token+"&openid="+openid+"&lang=en"
+ * "https://api.weixin.qq.com/cgi-bin/user/info?access_token="+token+"&amp;openid="+openid+"&amp;lang=en"
  * 比String.format, replace，或其他动态替换的性能好。
  *
  * 需要注意的，是bindStr和bindReg字符串相同时会覆盖。

@@ -13,12 +13,12 @@ public class PageQueryTest {
     @Test
     public void toOffset() {
         PageQuery pq = new PageQuery();
-        pq.setPageNumber(-1)
-          .setPageSize(-1)
-          .setSortBy(null);
+        pq.setPage(-1)
+          .setSize(-1)
+          .setSort(null);
 
-        assertEquals(1, pq.getPageNumber());
-        assertEquals(1, pq.getPageSize());
-        assertEquals("", pq.getSortBy());
+        assertEquals(1, pq.getPage());
+        assertEquals(1, pq.getSize());
+        assertEquals("", pq.getSort());
     }
 }

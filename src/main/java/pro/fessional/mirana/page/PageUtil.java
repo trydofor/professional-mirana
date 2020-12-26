@@ -1,5 +1,6 @@
 package pro.fessional.mirana.page;
 
+import org.jetbrains.annotations.NotNull;
 import pro.fessional.mirana.text.WhiteUtil;
 
 import java.util.ArrayList;
@@ -45,7 +46,8 @@ public class PageUtil {
     public static final char SORT_DELI = ',';
 
 
-    public static Sb sort() {
+    @NotNull
+    public static Sb sortBy() {
         return new Sb(new StringBuilder(32));
     }
 
@@ -53,17 +55,18 @@ public class PageUtil {
      * 构造order-by的约定字符串。`,`分隔，`key`表示asc升序，`-key`表示desc降序。
      * 自动移除所有空白字符，WitheUtil
      *
-     * @param sortBy 格式
+     * @param sort 格式
      * @return order by
      * @see #SORT_DELI 分隔符
      * @see #SORT_DESC 降序
      */
-    public static List<By> sortBy(String sortBy) {
-        if (sortBy == null || sortBy.isEmpty()) return Collections.emptyList();
+    @NotNull
+    public static List<By> sort(String sort) {
+        if (sort == null || sort.isEmpty()) return Collections.emptyList();
         List<By> bies = new ArrayList<>(4);
         StringBuilder buf = new StringBuilder(16);
-        for (int i = 0, len = sortBy.length(); i < len; i++) {
-            char c = sortBy.charAt(i);
+        for (int i = 0, len = sort.length(); i < len; i++) {
+            char c = sort.charAt(i);
             if (c == SORT_DELI) {
                 By st = By.of(buf);
                 if (st != null) bies.add(st);
@@ -89,6 +92,7 @@ public class PageUtil {
             this.buf = sb == null ? new StringBuilder() : sb;
         }
 
+        @NotNull
         public Sb by(String key, boolean asc) {
             if (key != null && key.length() > 0) {
                 buf.append(SORT_DELI);
@@ -98,6 +102,7 @@ public class PageUtil {
             return this;
         }
 
+        @NotNull
         public Sb by(By by) {
             if (by != null) {
                 by(by.key, by.asc);
@@ -105,6 +110,7 @@ public class PageUtil {
             return this;
         }
 
+        @NotNull
         public Sb by(Collection<By> sort) {
             if (sort != null) {
                 for (By st : sort) {
@@ -114,6 +120,7 @@ public class PageUtil {
             return this;
         }
 
+        @NotNull
         public String build() {
             return buf.length() > 0 ? buf.substring(1) : buf.toString();
         }

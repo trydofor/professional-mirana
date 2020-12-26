@@ -17,7 +17,7 @@ public class PageUtilTest {
 
     @Test
     public void orderBy() {
-        String od1 = PageUtil.sort()
+        String od1 = PageUtil.sortBy()
                              .by("key1", true)
                              .by("key2", false)
                              .by("key3", true)
@@ -27,22 +27,22 @@ public class PageUtilTest {
         st1.add(PageUtil.By.of("key2", false));
         st1.add(PageUtil.By.of("key3", true));
 
-        String od2 = PageUtil.sort()
+        String od2 = PageUtil.sortBy()
                              .by(st1)
                              .build();
         assertEquals(od1, od2);
         assertEquals("key1,-key2,key3", od2);
 
-        List<PageUtil.By> st2 = PageUtil.sortBy(od1);
+        List<PageUtil.By> st2 = PageUtil.sort(od1);
         assertEquals(st1, st2);
 
-        List<PageUtil.By> st3 = PageUtil.sortBy("\tkey1  \r ,  \n  -key2   ,   key3     ");
+        List<PageUtil.By> st3 = PageUtil.sort("\tkey1  \r ,  \n  -key2   ,   key3     ");
         assertEquals(st1, st3);
 
-        List<PageUtil.By> st4 = PageUtil.sortBy("\t  \r ,  \n  -   ,       ");
+        List<PageUtil.By> st4 = PageUtil.sort("\t  \r ,  \n  -   ,       ");
         assertTrue(st4.isEmpty());
 
-        List<PageUtil.By> st5 = PageUtil.sortBy("");
+        List<PageUtil.By> st5 = PageUtil.sort("");
         assertTrue(st5.isEmpty());
     }
 }
