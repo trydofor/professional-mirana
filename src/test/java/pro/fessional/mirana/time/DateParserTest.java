@@ -2,9 +2,12 @@ package pro.fessional.mirana.time;
 
 import org.junit.jupiter.api.Test;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -35,6 +38,20 @@ public class DateParserTest {
         assertEquals(LocalDate.of(2019, 5, 21), ld1);
         assertEquals(LocalDate.of(2019, 5, 21), ld2);
         assertEquals(LocalDate.of(2019, 5, 21), ld3);
+    }
+
+    @Test
+    public void parseUtilDate() throws ParseException {
+        String str1 = "２０１９年０５月２１日";
+        String str2 = "２０１９年０５月２１日　１２点３４";
+        String str3 = "２０１９年５月２１日　１２点３４分５６秒789";
+        Date ld1 = DateParser.parseUtilDate(str1);
+        Date ld2 = DateParser.parseUtilDate(str2);
+        Date ld3 = DateParser.parseUtilDate(str3);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        assertEquals(sdf.parse("2019-05-21 00:00:00.000"), ld1);
+        assertEquals(sdf.parse("2019-05-21 12:34:00.000"), ld2);
+        assertEquals(sdf.parse("2019-05-21 12:34:56.789"), ld3);
     }
 
     @Test

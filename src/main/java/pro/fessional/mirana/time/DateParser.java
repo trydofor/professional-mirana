@@ -7,6 +7,8 @@ import pro.fessional.mirana.text.HalfCharUtil;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * 解析固定格式的，包含日期数字的字符串，支持以下格式<p>
@@ -58,6 +60,17 @@ public class DateParser {
      * @return 日期
      */
     @NotNull
+    public static Date parseUtilDate(@NotNull String num) {
+        return parseUtilDate(num, 0);
+    }
+
+    /**
+     * 把任意包含日期信息的数字变成日期
+     *
+     * @param num 数字
+     * @return 日期
+     */
+    @NotNull
     public static LocalDateTime parseDateTime(@NotNull String num) {
         return parseDateTime(num, 0);
     }
@@ -99,6 +112,28 @@ public class DateParser {
         }
 
         return date(num);
+    }
+
+    /**
+     * 把任意包含日期信息的数字变成日期，解析时只关注数字，忽略非数字字符<p>
+     * 支持全类型<p>
+     *
+     * @param str 任意包括全角或半角数字的字符串
+     * @param off 数字位置偏移量，不考虑非数字
+     * @return 日期
+     */
+    @NotNull
+    public static Date parseUtilDate(@NotNull CharSequence str, int off) {
+        String num = digit(str, off, Ptn.FULL);
+        final Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, Integer.parseInt(num.substring(0, 4)));
+        cal.set(Calendar.MONTH, Integer.parseInt(num.substring(4, 6)) - 1);
+        cal.set(Calendar.DATE, Integer.parseInt(num.substring(6, 8)));
+        cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(num.substring(8, 10)));
+        cal.set(Calendar.MINUTE, Integer.parseInt(num.substring(10, 12)));
+        cal.set(Calendar.SECOND, Integer.parseInt(num.substring(12, 14)));
+        cal.set(Calendar.MILLISECOND, Integer.parseInt(num.substring(14)));
+        return cal.getTime();
     }
 
     /**
