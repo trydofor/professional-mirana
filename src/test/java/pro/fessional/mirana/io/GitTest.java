@@ -1,6 +1,7 @@
 package pro.fessional.mirana.io;
 
 import com.mysql.cj.jdbc.MysqlDataSource;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -16,6 +17,7 @@ import static pro.fessional.mirana.io.Git.STAT_WEEK_YEAR;
  * @author trydofor
  * @since 2020-09-16
  */
+@Disabled("手动执行")
 public class GitTest {
 
     @Test

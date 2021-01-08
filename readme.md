@@ -1,5 +1,9 @@
 # pro.fessional.mirana
 
+![Maven Central](https://img.shields.io/maven-central/v/pro.fessional/mirana?color=00DD00)
+![Sonatype Snapshots](https://img.shields.io/nexus/s/pro.fessional/mirana?server=https%3A%2F%2Foss.sonatype.org)
+[![Coverage Status](https://coveralls.io/repos/github/trydofor/pro.fessional.mirana/badge.svg)](https://coveralls.io/github/trydofor/pro.fessional.mirana)
+
 POM(.xml), 月女，她有一只神箭，她有一只大猫。  
 对guava, commons-lang, commons-io的补充。
 

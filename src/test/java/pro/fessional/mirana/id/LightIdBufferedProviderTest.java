@@ -156,6 +156,7 @@ public class LightIdBufferedProviderTest {
     }
 
     @Test
+    @Disabled("手动执行，时间长")
     public void testNext() {
         sleep.set(0);
 
