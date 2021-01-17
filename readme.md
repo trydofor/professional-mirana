@@ -72,7 +72,9 @@ POM(.xml), 月女，她有一只神箭，她有一只大猫。
 
 ## `cast/` 类型转换
 
+ * BiConvertor - 双向converter
  * BoxedCastUtil - 包装类和原始类型的转换
+ * BoxedTypeUtil - 包装类兼容的instanceOf，isAssignable
  * StringCastUtil - 字符串和其他类型的转换
  * TypedCastUtil - 类型参数，泛型的转换
 
