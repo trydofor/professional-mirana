@@ -24,15 +24,15 @@ class BiConvertorTest {
 
     @Test
     void testInverse() {
-        final BiConvertor<Integer, String> int2Str = str2Int.inverse();
+        final BiConvertor<Integer, String> int2Str = str2Int.reverseBiConvertor();
         assertEquals(1, int2Str.toSource("1"));
         assertEquals("1", int2Str.toTarget(1));
-        assertSame(int2Str.inverse(), str2Int);
+        assertSame(int2Str.reverseBiConvertor(), str2Int);
     }
 
     @Test
     void testCompose() {
-        final BiConvertor<String, String> compose = str2Int.compose(str2Int.inverse());
+        final BiConvertor<String, String> compose = str2Int.compose(str2Int.reverseBiConvertor());
         assertEquals("1", compose.toTarget("1"));
         assertEquals("1", compose.toSource("1"));
     }
