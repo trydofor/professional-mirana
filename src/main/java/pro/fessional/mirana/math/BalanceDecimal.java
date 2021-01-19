@@ -1,5 +1,7 @@
 package pro.fessional.mirana.math;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -12,7 +14,7 @@ import java.util.List;
  * @author trydofor
  * @since 2018-09-14
  */
-public class BalanceDecimal implements Iterator<BigDecimal> {
+public class BalanceDecimal implements Iterable<BigDecimal> {
 
 
     private final int size;
@@ -21,8 +23,6 @@ public class BalanceDecimal implements Iterator<BigDecimal> {
     private final BigDecimal precision;
 
     private final BigDecimal[] resultVal;
-
-    private int index;
 
     /**
      * balance the mumber with the count, and the scale is 2 (0.01)
@@ -122,23 +122,23 @@ public class BalanceDecimal implements Iterator<BigDecimal> {
         }
     }
 
+
+    @NotNull
     @Override
-    public boolean hasNext() {
-        return index < size;
-    }
+    public Iterator<BigDecimal> iterator() {
+        return new Iterator<BigDecimal>() {
+            int index = 0;
 
-    @Override
-    public BigDecimal next() {
-        return get(index++);
-    }
+            @Override
+            public boolean hasNext() {
+                return index < resultVal.length;
+            }
 
-    @Override
-    public void remove() {
-
-    }
-
-    public void reset() {
-        index = 0;
+            @Override
+            public BigDecimal next() {
+                return resultVal[index++];
+            }
+        };
     }
 
     public BigDecimal get(int i) {
@@ -159,33 +159,5 @@ public class BalanceDecimal implements Iterator<BigDecimal> {
 
     public BigDecimal getPrecision() {
         return precision;
-    }
-
-    public static void main(String[] args) {
-        BigDecimal total = new BigDecimal("1175.00");
-        List<BigDecimal> items = new ArrayList<>(20);
-        items.add(new BigDecimal("10.94"));
-        items.add(new BigDecimal("8.5"));
-        items.add(new BigDecimal("9.18"));
-        items.add(new BigDecimal("6.2"));
-        items.add(new BigDecimal("9"));
-        items.add(new BigDecimal("23.56"));
-        items.add(new BigDecimal("9.3"));
-        items.add(new BigDecimal("8.5"));
-        items.add(new BigDecimal("25.08"));
-        items.add(new BigDecimal("15.19"));
-        items.add(new BigDecimal("16.58"));
-        items.add(new BigDecimal("8.5"));
-        items.add(new BigDecimal("19.76"));
-
-        BalanceDecimal avg = of(total, items);
-        BigDecimal sumBal = BigDecimal.ZERO;
-        while (avg.hasNext()) {
-            BigDecimal v = avg.next();
-            sumBal = sumBal.add(v);
-            System.out.println(v);
-        }
-
-        System.out.println((total.compareTo(sumBal) == 0) + ": " + total + " = " + sumBal);
     }
 }

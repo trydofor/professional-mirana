@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.BiConsumer;
 
 /**
  * @author trydofor
@@ -33,11 +34,11 @@ public class PageUtil {
      *
      * @param totalData 总记录数量，超过21亿的数字不可想象
      * @param pageSize  每页显示记录数量
-     * @return 从1开始的总分页数
+     * @return 从1开始的总分页数，当数据为零是返回0
      */
 
     public static int totalPage(int totalData, int pageSize) {
-        if (totalData <= 1) return 1;
+        if (totalData <= 0) return 0;
         if (pageSize <= 1) return totalData;
         return (totalData - 1) / pageSize + 1;
     }
@@ -175,5 +176,24 @@ public class PageUtil {
         public int hashCode() {
             return Objects.hash(key, asc);
         }
+    }
+
+    /**
+     * 分页处理一个list
+     *
+     * @param data     数据集
+     * @param pageSize 页大小
+     * @param consumer 接受器，接受页数和当页数据
+     * @param <E>      类型
+     * @return 页数，0表示没有数据
+     */
+    public static <E> int paginate(List<E> data, int pageSize, BiConsumer<Integer, List<E>> consumer) {
+        if (data == null || data.isEmpty()) return 0;
+        if (pageSize < 1) pageSize = 1;
+        int count = 0;
+        for (int i = 0, total = data.size(); i < total; ) {
+            consumer.accept(++count, data.subList(i, Math.min(i = i + pageSize, total)));
+        }
+        return count;
     }
 }

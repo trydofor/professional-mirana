@@ -1,5 +1,7 @@
 package pro.fessional.mirana.math;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Iterator;
@@ -8,7 +10,7 @@ import java.util.Iterator;
  * @author trydofor
  * @since 2018-09-14
  */
-public class AverageDecimal implements Iterator<BigDecimal> {
+public class AverageDecimal implements Iterable<BigDecimal> {
 
     private final int size;
     private final int scale;
@@ -17,8 +19,6 @@ public class AverageDecimal implements Iterator<BigDecimal> {
     private final BigDecimal avgValue;
     private final BigDecimal fixValue;
     private final int fixCount;
-
-    private int index;
 
     /**
      * average the mumber with the count, and the scale is 2 (0.01)
@@ -59,23 +59,22 @@ public class AverageDecimal implements Iterator<BigDecimal> {
         this.fixCount = remaining.divide(precision, 0, RoundingMode.FLOOR).intValue();
     }
 
+    @NotNull
     @Override
-    public boolean hasNext() {
-        return index < size;
-    }
+    public Iterator<BigDecimal> iterator() {
+        return new Iterator<BigDecimal>() {
+            private int index = 0;
 
-    @Override
-    public BigDecimal next() {
-        return get(index++);
-    }
+            @Override
+            public boolean hasNext() {
+                return index < size;
+            }
 
-    @Override
-    public void remove() {
-
-    }
-
-    public void reset() {
-        index = 0;
+            @Override
+            public BigDecimal next() {
+                return get(index++);
+            }
+        };
     }
 
     public BigDecimal get(int i) {
@@ -122,37 +121,4 @@ public class AverageDecimal implements Iterator<BigDecimal> {
                 '}';
     }
 
-    public static void main(String[] args) {
-        BigDecimal number = new BigDecimal(100);
-        for (int j = 1; j < 10; j++) {
-            AverageDecimal avg = AverageDecimal.of(number, j);
-            System.out.println(avg);
-            System.out.print("\t[");
-            BigDecimal sum = BigDecimal.ZERO;
-            for (int i = 0; i < avg.size(); i++) {
-                BigDecimal v = avg.get(i);
-                sum = sum.add(v);
-                System.out.print(v);
-                System.out.print(" + ");
-            }
-            System.out.println("] = "+sum+" :" + (sum.compareTo(number)==0));
-        }
-
-        System.out.println("===========");
-
-
-        for (int j = 1; j < 10; j++) {
-            AverageDecimal avg = AverageDecimal.of(number, j, 0);
-            System.out.println(avg);
-            System.out.print("\t[");
-            BigDecimal sum = BigDecimal.ZERO;
-            while (avg.hasNext()) {
-                BigDecimal v = avg.next();
-                sum = sum.add(v);
-                System.out.print(v);
-                System.out.print(" + ");
-            }
-            System.out.println("] = "+sum+" :" + (sum.compareTo(number)==0));
-        }
-    }
 }

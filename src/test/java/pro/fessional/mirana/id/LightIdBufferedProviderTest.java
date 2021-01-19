@@ -172,8 +172,8 @@ public class LightIdBufferedProviderTest {
         }
         for (int i = 0; i < 10; i++) {
             // 多线程
-            int capacity = 1000_0000;
-            int threads = 50;
+            int capacity = 10_0000;
+            int threads = 500;
             System.out.printf("\n[capacity=%9d, threads=%3d] speed(ms)", capacity, threads);
 
             run(true, directProvider(), capacity, threads);
@@ -256,10 +256,9 @@ public class LightIdBufferedProviderTest {
                             }
                             if (check) {
                                 synchronized (ids) {
-                                    if (ids.containsKey(id)) {
+                                    final String old = ids.put(id, this.getName());
+                                    if (old != null) {
                                         throw new RuntimeException(pname + " duplicated id=" + LightIdUtil.toLightId(id));
-                                    } else {
-                                        ids.put(id, this.getName());
                                     }
                                 }
                             }
