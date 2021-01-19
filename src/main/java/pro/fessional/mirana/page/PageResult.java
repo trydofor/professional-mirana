@@ -1,6 +1,7 @@
 package pro.fessional.mirana.page;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import pro.fessional.mirana.data.Null;
 
 import java.io.Serializable;
@@ -15,6 +16,7 @@ import java.util.List;
  * <pre>
  * page，从1开始，不小于1。
  * size，从1开始，不小于1。
+ * sort，排序字符串
  * totalPage，不小于1，计算所得。
  * totalData 不小于0，超过21亿的数字不可想象。
  * </pre>
@@ -28,6 +30,7 @@ public class PageResult<E> implements Iterable<E>, Serializable {
 
     private int page = 1;
     private int size = 1;
+    private String sort = Null.Str;
     private int totalPage = Null.Int32;
     private int totalData = Null.Int32;
     @NotNull
@@ -57,6 +60,29 @@ public class PageResult<E> implements Iterable<E>, Serializable {
      */
     public int getSize() {
         return size;
+    }
+
+    /**
+     * Sorting String
+     *
+     * @return Sorting string
+     * @see PageUtil#sort(String)
+     */
+    @Nullable
+    public String getSort() {
+        return sort;
+    }
+
+    /**
+     * Sorting String
+     *
+     * @param sort Sorting string
+     * @return this
+     * @see PageUtil#sort(String)
+     */
+    public PageResult<E> setSort(String sort) {
+        this.sort = sort;
+        return this;
     }
 
     /**
@@ -157,17 +183,38 @@ public class PageResult<E> implements Iterable<E>, Serializable {
     }
 
     // ////////
-    public static <T> PageResult<T> of(int totalData, Collection<? extends T> data, PageQuery pg) {
+
+    /**
+     * 构造器
+     *
+     * @param total 总记录数
+     * @param data  当前页数据
+     * @param pg    查询
+     * @param <T>   数据
+     * @return 分页结果
+     */
+    public static <T> PageResult<T> of(int total, Collection<? extends T> data, PageQuery pg) {
         return new PageResult<T>()
                 .setData(data)
                 .setPage(pg.getPage())
-                .setTotalInfo(totalData, pg.getSize());
+                .setTotalInfo(total, pg.getSize())
+                .setSort(pg.getSort());
     }
 
-    public static <T> PageResult<T> of(int totalData, Collection<? extends T> data, int pageNumber, int pageSize) {
+    /**
+     * 构造器
+     *
+     * @param total 总记录数
+     * @param data  当前页数据
+     * @param page  当前页码
+     * @param size  页容量
+     * @param <T>   数据
+     * @return 分页结果
+     */
+    public static <T> PageResult<T> of(int total, Collection<? extends T> data, int page, int size) {
         return new PageResult<T>()
                 .setData(data)
-                .setPage(pageNumber)
-                .setTotalInfo(totalData, pageSize);
+                .setPage(page)
+                .setTotalInfo(total, size);
     }
 }
