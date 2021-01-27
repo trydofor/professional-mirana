@@ -14,7 +14,7 @@ import java.util.TimeZone;
  * @since 2019-07-01
  */
 public class ZoneIdResolver {
-    private ZoneIdResolver() {
+    protected ZoneIdResolver() {
     }
 
     private static final Map<String, String> ZONE_IDS = new HashMap<>();

@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
  * @since 2019-05-20
  */
 public class LightIdUtil {
-    private LightIdUtil() {
+    protected LightIdUtil() {
     }
 
     public static boolean valid(@Nullable LightId id) {

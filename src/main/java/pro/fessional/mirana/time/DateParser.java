@@ -28,7 +28,7 @@ import java.util.Date;
  */
 public class DateParser {
 
-    private DateParser() {
+    protected DateParser() {
     }
 
     /**

@@ -26,9 +26,12 @@ public class Aes128 {
     private final String CYP_NAME = "AES/CBC/PKCS5Padding";
 
     public Aes128(@NotNull String secKey) {
+        this(secKey.getBytes(UTF_8));
+    }
+
+    public Aes128(@NotNull byte[] bs) {
         int len = 16;
-        byte[] bs = secKey.getBytes(UTF_8);
-        if (bs.length < len) {
+        if (bs == null || bs.length < len) {
             throw new IllegalArgumentException("key length must ge 16");
         }
 
@@ -43,6 +46,12 @@ public class Aes128 {
         this.algSpec = new IvParameterSpec(key);
     }
 
+    /**
+     * 加密明文
+     *
+     * @param plain 明文
+     * @return 密文
+     */
     @NotNull
     public byte[] encode(@Nullable String plain) {
         if (plain == null) return Null.Bytes;
@@ -50,6 +59,12 @@ public class Aes128 {
         return encode(bytes);
     }
 
+    /**
+     * 加密明文
+     *
+     * @param plain 明文
+     * @return 密文
+     */
     @NotNull
     public byte[] encode(@Nullable InputStream plain) {
         if (plain == null) return Null.Bytes;
@@ -57,6 +72,12 @@ public class Aes128 {
         return encode(bytes);
     }
 
+    /**
+     * 加密明文
+     *
+     * @param plain 明文
+     * @return 密文
+     */
     @NotNull
     public byte[] encode(@Nullable byte[] plain) {
         if (plain == null) return Null.Bytes;
@@ -69,16 +90,15 @@ public class Aes128 {
         }
     }
 
-    @NotNull
-    public byte[] decode(@Nullable String cipher) {
-        if (cipher == null) return Null.Bytes;
-        byte[] bytes = cipher.getBytes(UTF_8);
-        return decode(bytes);
-    }
-
+    /**
+     * 解密密文
+     *
+     * @param cipher 密文
+     * @return 明文
+     */
     @NotNull
     public byte[] decode(@Nullable byte[] cipher) {
-        if (cipher == null) return Null.Bytes;
+        if (cipher == null || cipher.length == 0) return Null.Bytes;
         try {
             Cipher ins = Cipher.getInstance(CYP_NAME);//"算法/模式/补码方式"
             ins.init(Cipher.DECRYPT_MODE, keySpec, algSpec);
@@ -88,6 +108,12 @@ public class Aes128 {
         }
     }
 
+    /**
+     * 解密密文
+     *
+     * @param cipher 密文
+     * @return 明文
+     */
     @NotNull
     public byte[] decode(@Nullable InputStream cipher) {
         if (cipher == null) return Null.Bytes;
@@ -95,6 +121,40 @@ public class Aes128 {
         return decode(bytes);
     }
 
+    /**
+     * 加密明文为16进制密文
+     *
+     * @param plain 明文
+     * @return 密文
+     */
+    @NotNull
+    public String encode16(@Nullable String plain) {
+        if (plain == null) return Null.Str;
+        byte[] pb = plain.getBytes(UTF_8);
+        byte[] cb = encode(pb);
+        return Bytes.hex(cb);
+    }
+
+    /**
+     * 解密16进制密文
+     *
+     * @param cipher 密文
+     * @return 明文
+     */
+    @NotNull
+    public String decode16(@Nullable String cipher) {
+        if (cipher == null || cipher.isEmpty()) return Null.Str;
+        byte[] cb = Bytes.hex(cipher);
+        byte[] pb = decode(cb);
+        return new String(pb, UTF_8);
+    }
+
+    /**
+     * 加密明文，输出base64密文
+     *
+     * @param plain 明文
+     * @return base64密文
+     */
     @NotNull
     public String encode64(@Nullable String plain) {
         if (plain == null) return Null.Str;
@@ -105,23 +165,19 @@ public class Aes128 {
 
     @NotNull
     public String decode64(@Nullable String cipher) {
-        if (cipher == null) return Null.Str;
+        if (cipher == null || cipher.isEmpty()) return Null.Str;
         byte[] cb = Base64.decode(cipher);
         byte[] pb = decode(cb);
         return new String(pb, UTF_8);
     }
 
     @NotNull
-    public static Aes128 of(@NotNull String secKey) {
+    public static Aes128 of(@NotNull byte[] secKey) {
         return new Aes128(secKey);
     }
 
-//    public static void main(String[] args) throws Exception {
-//        String key = "420105198908100418";
-//        Aes128 aes128 = new Aes128(key);
-//
-//
-//        byte[] bytes = aes128.decode(new FileInputStream("/tmp/420105198908100418-fg.aes"), true);
-//        Files.copy(new ByteArrayInputStream(bytes), Paths.get("/tmp/420105198908100418-fg9.jpg"), StandardCopyOption.REPLACE_EXISTING);
-//    }
+    @NotNull
+    public static Aes128 of(@NotNull String secKey) {
+        return new Aes128(secKey);
+    }
 }

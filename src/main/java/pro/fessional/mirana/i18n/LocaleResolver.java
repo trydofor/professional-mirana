@@ -11,7 +11,7 @@ import java.util.Locale;
  * @since 2019-07-01
  */
 public class LocaleResolver {
-    private LocaleResolver() {
+    protected LocaleResolver() {
     }
 
     @NotNull

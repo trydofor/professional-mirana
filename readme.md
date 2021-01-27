@@ -68,7 +68,9 @@ POM(.xml), 月女，她有一只神箭，她有一只大猫。
  * Aes128 - jdk AES/CBC/PKCS5Padding，若AES/CBC/PKCS7Padding，用bouncycastle
  * Base64 - 默认使用 RFC4648_URLSAFE 和 UTF8。支持`+/`和`-_`
  * Bytes - Hex和unicode(`我`(25105)=>'\u6211')
+ * HmacHelp - MessageAuthenticationCode HmacMD5, HmacSHA1, HmacSHA256
  * Md5 - md5sum, md5check
+ * HdHelp - MessageDigest MD5, SHA1, SHA256
 
 ## `cast/` 类型转换
 
@@ -80,23 +82,23 @@ POM(.xml), 月女，她有一只神箭，她有一只大猫。
 
 ## `code/` 编码转码
 
-### Crc4Int
+### Crc4Int - 带crc的int32
 
 根据int数值，生成一个伪随机，可校验的，可解密出原值的int数字。
 尽量提高人类可读性和伪随机性。
 
-### Crc8Long, Crc8LongUtil
+### Crc8Long, Crc8LongUtil - 带crc的int64
 
 根据long数值，生成一个伪随机，可校验的，可解密出原值的long数字。
 用户可以自定义bit位序列，系统默认提供三种，参考Crc8LongUtil。
 
 适用场景，安全要求一般，暴露的数字ID信息。可以高效的双向解析和校验。
 
-## Excel26Az
+## Excel26Az - excel的26进制索引
 
 按Excel列命名方式进行双向解析（A:1,B:2,...,Z:26,AA:27）
 
-### LeapCode
+### LeapCode - 伪随机高可读code
 
 提供26字母和10数字（去掉01OI易混淆）的构成的32位字母数字编码。
 编码后的字符串看起来比较随机，可解密出原值，可填充到固定长度。
@@ -148,7 +150,7 @@ POM(.xml), 月女，她有一只神箭，她有一只大猫。
 
 ## `id/` 主键
 
-### LightId
+### LightId - 轻量级分布式主键
 
 轻量级分布式主键，采用双缓冲机制，使用sequence高效生成64bit数字主键。
 ID能保证严格的`单调递增`(升序)，但不保证连续，其long型的64bit构成如下。
@@ -268,3 +270,57 @@ ID能保证严格的`单调递增`(升序)，但不保证连续，其long型的6
  * DateLocaling - LocalDateTime和时区的故事
  * DateNumber - 日期转化成数字的双向转化
  * DateParser - 更高效兼容的解析日期数字的字符串
+
+## `tk` token和ticket
+
+用于私钥凭证，需要中心控制又去中心的凭证，在无意义session和庞大jwt体系之间的场景。
+session的replication和sticky在水平扩展上十分稳定成熟，如redis和Hazelcast。
+JsonWeb系列体系强大，多在数据交换且安全要求较高的场景，凭证领域并非其强项。
+
+### Ticket - 有中心权力的去中心凭证
+
+特点是短小，可过期，可踢人，可验签，有一定业务意义，代替无意义的随机token，格式大概如下。
+
+`pub-part` + `.` + `biz-part` + `.` + `sig-part`，biz-part为可选项。
+
+* 公开部分(pub-part) - 必选，以`-`分隔的字母数字，含以下字段
+  - mod - `az09`，约定模式，对加密，签名，biz结构的约定
+  - exp - long，过期时点，从1970-01-01起的秒数
+  - seq - int，签发序号，递增不连续，一般小于10有特别定义。
+* 业务部分(biz-part) - `az09-_`，可选，不超过1k，在mod中定义
+  - base64为url-safe，no pad格式
+* 签名部分(sig-part) - `az09-_`，可选，一般50字符内，在mod中定义
+  - base64同上
+
+以下字段约定，用途分别解释，使用时需要存在以下约定数据。
+
+* salt - 加密或签名秘钥，如`加盐`，对称秘钥，非对称私钥。
+* biz-data - 加密前的业务数据，加密后为biz-part
+* sig-data - 签名信息，`pub-part` + (`.` + `biz-part`)?。
+
+则，公开部分对应的业务场景和说明如下，
+
+* `mod` 服务端或同用户协商制定，包括加密和签名算法，数据格式，用户字段等，如内定。
+  - any = 仅原文解析和合并各个字段。
+  - am0 = aes128(biz-data, salt) + md5(sig-data) 无盐Md5
+  - am1 = aes128(biz-data, salt) + md5(sig-data + salt) 加盐Md5
+  - ah1 = aes128(biz-data, salt) + HmacMd5(sig-data, salt) Hmac验签
+
+* `exp` 凭证过期的秒数，从1970-01-01起的`秒数`，不是毫秒。
+  - 到期凭证，client需要到服务器续签。
+  - 服务器端自行确定行为，如续签，拒绝，重发等。
+
+* `seq` 签发序号，生成凭证时递增，续签时不变，seq不同时，须重新获得凭证。
+  - 当用户登录时，生成凭证，其他端再次登录时，seq增加，则可踢出其他端凭证。
+  - 当凭证过期时，未发生再次登录，可以同seq续签新凭证。
+  - 0 表示无需验证序号，一般用于弱权限场合，如临时凭证
+  
+凭证，可以在http的header，session和url-string中传递。
+ * 无私钥者，无法验签和解密，仅可以使用pub-part信息。
+ * 有私钥者，通过验签和解密，判断凭证有效性，获取业务内容。
+ * 无私钥者，且需要验签的情况，可不加盐，不用hmac签名
+
+### 默认的基本实现和工具类
+
+ * `AnyTicket` - 可以解析任何mod的ticket
+ * `TicketHelp` - 提供了ticket解析，验签的基本工具类

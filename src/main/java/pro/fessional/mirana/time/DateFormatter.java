@@ -27,7 +27,7 @@ import java.util.Date;
  */
 
 public class DateFormatter {
-    private DateFormatter() {
+    protected DateFormatter() {
     }
 
     private static final ZoneId SYS_ZONE_ID = ZoneId.systemDefault();
@@ -46,26 +46,16 @@ public class DateFormatter {
     public static final DateTimeFormatter FMT_FULL_23 = DateTimeFormatter.ofPattern(PTN_FULL_23);
 
 
-    public static final ThreadLocal<DateFormat> DATE_FORMAT_19 = new ThreadLocal<>();
-    public static final ThreadLocal<DateFormat> DATE_FORMAT_23 = new ThreadLocal<>();
+    public static final ThreadLocal<DateFormat> DATE_FORMAT_19 = ThreadLocal.withInitial(() -> new SimpleDateFormat(PTN_FULL_19));
+    public static final ThreadLocal<DateFormat> DATE_FORMAT_23 = ThreadLocal.withInitial(() -> new SimpleDateFormat(PTN_FULL_23));
 
 
     public static DateFormat full19() {
-        DateFormat df = DATE_FORMAT_19.get();
-        if (df == null) {
-            df = new SimpleDateFormat(PTN_FULL_19);
-            DATE_FORMAT_19.set(df);
-        }
-        return df;
+        return DATE_FORMAT_19.get();
     }
 
     public static DateFormat full23() {
-        DateFormat df = DATE_FORMAT_23.get();
-        if (df == null) {
-            df = new SimpleDateFormat(PTN_FULL_23);
-            DATE_FORMAT_23.set(df);
-        }
-        return df;
+        return DATE_FORMAT_23.get();
     }
 
     /**

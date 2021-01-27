@@ -24,7 +24,7 @@ import java.time.ZonedDateTime;
  */
 public class DateNumber {
 
-    private DateNumber() {
+    protected DateNumber() {
     }
 
     /**

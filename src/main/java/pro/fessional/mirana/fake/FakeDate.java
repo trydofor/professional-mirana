@@ -16,7 +16,7 @@ import java.time.LocalTime;
  */
 public class FakeDate {
 
-    private FakeDate() {
+    protected FakeDate() {
     }
 
     /**

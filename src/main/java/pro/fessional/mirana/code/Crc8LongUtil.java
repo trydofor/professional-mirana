@@ -7,7 +7,7 @@ package pro.fessional.mirana.code;
  */
 public class Crc8LongUtil {
 
-    private Crc8LongUtil() {
+    protected Crc8LongUtil() {
     }
 
 

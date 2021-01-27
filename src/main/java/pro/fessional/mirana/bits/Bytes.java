@@ -4,6 +4,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pro.fessional.mirana.data.Null;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+
 /**
  * @author trydofor
  * @since 2019-06-24
@@ -12,6 +16,60 @@ public class Bytes {
 
     private static final byte[] HEX_BYTE = new byte[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
     private static final char[] HEX_CHAR = new char[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+
+    /**
+     * 把hex字符串（可含有 `0x20\t\r\n` 不区分大小写），解析成bytes
+     *
+     * @param hex 字符串
+     * @return bytes
+     */
+    public static byte[] hex(@Nullable String hex) {
+        if (hex == null || hex.isEmpty()) return Null.Bytes;
+        ByteArrayOutputStream bos = new ByteArrayOutputStream(hex.length() / 2);
+        hex(bos, hex);
+        return bos.toByteArray();
+    }
+
+    /**
+     * 把hex字符串（可含有 `0x20\t\r\n` 不区分大小写），写入流
+     *
+     * @param os  流
+     * @param hex 字符串
+     * @return 写入长度
+     */
+    public static int hex(OutputStream os, @Nullable String hex) {
+        if (hex == null || hex.isEmpty()) return 0;
+        int cnt = 0;
+        int c1 = -1, c2 = -1;
+        for (int i = 0, len = hex.length(); i < len; i++) {
+            char c = hex.charAt(i);
+            if (c >= '0' && c <= '9') {
+                c2 = c - '0';
+            } else if (c >= 'A' && c <= 'F') {
+                c2 = c - 'A' + 10;
+            } else if (c >= 'a' && c <= 'f') {
+                c2 = c - 'a' + 10;
+            } else if (c == ' ' || c == '\t' || c == '\r' || c == '\n') {
+                continue;
+            } else {
+                throw new IllegalArgumentException("not hex char " + c);
+            }
+
+            if (c1 == -1) {
+                c1 = c2;
+            } else {
+                try {
+                    os.write(c1 << 4 | c2);
+                    cnt++;
+                } catch (IOException e) {
+                    throw new IllegalArgumentException(e);
+                }
+                c1 = -1;
+            }
+        }
+
+        return cnt;
+    }
 
     @NotNull
     public static String hex(@Nullable byte[] bytes) {

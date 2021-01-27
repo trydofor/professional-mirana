@@ -14,7 +14,7 @@ import java.util.List;
  * @since 2016-12-14
  */
 public class WhiteUtil {
-    private WhiteUtil() {
+    protected WhiteUtil() {
     }
 
     private static final char[] WS = {

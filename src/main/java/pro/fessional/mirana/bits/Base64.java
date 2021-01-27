@@ -10,7 +10,7 @@ import java.io.InputStream;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
- * 默认使用 RFC4648_URLSAFE 和 UTF8。
+ * 默认使用 RFC4648_URLSAFE 和 UTF8，没有pad
  * <pre>
  * This array is a lookup table that translates 6-bit positive integer
  * index values into their "Base64 Alphabet" equivalents as specified
@@ -38,7 +38,12 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public class Base64 {
 
     public static java.util.Base64.Encoder getEncoder(boolean urlSafe) {
-        return urlSafe ? java.util.Base64.getUrlEncoder() : java.util.Base64.getEncoder();
+        return getEncoder(urlSafe, true);
+    }
+
+    public static java.util.Base64.Encoder getEncoder(boolean urlSafe, boolean noPad) {
+        java.util.Base64.Encoder encoder = urlSafe ? java.util.Base64.getUrlEncoder() : java.util.Base64.getEncoder();
+        return noPad ? encoder.withoutPadding() : encoder;
     }
 
     @NotNull
@@ -124,5 +129,18 @@ public class Base64 {
         if (ins == null) return Null.Bytes;
         byte[] bytes = InputStreams.readBytes(ins);
         return decode(bytes);
+    }
+
+    public static String pad(String b64) {
+        if (b64 == null) return Null.Str;
+        switch (b64.length() % 4) {
+            case 1:
+            case 3:
+                return b64 + "=";
+            case 2:
+                return b64 + "==";
+            default:
+                return b64;
+        }
     }
 }
