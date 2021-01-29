@@ -250,6 +250,8 @@ ID能保证严格的`单调递增`(升序)，但不保证连续，其long型的6
  * BadArgsException - 多国语和枚举版IllegalArgumentException
  * BadStateException - 多国语和枚举版IllegalStateException
  * CodeException - 多国语和枚举版RuntimeException
+ * FlowControlEnumException - 用Enum类的异常参与控制流程。性能优先，堆栈无用
+ * NoStackRuntimeException - 无需填充堆栈的异常，用于性能优先场景，堆栈无用的场景
  * ThrowableUtil - Throwable堆栈和cause工具
  * TimeoutRuntimeException - Runtime版TimeoutException
 
@@ -276,6 +278,12 @@ ID能保证严格的`单调递增`(升序)，但不保证连续，其long型的6
 用于私钥凭证，需要中心控制又去中心的凭证，在无意义session和庞大jwt体系之间的场景。
 session的replication和sticky在水平扩展上十分稳定成熟，如redis和Hazelcast。
 JsonWeb系列体系强大，多在数据交换且安全要求较高的场景，凭证领域并非其强项。
+
+场景的应用场景是RememberMe或读取异步任务结果的凭证。
+
+在RememberMe中，biz-data可包括uid，而sig-data中，需要把用户密码和盐追加进行验签。
+当用户再次登录，密码修改，或凭证过期时，都可以对ticket的有效性进行判断。
+
 
 ### Ticket - 有中心权力的去中心凭证
 

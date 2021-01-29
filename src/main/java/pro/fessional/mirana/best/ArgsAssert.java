@@ -24,10 +24,10 @@ public class ArgsAssert {
 
     @Contract("false, _, _ -> fail")
     public static void isTrue(boolean b, @NotNull CodeEnum code, @NotNull Object... args) {
-        if (!b) throw new BadArgsException(code, args);
+        if (!b) throw new BadArgsException(true, code, args);
     }
 
-    // 
+    //
     @Contract("true, _, _ -> fail")
     public static void isFalse(boolean b, @NotNull String msg, @NotNull Object... args) {
         if (b) throw new IllegalArgumentException(FormatUtil.format(msg, args));
@@ -35,7 +35,7 @@ public class ArgsAssert {
 
     @Contract("true, _, _ -> fail")
     public static void isFalse(boolean b, @NotNull CodeEnum code, @NotNull Object... args) {
-        if (b) throw new BadArgsException(code, args);
+        if (b) throw new BadArgsException(true, code, args);
     }
 
     //
@@ -46,7 +46,7 @@ public class ArgsAssert {
 
     @Contract("!null, _, _ -> fail")
     public static void isNull(Object b, @NotNull CodeEnum code, @NotNull Object... args) {
-        if (b != null) throw new BadArgsException(code, args);
+        if (b != null) throw new BadArgsException(true, code, args);
     }
 
     //
@@ -57,7 +57,7 @@ public class ArgsAssert {
 
     @Contract("null, _, _ -> fail")
     public static void notNull(Object b, @NotNull CodeEnum code, @NotNull Object... args) {
-        if (b == null) throw new BadArgsException(code, args);
+        if (b == null) throw new BadArgsException(true, code, args);
     }
 
     // ////
@@ -66,16 +66,16 @@ public class ArgsAssert {
     }
 
     public static void isEmpty(CharSequence c, @NotNull CodeEnum code, @NotNull Object... args) {
-        if (c != null && c.length() > 0) throw new BadArgsException(code, args);
+        if (c != null && c.length() > 0) throw new BadArgsException(true, code, args);
     }
 
-    // 
+    //
     public static void notEmpty(CharSequence c, @NotNull String msg, @NotNull Object... args) {
         if (c == null || c.length() == 0) throw new IllegalArgumentException(FormatUtil.format(msg, args));
     }
 
     public static void notEmpty(CharSequence c, @NotNull CodeEnum code, @NotNull Object... args) {
-        if (c == null || c.length() == 0) throw new BadArgsException(code, args);
+        if (c == null || c.length() == 0) throw new BadArgsException(true, code, args);
     }
 
     // ////
@@ -84,16 +84,16 @@ public class ArgsAssert {
     }
 
     public static void isEmpty(Collection<?> c, @NotNull CodeEnum code, @NotNull Object... args) {
-        if (c != null && !c.isEmpty()) throw new BadArgsException(code, args);
+        if (c != null && !c.isEmpty()) throw new BadArgsException(true, code, args);
     }
 
-    // 
+    //
     public static void notEmpty(Collection<?> c, @NotNull String msg, @NotNull Object... args) {
         if (c == null || c.isEmpty()) throw new IllegalArgumentException(FormatUtil.format(msg, args));
     }
 
     public static void notEmpty(Collection<?> c, @NotNull CodeEnum code, @NotNull Object... args) {
-        if (c == null || c.isEmpty()) throw new BadArgsException(code, args);
+        if (c == null || c.isEmpty()) throw new BadArgsException(true, code, args);
     }
 
     // ////
@@ -102,16 +102,16 @@ public class ArgsAssert {
     }
 
     public static void isEmpty(Map<?, ?> c, @NotNull CodeEnum code, @NotNull Object... args) {
-        if (c != null && !c.isEmpty()) throw new BadArgsException(code, args);
+        if (c != null && !c.isEmpty()) throw new BadArgsException(true, code, args);
     }
 
-    // 
+    //
     public static void notEmpty(Map<?, ?> c, @NotNull String msg, @NotNull Object... args) {
         if (c == null || c.isEmpty()) throw new IllegalArgumentException(FormatUtil.format(msg, args));
     }
 
     public static void notEmpty(Map<?, ?> c, @NotNull CodeEnum code, @NotNull Object... args) {
-        if (c == null || c.isEmpty()) throw new BadArgsException(code, args);
+        if (c == null || c.isEmpty()) throw new BadArgsException(true, code, args);
     }
 
     // ////
@@ -120,16 +120,16 @@ public class ArgsAssert {
     }
 
     public static void isEmpty(Object[] c, @NotNull CodeEnum code, @NotNull Object... args) {
-        if (c != null && c.length > 0) throw new BadArgsException(code, args);
+        if (c != null && c.length > 0) throw new BadArgsException(true, code, args);
     }
 
-    // 
+    //
     public static void notEmpty(Object[] c, @NotNull String msg, @NotNull Object... args) {
         if (c == null || c.length == 0) throw new IllegalArgumentException(FormatUtil.format(msg, args));
     }
 
     public static void notEmpty(Object[] c, @NotNull CodeEnum code, @NotNull Object... args) {
-        if (c == null || c.length == 0) throw new BadArgsException(code, args);
+        if (c == null || c.length == 0) throw new BadArgsException(true, code, args);
     }
 
     //
@@ -140,7 +140,7 @@ public class ArgsAssert {
 
     public static <T extends Comparable<T>> void aEqb(T a, T b, @NotNull CodeEnum code, @NotNull Object... args) {
         if (a == null && b == null) return;
-        if (a == null || !a.equals(b)) throw new BadArgsException(code, args);
+        if (a == null || !a.equals(b)) throw new BadArgsException(true, code, args);
     }
 
     //
@@ -151,7 +151,7 @@ public class ArgsAssert {
 
     public static <T extends Comparable<T>> void aGeb(T a, T b, @NotNull CodeEnum code, @NotNull Object... args) {
         if (a == null && b == null) return;
-        if (a == null || b == null || a.compareTo(b) < 0) throw new BadArgsException(code, args);
+        if (a == null || b == null || a.compareTo(b) < 0) throw new BadArgsException(true, code, args);
     }
 
     //
@@ -160,7 +160,7 @@ public class ArgsAssert {
     }
 
     public static <T extends Comparable<T>> void aGtb(T a, T b, @NotNull CodeEnum code, @NotNull Object... args) {
-        if (a == null || b == null || a.compareTo(b) <= 0) throw new BadArgsException(code, args);
+        if (a == null || b == null || a.compareTo(b) <= 0) throw new BadArgsException(true, code, args);
     }
 
     //
@@ -171,7 +171,7 @@ public class ArgsAssert {
 
     public static <T extends Comparable<T>> void aLeb(T a, T b, @NotNull CodeEnum code, @NotNull Object... args) {
         if (a == null && b == null) return;
-        if (a == null || b == null || a.compareTo(b) > 0) throw new BadArgsException(code, args);
+        if (a == null || b == null || a.compareTo(b) > 0) throw new BadArgsException(true, code, args);
     }
 
     //
@@ -180,6 +180,6 @@ public class ArgsAssert {
     }
 
     public static <T extends Comparable<T>> void aLtb(T a, T b, @NotNull CodeEnum code, @NotNull Object... args) {
-        if (a == null || b == null || a.compareTo(b) >= 0) throw new BadArgsException(code, args);
+        if (a == null || b == null || a.compareTo(b) >= 0) throw new BadArgsException(true, code, args);
     }
 }
