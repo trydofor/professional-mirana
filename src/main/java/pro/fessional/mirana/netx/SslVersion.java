@@ -1,7 +1,7 @@
 package pro.fessional.mirana.netx;
 
 /**
- * avax.net.ssl.SSLException: Received fatal alert: protocol_version
+ * javax.net.ssl.SSLException: Received fatal alert: protocol_version
  * at sun.security.ssl.Alerts.getSSLException(Alerts.java:208)
  * https://blogs.oracle.com/java-platform-group/jdk-8-will-use-tls-12-as-default
  *
@@ -9,18 +9,21 @@ package pro.fessional.mirana.netx;
  * @since 2018-09-26
  */
 public class SslVersion {
-    static {
+
+    /**
+     * append TLSv1.2 to https.protocols if not exist
+     */
+    public static String supportV12() {
         String version = System.getProperty("https.protocols");
-        if (version == null || !version.contains("TLSv1.2")) {
-            System.setProperty("https.protocols", "TLSv1.2");
+        String v12 = "TLSv1.2";
+        if (version == null || version.isEmpty()) {
+            System.setProperty("https.protocols", v12);
+        } else if (version.contains(v12)) {
+            v12 = version;
+        } else {
+            v12 = version + ",TLSv1.2";
+            System.setProperty("https.protocols", v12);
         }
-    }
-
-    public static void check(){
-        // empty, use static block
-    }
-
-    public static void main(String[] args) {
-
+        return v12;
     }
 }

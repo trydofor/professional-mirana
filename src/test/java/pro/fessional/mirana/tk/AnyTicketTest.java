@@ -80,7 +80,7 @@ class AnyTicketTest {
                                         .exp(exp)
                                         .seq(seq)
                                         .bizEmpty()
-                                        .sig(TicketHelp.sig(md, key));
+                                        .sig(md, key);
 
         assertEquals(mod, at2.getPubMod());
         assertEquals(exp, at2.getPubExp());
@@ -118,7 +118,7 @@ class AnyTicketTest {
                                         .exp(exp)
                                         .seq(seq)
                                         .bizAes(biz0, key)
-                                        .sig(TicketHelp.sig(md, key));
+                                        .sig(md, key);
 
         assertEquals(mod, at2.getPubMod());
         assertEquals(exp, at2.getPubExp());
@@ -152,7 +152,7 @@ class AnyTicketTest {
                                         .exp(exp)
                                         .seq(seq)
                                         .bizEmpty()
-                                        .sig(TicketHelp.sig(md));
+                                        .sig(md);
 
         assertEquals(mod, at2.getPubMod());
         assertEquals(exp, at2.getPubExp());
@@ -187,7 +187,7 @@ class AnyTicketTest {
                                         .exp(exp)
                                         .seq(seq)
                                         .bizAes(biz0, aes128)
-                                        .sig(TicketHelp.sig(md));
+                                        .sig(md);
 
         assertEquals(mod, at2.getPubMod());
         assertEquals(exp, at2.getPubExp());

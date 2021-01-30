@@ -233,100 +233,69 @@ public class TicketHelp {
             this.ticket = ticket;
         }
 
-        public BuildExp<T> mod(String mod) {
+        public Builder<T> mod(String mod) {
             ticket.setPubMod(mod);
-            return new BuildExp<>(ticket);
-        }
-    }
-
-    public static class BuildExp<T extends Ticket.Mutable> {
-        private final T ticket;
-
-        public BuildExp(T ticket) {
-            this.ticket = ticket;
+            return this;
         }
 
-        public BuildSeq<T> exp(long exp) {
+        public Builder<T> exp(long exp) {
             ticket.setPubExp(exp);
-            return new BuildSeq<>(ticket);
+            return this;
         }
 
-        public BuildSeq<T> expAfterNow(long num, TimeUnit unit) {
+        public Builder<T> expAfterNow(long num, TimeUnit unit) {
             ticket.setPubExp(unit.toSeconds(num) + System.currentTimeMillis() / 1000);
-            return new BuildSeq<>(ticket);
+            return this;
         }
 
-        public BuildSeq<T> expAfter(long num, TimeUnit unit) {
+        public Builder<T> expAfter(long num, TimeUnit unit) {
             ticket.setPubExp(unit.toSeconds(num) + ticket.getPubExp());
-            return new BuildSeq<>(ticket);
-        }
-    }
-
-    public static class BuildSeq<T extends Ticket.Mutable> {
-        private final T ticket;
-
-        public BuildSeq(T ticket) {
-            this.ticket = ticket;
+            return this;
         }
 
-        public BuildBiz<T> seq(int seq) {
+        public Builder<T> seq(int seq) {
             ticket.setPubSeq(seq);
-            return new BuildBiz<>(ticket);
+            return this;
         }
 
-        public BuildBiz<T> seqIncrease() {
+        public Builder<T> seqIncrease() {
             ticket.setPubSeq(ticket.getPubSeq() + 1);
-            return new BuildBiz<>(ticket);
+            return this;
         }
 
-        public BuildBiz<T> seqAdd(int step) {
+        public Builder<T> seqAdd(int step) {
             ticket.setPubSeq(ticket.getPubSeq() + step);
-            return new BuildBiz<>(ticket);
-        }
-    }
-
-    public static class BuildBiz<T extends Ticket.Mutable> {
-        private final T ticket;
-
-        public BuildBiz(T ticket) {
-            this.ticket = ticket;
+            return this;
         }
 
-        public BuildSig<T> biz(String biz) {
+
+        public Builder<T> biz(String biz) {
             ticket.setBizPart(biz);
-            return new BuildSig<>(ticket);
+            return this;
         }
 
-        public BuildSig<T> bizEmpty() {
+        public Builder<T> bizEmpty() {
             ticket.setBizPart(Null.Str);
-            return new BuildSig<>(ticket);
+            return this;
         }
 
-        public BuildSig<T> bizB64(byte[] biz) {
+        public Builder<T> bizB64(byte[] biz) {
             ticket.setBizPart(Base64.encode(biz));
-            return new BuildSig<>(ticket);
+            return this;
         }
 
-        public BuildSig<T> bizB64(String biz) {
+        public Builder<T> bizB64(String biz) {
             ticket.setBizPart(Base64.encode(biz));
-            return new BuildSig<>(ticket);
+            return this;
         }
 
-        public BuildSig<T> bizAes(String biz, byte[] key) {
+        public Builder<T> bizAes(String biz, byte[] key) {
             return bizAes(biz, Aes128.of(key));
         }
 
-        public BuildSig<T> bizAes(String biz, Aes128 aes) {
+        public Builder<T> bizAes(String biz, Aes128 aes) {
             ticket.setBizPart(aes.encode64(biz));
-            return new BuildSig<>(ticket);
-        }
-    }
-
-    public static class BuildSig<T extends Ticket.Mutable> {
-        private final T ticket;
-
-        public BuildSig(T ticket) {
-            this.ticket = ticket;
+            return this;
         }
 
         T sig(String sig) {
@@ -348,6 +317,18 @@ public class TicketHelp {
             }
 
             return ticket;
+        }
+
+        T sig(MdHelp help) {
+            return sig(TicketHelp.sig(help));
+        }
+
+        T sig(MdHelp help, byte[] salt) {
+            return sig(TicketHelp.sig(help, salt));
+        }
+
+        T sig(HmacHelp help) {
+            return sig(TicketHelp.sig(help));
         }
     }
 
