@@ -272,6 +272,7 @@ ID能保证严格的`单调递增`(升序)，但不保证连续，其long型的6
  * DateLocaling - LocalDateTime和时区的故事
  * DateNumber - 日期转化成数字的双向转化
  * DateParser - 更高效兼容的解析日期数字的字符串
+ * SlideDate - 包装了OffsetClock的会计日期工具
 
 ## `tk` token和ticket
 
