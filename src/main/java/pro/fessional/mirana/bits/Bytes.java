@@ -14,9 +14,6 @@ import java.io.OutputStream;
  */
 public class Bytes {
 
-    private static final byte[] HEX_BYTE = new byte[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
-    private static final char[] HEX_CHAR = new char[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
-
     /**
      * 把hex字符串（可含有 `0x20\t\r\n` 不区分大小写），解析成bytes
      *
@@ -73,18 +70,43 @@ public class Bytes {
 
     @NotNull
     public static String hex(@Nullable byte[] bytes) {
+        return hex(bytes, true);
+    }
+
+    /**
+     * hex输出，控制大小写
+     *
+     * @param bytes bytes
+     * @param upper 是否大写
+     * @return hex
+     */
+    @NotNull
+    public static String hex(@Nullable byte[] bytes, boolean upper) {
         if (bytes == null) return Null.Str;
         StringBuilder sb = new StringBuilder(bytes.length * 2);
+        char[] table = upper ? HEX_UPPER : HEX_LOWER;
         for (byte b : bytes) {
-            hex(sb, b);
+            hex(sb, b, table);
         }
         return sb.toString();
     }
 
-    public static void hex(@NotNull StringBuilder sb, byte b) {
-        sb.append(HEX_CHAR[((b >>> 4) & 0x0F)]);
-        sb.append(HEX_CHAR[(b & 0x0F)]);
+    private static final char[] HEX_UPPER = new char[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+    private static final char[] HEX_LOWER = new char[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+
+    /**
+     * 查表获得hex
+     *
+     * @param sb    buffer
+     * @param b     byte
+     * @param table 0-F table
+     */
+    public static void hex(@NotNull StringBuilder sb, byte b, char[] table) {
+        sb.append(table[((b >>> 4) & 0x0F)]);
+        sb.append(table[(b & 0x0F)]);
     }
+
+    private static final byte[] HEX_BYTE = new byte[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
     /**
      * 把一个char变成java的unicode转移格式，`我`(25105)=&gt;'\u6211'

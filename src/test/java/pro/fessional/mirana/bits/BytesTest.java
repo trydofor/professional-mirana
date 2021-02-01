@@ -38,4 +38,11 @@ class BytesTest {
         String s3 = new String(Bytes.hex(h3));
         assertEquals(s1, s3);
     }
+
+    @Test
+    void print(){
+        final byte[] bytes = RandCode.human(20).getBytes();
+        System.out.println(Bytes.hex(bytes,true));
+        System.out.println(Bytes.hex(bytes,false));
+    }
 }

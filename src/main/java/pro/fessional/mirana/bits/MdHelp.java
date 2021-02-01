@@ -29,22 +29,37 @@ public class MdHelp {
 
     @NotNull
     public String sum(@Nullable String str) {
-        if (str == null) return Null.Str;
-        return sum(str.getBytes(UTF_8));
+        return sum(str, true);
     }
 
     @NotNull
     public String sum(@Nullable InputStream ins) {
-        if (ins == null) return Null.Str;
-        byte[] bytes = InputStreams.readBytes(ins);
-        return sum(bytes);
+        return sum(ins, true);
     }
 
     @NotNull
     public String sum(@Nullable byte[] bytes) {
+        return Bytes.hex(bytes, true);
+    }
+
+    @NotNull
+    public String sum(@Nullable String str, boolean upper) {
+        if (str == null) return Null.Str;
+        return sum(str.getBytes(UTF_8), upper);
+    }
+
+    @NotNull
+    public String sum(@Nullable InputStream ins, boolean upper) {
+        if (ins == null) return Null.Str;
+        byte[] bytes = InputStreams.readBytes(ins);
+        return sum(bytes, upper);
+    }
+
+    @NotNull
+    public String sum(@Nullable byte[] bytes, boolean upper) {
         if (bytes == null) return Null.Str;
         byte[] hash = digest(bytes);
-        return Bytes.hex(hash);
+        return Bytes.hex(hash, upper);
     }
 
     @NotNull
