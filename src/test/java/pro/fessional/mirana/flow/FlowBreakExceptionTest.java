@@ -1,7 +1,8 @@
-package pro.fessional.mirana.pain;
+package pro.fessional.mirana.flow;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import pro.fessional.mirana.pain.NoStackRuntimeException;
 
 /**
  * RuntimeException took 5955 ms
@@ -10,7 +11,7 @@ import org.junit.jupiter.api.Test;
  * @author trydofor
  * @since 2021-01-29
  */
-class FlowControlEnumExceptionTest {
+class FlowBreakExceptionTest {
 
     enum T {
         None,
@@ -18,7 +19,7 @@ class FlowControlEnumExceptionTest {
 
     @Test
     void testPrint(){
-        new FlowControlEnumException(T.None).printStackTrace();
+        new FlowBreakException(T.None).printStackTrace();
         System.out.println("=====");
         final NoStackRuntimeException nsr = new NoStackRuntimeException("test");
         nsr.getCause();
@@ -49,7 +50,7 @@ class FlowControlEnumExceptionTest {
         l = System.currentTimeMillis();
         for (i = 1; i < a; i++) {
             try {
-                throw new FlowControlEnumException(T.None);
+                throw new FlowBreakException(T.None);
             } catch (Exception e) {
                 // Do nothing here, as we will get here
             }

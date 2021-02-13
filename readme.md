@@ -5,7 +5,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/trydofor/pro.fessional.mirana/badge.svg)](https://coveralls.io/github/trydofor/pro.fessional.mirana)
 
 POM(.xml), 月女，她有一只神箭，她有一只大猫。  
-对guava, commons-lang, commons-io的补充。
+java8, 0依赖，是guava,commons-*的补充。
 
 ![mirana](./mirana_full.png)
 
@@ -137,6 +137,18 @@ POM(.xml), 月女，她有一只神箭，她有一只大猫。
 
  * FakeDate - 生成指定偏移量附近的伪随机日期，保证结果等幂。
 
+## `flow/` 流程控制
+
+在高层架构设计，高价函数调用，流处理中，需要使用异常参与流程中断。
+类似spring security体系，scala的break语法，kotlin的`return@`。
+以下为低消耗的无栈异常，中断流程的场景，属反模式，若非必须不建议使用。
+
+ * DoubleKillException - 重复调用
+ * FirstBloodException - 首个命中
+ * FlowBreak - 静态工具类
+ * FlowBreakException  - 用Enum类的异常参与控制流程。
+ * FlowReturnException - 具有返回值
+
 ## `func/` function构造
 
  * Fn - distinct和duplicate
@@ -250,7 +262,6 @@ ID能保证严格的`单调递增`(升序)，但不保证连续，其long型的6
  * BadArgsException - 多国语和枚举版IllegalArgumentException
  * BadStateException - 多国语和枚举版IllegalStateException
  * CodeException - 多国语和枚举版RuntimeException
- * FlowControlEnumException - 用Enum类的异常参与控制流程。性能优先，堆栈无用
  * NoStackRuntimeException - 无需填充堆栈的异常，用于性能优先场景，堆栈无用的场景
  * ThrowableUtil - Throwable堆栈和cause工具
  * TimeoutRuntimeException - Runtime版TimeoutException
