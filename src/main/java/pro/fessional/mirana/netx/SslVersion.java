@@ -12,6 +12,8 @@ public class SslVersion {
 
     /**
      * append TLSv1.2 to https.protocols if not exist
+     *
+     * @return getProperty(https.protocols)
      */
     public static String supportV12() {
         String version = System.getProperty("https.protocols");
