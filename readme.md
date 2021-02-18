@@ -263,6 +263,9 @@ ID能保证严格的`单调递增`(升序)，但不保证连续，其long型的6
  * BadArgsException - 多国语和枚举版IllegalArgumentException
  * BadStateException - 多国语和枚举版IllegalStateException
  * CodeException - 多国语和枚举版RuntimeException
+ * IllegalRequestException - 不合法的请求
+ * IllegalResponseException - 因状态问题无法正常响应
+ * IoRuntimeException - Runtime版IOException
  * NoStackRuntimeException - 无需填充堆栈的异常，用于性能优先场景，堆栈无用的场景
  * ThrowableUtil - Throwable堆栈和cause工具
  * TimeoutRuntimeException - Runtime版TimeoutException
