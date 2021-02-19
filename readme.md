@@ -149,6 +149,7 @@ java8, 0依赖，是guava,commons-*的补充。
  * FlowBreak - 静态工具类
  * FlowBreakException  - 用Enum类的异常参与控制流程。
  * FlowReturnException - 具有返回值
+ * LoopControl - 循环控制enum
 
 ## `func/` function构造
 
