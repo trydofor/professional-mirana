@@ -153,6 +153,7 @@ java8, 0依赖，是guava,commons-*的补充。
 
 ## `func/` function构造
 
+ * Dcl - DCL of Runnable
  * Fn - distinct和duplicate
 
 ## `i18n/` 多国语
