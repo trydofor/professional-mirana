@@ -10,6 +10,10 @@ public class TimeoutRuntimeException extends RuntimeException {
         super();
     }
 
+    public TimeoutRuntimeException(Throwable cause) {
+        super(cause);
+    }
+
     public TimeoutRuntimeException(String message) {
         super(message);
     }
