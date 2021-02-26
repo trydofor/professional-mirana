@@ -10,6 +10,10 @@ import java.math.BigDecimal;
  */
 public class Null {
 
+    public enum Eu {
+        Null
+    }
+
     public static final boolean Int01 = false;
     public static final byte Int08 = 0;
     public static final char Int16 = 0;
@@ -19,8 +23,13 @@ public class Null {
     public static final double Flt64 = 0.0D;
 
     @NotNull
-    public static final String Str = "";
+    public static final Enum<?> Enm = Eu.Null;
+    @NotNull
+    public static final Class<?> Clz = Void.class;
 
+    //
+    @NotNull
+    public static final String Str = "";
     @NotNull
     public static final boolean[] Bools = new boolean[0];
     @NotNull
