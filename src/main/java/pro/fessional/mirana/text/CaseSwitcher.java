@@ -116,7 +116,7 @@ public class CaseSwitcher {
     }
 
     /**
-     * snake_case
+     * snake-case
      *
      * @param str 源
      * @return snake_case
