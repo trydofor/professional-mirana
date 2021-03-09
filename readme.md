@@ -240,6 +240,11 @@ ID能保证严格的`单调递增`(升序)，但不保证连续，其long型的6
 
  * StringMapXmlWriter - 只把顶层元素变成key-value的map，用来做参数签名
 
+## `lock/` 锁
+
+ * GlobalLock - 全局锁接口
+ * JvmStaticGlobalLock - 基于WeakReference的Jvm全局锁 
+
 ## `math/` 行业中的数学算法
 
  * AnyIntegerUtil - int,long,Number,String间的恩怨
