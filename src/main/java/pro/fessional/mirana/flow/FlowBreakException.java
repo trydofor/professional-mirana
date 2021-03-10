@@ -41,6 +41,6 @@ public class FlowBreakException extends NoStackRuntimeException {
 
     @Override
     public String toString() {
-        return label.name();
+        return label == null ? "" : label.name();
     }
 }
