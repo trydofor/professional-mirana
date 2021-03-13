@@ -14,10 +14,7 @@ import java.time.LocalTime;
  * @author trydofor
  * @since 2017-02-06.
  */
-public class FakeDate {
-
-    protected FakeDate() {
-    }
+public abstract class FakeDate {
 
     /**
      * 生成min和当前日期之间，偏移off的附近的随机日期

@@ -17,5 +17,8 @@ public class RandCodeTest {
         System.out.println("numlet=" + RandCode.numlet(10));
         System.out.println("strong=" + RandCode.strong(10));
         System.out.println("human =" + RandCode.human(10));
+        System.out.println("cjk =" + RandCode.cjk(10));
+        System.out.println("mix =" + RandCode.mix(10));
+        System.out.println("sur =" + RandCode.sur(1));
     }
 }
