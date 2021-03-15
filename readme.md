@@ -145,8 +145,6 @@ java8, 0依赖，是guava,commons-*的补充。
 类似spring security体系，scala的break语法，kotlin的`return@`。
 以下为低消耗的无栈异常，中断流程的场景，属反模式，若非必须不建议使用。
 
- * DoubleKillException - 重复调用
- * FirstBloodException - 首个命中
  * FlowBreak - 静态工具类
  * FlowBreakException  - 用Enum类的异常参与控制流程。
  * FlowReturnException - 具有返回值

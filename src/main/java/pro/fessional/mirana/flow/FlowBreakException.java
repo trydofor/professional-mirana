@@ -25,6 +25,11 @@ public class FlowBreakException extends NoStackRuntimeException {
         this.label = label;
     }
 
+    public FlowBreakException(Enum<?> label, String message) {
+        super(message);
+        this.label = label;
+    }
+
     @SuppressWarnings("unchecked")
     public <T extends Enum<T>> T getLabel() {
         return (T) label;
