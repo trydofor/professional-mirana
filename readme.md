@@ -137,6 +137,7 @@ java8, 0依赖，是guava,commons-*的补充。
 ## `fake/` 伪装数据
 
  * FakeDate - 生成指定偏移量附近的伪随机日期，保证结果等幂。
+ * FakeName - 生成随机中文姓名
 
 ## `flow/` 流程控制
 
@@ -150,6 +151,7 @@ java8, 0依赖，是guava,commons-*的补充。
  * FlowBreakException  - 用Enum类的异常参与控制流程。
  * FlowReturnException - 具有返回值
  * LoopControl - 循环控制enum
+ * ReturnOrException - 是破例返回还是异常
 
 ## `func/` function构造
 

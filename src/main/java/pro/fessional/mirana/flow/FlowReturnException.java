@@ -1,5 +1,7 @@
 package pro.fessional.mirana.flow;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -41,8 +43,9 @@ public class FlowReturnException extends FlowBreakException {
      * @return value
      */
     @Nullable
+    @Contract("!null -> !null")
     @SuppressWarnings("unchecked")
-    public <T> T getOrElse(T other) {
+    public <T> T getOrElse(@Nullable T other) {
         return value == null ? other : (T) value;
     }
 
@@ -56,8 +59,9 @@ public class FlowReturnException extends FlowBreakException {
      * @return value
      */
     @Nullable
+    @Contract("!null,_ -> !null")
     @SuppressWarnings("unchecked")
-    public <T, S extends T> T getOrElse(S other, Class<T> type) {
+    public <T, S extends T> T getOrElse(@Nullable S other, @NotNull Class<T> type) {
         return type.isInstance(value) ? (T) value : other;
     }
 
