@@ -228,15 +228,27 @@ public class LeapCode {
      */
     public long decode(@Nullable String value) {
         if (value == null) return Long.MIN_VALUE;
+        return decode(value, 0, value.length());
+    }
 
-        int len = value.length();
+    /**
+     * 解码出数值, {@link Long#MIN_VALUE}解码失败
+     *
+     * @param value 编码后字符串
+     * @param off   开始位置
+     * @param len   长度
+     * @return 原始数字。
+     */
+    public long decode(@Nullable CharSequence value, int off, int len) {
+        if (value == null) return Long.MIN_VALUE;
+
         int off1 = -1;
         int off2 = -1;
         char[] dict = null;
 
         long number = 0L;
         int pos = 0;
-        for (int i = 0; i < len; i++) {
+        for (int i = off; i < len; i++) {
             char c = value.charAt(i);
             if (c >= 'a' && c <= 'z') {
                 c = (char) (c - 32);

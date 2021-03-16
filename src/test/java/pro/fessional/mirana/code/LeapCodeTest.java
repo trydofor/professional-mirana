@@ -21,25 +21,25 @@ public class LeapCodeTest {
 
     private void checkRandom(int base, LeapCode code) {
         for (int i = 0; i < 100000; i++) {
-            String e = code.encode(base, i, 30);
-            long d = code.decode(e);
+            String e = "--|" + code.encode(base, i, 30);
+            long d = code.decode(e, 3, e.length());
             assertEquals(i, d);
         }
         for (int i = 0; i < 100000; i++) {
             long n = random.nextLong() & Crc8Long.MAX_NUMBER;
-            String e = code.encode(base, n, 30);
-            long d = code.decode(e);
+            String e = "--|" + code.encode(base, n, 30);
+            long d = code.decode(e, 3, e.length());
             assertEquals(n, d);
         }
     }
 
     private void checkBound(int base, LeapCode code) {
-        String e2 = code.encode(base, LeapCode.MAX_NUMBER, 30);
-        long d2 = code.decode(e2);
+        String e2 = "--|" + code.encode(base, LeapCode.MAX_NUMBER, 30);
+        long d2 = code.decode(e2, 3, e2.length());
         assertEquals(LeapCode.MAX_NUMBER, d2);
 
-        String e1 = code.encode(base, LeapCode.MIN_NUMBER, 30);
-        long d1 = code.decode(e1);
+        String e1 = "--|" + code.encode(base, LeapCode.MIN_NUMBER, 30);
+        long d1 = code.decode(e1, 3, e1.length());
         assertEquals(LeapCode.MIN_NUMBER, d1);
     }
 
