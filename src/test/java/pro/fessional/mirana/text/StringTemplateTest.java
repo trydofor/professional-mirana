@@ -26,6 +26,14 @@ public class StringTemplateTest {
                                     .toString();
         assertSame(url, url2);
         assertEquals("https://api.weixin.qq.com/cgi-bin/user/info?access_token=abc123&openid=bcd456&lang=en", url);
+
+        // TODO bug
+        final String body = StringTemplate
+                .fix("key='',ttl=")
+                .bindStr("${key}", "KEY")
+                .bindStr("${ttl}", "123")
+                .toString();
+        assertEquals("key='',ttl=", body);
     }
 
     @Test
@@ -41,6 +49,13 @@ public class StringTemplateTest {
         assertNotSame(url, url2);
         assertEquals(url, url2);
         assertEquals("https://api.weixin.qq.com/cgi-bin/user/info?access_token=abc123&openid=bcd456&lang=en", url);
+
+        final String body = StringTemplate
+                .dyn("key='',ttl=")
+                .bindStr("${key}", "KEY")
+                .bindStr("${ttl}", "123")
+                .toString();
+        assertEquals("key='',ttl=", body);
     }
 
     @Test
@@ -118,10 +133,9 @@ public class StringTemplateTest {
         s = System.currentTimeMillis();
         for (int i = 0; i < len; i++) {
             String token = "token_" + i;
-            String t = new StringBuilder("https://api.weixin.qq.com/cgi-bin/user/info?access_token=")
-                    .append(token).append("&openid=")
-                    .append(token).append("&lang=en")
-                    .toString();
+            String t = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=" +
+                    token + "&openid=" +
+                    token + "&lang=en";
         }
         System.out.println("String.append = " + (System.currentTimeMillis() - s));
 

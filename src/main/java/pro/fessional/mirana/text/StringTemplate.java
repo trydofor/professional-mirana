@@ -280,7 +280,9 @@ public class StringTemplate {
                 }
             }
 
-            if (p1 > 0 && p1 < str.length()) {
+            if (p1 < 0) {
+                rst.add(str.toCharArray());
+            } else if (p1 > 0 && p1 < str.length()) {
                 rst.add(str.substring(p1).toCharArray());
             }
 
