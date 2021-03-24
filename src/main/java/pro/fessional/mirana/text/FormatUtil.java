@@ -7,8 +7,6 @@ import pro.fessional.mirana.data.Null;
 
 import java.util.Arrays;
 
-import static pro.fessional.mirana.text.BuilderHelper.getBuilder;
-
 /**
  * 安全且内存碎片少的formatter，能够处理 slf4j的`{}`和printf的`%`
  *
@@ -17,6 +15,8 @@ import static pro.fessional.mirana.text.BuilderHelper.getBuilder;
  * @since 2017-02-11.
  */
 public class FormatUtil {
+
+    private static final BuilderHolder Builder = new BuilderHolder();
 
     /**
      * 处理slf4j的 `{}`占位符
@@ -40,7 +40,7 @@ public class FormatUtil {
     @NotNull
     public static String logback(CharSequence fmt, Object... args) {
         if (fmt == null || fmt.length() == 0) return Null.Str;
-        StringBuilder builder = getBuilder();
+        StringBuilder builder = Builder.use();
         char c;
         boolean start = false;
         for (int i = 0, j = 0, n = fmt.length(); j < n; j++) {

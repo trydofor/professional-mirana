@@ -33,6 +33,7 @@ import java.util.regex.Pattern;
  */
 public class StringTemplate {
 
+    private static final BuilderHolder Builder = new BuilderHolder();
     private static final ConcurrentHashMap<String, B> FIX = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<String, B> DYN = new ConcurrentHashMap<>();
 
@@ -222,7 +223,7 @@ public class StringTemplate {
             if (fix != null) return fix;
 
             Map<K, Object> a = arg.getArg();
-            StringBuilder sb = BuilderHelper.getBuilder();
+            StringBuilder sb = Builder.use();
             for (Object o : rst) {
                 if (o instanceof K) {
                     Object v = a.get(o);

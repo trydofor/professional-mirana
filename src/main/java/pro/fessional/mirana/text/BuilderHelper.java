@@ -14,20 +14,6 @@ import java.util.stream.IntStream;
  */
 public class BuilderHelper {
 
-    private static final ThreadLocal<StringBuilder> BUILDER = ThreadLocal.withInitial(() -> new StringBuilder(256));
-
-    public static StringBuilder getBuilder() {
-        StringBuilder builder = BUILDER.get();
-        int len = builder.length();
-        if (len > 1024) {
-            builder = new StringBuilder(256);
-            BUILDER.set(builder); // shrink
-        } else if (len > 0) {
-            builder.setLength(0);
-        }
-        return builder;
-    }
-
     /**
      * append非null
      *
@@ -211,14 +197,15 @@ public class BuilderHelper {
 
     public static class W implements Appendable, CharSequence {
 
+        private static final BuilderHolder holder = new BuilderHolder();
         public final StringBuilder builder;
 
         public W() {
-            this.builder = getBuilder();
+            this.builder = holder.use();
         }
 
         public W(StringBuilder builder) {
-            this.builder = builder == null ? getBuilder() : builder;
+            this.builder = builder == null ? holder.use() : builder;
         }
 
         public StringBuilder result() {

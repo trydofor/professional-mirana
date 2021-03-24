@@ -14,6 +14,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
+ * 第一个满足条件(如非null)的数据操作
+ *
  * @author trydofor
  * @since 2019-10-24
  */

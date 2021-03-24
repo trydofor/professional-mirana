@@ -126,7 +126,8 @@ java8, 0依赖，是guava,commons-*的补充。
  * Null - 以`空`消除null是我们的目标。
  * R - Result的场景类
  * Rank - 按多条件顺序来排序
- * U - 内部传递数据的tuple
+ * U - 内部传递数据的Tuple,Either
+ * V - 线程内收集可读性信息
  * Z - 第一个满足条件(如非null)的数据操作
 
 ## `dync/` 动态编译
@@ -280,6 +281,7 @@ ID能保证严格的`单调递增`(升序)，但不保证连续，其long型的6
 ## `text/` 全半角，白字符，格式化工具
 
  * BuilderHelper - null友好碎片少的StringBuilder操作
+ * BuilderHolder - 减少碎片的StringBuilder
  * CaseSwitcher - camel,snake,pascal,kebab命名转换
  * FormatUtil - printf的`%`和logbak的`{}`，截断填充
  * FullCharUtil - 全角字符工具
