@@ -97,7 +97,8 @@ public class FormatUtil {
 
     /**
      * 处理 printf的`%`占位符
-     * 安全的，自动补全的 String#format
+     * 安全的，自动补全的 String#format。
+     * 更优雅的format建议使用 java.text.format.MessageFormat.
      *
      * @param fmt  格式
      * @param args 参数

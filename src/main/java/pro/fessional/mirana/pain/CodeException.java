@@ -40,7 +40,13 @@ public class CodeException extends RuntimeException implements I18nAware {
 
     public CodeException(boolean stack, String code, String message) {
         super(message == null ? Null.notNull(code) : message, null, stack, stack);
-        this.code = code == null ? "" : code;
+        if (code == null) {
+            this.code = "";
+            this.i18nCode = null;
+        } else {
+            this.code = code;
+            this.i18nCode = code;
+        }
     }
 
     public CodeException(boolean stack, CodeEnum code) {
@@ -49,7 +55,10 @@ public class CodeException extends RuntimeException implements I18nAware {
 
     public CodeException(boolean stack, CodeEnum code, Object... args) {
         this(stack, code == null ? "" : code.getCode(), code == null ? "" : code.getHint());
-        if (args != null) this.i18nArgs = args;
+        if (code != null) {
+            this.i18nCode = code.getI18nCode();
+            this.i18nArgs = args;
+        }
     }
 
     public CodeException(Throwable cause, String code) {
@@ -58,7 +67,13 @@ public class CodeException extends RuntimeException implements I18nAware {
 
     public CodeException(Throwable cause, String code, String message) {
         super(Null.notNull(message), cause);
-        this.code = code == null ? "" : code;
+        if (code == null) {
+            this.code = "";
+            this.i18nCode = null;
+        } else {
+            this.code = code;
+            this.i18nCode = code;
+        }
     }
 
     public CodeException(Throwable cause, CodeEnum code) {
@@ -67,8 +82,14 @@ public class CodeException extends RuntimeException implements I18nAware {
 
     public CodeException(Throwable cause, CodeEnum code, Object... args) {
         super(code == null ? "" : code.getHint(), cause);
-        this.code = code == null ? "" : code.getCode();
-        if (args != null) this.i18nArgs = args;
+        if (code == null) {
+            this.code = "";
+            this.i18nCode = null;
+        } else {
+            this.code = code.getCode();
+            this.i18nCode = code.getI18nCode();
+            this.i18nArgs = args;
+        }
     }
 
     @NotNull
