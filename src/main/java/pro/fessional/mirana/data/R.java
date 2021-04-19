@@ -3,18 +3,16 @@ package pro.fessional.mirana.data;
 
 import org.jetbrains.annotations.Nullable;
 import pro.fessional.mirana.i18n.I18nAware;
-import pro.fessional.mirana.pain.ThrowableUtil;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
+import java.beans.Transient;
 
 /**
  * 基础结果类，
  * success 判定操作成功|失败。
  * message 用户消息，有则显示。
- * error 内部错误，用于跟踪
  * code 业务code，有则判定。
  * data 业务数据，有则使用。
+ * cause 内部错误，用于跟踪。如异常，字符串，enum等标识中断执行的原因。
  * <p>
  * i18nCode和i18nArgs用来处理I18N信息，一般用来替换Message
  *
@@ -26,7 +24,8 @@ public class R<T> implements DataResult<T> {
     protected String message;
     protected String code;
     protected T data;
-    protected String error = null;
+    //
+    protected transient Object cause = null;
 
     protected R(boolean success, String message, String code, T data) {
         this.success = success;
@@ -106,12 +105,26 @@ public class R<T> implements DataResult<T> {
         return this;
     }
 
-    public void setError(String error) {
-        this.error = error;
+    @Transient
+    @Nullable
+    public Object getCause() {
+        return cause;
     }
 
-    public String getError() {
-        return error;
+    @Transient
+    @Nullable
+    @SuppressWarnings("unchecked")
+    public <E> E getCause(Class<E> type) {
+        if (type != null && type.isInstance(cause)) {
+            return (E) cause;
+        }
+        else {
+            return null;
+        }
+    }
+
+    public void setCause(Object cause) {
+        this.cause = cause;
     }
 
     // i18n
@@ -129,11 +142,11 @@ public class R<T> implements DataResult<T> {
     @Override
     public String toString() {
         return "SimpleResult{" +
-                "success=" + success +
-                ", message='" + message + '\'' +
-                ", code='" + code + '\'' +
-                ", data=" + data +
-                '}';
+               "success=" + success +
+               ", message='" + message + '\'' +
+               ", code='" + code + '\'' +
+               ", data=" + data +
+               '}';
     }
 
     // /////////////////////
@@ -268,21 +281,17 @@ public class R<T> implements DataResult<T> {
 
     public static <T> R<T> ng(Throwable t, String code, String message) {
         if (message == null) message = t.getMessage();
-        String st = ThrowableUtil.rootString(t);
-        String b64 = Base64.getUrlEncoder().encodeToString(st.getBytes(StandardCharsets.UTF_8));
         if (code == null && t instanceof DataResult) {
             code = ((DataResult<?>) t).getCode();
         }
         R<T> tr = new R<>(false, message, code, null);
-        tr.error = b64;
+        tr.cause = t;
         return tr;
     }
 
     public static <T> R<T> ng(Throwable t, CodeEnum code) {
-        String st = ThrowableUtil.rootString(t);
-        String b64 = Base64.getUrlEncoder().encodeToString(st.getBytes(StandardCharsets.UTF_8));
         R<T> tr = new R<>(false, code, null);
-        tr.error = b64;
+        tr.cause = t;
         return tr;
     }
 }
