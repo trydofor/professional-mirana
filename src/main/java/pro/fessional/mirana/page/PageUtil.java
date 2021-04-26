@@ -72,7 +72,8 @@ public class PageUtil {
                 By st = By.of(buf);
                 if (st != null) bies.add(st);
                 buf.setLength(0);
-            } else {
+            }
+            else {
                 if (WhiteUtil.notWhiteSpace(c)) {
                     buf.append(c);
                 }
@@ -148,10 +149,12 @@ public class PageUtil {
                 if (key.charAt(0) == SORT_DESC) {
                     if (len > 1) {
                         return new By(key.substring(1), false);
-                    } else {
+                    }
+                    else {
                         return null;
                     }
-                } else {
+                }
+                else {
                     return new By(key.toString(), true);
                 }
             }
@@ -169,7 +172,7 @@ public class PageUtil {
             if (o == null || getClass() != o.getClass()) return false;
             By by = (By) o;
             return asc == by.asc &&
-                    key.equals(by.key);
+                   key.equals(by.key);
         }
 
         @Override
@@ -195,5 +198,25 @@ public class PageUtil {
             consumer.accept(++count, data.subList(i, Math.min(i = i + pageSize, total)));
         }
         return count;
+    }
+
+    /**
+     * 分页处理一个list
+     *
+     * @param data     数据集
+     * @param pageSize 页大小
+     * @param <E>      类型
+     * @return 分页后的list
+     */
+    public static <E> List<List<E>> paginate(List<E> data, int pageSize) {
+        if (data == null || data.isEmpty()) return Collections.emptyList();
+        if (pageSize < 1) pageSize = 1;
+        final int total = data.size();
+        int count = totalPage(total, pageSize);
+        ArrayList<List<E>> result = new ArrayList<>(count);
+        for (int i = 0; i < total; ) {
+            result.add(data.subList(i, Math.min(i = i + pageSize, total)));
+        }
+        return result;
     }
 }

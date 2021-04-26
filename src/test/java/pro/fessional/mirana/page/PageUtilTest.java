@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -50,7 +51,7 @@ public class PageUtilTest {
     }
 
     @Test
-    void paginate() {
+    void paginate1() {
         final List<Integer> data = Arrays.asList(1, 2, 3);
         final AtomicInteger cnt = new AtomicInteger(1);
         int a1 = PageUtil.paginate(data, 0, (i, ls) -> {
@@ -105,32 +106,67 @@ public class PageUtilTest {
     }
 
     @Test
+    void paginate2() {
+        final List<Integer> data = Arrays.asList(1, 2, 3);
+        List<List<Integer>> a1 = PageUtil.paginate(data, 0);
+        List<List<Integer>> r1 = new ArrayList<>(3);
+        r1.add(Collections.singletonList(1));
+        r1.add(Collections.singletonList(2));
+        r1.add(Collections.singletonList(3));
+        assertEquals(r1, a1);
+
+        List<List<Integer>> a2 = PageUtil.paginate(data, 1);
+        List<List<Integer>> r2 = new ArrayList<>(3);
+        r2.add(Collections.singletonList(1));
+        r2.add(Collections.singletonList(2));
+        r2.add(Collections.singletonList(3));
+        assertEquals(r2, a2);
+
+        List<List<Integer>> a3 = PageUtil.paginate(data, 2);
+        List<List<Integer>> r3 = new ArrayList<>(2);
+        r3.add(Arrays.asList(1, 2));
+        r3.add(Collections.singletonList(3));
+        assertEquals(r3, a3);
+
+        List<List<Integer>> a4 = PageUtil.paginate(data, 3);
+        List<List<Integer>> r4 = new ArrayList<>(2);
+        r4.add(Arrays.asList(1, 2, 3));
+        assertEquals(r4, a4);
+
+        List<List<Integer>> a5 = PageUtil.paginate(data, 4);
+        List<List<Integer>> r5 = new ArrayList<>(2);
+        r5.add(Arrays.asList(1, 2, 3));
+        assertEquals(r5, a5);
+
+    }
+
+    @Test
     void dataIndex() {
-        assertEquals(0,PageUtil.dataIndex(0,0));
-        assertEquals(0,PageUtil.dataIndex(1,0));
-        assertEquals(0,PageUtil.dataIndex(1,1));
-        assertEquals(1,PageUtil.dataIndex(2,1));
-        assertEquals(0,PageUtil.dataIndex(1,2));
-        assertEquals(2,PageUtil.dataIndex(2,2));
-        assertEquals(0,PageUtil.dataIndex(1,3));
-        assertEquals(3,PageUtil.dataIndex(2,3));
+        assertEquals(0, PageUtil.dataIndex(0, 0));
+        assertEquals(0, PageUtil.dataIndex(1, 0));
+        assertEquals(0, PageUtil.dataIndex(1, 1));
+        assertEquals(1, PageUtil.dataIndex(2, 1));
+        assertEquals(0, PageUtil.dataIndex(1, 2));
+        assertEquals(2, PageUtil.dataIndex(2, 2));
+        assertEquals(0, PageUtil.dataIndex(1, 3));
+        assertEquals(3, PageUtil.dataIndex(2, 3));
     }
 
     @Test
     void totalPage() {
-        assertEquals(0,PageUtil.totalPage(0,0));
-        assertEquals(0,PageUtil.totalPage(0,1));
-        assertEquals(1,PageUtil.totalPage(1,0));
-        assertEquals(1,PageUtil.totalPage(1,1));
-        assertEquals(1,PageUtil.totalPage(1,2));
-        assertEquals(2,PageUtil.totalPage(2,0));
-        assertEquals(2,PageUtil.totalPage(2,1));
-        assertEquals(1,PageUtil.totalPage(2,2));
-        assertEquals(1,PageUtil.totalPage(2,3));
-        assertEquals(3,PageUtil.totalPage(3,0));
-        assertEquals(3,PageUtil.totalPage(3,1));
-        assertEquals(2,PageUtil.totalPage(3,2));
-        assertEquals(1,PageUtil.totalPage(3,3));
-        assertEquals(1,PageUtil.totalPage(3,4));
+        assertEquals(0, PageUtil.totalPage(0, 0));
+        assertEquals(0, PageUtil.totalPage(0, 1));
+        assertEquals(1, PageUtil.totalPage(1, 0));
+        assertEquals(1, PageUtil.totalPage(1, 1));
+        assertEquals(1, PageUtil.totalPage(1, 2));
+        assertEquals(2, PageUtil.totalPage(2, 0));
+        assertEquals(2, PageUtil.totalPage(2, 1));
+        assertEquals(1, PageUtil.totalPage(2, 2));
+        assertEquals(1, PageUtil.totalPage(2, 3));
+        assertEquals(3, PageUtil.totalPage(3, 0));
+        assertEquals(3, PageUtil.totalPage(3, 1));
+        assertEquals(2, PageUtil.totalPage(3, 2));
+        assertEquals(1, PageUtil.totalPage(3, 3));
+        assertEquals(1, PageUtil.totalPage(3, 4));
     }
 }
