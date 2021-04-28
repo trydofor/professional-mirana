@@ -2,6 +2,7 @@ package pro.fessional.mirana.jaxb;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * @author trydofor
@@ -15,6 +16,6 @@ public class ZonedDateTimeXmlAdapter extends XmlAdapter<String, ZonedDateTime> {
 
     @Override
     public String marshal(ZonedDateTime value) {
-        return value != null ? value.toString() : null;
+        return value != null ? value.format(DateTimeFormatter.ISO_ZONED_DATE_TIME) : null;
     }
 }

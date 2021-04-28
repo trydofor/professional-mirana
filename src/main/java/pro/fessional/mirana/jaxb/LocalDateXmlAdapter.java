@@ -4,6 +4,7 @@ import pro.fessional.mirana.time.DateParser;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 /**
  * @author trydofor
@@ -17,6 +18,6 @@ public class LocalDateXmlAdapter extends XmlAdapter<String, LocalDate> {
 
     @Override
     public String marshal(LocalDate value) {
-        return value != null ? value.toString() : null;
+        return value != null ? value.format(DateTimeFormatter.ISO_LOCAL_DATE) : null;
     }
 }
