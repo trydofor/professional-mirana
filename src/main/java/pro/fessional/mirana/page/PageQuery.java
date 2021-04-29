@@ -18,9 +18,10 @@ import java.util.Objects;
  * @since 2020-09-29
  */
 public class PageQuery implements Serializable {
-    private int page = 1;
-    private int size = 1;
-    private String sort = Null.Str;
+
+    protected int page = 1;
+    protected int size = 1;
+    protected String sort = Null.Str;
 
     public PageQuery() {
     }

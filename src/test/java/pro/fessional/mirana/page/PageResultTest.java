@@ -14,7 +14,7 @@ public class PageResultTest {
 
     @Test
     public void getPageNumber() {
-        PageResult<Object> o1 = PageResult.of(-1, null, -1, -1);
+        PageResult<Object> o1 = PageResult.ok(-1, null, -1, -1);
         assertNotNull(o1.getData());
         assertTrue(o1.getData().isEmpty());
         assertEquals(1, o1.getPage());
@@ -22,7 +22,7 @@ public class PageResultTest {
         assertEquals(0, o1.getTotalData());
         assertEquals(0, o1.getTotalPage());
 
-        PageResult<Object> o2 = PageResult.of(0, null, 0, 0);
+        PageResult<Object> o2 = PageResult.ok(0, null, 0, 0);
         assertNotNull(o2.getData());
         assertTrue(o2.getData().isEmpty());
         assertEquals(1, o2.getPage());
@@ -30,7 +30,7 @@ public class PageResultTest {
         assertEquals(0, o2.getTotalData());
         assertEquals(0, o2.getTotalPage());
 
-        PageResult<Object> o3 = PageResult.of(10, null, 1, 3);
+        PageResult<Object> o3 = PageResult.ok(10, null, 1, 3);
         assertNotNull(o3.getData());
         assertTrue(o3.getData().isEmpty());
         assertEquals(1, o3.getPage());

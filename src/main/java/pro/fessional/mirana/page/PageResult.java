@@ -3,8 +3,9 @@ package pro.fessional.mirana.page;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pro.fessional.mirana.data.Null;
+import pro.fessional.mirana.data.R;
 
-import java.io.Serializable;
+import java.beans.Transient;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -24,7 +25,7 @@ import java.util.List;
  * @author trydofor
  * @since 2020-09-29
  */
-public class PageResult<E> implements Iterable<E>, Serializable {
+public class PageResult<E> extends R<Collection<E>> implements Iterable<E> {
 
     private final List<E> empty = Collections.emptyList();
 
@@ -33,10 +34,9 @@ public class PageResult<E> implements Iterable<E>, Serializable {
     private String sort = Null.Str;
     private int totalPage = Null.Int32;
     private int totalData = Null.Int32;
-    @NotNull
-    private Collection<E> data = empty;
 
     public PageResult() {
+        data = empty;
     }
 
     /**
@@ -118,11 +118,13 @@ public class PageResult<E> implements Iterable<E>, Serializable {
      *
      * @return 数据
      */
+    @Transient
     @NotNull
     public List<E> toList() {
         if (data instanceof List<?>) {
             return (List<E>) data;
-        } else {
+        }
+        else {
             return new ArrayList<>(data);
         }
     }
@@ -145,7 +147,8 @@ public class PageResult<E> implements Iterable<E>, Serializable {
     public PageResult<E> setData(Collection<? extends E> ds) {
         if (ds == null || ds.isEmpty()) {
             data = empty;
-        } else {
+        }
+        else {
             data = (Collection<E>) ds;
         }
         return this;
@@ -165,7 +168,8 @@ public class PageResult<E> implements Iterable<E>, Serializable {
         if (ds != null && ds.size() > 0) {
             if (data == empty) {
                 data = new ArrayList<>(ds);
-            } else {
+            }
+            else {
                 data.addAll(ds);
             }
         }
@@ -193,12 +197,13 @@ public class PageResult<E> implements Iterable<E>, Serializable {
      * @param <T>   数据
      * @return 分页结果
      */
-    public static <T> PageResult<T> of(int total, Collection<? extends T> data, PageQuery pg) {
+    public static <T> PageResult<T> ok(int total, Collection<? extends T> data, PageQuery pg) {
         return new PageResult<T>()
-                .setData(data)
-                .setPage(pg.getPage())
-                .setTotalInfo(total, pg.getSize())
-                .setSort(pg.getSort());
+                       .setData(data)
+                       .setPage(pg.getPage())
+                       .setTotalInfo(total, pg.getSize())
+                       .setSort(pg.getSort())
+                       .setSuccess(true);
     }
 
     /**
@@ -211,10 +216,11 @@ public class PageResult<E> implements Iterable<E>, Serializable {
      * @param <T>   数据
      * @return 分页结果
      */
-    public static <T> PageResult<T> of(int total, Collection<? extends T> data, int page, int size) {
+    public static <T> PageResult<T> ok(int total, Collection<? extends T> data, int page, int size) {
         return new PageResult<T>()
-                .setData(data)
-                .setPage(page)
-                .setTotalInfo(total, size);
+                       .setData(data)
+                       .setPage(page)
+                       .setTotalInfo(total, size)
+                       .setSuccess(true);
     }
 }

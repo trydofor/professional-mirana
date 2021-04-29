@@ -3,6 +3,7 @@ package pro.fessional.mirana.data;
 
 import org.jetbrains.annotations.Nullable;
 import pro.fessional.mirana.i18n.I18nAware;
+import pro.fessional.mirana.pain.CodeException;
 
 import java.beans.Transient;
 
@@ -18,14 +19,24 @@ import java.beans.Transient;
  *
  * @param <T> Data的类型
  */
-public class R<T> implements DataResult<T> {
+public class R<T> implements DataResult<T>, I18nAware {
 
     protected boolean success;
     protected String message;
     protected String code;
     protected T data;
+
     //
     protected transient Object cause = null;
+    private transient String i18nCode;
+    private transient Object[] i18nArgs;
+
+    protected R() {
+        this.success = false;
+        this.message = null;
+        this.code = null;
+        this.data = null;
+    }
 
     protected R(boolean success, String message, String code, T data) {
         this.success = success;
@@ -40,26 +51,7 @@ public class R<T> implements DataResult<T> {
         if (code != null) {
             this.message = code.getHint();
             this.code = code.getCode();
-        }
-    }
-
-    public static class I<T> extends R<T> implements I18nAware {
-
-        private String i18nCode;
-        private Object[] i18nArgs;
-
-        protected I(boolean success, String message, String code, T data) {
-            super(success, message, code, data);
-        }
-
-        @Override
-        public String getI18nCode() {
-            return i18nCode;
-        }
-
-        @Override
-        public Object[] getI18nArgs() {
-            return i18nArgs;
+            this.i18nCode = code.getI18nCode();
         }
     }
 
@@ -68,9 +60,10 @@ public class R<T> implements DataResult<T> {
         return success;
     }
 
-    public R<T> setSuccess(boolean success) {
+    @SuppressWarnings("unchecked")
+    public <S extends R<T>> S setSuccess(boolean success) {
         this.success = success;
-        return this;
+        return (S) this;
     }
 
     @Nullable
@@ -79,9 +72,19 @@ public class R<T> implements DataResult<T> {
         return message;
     }
 
-    public R<T> setMessage(String message) {
+    @SuppressWarnings("unchecked")
+    public <S extends R<T>> S setMessage(String message) {
         this.message = message;
-        return this;
+        return (S) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <S extends R<T>> S setMessage(CodeEnum ce, Object... arg) {
+        this.code = ce.getCode();
+        this.message = ce.getHint();
+        this.i18nCode = ce.getI18nCode();
+        this.i18nArgs = arg;
+        return (S) this;
     }
 
     @Nullable
@@ -90,9 +93,10 @@ public class R<T> implements DataResult<T> {
         return data;
     }
 
-    public R<T> setData(T data) {
+    @SuppressWarnings("unchecked")
+    public <S extends R<T>> S setData(T data) {
         this.data = data;
-        return this;
+        return (S) this;
     }
 
     @Override
@@ -100,9 +104,10 @@ public class R<T> implements DataResult<T> {
         return code;
     }
 
-    public R<T> setCode(String code) {
+    @SuppressWarnings("unchecked")
+    public <S extends R<T>> S setCode(String code) {
         this.code = code;
-        return this;
+        return (S) this;
     }
 
     @Transient
@@ -123,20 +128,35 @@ public class R<T> implements DataResult<T> {
         }
     }
 
-    public void setCause(Object cause) {
+    @SuppressWarnings("unchecked")
+    public <S extends R<T>> S setCause(Object cause) {
         this.cause = cause;
+        return (S) this;
+    }
+
+    @Transient
+    @Override
+    public @Nullable String getI18nCode() {
+        return i18nCode;
+    }
+
+    @Transient
+    @Override
+    public @Nullable Object[] getI18nArgs() {
+        return i18nArgs;
     }
 
     // i18n
-    public I<T> toI18n(String code, Object... args) {
-        I<T> r = new I<>(this.success, this.message, this.code, this.data);
-        if (code != null && code.length() > 0) {
-            r.i18nCode = code;
+    @SuppressWarnings("unchecked")
+    public <S extends R<T>> S toI18n(String messageCode, Object... args) {
+        if (messageCode != null && messageCode.length() > 0) {
+            i18nCode = messageCode;
         }
+
         if (args != null && args.length > 0) {
-            r.i18nArgs = args;
+            i18nArgs = args;
         }
-        return r;
+        return (S) this;
     }
 
     @Override
@@ -281,10 +301,13 @@ public class R<T> implements DataResult<T> {
 
     public static <T> R<T> ng(Throwable t, String code, String message) {
         if (message == null) message = t.getMessage();
-        if (code == null && t instanceof DataResult) {
-            code = ((DataResult<?>) t).getCode();
-        }
         R<T> tr = new R<>(false, message, code, null);
+        if (t instanceof CodeException) {
+            CodeException ce = (CodeException) t;
+            if (code == null) tr.code = ce.getCode();
+            tr.i18nCode = ce.getI18nCode();
+            tr.i18nArgs = ce.getI18nArgs();
+        }
         tr.cause = t;
         return tr;
     }
