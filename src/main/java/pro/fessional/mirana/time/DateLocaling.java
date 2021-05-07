@@ -68,7 +68,7 @@ public class DateLocaling {
     /**
      * 当前或过去的周几的 0:0:0.0
      *
-     * @param to 时区
+     * @param to  时区
      * @param day 星期
      * @return 日时
      */
@@ -78,9 +78,11 @@ public class DateLocaling {
         int m = day.getValue();
         if (m > v) {
             return ldt.plusDays((m - v - 7));
-        } else if (m < v) {
+        }
+        else if (m < v) {
             return ldt.plusDays((m - v));
-        } else {
+        }
+        else {
             return ldt;
         }
     }
@@ -126,7 +128,8 @@ public class DateLocaling {
         if (to == null || from == null) return time;
         if (from.equals(to)) {
             return time;
-        } else {
+        }
+        else {
             return time.atZone(from).withZoneSameInstant(to).toLocalDateTime();
         }
     }
@@ -144,9 +147,20 @@ public class DateLocaling {
 
         if (time.getZone().equals(to)) {
             return time.toLocalDateTime();
-        } else {
+        }
+        else {
             return time.withZoneSameInstant(to).toLocalDateTime();
         }
+    }
+
+    /**
+     * 把时间变为系统时区
+     *
+     * @param time 时间
+     * @return 目标时间
+     */
+    public static LocalDateTime toSystem(ZonedDateTime time) {
+        return toZone(time, ZoneId.systemDefault());
     }
 
     /**
@@ -162,8 +176,19 @@ public class DateLocaling {
 
         if (time.getZone().equals(to)) {
             return time;
-        } else {
+        }
+        else {
             return time.withZoneSameInstant(to);
         }
+    }
+
+    /**
+     * 调整到系统时区
+     *
+     * @param time 时间
+     * @return 目标时间
+     */
+    public static ZonedDateTime zoneSystem(ZonedDateTime time) {
+        return zoneZone(time, ZoneId.systemDefault());
     }
 }

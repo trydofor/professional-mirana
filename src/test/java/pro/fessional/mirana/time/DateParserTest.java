@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,6 +39,24 @@ public class DateParserTest {
         assertEquals(LocalDate.of(2019, 5, 21), ld1);
         assertEquals(LocalDate.of(2019, 5, 21), ld2);
         assertEquals(LocalDate.of(2019, 5, 21), ld3);
+    }
+
+    @Test
+    public void parseZone() {
+        // 2011-12-03T10:15:30+01:00[Europe/Paris]
+        String str1 = "２０１９年０５月２１日　12:34+0800 无效信息";
+        String str2 = "２０１９年０５月２１日　１２点３４GMT+8 无效信息";
+        String str3 = "２０１９年５月２１日　１２点３４分５６秒789+01:00[Europe/Paris] 无效信息";
+        DateParser.Zdt ld1 = DateParser.parseZoned(str1);
+        DateParser.Zdt ld2 = DateParser.parseZoned(str2);
+        DateParser.Zdt ld3 = DateParser.parseZoned(str3);
+
+        assertEquals(LocalDateTime.of(2019, 5, 21, 12, 34, 0, 0), ld1.ldt);
+        assertEquals(LocalDateTime.of(2019, 5, 21, 12, 34, 0, 0), ld2.ldt);
+        assertEquals(LocalDateTime.of(2019, 5, 21, 12, 34, 56, 789_000_000), ld3.ldt);
+        assertEquals(ZoneId.of("+0800"), ld1.zid);
+        assertEquals(ZoneId.of("GMT+8"), ld2.zid);
+        assertEquals(ZoneId.of("Europe/Paris"), ld3.zid);
     }
 
     @Test

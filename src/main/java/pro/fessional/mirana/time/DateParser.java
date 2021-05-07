@@ -4,9 +4,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pro.fessional.mirana.text.HalfCharUtil;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -89,7 +91,7 @@ public class DateParser {
         String num = digit(str, off, Ptn.TIME);
         int len = num.length();
         if (len != 6 && len != 9) {
-            throw new IllegalArgumentException("only support time6,time9 format");
+            throw new DateTimeException("only support time6,time9 format, but " + num);
         }
         return time(num, 0);
     }
@@ -108,7 +110,7 @@ public class DateParser {
         String num = digit(str, off, Ptn.DATE);
         int len = num.length();
         if (len != 8) {
-            throw new IllegalArgumentException("only support date8 format");
+            throw new DateTimeException("only support date8 format, but " + num);
         }
 
         return date(num);
@@ -152,7 +154,7 @@ public class DateParser {
         String num = digit(str, off, Ptn.FULL);
         int len = num.length();
         if (len != 14 && len != 17) {
-            throw new IllegalArgumentException("only support datetime14,datetime17 format");
+            throw new DateTimeException("only support datetime14,datetime17 format, but " + num);
         }
 
         LocalDate ld = date(num);
@@ -160,10 +162,59 @@ public class DateParser {
         return LocalDateTime.of(ld, lt);
     }
 
+    /**
+     * 把任意包含日期信息的数字变成日期，解析时只关注数字，忽略非数字字符<p>
+     * (datetime14) yyyyMMddHHmmss<p>
+     * (datetime17) yyyyMMddHHmmssSSS<p>
+     * (datetime14) MMddyyyyHHmmss<p>
+     * (datetime17) MMddyyyyHHmmssSSS<p>
+     * 时区部分位于时间之后由`+- [`分隔，仅支持offset和zid格式，且zid优先于offset<p>
+     * V time-zone ID             zone-id   America/Los_Angeles; Z; -08:30<p>
+     * O localized zone-offset    offset-O  GMT+8; GMT+08:00; UTC-08:00;<p>
+     * X zone-offset 'Z' for zero offset-X  Z; -08; -0830; -08:30; -083015; -08:30:15;<p>
+     * x zone-offset              offset-x  +0000; -08; -0830; -08:30; -083015; -08:30:15;<p>
+     * Z zone-offset              offset-Z  +0000; -0800; -08:00;<p>
+     * ISO_ZONED_DATE_TIME +01:00[Europe/Paris]
+     *
+     * @param str 任意包括全角或半角数字的字符串
+     * @param off 数字位置偏移量，不考虑非数字
+     * @return 日期
+     */
+    @NotNull
+    public static Zdt parseZoned(@NotNull CharSequence str, int off) {
+        String ptn = digit(str, off, Ptn.ZONE);
+        int ztk = 0;
+        if (ptn.length() > 14 && ptn.charAt(14) == '@') {
+            ztk = 14;
+        }
+        else if (ptn.length() > 17 && ptn.charAt(17) == '@') {
+            ztk = 17;
+        }
+
+        if (ztk != 14 && ztk != 17) {
+            throw new DateTimeException("only support datetime14, datetime17 format, but " + ptn);
+        }
+
+        final String num = ptn.substring(0, ztk);
+        final String zzz = ptn.substring(ztk + 1);
+
+        final Zdt zdt = new Zdt();
+        zdt.ldt = LocalDateTime.of(date(num), time(num, 8));
+        zdt.zid = zid(zzz);
+
+        return zdt;
+    }
+
+    @NotNull
+    public static Zdt parseZoned(@NotNull CharSequence str) {
+        return parseZoned(str, 0);
+    }
+
     enum Ptn {
         DATE(8, new String[]{"2000", "01", "01"}),
         TIME(9, new String[]{"00", "00", "00", "000"}),
         FULL(17, new String[]{"2000", "01", "01", "00", "00", "00", "000"}),
+        ZONE(17, new String[]{"2000", "01", "01", "00", "00", "00", "000"}),
         ;
         final int len;
         final String[] pad;
@@ -184,19 +235,25 @@ public class DateParser {
 
         int cnt = 0;
         int nan = 0;
-        int len = str.length();
-        for (int i = 0; i < len; i++) {
-            char c = HalfCharUtil.half(str.charAt(i));
+        int chi = 0;
+        final int len = str.length();
+        for (; chi < len && cnt - off < ptn.len; chi++) {
+            char c = HalfCharUtil.half(str.charAt(chi));
             if (c >= '0' && c <= '9') {
                 cnt++;
                 if (cnt > off) {
                     buff[idx].append(c);
                     nan = 1;
                 }
-            } else {
+            }
+            else {
                 if (nan == 1 && idx < ptn.pad.length - 1) {
                     buff[++idx] = new StringBuilder(ptn.len);
                     nan = 2;
+                }
+
+                if (ptn == Ptn.ZONE && idx > 3 && (c == ' ' || c == '\t' || (c != ':' && isZidChar(c)))) {
+                    break;
                 }
             }
         }
@@ -216,7 +273,8 @@ public class DateParser {
                 int sln = ptn.pad[i].length();
                 if (cln == sln) {
                     continue;
-                } else if (cln > sln) {
+                }
+                else if (cln > sln) {
                     break;
                 }
 
@@ -229,10 +287,12 @@ public class DateParser {
                 }
                 if (az) {
                     buff[i].replace(0, cln, ptn.pad[i]);
-                } else {
+                }
+                else {
                     buff[i].insert(0, ptn.pad[i], 0, sln - cln);
                 }
-            } else {
+            }
+            else {
                 buff[idx].append(ptn.pad[i]);
             }
         }
@@ -243,16 +303,71 @@ public class DateParser {
             sb.append(buff[i]);
         }
 
-        return sb.length() <= ptn.len ? sb.toString() : sb.substring(0, ptn.len);
+        // 截断
+        if (sb.length() > ptn.len) {
+            sb.setLength(ptn.len);
+        }
+
+        // 处理时区，只取1段
+        if (ptn == Ptn.ZONE) {
+            sb.append("@");
+            boolean spc = false;
+            for (int i = chi; i < len; i++) {
+                char c = str.charAt(i);
+                // +-:0-9a-z/[]
+                if (isZidChar(c)) {
+                    sb.append(c);
+                    spc = true;
+                }
+                else {
+                    if (spc) break;
+                }
+            }
+        }
+
+        return sb.toString();
+    }
+
+    public static boolean isZidChar(char c) {
+        return c == '+' || c == '-' || c == ':' || c == '/' || c == '[' || c == ']'
+               || (c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+    }
+
+    public static class Zdt {
+        public LocalDateTime ldt;
+        @Nullable
+        public ZoneId zid;
     }
 
     // /////////////////////////////
+    private static ZoneId zid(String str) {
+        try {
+            int p1 = str.indexOf('[');
+            if (p1 >= 0) {
+                int p2 = str.indexOf(']', p1);
+                if (p2 > p1) {
+                    return ZoneId.of(str.substring(p1 + 1, p2));
+                }
+                else {
+                    return ZoneId.of(str.substring(p1 + 1));
+                }
+            }
+            else {
+                return ZoneId.of(str);
+            }
+        }
+        catch (Exception e) {
+            return null;
+        }
+    }
+
     private static boolean isMonth(CharSequence str) {
         int len = str.length();
         if (len == 1) {
             char c = str.charAt(0);
             return c >= '1' && c <= '9';
-        } else if (len == 2) {
+        }
+        else if (len == 2) {
             char c1 = str.charAt(0);
             char c2 = str.charAt(1);
             if (c1 == '0' && c2 >= '1' && c2 <= '9') {
