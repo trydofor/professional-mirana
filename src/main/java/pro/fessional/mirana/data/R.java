@@ -6,6 +6,7 @@ import pro.fessional.mirana.i18n.I18nAware;
 import pro.fessional.mirana.pain.CodeException;
 
 import java.beans.Transient;
+import java.util.function.Function;
 
 /**
  * 基础结果类，
@@ -24,7 +25,7 @@ public class R<T> implements DataResult<T>, I18nAware {
     protected boolean success;
     protected String message;
     protected String code;
-    protected T data;
+    private Object data;
 
     //
     protected transient Object cause = null;
@@ -89,13 +90,26 @@ public class R<T> implements DataResult<T>, I18nAware {
 
     @Nullable
     @Override
+    @SuppressWarnings("unchecked")
     public T getData() {
-        return data;
+        return (T) data;
     }
 
     @SuppressWarnings("unchecked")
     public <S extends R<T>> S setData(T data) {
         this.data = data;
+        return (S) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <S extends R<X>, X> S into(X data) {
+        this.data = data;
+        return (S) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <S extends R<X>, X> S into(Function<T, X> fun) {
+        this.data = fun.apply((T) data);
         return (S) this;
     }
 

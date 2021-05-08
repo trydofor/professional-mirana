@@ -1,6 +1,10 @@
 package pro.fessional.mirana.page;
 
 import org.junit.jupiter.api.Test;
+import pro.fessional.mirana.data.R;
+
+import java.util.Collections;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -37,5 +41,10 @@ public class PageResultTest {
         assertEquals(3, o3.getSize());
         assertEquals(10, o3.getTotalData());
         assertEquals(4, o3.getTotalPage());
+
+        List<String> sls = Collections.emptyList();
+        PageResult<String> rs = o3.into(sls);
+
+        final R<String> s3 = o3.into("");
     }
 }

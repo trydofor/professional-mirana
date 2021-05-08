@@ -36,7 +36,7 @@ public class PageResult<E> extends R<Collection<E>> implements Iterable<E> {
     private int totalData = Null.Int32;
 
     public PageResult() {
-        data = empty;
+        setData(empty);
     }
 
     /**
@@ -108,24 +108,15 @@ public class PageResult<E> extends R<Collection<E>> implements Iterable<E> {
      *
      * @return 数据
      */
-    @NotNull
-    public Collection<E> getData() {
-        return data;
-    }
-
-    /**
-     * 获取数据
-     *
-     * @return 数据
-     */
     @Transient
     @NotNull
     public List<E> toList() {
+        final Collection<E> data = getData();
         if (data instanceof List<?>) {
             return (List<E>) data;
         }
         else {
-            return new ArrayList<>(data);
+            return data == null ? empty : new ArrayList<>(data);
         }
     }
 
@@ -146,17 +137,19 @@ public class PageResult<E> extends R<Collection<E>> implements Iterable<E> {
     @SuppressWarnings("unchecked")
     public PageResult<E> setData(Collection<? extends E> ds) {
         if (ds == null || ds.isEmpty()) {
-            data = empty;
+            super.setData(empty);
         }
         else {
-            data = (Collection<E>) ds;
+            Collection<E> data = (Collection<E>) ds;
+            super.setData(data);
         }
         return this;
     }
 
     public PageResult<E> addData(E e) {
         if (e != null) {
-            if (data == empty) {
+            Collection<E> data = getData();
+            if (data == null || data == empty) {
                 data = new ArrayList<>(size > 0 ? size : 20);
             }
             data.add(e);
@@ -166,24 +159,25 @@ public class PageResult<E> extends R<Collection<E>> implements Iterable<E> {
 
     public PageResult<E> addData(Collection<E> ds) {
         if (ds != null && ds.size() > 0) {
-            if (data == empty) {
-                data = new ArrayList<>(ds);
+            Collection<E> data = getData();
+            if (data == null || data == empty) {
+                data = new ArrayList<>(size > 0 ? size : 20);
             }
-            else {
-                data.addAll(ds);
-            }
+            data.addAll(ds);
         }
         return this;
     }
 
     public boolean hasData() {
-        return data.size() > 0;
+        final Collection<E> data = getData();
+        return data != null && data.size() > 0;
     }
 
     @NotNull
     @Override
     public Iterator<E> iterator() {
-        return data.iterator();
+        final Collection<E> data = getData();
+        return data == null ? empty.iterator() : data.iterator();
     }
 
     // ////////
