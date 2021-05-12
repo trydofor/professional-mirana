@@ -1,5 +1,6 @@
 package pro.fessional.mirana.pain;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.PrintWriter;
@@ -41,6 +42,7 @@ public class ThrowableUtil {
      * @param t 具体异常
      * @return rootCause
      */
+    @Contract("!null->!null")
     public static Throwable root(Throwable t) {
         while (t != null) {
             Throwable x = t.getCause();
@@ -50,7 +52,7 @@ public class ThrowableUtil {
                 t = x;
             }
         }
-        return null;
+        return t;
     }
 
     /**

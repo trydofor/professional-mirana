@@ -1,7 +1,15 @@
 package pro.fessional.mirana.code;
 
 /**
- * crc4 mixed number with the readable last 4th digit
+ * crc4 mixed number with the readable last 4th digit.
+ * number to crc4int's length mapping<p>
+ *
+ * 1 - 9_999 = 6 <p>
+ * 10_000 - 99_999 = 7 <p>
+ * 100_000 - 999_999 = 8 <p>
+ * 1_000_000 - 9_999_999 = 9 <p>
+ * 10_000_000 - 99_999_999 = 10 <p>
+ * 100_000_000  = 11 <p>
  *
  * @author trydofor
  * @since 2018-08-17
@@ -49,17 +57,5 @@ public class Crc4Int {
             }
         }
         return b;
-    }
-
-    public static void main(String[] args) {
-        for (int i = MIN_SEQ; i < MAX_SEQ; i++) {
-            int num = encode(i);
-            int seq = decode(num);
-            if (i != seq) {
-                System.err.println(i + ":" + seq + ":" + num);
-                return;
-            }
-            if (i < 10000) System.out.printf("%04d\t%06d\n",i,num);
-        }
     }
 }
