@@ -193,8 +193,14 @@ public class PageUtil {
     public static <E> int paginate(List<E> data, int pageSize, BiConsumer<Integer, List<E>> consumer) {
         if (data == null || data.isEmpty()) return 0;
         if (pageSize < 1) pageSize = 1;
+        int total = data.size();
         int count = 0;
-        for (int i = 0, total = data.size(); i < total; ) {
+        if (total <= pageSize) {
+            consumer.accept(++count, data);
+            return count;
+        }
+
+        for (int i = 0; i < total; ) {
             consumer.accept(++count, data.subList(i, Math.min(i = i + pageSize, total)));
         }
         return count;
@@ -212,6 +218,10 @@ public class PageUtil {
         if (data == null || data.isEmpty()) return Collections.emptyList();
         if (pageSize < 1) pageSize = 1;
         final int total = data.size();
+        if (total <= pageSize) {
+            return Collections.singletonList(data);
+        }
+
         int count = totalPage(total, pageSize);
         ArrayList<List<E>> result = new ArrayList<>(count);
         for (int i = 0; i < total; ) {
