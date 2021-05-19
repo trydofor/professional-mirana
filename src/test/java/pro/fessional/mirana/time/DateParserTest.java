@@ -8,7 +8,12 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -47,16 +52,17 @@ public class DateParserTest {
         String str1 = "２０１９年０５月２１日　12:34+0800 无效信息";
         String str2 = "２０１９年０５月２１日　１２点３４GMT+8 无效信息";
         String str3 = "２０１９年５月２１日　１２点３４分５６秒789+01:00[Europe/Paris] 无效信息";
-        DateParser.Zdt ld1 = DateParser.parseZoned(str1);
-        DateParser.Zdt ld2 = DateParser.parseZoned(str2);
-        DateParser.Zdt ld3 = DateParser.parseZoned(str3);
+        final ZoneId zid = ZoneId.of("UTC");
+        ZonedDateTime ld1 = DateParser.parseZoned(str1, zid);
+        ZonedDateTime ld2 = DateParser.parseZoned(str2, zid);
+        ZonedDateTime ld3 = DateParser.parseZoned(str3, zid);
 
-        assertEquals(LocalDateTime.of(2019, 5, 21, 12, 34, 0, 0), ld1.ldt);
-        assertEquals(LocalDateTime.of(2019, 5, 21, 12, 34, 0, 0), ld2.ldt);
-        assertEquals(LocalDateTime.of(2019, 5, 21, 12, 34, 56, 789_000_000), ld3.ldt);
-        assertEquals(ZoneId.of("+0800"), ld1.zid);
-        assertEquals(ZoneId.of("GMT+8"), ld2.zid);
-        assertEquals(ZoneId.of("Europe/Paris"), ld3.zid);
+        assertEquals(LocalDateTime.of(2019, 5, 21, 12, 34, 0, 0), ld1.toLocalDateTime());
+        assertEquals(LocalDateTime.of(2019, 5, 21, 12, 34, 0, 0), ld2.toLocalDateTime());
+        assertEquals(LocalDateTime.of(2019, 5, 21, 12, 34, 56, 789_000_000), ld3.toLocalDateTime());
+        assertEquals(ZoneId.of("+0800"), ld1.getZone());
+        assertEquals(ZoneId.of("GMT+8"), ld2.getZone());
+        assertEquals(ZoneId.of("Europe/Paris"), ld3.getZone());
     }
 
     @Test
@@ -117,5 +123,82 @@ public class DateParserTest {
         assertEquals(LocalTime.of(1, 0, 0), DateParser.parseTime("01:00:00"));
         assertEquals(LocalTime.of(1, 0, 0), DateParser.parseTime("01:00:00.0"));
         assertEquals(LocalTime.of(1, 0, 0, 0), DateParser.parseTime("01:00:00.00"));
+    }
+
+    @Test
+    public void parseTemporal() {
+        List<DateTimeFormatter> dtf = Arrays.asList(
+                DateTimeFormatter.ofPattern("y-M-d"),
+                DateTimeFormatter.ofPattern("y-M-d[ H:m:s]"),
+                DateTimeFormatter.ofPattern("MMM/d/[yyyy][yy][ H:m:s]")
+        );
+
+        {
+            final TemporalAccessor ta = DateParser.parseTemporal("2021-01-2", dtf);
+            assertEquals(LocalDate.of(2021, 1, 2), ta.query(LocalDate::from));
+        }
+        {
+            final TemporalAccessor ta = DateParser.parseTemporal("2021-01-2 3", dtf);
+            assertEquals(LocalDate.of(2021, 1, 2), ta.query(LocalDate::from));
+        }
+        {
+            final TemporalAccessor ta = DateParser.parseTemporal("2021-01-2 3:4:5", dtf);
+            assertEquals(LocalDateTime.of(2021, 1, 2, 3, 4, 5), ta.query(LocalDateTime::from));
+        }
+        {
+            final TemporalAccessor ta = DateParser.parseTemporal("Jan/2/21", dtf);
+            assertEquals(LocalDate.of(2021, 1, 2), ta.query(LocalDate::from));
+        }
+        {
+            final TemporalAccessor ta = DateParser.parseTemporal("Jan/2/2021 3:4:5", dtf);
+            assertEquals(LocalDateTime.of(2021, 1, 2, 3, 4, 5), ta.query(LocalDateTime::from));
+        }
+
+        List<DateParser.QuietPos> ta = DateParser.parseTemporal(dtf, "Jan/2/2021 3:4:5", false);
+        for (DateParser.QuietPos qp : ta) {
+            System.out.println("====");
+            System.out.println("formatter=" + qp.getFormatter().toString());
+            System.out.println("error index=" + qp.getErrorIndexReal());
+            System.out.println("index=" + qp.getIndex());
+            System.out.println("Temporal=" + qp.getTemporal());
+            final RuntimeException ex = qp.getException();
+            if (ex != null) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    @Test
+    public void parseJ8Time() {
+        final DateTimeFormatter f1 = DateTimeFormatter.ofPattern("H[:m][:s]");
+        assertEquals(LocalTime.of(3, 4, 5), DateParser.parseTime("3:4:5", f1));
+        assertEquals(LocalTime.of(3, 4, 0), DateParser.parseTime("3:4", f1));
+        assertEquals(LocalTime.of(3, 0, 0), DateParser.parseTime("3", f1));
+    }
+
+    @Test
+    public void parseJ8Date() {
+        final DateTimeFormatter f1 = DateTimeFormatter.ofPattern("[yyyy][yy][-M][-d]");
+        assertEquals(LocalDate.of(2021, 1, 2), DateParser.parseDate("21-1-02", f1));
+        assertEquals(LocalDate.of(2021, 1, 2), DateParser.parseDate("2021-01-02", f1));
+        assertEquals(LocalDate.of(2021, 1, 1), DateParser.parseDate("2021-1", f1));
+        assertEquals(LocalDate.of(2021, 1, 1), DateParser.parseDate("21", f1));
+    }
+
+    @Test
+    public void parseJ8DateTime() {
+        final DateTimeFormatter f1 = DateTimeFormatter.ofPattern("[yyyy][yy][-M][-d][ ][H][:m][:s]");
+        assertEquals(LocalDateTime.of(2021, 1, 2, 3, 4, 5), DateParser.parseDateTime("21-1-02 03:4:05", f1));
+        assertEquals(LocalDateTime.of(2021, 1, 2, 3, 0, 0), DateParser.parseDateTime("2021-01-02 3", f1));
+        assertEquals(LocalDateTime.of(2021, 1, 1, 0, 0, 0), DateParser.parseDateTime("2021-1", f1));
+        assertEquals(LocalDateTime.of(2021, 1, 1, 0, 0, 0), DateParser.parseDateTime("21", f1));
+    }
+
+    @Test
+    public void parseJ8Zoned() {
+        final ZoneId g8 = ZoneId.of("Asia/Shanghai");
+        final DateTimeFormatter f1 = DateTimeFormatter.ofPattern("[yyyy][yy][-M][-d][ ][H][:m][:s][ VV]");
+        assertEquals(LocalDateTime.of(2021, 1, 2, 3, 4, 5).atZone(g8), DateParser.parseZoned("21-1-02 03:4:05 Asia/Shanghai", g8, f1));
+        assertEquals(LocalDateTime.of(2021, 1, 2, 3, 0, 0).atZone(g8), DateParser.parseZoned("2021-01-02 3", g8, f1));
     }
 }

@@ -38,6 +38,11 @@ public class DateFormatter {
     public static final String PTN_FULL_19 = "yyyy-MM-dd HH:mm:ss";
     public static final String PTN_FULL_23 = "yyyy-MM-dd HH:mm:ss.SSS";
 
+    public static final String PTN_DATE_PSE = "[yyyy][yy][-][/][.][M][-][/][.][d]";
+    public static final String PTN_TIME_PSE = "H[:m][:s][.SSS]";
+    public static final String PTN_FULL_PSE = "[yyyy][yy][-][/][.][M][-][/][.][d][ ]['T'][H][:m][:s][.SSS]";
+    public static final String PTN_ZONE_PSE = "[yyyy][yy][-][/][.][M][-][/][.][d][ ]['T'][H][:m][:s][.SSS][XXX][XX][X]['['][ ][VV][']']";
+
     // This class is immutable and thread-safe.
     public static final DateTimeFormatter FMT_DATE_10 = DateTimeFormatter.ofPattern(PTN_DATE_10);
     public static final DateTimeFormatter FMT_TIME_08 = DateTimeFormatter.ofPattern(PTN_TIME_08);
@@ -45,6 +50,10 @@ public class DateFormatter {
     public static final DateTimeFormatter FMT_FULL_19 = DateTimeFormatter.ofPattern(PTN_FULL_19);
     public static final DateTimeFormatter FMT_FULL_23 = DateTimeFormatter.ofPattern(PTN_FULL_23);
 
+    public static final DateTimeFormatter FMT_DATE_PSE = DateTimeFormatter.ofPattern(PTN_DATE_PSE);
+    public static final DateTimeFormatter FMT_TIME_PSE = DateTimeFormatter.ofPattern(PTN_TIME_PSE);
+    public static final DateTimeFormatter FMT_FULL_PSE = DateTimeFormatter.ofPattern(PTN_FULL_PSE);
+    public static final DateTimeFormatter FMT_ZONE_PSE = DateTimeFormatter.ofPattern(PTN_ZONE_PSE);
 
     public static final ThreadLocal<DateFormat> DATE_FORMAT_19 = ThreadLocal.withInitial(() -> new SimpleDateFormat(PTN_FULL_19));
     public static final ThreadLocal<DateFormat> DATE_FORMAT_23 = ThreadLocal.withInitial(() -> new SimpleDateFormat(PTN_FULL_23));

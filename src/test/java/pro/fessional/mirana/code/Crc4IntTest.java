@@ -1,5 +1,6 @@
 package pro.fessional.mirana.code;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static pro.fessional.mirana.code.Crc4Int.MAX_SEQ;
@@ -38,6 +39,7 @@ class Crc4IntTest {
      * 9=11
      */
     @Test
+    @Disabled
     public void lenMaxTest() {
         for (int i = 1; i < 10; i++) {
             lenMax(i);

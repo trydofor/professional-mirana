@@ -4,13 +4,36 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pro.fessional.mirana.text.HalfCharUtil;
 
+import java.text.ParsePosition;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalQueries;
+import java.time.temporal.TemporalQuery;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
+
+import static java.time.temporal.ChronoField.DAY_OF_MONTH;
+import static java.time.temporal.ChronoField.EPOCH_DAY;
+import static java.time.temporal.ChronoField.HOUR_OF_DAY;
+import static java.time.temporal.ChronoField.MILLI_OF_SECOND;
+import static java.time.temporal.ChronoField.MINUTE_OF_HOUR;
+import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
+import static java.time.temporal.ChronoField.NANO_OF_DAY;
+import static java.time.temporal.ChronoField.NANO_OF_SECOND;
+import static java.time.temporal.ChronoField.SECOND_OF_MINUTE;
+import static java.time.temporal.ChronoField.YEAR;
 
 /**
  * 解析固定格式的，包含日期数字的字符串，支持以下格式<p>
@@ -33,6 +56,83 @@ public class DateParser {
     protected DateParser() {
     }
 
+    public static final TemporalQuery<LocalTime> QueryTime = (temporal) -> {
+        if (temporal.isSupported(NANO_OF_DAY)) {
+            return LocalTime.ofNanoOfDay(temporal.getLong(NANO_OF_DAY));
+        }
+
+        // commonly never here
+        if (temporal.isSupported(HOUR_OF_DAY)) {
+            int m = 0;
+            if (temporal.isSupported(MINUTE_OF_HOUR)) {
+                m = temporal.get(MINUTE_OF_HOUR);
+            }
+
+            int s = 0;
+            if (temporal.isSupported(SECOND_OF_MINUTE)) {
+                s = temporal.get(SECOND_OF_MINUTE);
+            }
+
+            int n = 0;
+            if (temporal.isSupported(NANO_OF_SECOND)) {
+                n = temporal.get(NANO_OF_SECOND);
+            }
+            else if (temporal.isSupported(MILLI_OF_SECOND)) {
+                n = temporal.get(MILLI_OF_SECOND) * 1000_000;
+            }
+            return LocalTime.of(temporal.get(HOUR_OF_DAY), m, s, n);
+        }
+
+        return null;
+    };
+
+    public static final TemporalQuery<LocalDate> QueryDate = (temporal) -> {
+        if (temporal.isSupported(EPOCH_DAY)) {
+            return LocalDate.ofEpochDay(temporal.getLong(EPOCH_DAY));
+        }
+
+        // commonly never here
+        if (temporal.isSupported(YEAR)) {
+            int m = 1;
+            if (temporal.isSupported(MONTH_OF_YEAR)) {
+                m = temporal.get(MONTH_OF_YEAR);
+            }
+
+            int d = 1;
+            if (temporal.isSupported(DAY_OF_MONTH)) {
+                d = temporal.get(DAY_OF_MONTH);
+            }
+
+            return LocalDate.of(temporal.get(YEAR), m, d);
+        }
+
+        return null;
+    };
+
+    public static final TemporalQuery<LocalDateTime> QueryDateTime = (temporal) -> {
+        if (temporal instanceof LocalDateTime) {
+            return (LocalDateTime) temporal;
+        }
+
+        if (temporal instanceof ZonedDateTime) {
+            return ((ZonedDateTime) temporal).toLocalDateTime();
+        }
+
+        if (temporal instanceof OffsetDateTime) {
+            return ((OffsetDateTime) temporal).toLocalDateTime();
+        }
+
+        LocalDate date = QueryDate.queryFrom(temporal);
+        if (date == null) return null;
+
+        LocalTime time = QueryTime.queryFrom(temporal);
+        if (time == null) {
+            time = LocalTime.of(0, 0);
+        }
+
+        return LocalDateTime.of(date, time);
+    };
+
     /**
      * 把任意包含日期信息的数字变成日期
      *
@@ -40,7 +140,7 @@ public class DateParser {
      * @return 日期
      */
     @NotNull
-    public static LocalTime parseTime(@NotNull String num) {
+    public static LocalTime parseTime(@NotNull CharSequence num) {
         return parseTime(num, 0);
     }
 
@@ -51,7 +151,7 @@ public class DateParser {
      * @return 日期
      */
     @NotNull
-    public static LocalDate parseDate(@NotNull String num) {
+    public static LocalDate parseDate(@NotNull CharSequence num) {
         return parseDate(num, 0);
     }
 
@@ -62,7 +162,7 @@ public class DateParser {
      * @return 日期
      */
     @NotNull
-    public static Date parseUtilDate(@NotNull String num) {
+    public static Date parseUtilDate(@NotNull CharSequence num) {
         return parseUtilDate(num, 0);
     }
 
@@ -73,8 +173,79 @@ public class DateParser {
      * @return 日期
      */
     @NotNull
-    public static LocalDateTime parseDateTime(@NotNull String num) {
+    public static LocalDateTime parseDateTime(@NotNull CharSequence num) {
         return parseDateTime(num, 0);
+    }
+
+    @NotNull
+    public static ZonedDateTime parseZoned(@NotNull CharSequence str, @NotNull ZoneId elze) {
+        return parseZoned(str, elze, 0);
+    }
+
+    @NotNull
+    public static LocalTime parseTime(@NotNull CharSequence str, Collection<DateTimeFormatter> dtf) {
+        final TemporalAccessor ta = parseTemporal(str, dtf);
+        final LocalTime dt = ta.query(QueryTime);
+        if (dt == null) {
+            throw new DateTimeException("Unable to obtain LocalTime " + ta + " of type " + ta.getClass().getName());
+        }
+        return dt;
+    }
+
+    @NotNull
+    public static LocalDate parseDate(@NotNull CharSequence str, Collection<DateTimeFormatter> dtf) {
+        final TemporalAccessor ta = parseTemporal(str, dtf);
+        final LocalDate dt = ta.query(QueryDate);
+        if (dt == null) {
+            throw new DateTimeException("Unable to obtain LocalDate " + ta + " of type " + ta.getClass().getName());
+        }
+        return dt;
+    }
+
+    @NotNull
+    public static LocalDateTime parseDateTime(@NotNull CharSequence str, Collection<DateTimeFormatter> dtf) {
+        final TemporalAccessor ta = parseTemporal(str, dtf);
+        final LocalDateTime dt = ta.query(QueryDateTime);
+        if (dt == null) {
+            throw new DateTimeException("Unable to obtain LocalDateTime " + ta + " of type " + ta.getClass().getName());
+        }
+        return dt;
+    }
+
+    @NotNull
+    public static ZonedDateTime parseZoned(@NotNull CharSequence str, @NotNull ZoneId elze, Collection<DateTimeFormatter> dtf) {
+        final TemporalAccessor ta = parseTemporal(str, dtf);
+        if (ta instanceof ZonedDateTime) {
+            return (ZonedDateTime) ta;
+        }
+
+        if (ta instanceof OffsetDateTime) {
+            return ((OffsetDateTime) ta).toZonedDateTime();
+        }
+
+        final LocalDateTime ldt = ta.query(QueryDateTime);
+        ZoneId zid = ta.query(TemporalQueries.zone());
+        return ZonedDateTime.of(ldt, zid == null ? elze : zid);
+    }
+
+    @NotNull
+    public static LocalTime parseTime(@NotNull CharSequence str, DateTimeFormatter... dtf) {
+        return parseTime(str, Arrays.asList(dtf));
+    }
+
+    @NotNull
+    public static LocalDate parseDate(@NotNull CharSequence str, DateTimeFormatter... dtf) {
+        return parseDate(str, Arrays.asList(dtf));
+    }
+
+    @NotNull
+    public static LocalDateTime parseDateTime(@NotNull CharSequence str, DateTimeFormatter... dtf) {
+        return parseDateTime(str, Arrays.asList(dtf));
+    }
+
+    @NotNull
+    public static ZonedDateTime parseZoned(@NotNull CharSequence str, @NotNull ZoneId elze, DateTimeFormatter... dtf) {
+        return parseZoned(str, elze, Arrays.asList(dtf));
     }
 
     /**
@@ -181,7 +352,7 @@ public class DateParser {
      * @return 日期
      */
     @NotNull
-    public static Zdt parseZoned(@NotNull CharSequence str, int off) {
+    public static ZonedDateTime parseZoned(@NotNull CharSequence str, @NotNull ZoneId elze, int off) {
         String ptn = digit(str, off, Ptn.ZONE);
         int ztk = 0;
         if (ptn.length() > 14 && ptn.charAt(14) == '@') {
@@ -198,31 +369,81 @@ public class DateParser {
         final String num = ptn.substring(0, ztk);
         final String zzz = ptn.substring(ztk + 1);
 
-        final Zdt zdt = new Zdt();
-        zdt.ldt = LocalDateTime.of(date(num), time(num, 8));
-        zdt.zid = zid(zzz);
+        ZoneId zid = zid(zzz);
 
-        return zdt;
+        return ZonedDateTime.of(date(num), time(num, 8), zid == null ? elze : zid);
     }
 
+    /**
+     * 无异常解析，返回最优匹配（无异常，正确解析数量最多）。
+     */
     @NotNull
-    public static Zdt parseZoned(@NotNull CharSequence str) {
-        return parseZoned(str, 0);
+    public static TemporalAccessor parseTemporal(@NotNull CharSequence str, @NotNull Collection<DateTimeFormatter> dtf) {
+        QuietPos best = null;
+
+        for (QuietPos qp : parseTemporal(dtf, str, true)) {
+            if (best == null) {
+                best = qp;
+            }
+            else {
+                final TemporalAccessor ta = qp.getTemporal();
+                if (best.getTemporal() == null && ta != null) {
+                    best = qp;
+                    continue;
+                }
+                final int ix = qp.getIndex();
+                if (best.getIndex() < ix) {
+                    best = qp;
+                }
+            }
+        }
+
+        if (best == null) {
+            throw new DateTimeParseException("can not apply any Formatter to parse", str, -1);
+        }
+
+        final TemporalAccessor tp = best.getTemporal();
+        if (tp == null) {
+            final RuntimeException ex = best.getException();
+            if (ex != null) {
+                throw ex;
+            }
+
+            final String message = best.getFormatter().toString();
+            throw new DateTimeParseException(message, str, best.getErrorIndexReal());
+        }
+
+        return tp;
     }
 
-    enum Ptn {
-        DATE(8, new String[]{"2000", "01", "01"}),
-        TIME(9, new String[]{"00", "00", "00", "000"}),
-        FULL(17, new String[]{"2000", "01", "01", "00", "00", "00", "000"}),
-        ZONE(17, new String[]{"2000", "01", "01", "00", "00", "00", "000"}),
-        ;
-        final int len;
-        final String[] pad;
+    /**
+     * 全部解析，并按输入顺序返回结果。
+     *
+     * @param dtf           格式
+     * @param str           字符串
+     * @param stopOnSuccess 当有完成匹配者时，是否终止后续匹配，性能有关
+     * @return 结果
+     */
+    @NotNull
+    public static List<QuietPos> parseTemporal(@NotNull Collection<DateTimeFormatter> dtf, @NotNull CharSequence str, boolean stopOnSuccess) {
+        List<QuietPos> result = new ArrayList<>(dtf.size());
+        for (DateTimeFormatter ft : dtf) {
+            QuietPos pos = new QuietPos(0);
+            pos.formatter = ft;
+            try {
+                pos.temporal = ft.parse(str, pos);
+            }
+            catch (RuntimeException e) {
+                pos.exception = e;
+            }
 
-        Ptn(int len, String[] pad) {
-            this.len = len;
-            this.pad = pad;
+            result.add(pos);
+
+            if (stopOnSuccess && pos.temporal != null && pos.getErrorIndexReal() < 0) {
+                break;
+            }
         }
+        return result;
     }
 
     @NotNull
@@ -333,13 +554,61 @@ public class DateParser {
                || (c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
     }
 
-    public static class Zdt {
-        public LocalDateTime ldt;
-        @Nullable
-        public ZoneId zid;
+    public static class QuietPos extends ParsePosition {
+
+        private TemporalAccessor temporal;
+        private DateTimeFormatter formatter;
+        private RuntimeException exception;
+        private int error;
+
+        public QuietPos(int index) {
+            super(index);
+        }
+
+        public int getErrorIndexReal() {
+            return error;
+        }
+
+        public TemporalAccessor getTemporal() {
+            return temporal;
+        }
+
+        public DateTimeFormatter getFormatter() {
+            return formatter;
+        }
+
+        public RuntimeException getException() {
+            return exception;
+        }
+
+        @Override
+        public void setErrorIndex(int ei) {
+            this.error = ei;
+        }
+
+        @Override
+        public int getErrorIndex() {
+            return -1;
+        }
     }
 
     // /////////////////////////////
+
+    enum Ptn {
+        DATE(8, new String[]{"2000", "01", "01"}),
+        TIME(9, new String[]{"00", "00", "00", "000"}),
+        FULL(17, new String[]{"2000", "01", "01", "00", "00", "00", "000"}),
+        ZONE(17, new String[]{"2000", "01", "01", "00", "00", "00", "000"}),
+        ;
+        final int len;
+        final String[] pad;
+
+        Ptn(int len, String[] pad) {
+            this.len = len;
+            this.pad = pad;
+        }
+    }
+
     private static ZoneId zid(String str) {
         try {
             int p1 = str.indexOf('[');
