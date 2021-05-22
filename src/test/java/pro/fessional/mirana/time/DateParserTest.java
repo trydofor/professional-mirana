@@ -134,23 +134,23 @@ public class DateParserTest {
         );
 
         {
-            final TemporalAccessor ta = DateParser.parseTemporal("2021-01-2", dtf);
+            final TemporalAccessor ta = DateParser.parseTemporal("2021-01-2", dtf, false);
             assertEquals(LocalDate.of(2021, 1, 2), ta.query(LocalDate::from));
         }
         {
-            final TemporalAccessor ta = DateParser.parseTemporal("2021-01-2 3", dtf);
+            final TemporalAccessor ta = DateParser.parseTemporal("2021-01-2 3", dtf, false);
             assertEquals(LocalDate.of(2021, 1, 2), ta.query(LocalDate::from));
         }
         {
-            final TemporalAccessor ta = DateParser.parseTemporal("2021-01-2 3:4:5", dtf);
+            final TemporalAccessor ta = DateParser.parseTemporal("2021-01-2 3:4:5", dtf, false);
             assertEquals(LocalDateTime.of(2021, 1, 2, 3, 4, 5), ta.query(LocalDateTime::from));
         }
         {
-            final TemporalAccessor ta = DateParser.parseTemporal("Jan/2/21", dtf);
+            final TemporalAccessor ta = DateParser.parseTemporal("Jan/2/21", dtf, false);
             assertEquals(LocalDate.of(2021, 1, 2), ta.query(LocalDate::from));
         }
         {
-            final TemporalAccessor ta = DateParser.parseTemporal("Jan/2/2021 3:4:5", dtf);
+            final TemporalAccessor ta = DateParser.parseTemporal("Jan/2/2021 3:4:5", dtf, false);
             assertEquals(LocalDateTime.of(2021, 1, 2, 3, 4, 5), ta.query(LocalDateTime::from));
         }
 

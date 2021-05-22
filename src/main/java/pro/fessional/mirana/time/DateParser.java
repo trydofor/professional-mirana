@@ -1,5 +1,6 @@
 package pro.fessional.mirana.time;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pro.fessional.mirana.text.HalfCharUtil;
@@ -57,6 +58,10 @@ public class DateParser {
     }
 
     public static final TemporalQuery<LocalTime> QueryTime = (temporal) -> {
+        if (temporal instanceof LocalTime) {
+            return (LocalTime) temporal;
+        }
+
         if (temporal.isSupported(NANO_OF_DAY)) {
             return LocalTime.ofNanoOfDay(temporal.getLong(NANO_OF_DAY));
         }
@@ -87,6 +92,10 @@ public class DateParser {
     };
 
     public static final TemporalQuery<LocalDate> QueryDate = (temporal) -> {
+        if (temporal instanceof LocalDate) {
+            return (LocalDate) temporal;
+        }
+
         if (temporal.isSupported(EPOCH_DAY)) {
             return LocalDate.ofEpochDay(temporal.getLong(EPOCH_DAY));
         }
@@ -184,7 +193,7 @@ public class DateParser {
 
     @NotNull
     public static LocalTime parseTime(@NotNull CharSequence str, Collection<DateTimeFormatter> dtf) {
-        final TemporalAccessor ta = parseTemporal(str, dtf);
+        final TemporalAccessor ta = parseTemporal(str, dtf, false);
         final LocalTime dt = ta.query(QueryTime);
         if (dt == null) {
             throw new DateTimeException("Unable to obtain LocalTime " + ta + " of type " + ta.getClass().getName());
@@ -194,7 +203,7 @@ public class DateParser {
 
     @NotNull
     public static LocalDate parseDate(@NotNull CharSequence str, Collection<DateTimeFormatter> dtf) {
-        final TemporalAccessor ta = parseTemporal(str, dtf);
+        final TemporalAccessor ta = parseTemporal(str, dtf, false);
         final LocalDate dt = ta.query(QueryDate);
         if (dt == null) {
             throw new DateTimeException("Unable to obtain LocalDate " + ta + " of type " + ta.getClass().getName());
@@ -204,7 +213,7 @@ public class DateParser {
 
     @NotNull
     public static LocalDateTime parseDateTime(@NotNull CharSequence str, Collection<DateTimeFormatter> dtf) {
-        final TemporalAccessor ta = parseTemporal(str, dtf);
+        final TemporalAccessor ta = parseTemporal(str, dtf, false);
         final LocalDateTime dt = ta.query(QueryDateTime);
         if (dt == null) {
             throw new DateTimeException("Unable to obtain LocalDateTime " + ta + " of type " + ta.getClass().getName());
@@ -213,8 +222,7 @@ public class DateParser {
     }
 
     @NotNull
-    public static ZonedDateTime parseZoned(@NotNull CharSequence str, @NotNull ZoneId elze, Collection<DateTimeFormatter> dtf) {
-        final TemporalAccessor ta = parseTemporal(str, dtf);
+    public static ZonedDateTime parseZoned(@NotNull TemporalAccessor ta, @NotNull ZoneId elze) {
         if (ta instanceof ZonedDateTime) {
             return (ZonedDateTime) ta;
         }
@@ -226,6 +234,12 @@ public class DateParser {
         final LocalDateTime ldt = ta.query(QueryDateTime);
         ZoneId zid = ta.query(TemporalQueries.zone());
         return ZonedDateTime.of(ldt, zid == null ? elze : zid);
+    }
+
+    @NotNull
+    public static ZonedDateTime parseZoned(@NotNull CharSequence str, @NotNull ZoneId elze, Collection<DateTimeFormatter> dtf) {
+        final TemporalAccessor ta = parseTemporal(str, dtf, false);
+        return parseZoned(ta, elze);
     }
 
     @NotNull
@@ -375,10 +389,10 @@ public class DateParser {
     }
 
     /**
-     * 无异常解析，返回最优匹配（无异常，正确解析数量最多）。
+     * 无异常解析，返回最优匹配（无异常，正确解析数量最多）
      */
-    @NotNull
-    public static TemporalAccessor parseTemporal(@NotNull CharSequence str, @NotNull Collection<DateTimeFormatter> dtf) {
+    @Contract("_,_,false->!null")
+    public static TemporalAccessor parseTemporal(@NotNull CharSequence str, @NotNull Collection<DateTimeFormatter> dtf, boolean quiet) {
         QuietPos best = null;
 
         for (QuietPos qp : parseTemporal(dtf, str, true)) {
@@ -399,11 +413,20 @@ public class DateParser {
         }
 
         if (best == null) {
-            throw new DateTimeParseException("can not apply any Formatter to parse", str, -1);
+            if (quiet) {
+                return null;
+            }
+            else {
+                throw new DateTimeParseException("can not apply any Formatter to parse", str, -1);
+            }
         }
 
         final TemporalAccessor tp = best.getTemporal();
         if (tp == null) {
+            if (quiet) {
+                return null;
+            }
+
             final RuntimeException ex = best.getException();
             if (ex != null) {
                 throw ex;
