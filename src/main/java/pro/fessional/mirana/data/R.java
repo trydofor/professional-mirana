@@ -305,6 +305,15 @@ public class R<T> implements DataResult<T>, I18nAware {
         return new R<>(false, null, code, data);
     }
 
+    public static <T> R<T> ngData(T data, Throwable t) {
+        final R<T> r = ng(t);
+        return r.setData(data);
+    }
+
+    public static <T> R<T> ngData(T data, CodeEnum code) {
+        return new R<>(false, code, data);
+    }
+
     public static <T> R<T> ng(Throwable t) {
         return ng(t, null, null);
     }

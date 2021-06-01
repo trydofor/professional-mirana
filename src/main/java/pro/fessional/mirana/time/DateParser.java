@@ -361,8 +361,9 @@ public class DateParser {
      * Z zone-offset              offset-Z  +0000; -0800; -08:00;<p>
      * ISO_ZONED_DATE_TIME +01:00[Europe/Paris]
      *
-     * @param str 任意包括全角或半角数字的字符串
-     * @param off 数字位置偏移量，不考虑非数字
+     * @param str  任意包括全角或半角数字的字符串
+     * @param elze 默认zone
+     * @param off  数字位置偏移量，不考虑非数字
      * @return 日期
      */
     @NotNull
@@ -390,6 +391,11 @@ public class DateParser {
 
     /**
      * 无异常解析，返回最优匹配（无异常，正确解析数量最多）
+     *
+     * @param str   任意包括全角或半角数字的字符串
+     * @param dtf   尝试的formatter
+     * @param quiet 返回null而非异常
+     * @return 日期
      */
     @Contract("_,_,false->!null")
     public static TemporalAccessor parseTemporal(@NotNull CharSequence str, @NotNull Collection<DateTimeFormatter> dtf, boolean quiet) {
