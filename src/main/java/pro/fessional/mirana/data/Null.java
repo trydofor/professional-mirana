@@ -174,6 +174,14 @@ public class Null {
         return v == null || v.length == 0;
     }
 
+    public static boolean asNull(Enum<?> v) {
+        return v == null || v == Enm;
+    }
+
+    public static boolean asNull(Class<?> v) {
+        return v == null || v == Clz;
+    }
+
     @NotNull
     public static Boolean notNull(Boolean v) {
         return v == null ? Int01 : v;
@@ -262,5 +270,15 @@ public class Null {
     @NotNull
     public static Object[] notNull(Object[] v) {
         return v == null ? Objects : v;
+    }
+
+    @NotNull
+    public static Enum<?> notNull(Enum<?> v) {
+        return v == null ? Enm : v;
+    }
+
+    @NotNull
+    public static Class<?> notNull(Class<?> v) {
+        return v == null ? Clz : v;
     }
 }
