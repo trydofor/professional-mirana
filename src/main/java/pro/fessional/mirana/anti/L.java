@@ -1,6 +1,7 @@
-package pro.fessional.mirana.data;
+package pro.fessional.mirana.anti;
 
 import org.jetbrains.annotations.NotNull;
+import pro.fessional.mirana.data.Null;
 import pro.fessional.mirana.text.BuilderHolder;
 import pro.fessional.mirana.text.FormatUtil;
 
@@ -8,14 +9,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 线程内收集信息。反模式，不要过度使用。
+ * 反模式，不要过度使用: ThreadLocal收集信息，收集日志
  * `(Cate:)?Message\n`格式的消息。
  * 最后一个`\n`可以省略，支持slf4j语法
  *
  * @author trydofor
  * @since 2021-03-24
  */
-public class V {
+public class L {
     public static final String CateTkn = ":";
     public static final String LineTkn = "\n";
 
@@ -69,6 +70,13 @@ public class V {
     @NotNull
     public static List<D> inspect() {
         return Holder.get();
+    }
+
+    @NotNull
+    public static List<D> remove() {
+        final List<D> ds = Holder.get();
+        Holder.remove();
+        return ds;
     }
 
     @NotNull

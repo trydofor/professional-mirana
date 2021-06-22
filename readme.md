@@ -58,6 +58,11 @@ java8, 0依赖，是guava,commons-*的补充。
 * √8 = `2.8.0`, `2.8.2`, `2.8.28`
 * √9 = `3.0.0`
 
+## `anti/` 反工程化
+
+* G - 反模式，跨层传值
+* L - 反模式，跨层收集信息
+
 ## `best/` 高质量代码
 
  * ArgsAssert 前置断言 - IllegalArgumentException
@@ -127,7 +132,6 @@ java8, 0依赖，是guava,commons-*的补充。
  * R - Result的场景类
  * Rank - 按多条件顺序来排序
  * U - 内部传递数据的Tuple,Either
- * V - 线程内收集可读性信息
  * Z - 第一个满足条件(如非null)的数据操作
 
 ## `dync/` 动态编译
