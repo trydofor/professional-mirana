@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import pro.fessional.mirana.data.CodeEnum;
 import pro.fessional.mirana.data.Null;
 import pro.fessional.mirana.i18n.I18nAware;
+import pro.fessional.mirana.i18n.I18nString;
 
 /**
  * 性能优先，无cause传入时，可构造无堆栈异常
@@ -43,7 +44,8 @@ public class CodeException extends RuntimeException implements I18nAware {
         if (code == null) {
             this.code = "";
             this.i18nCode = null;
-        } else {
+        }
+        else {
             this.code = code;
             this.i18nCode = code;
         }
@@ -70,7 +72,8 @@ public class CodeException extends RuntimeException implements I18nAware {
         if (code == null) {
             this.code = "";
             this.i18nCode = null;
-        } else {
+        }
+        else {
             this.code = code;
             this.i18nCode = code;
         }
@@ -85,7 +88,8 @@ public class CodeException extends RuntimeException implements I18nAware {
         if (code == null) {
             this.code = "";
             this.i18nCode = null;
-        } else {
+        }
+        else {
             this.code = code.getCode();
             this.i18nCode = code.getI18nCode();
             this.i18nArgs = args;
@@ -102,6 +106,21 @@ public class CodeException extends RuntimeException implements I18nAware {
         if (code != null) i18nCode = code;
         if (args != null && args.length > 0) i18nArgs = args;
         return this;
+    }
+
+    public I18nString toI18nString() {
+        return toI18nString(null);
+    }
+
+    @Override
+    @NotNull
+    public I18nString toI18nString(String hint) {
+        if (hint == null || hint.isEmpty()) {
+            return new I18nString(i18nCode, getMessage(), i18nArgs);
+        }
+        else {
+            return new I18nString(i18nCode, hint, i18nArgs);
+        }
     }
 
     @Override

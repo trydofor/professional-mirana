@@ -95,9 +95,9 @@ public class I18nString implements I18nAware {
     @Override
     public String toString() {
         return "I18nString{" +
-                "code='" + code + '\'' +
-                ", hint='" + hint + '\'' +
-                ", args=" + Arrays.toString(args) +
-                '}';
+               "code='" + code + '\'' +
+               ", hint='" + hint + '\'' +
+               ", args=" + Arrays.toString(args) +
+               '}';
     }
 }

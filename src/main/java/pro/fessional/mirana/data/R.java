@@ -3,6 +3,7 @@ package pro.fessional.mirana.data;
 
 import org.jetbrains.annotations.Nullable;
 import pro.fessional.mirana.i18n.I18nAware;
+import pro.fessional.mirana.i18n.I18nString;
 import pro.fessional.mirana.pain.CodeException;
 
 import java.beans.Transient;
@@ -12,7 +13,7 @@ import java.util.function.Function;
  * 基础结果类，
  * success 判定操作成功|失败。
  * message 用户消息，有则显示。
- * code 业务code，有则判定。
+ * code 业务code，有则判定。注意CodeEnum类，会自动替换code
  * data 业务数据，有则使用。
  * cause 内部错误，用于跟踪。如异常，字符串，enum等标识中断执行的原因。
  * <p>
@@ -85,6 +86,21 @@ public class R<T> implements DataResult<T>, I18nAware {
         this.message = ce.getHint();
         this.i18nCode = ce.getI18nCode();
         this.i18nArgs = arg;
+        return (S) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <S extends R<T>> S setMessage(I18nString message) {
+        this.message = message.getHint();
+        this.i18nCode = message.getI18nCode();
+        this.i18nArgs = message.getI18nArgs();
+        return (S) this;
+    }
+    
+    @SuppressWarnings("unchecked")
+    public <S extends R<T>> S setMessage(I18nAware message) {
+        this.i18nCode = message.getI18nCode();
+        this.i18nArgs = message.getI18nArgs();
         return (S) this;
     }
 
