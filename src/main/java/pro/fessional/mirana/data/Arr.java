@@ -61,7 +61,8 @@ public class Arr {
         if (idx < arr.length) {
             arr[idx] = v;
             return arr;
-        } else {
+        }
+        else {
             boolean[] tmp = new boolean[arr.length * 2];
             System.arraycopy(arr, 0, tmp, 0, arr.length);
             tmp[idx] = v;
@@ -74,7 +75,8 @@ public class Arr {
         if (idx < arr.length) {
             arr[idx] = v;
             return arr;
-        } else {
+        }
+        else {
             byte[] tmp = new byte[arr.length * 2];
             System.arraycopy(arr, 0, tmp, 0, arr.length);
             tmp[idx] = v;
@@ -87,7 +89,8 @@ public class Arr {
         if (idx < arr.length) {
             arr[idx] = v;
             return arr;
-        } else {
+        }
+        else {
             short[] tmp = new short[arr.length * 2];
             System.arraycopy(arr, 0, tmp, 0, arr.length);
             tmp[idx] = v;
@@ -100,7 +103,8 @@ public class Arr {
         if (idx < arr.length) {
             arr[idx] = v;
             return arr;
-        } else {
+        }
+        else {
             char[] tmp = new char[arr.length * 2];
             System.arraycopy(arr, 0, tmp, 0, arr.length);
             tmp[idx] = v;
@@ -113,7 +117,8 @@ public class Arr {
         if (idx < arr.length) {
             arr[idx] = v;
             return arr;
-        } else {
+        }
+        else {
             int[] tmp = new int[arr.length * 2];
             System.arraycopy(arr, 0, tmp, 0, arr.length);
             tmp[idx] = v;
@@ -126,7 +131,8 @@ public class Arr {
         if (idx < arr.length) {
             arr[idx] = v;
             return arr;
-        } else {
+        }
+        else {
             long[] tmp = new long[arr.length * 2];
             System.arraycopy(arr, 0, tmp, 0, arr.length);
             tmp[idx] = v;
@@ -139,7 +145,8 @@ public class Arr {
         if (idx < arr.length) {
             arr[idx] = v;
             return arr;
-        } else {
+        }
+        else {
             float[] tmp = new float[arr.length * 2];
             System.arraycopy(arr, 0, tmp, 0, arr.length);
             tmp[idx] = v;
@@ -152,7 +159,8 @@ public class Arr {
         if (idx < arr.length) {
             arr[idx] = v;
             return arr;
-        } else {
+        }
+        else {
             double[] tmp = new double[arr.length * 2];
             System.arraycopy(arr, 0, tmp, 0, arr.length);
             tmp[idx] = v;

@@ -107,7 +107,8 @@ public class HmacHelp {
             final Mac mac = Mac.getInstance(algorithm);
             mac.init(sks);
             return mac;
-        } catch (NoSuchAlgorithmException | InvalidKeyException e) {
+        }
+        catch (NoSuchAlgorithmException | InvalidKeyException e) {
             throw new IllegalStateException("can not init algorithm=" + algorithm, e);
         }
     }

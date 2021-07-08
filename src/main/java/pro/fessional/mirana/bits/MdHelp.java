@@ -102,7 +102,8 @@ public class MdHelp {
     public static MessageDigest newOne(String algorithm) {
         try {
             return MessageDigest.getInstance(algorithm);
-        } catch (NoSuchAlgorithmException e) {
+        }
+        catch (NoSuchAlgorithmException e) {
             throw new IllegalStateException("can not init algorithm=" + algorithm, e);
         }
     }

@@ -27,7 +27,7 @@ class AverageDecimalTest {
                 System.out.print(v);
                 System.out.print(" + ");
             }
-            System.out.println("] = "+sum + " :" + (sum.compareTo(number) == 0));
+            System.out.println("] = " + sum + " :" + (sum.compareTo(number) == 0));
             assertEquals(0, sum.compareTo(number));
         }
 
@@ -41,7 +41,7 @@ class AverageDecimalTest {
                 System.out.print(v);
                 System.out.print(" + ");
             }
-            System.out.println("] = "+sum+" :" + (sum.compareTo(number)==0));
+            System.out.println("] = " + sum + " :" + (sum.compareTo(number) == 0));
             assertEquals(0, sum.compareTo(number));
         }
 

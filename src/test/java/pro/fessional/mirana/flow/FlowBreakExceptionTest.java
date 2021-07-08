@@ -18,7 +18,7 @@ class FlowBreakExceptionTest {
     }
 
     @Test
-    void testPrint(){
+    void testPrint() {
         new FlowBreakException(T.None).printStackTrace();
         System.out.println("=====");
         final NoStackRuntimeException nsr = new NoStackRuntimeException("test");
@@ -39,7 +39,8 @@ class FlowBreakExceptionTest {
         for (i = 1; i < a; i++) {
             try {
                 throw new RuntimeException();
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 // Do nothing here, as we will get here
             }
         }
@@ -51,7 +52,8 @@ class FlowBreakExceptionTest {
         for (i = 1; i < a; i++) {
             try {
                 throw new FlowBreakException(T.None);
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 // Do nothing here, as we will get here
             }
         }

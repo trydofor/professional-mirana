@@ -193,11 +193,11 @@ public class PageResult<E> extends R<Collection<E>> implements Iterable<E> {
      */
     public static <T> PageResult<T> ok(int total, Collection<? extends T> data, PageQuery pg) {
         return new PageResult<T>()
-                       .setData(data)
-                       .setPage(pg.getPage())
-                       .setTotalInfo(total, pg.getSize())
-                       .setSort(pg.getSort())
-                       .setSuccess(true);
+                .setData(data)
+                .setPage(pg.getPage())
+                .setTotalInfo(total, pg.getSize())
+                .setSort(pg.getSort())
+                .setSuccess(true);
     }
 
     /**
@@ -212,9 +212,9 @@ public class PageResult<E> extends R<Collection<E>> implements Iterable<E> {
      */
     public static <T> PageResult<T> ok(int total, Collection<? extends T> data, int page, int size) {
         return new PageResult<T>()
-                       .setData(data)
-                       .setPage(page)
-                       .setTotalInfo(total, size)
-                       .setSuccess(true);
+                .setData(data)
+                .setPage(page)
+                .setTotalInfo(total, size)
+                .setSuccess(true);
     }
 }

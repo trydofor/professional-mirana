@@ -57,12 +57,14 @@ public class CircleInputStream extends InputStream {
                 circle = null;
             }
             return c;
-        } else {
+        }
+        else {
             int c = backend.read();
             if (c < 0) {
                 finished = true;
                 backend = null;
-            } else {
+            }
+            else {
                 cache.write(c);
             }
             return c;
@@ -84,12 +86,14 @@ public class CircleInputStream extends InputStream {
                 circle = null;
             }
             return c;
-        } else {
+        }
+        else {
             int c = backend.read(b, off, len);
             if (c < 0) {
                 finished = true;
                 backend = null;
-            } else {
+            }
+            else {
                 cache.write(b, 0, c);
             }
             return c;
@@ -100,7 +104,8 @@ public class CircleInputStream extends InputStream {
     public long skip(long n) throws IOException {
         if (backend == null) {
             return circle == null ? 0 : circle.skip(n);
-        } else {
+        }
+        else {
             long r = n;
             for (int c; r > 0 && (c = backend.read()) >= 0; r--) {
                 cache.write(c);
@@ -114,7 +119,8 @@ public class CircleInputStream extends InputStream {
         if (backend == null) {
             switchIfCircle();
             return circle.available();
-        } else {
+        }
+        else {
             return backend.available();
         }
     }
@@ -134,7 +140,8 @@ public class CircleInputStream extends InputStream {
             if (circle != null) {
                 circle.mark(readlimit);
             }
-        } else {
+        }
+        else {
             markBytes = cache.toByteArray();
             backend.mark(readlimit);
         }
@@ -146,7 +153,8 @@ public class CircleInputStream extends InputStream {
             if (circle != null) {
                 circle.reset();
             }
-        } else {
+        }
+        else {
             backend.reset();
             cache.reset();
             if (markBytes != null) {
@@ -160,7 +168,8 @@ public class CircleInputStream extends InputStream {
     public boolean markSupported() {
         if (backend == null) {
             return circle != null;
-        } else {
+        }
+        else {
             return backend.markSupported();
         }
     }

@@ -148,7 +148,8 @@ public class Zipper {
                 File newFile = new File(dir, fileName);
                 if (ze.isDirectory()) {
                     newFile.mkdirs();
-                } else {
+                }
+                else {
                     FileOutputStream fos = new FileOutputStream(newFile);
                     int len;
                     while ((len = zis.read(buffer)) > 0) {
@@ -166,8 +167,8 @@ public class Zipper {
      * unzip zip file to map
      *
      * @param zip zip file
-     * @throws IOException exception
      * @return mapped result
+     * @throws IOException exception
      */
     public static Map<String, byte[]> unzip(InputStream zip) throws IOException {
         Map<String, byte[]> entries = new HashMap<>();
@@ -219,7 +220,8 @@ public class Zipper {
                 iter.remove();
                 Map<String, byte[]> sub = unzip(new ByteArrayInputStream(entry.getValue()));
                 result.putAll(sub);
-            } else {
+            }
+            else {
                 result.put(entry.getKey(), entry.getValue());
             }
         }

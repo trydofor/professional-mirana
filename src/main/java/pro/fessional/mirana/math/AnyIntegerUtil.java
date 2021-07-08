@@ -17,7 +17,8 @@ public class AnyIntegerUtil {
             return elze;
         try {
             return Long.parseLong(trimToInteger(str));
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e) {
             return elze;
         }
     }
@@ -40,7 +41,8 @@ public class AnyIntegerUtil {
             return elze;
         try {
             return Integer.parseInt(trimToInteger(str));
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e) {
             return elze;
         }
     }
@@ -74,7 +76,8 @@ public class AnyIntegerUtil {
             return elze;
         try {
             return Long.valueOf(trimToInteger(str));
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e) {
             return elze;
         }
     }
@@ -98,7 +101,8 @@ public class AnyIntegerUtil {
             return elze;
         try {
             return Integer.valueOf(trimToInteger(str));
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e) {
             return elze;
         }
     }
@@ -146,9 +150,11 @@ public class AnyIntegerUtil {
             char c = str.charAt(i);
             if (c == '-' && sb.length() == 0) {
                 sb.append(c);
-            } else if (c >= '0' && c <= '9') {
+            }
+            else if (c >= '0' && c <= '9') {
                 sb.append(c);
-            } else if (c == '.') {
+            }
+            else if (c == '.') {
                 break;
             }
         }

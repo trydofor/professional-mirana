@@ -22,8 +22,8 @@ class SslTrustAllTest {
         SslTrustAll.resetSocketFactory();
         SSLSocketFactory df3 = HttpsURLConnection.getDefaultSSLSocketFactory();
 
-        assertSame(df1,df3);
-        assertSame(df2,SslTrustAll.SSL_SOCKET_FACTORY);
+        assertSame(df1, df3);
+        assertSame(df2, SslTrustAll.SSL_SOCKET_FACTORY);
     }
 
     @Test
@@ -34,8 +34,8 @@ class SslTrustAllTest {
         SslTrustAll.resetHostnameVerifier();
         HostnameVerifier dh3 = HttpsURLConnection.getDefaultHostnameVerifier();
 
-        assertSame(dh1,dh3);
-        assertSame(dh2,SslTrustAll.HOSTNAME_VERIFIER);
+        assertSame(dh1, dh3);
+        assertSame(dh2, SslTrustAll.HOSTNAME_VERIFIER);
     }
 
 }

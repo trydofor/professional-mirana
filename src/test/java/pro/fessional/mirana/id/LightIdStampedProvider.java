@@ -17,8 +17,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.StampedLock;
 
 /**
@@ -108,7 +106,8 @@ public class LightIdStampedProvider implements LightIdProvider {
         if (t > 0) {
             loadTimeout.set(t);
             return true;
-        } else {
+        }
+        else {
             return false;
         }
     }
@@ -123,7 +122,8 @@ public class LightIdStampedProvider implements LightIdProvider {
         if (n >= 0) {
             loadMaxError.set(n);
             return true;
-        } else {
+        }
+        else {
             return false;
         }
     }
@@ -138,7 +138,8 @@ public class LightIdStampedProvider implements LightIdProvider {
         if (n >= 0) {
             loadMaxCount.set(n);
             return true;
-        } else {
+        }
+        else {
             return false;
         }
     }
@@ -215,9 +216,11 @@ public class LightIdStampedProvider implements LightIdProvider {
             int max = loadMaxCount.get();
             if (count > max) {
                 return max;
-            } else if (count < 100) {
+            }
+            else if (count < 100) {
                 return 100;
-            } else {
+            }
+            else {
                 return (int) count;
             }
         }
@@ -252,7 +255,8 @@ public class LightIdStampedProvider implements LightIdProvider {
             long srl = segmentLock.readLock();
             try {
                 slot = segmentSlot;
-            } finally {
+            }
+            finally {
                 segmentLock.unlockRead(srl);
             }
             final long seq = slot.sequence.getAndIncrement();
@@ -280,18 +284,22 @@ public class LightIdStampedProvider implements LightIdProvider {
             String err = null;
             if (seg.getBlock() != block) {
                 err = "difference block, name=" + name + ", block=" + block + ",seg.block=" + seg.getBlock();
-            } else if (!name.equalsIgnoreCase(seg.getName())) {
+            }
+            else if (!name.equalsIgnoreCase(seg.getName())) {
                 err = "difference name, name=" + name + ", block=" + block + ",seg.name=" + seg.getName();
-            } else {
+            }
+            else {
                 // 保证插入顺序，不可分读写
                 final long swl = segmentLock.writeLock();
                 try {
                     if (!segmentPool.isEmpty() && seg.getHead() <= segmentPool.getLast().getFoot()) {
                         err = "seg.start must bigger than last.endin, name=" + name + ",block=" + block; // 可覆盖之前的err
-                    } else {
+                    }
+                    else {
                         segmentPool.add(seg);
                     }
-                } finally {
+                }
+                finally {
                     segmentLock.unlockWrite(swl);
                 }
             }
@@ -304,7 +312,8 @@ public class LightIdStampedProvider implements LightIdProvider {
                 errorCount.set(0);
                 errorNewer.set(null);
                 errorEpoch.set(0);
-            } else {
+            }
+            else {
                 errorCount.incrementAndGet();
                 errorNewer.set(e);
                 errorEpoch.set(System.currentTimeMillis());
@@ -316,7 +325,8 @@ public class LightIdStampedProvider implements LightIdProvider {
             if (loaderIdle.compareAndSet(true, false)) {
                 if (async) {
                     executor.submit(() -> loadSegment(count));
-                } else {
+                }
+                else {
                     loadSegment(count);
                 }
             }
@@ -327,9 +337,11 @@ public class LightIdStampedProvider implements LightIdProvider {
                 Segment seg = loader.require(name, block, count);
                 handleError(null); // before fillSegment
                 fillSegment(seg);
-            } catch (RuntimeException e) {
+            }
+            catch (RuntimeException e) {
                 handleError(e);
-            } finally {
+            }
+            finally {
                 loaderIdle.set(true); // 不必sync
             }
         }
@@ -346,14 +358,16 @@ public class LightIdStampedProvider implements LightIdProvider {
                         // busy wait
                         Thread.sleep(10);
                     }
-                } catch (InterruptedException e) {
+                }
+                catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                     throw new IllegalStateException("dont interrupt me", e);
                 }
                 long now = System.currentTimeMillis();
                 if (now > throwMs) {
                     throw new TimeoutRuntimeException("waiting segment loadTimeout=" + (now - throwMs + timeout));
-                } else {
+                }
+                else {
                     return;
                 }
             }
@@ -370,17 +384,20 @@ public class LightIdStampedProvider implements LightIdProvider {
                         Segment seg = segmentPool.poll();
                         if (seg == null) { // empty
                             status = segmentSlot;
-                        } else {
+                        }
+                        else {
                             segmentSlot = new SegmentStatus(seg);
                             status = null;
                         }
-                    } finally {
+                    }
+                    finally {
                         segmentLock.unlockWrite(swl);
                     }
 
                     if (status == null) {
                         break; // 切换完毕，不检查超时
-                    } else {
+                    }
+                    else {
                         loadSegment(status.count60s(), false); // 升级load线程
                     }
 
@@ -389,7 +406,8 @@ public class LightIdStampedProvider implements LightIdProvider {
                         throw new TimeoutRuntimeException("switching segment loadTimeout=" + (now - throwMs + timeout));
                     }
                 }
-            } finally {
+            }
+            finally {
                 switchIdle.set(true);
             }
         }

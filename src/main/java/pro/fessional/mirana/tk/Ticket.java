@@ -65,7 +65,8 @@ public interface Ticket extends Serializable {
         final String biz = getBizPart();
         if (biz.isEmpty()) {
             return getPubMod() + "-" + getPubExp() + "-" + getPubSeq();
-        } else {
+        }
+        else {
             return getPubMod() + "-" + getPubExp() + "-" + getPubSeq() + "." + biz;
         }
     }

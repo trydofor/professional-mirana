@@ -89,7 +89,8 @@ public class BigDecimalUtil {
             return elz;
         try {
             return new BigDecimal(str);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             return elz;
         }
     }
@@ -98,19 +99,26 @@ public class BigDecimalUtil {
         BigDecimal r;
         if (num == null) {
             r = elz;
-        } else if (num instanceof Integer) {
+        }
+        else if (num instanceof Integer) {
             r = new BigDecimal(num.intValue());
-        } else if (num instanceof Long) {
+        }
+        else if (num instanceof Long) {
             r = new BigDecimal(num.longValue());
-        } else if (num instanceof Double) {
+        }
+        else if (num instanceof Double) {
             r = BigDecimal.valueOf(num.doubleValue());
-        } else if (num instanceof Float) {
+        }
+        else if (num instanceof Float) {
             r = BigDecimal.valueOf(num.floatValue());
-        } else if (num instanceof BigInteger) {
+        }
+        else if (num instanceof BigInteger) {
             r = new BigDecimal((BigInteger) num);
-        } else if (num instanceof BigDecimal) {
+        }
+        else if (num instanceof BigDecimal) {
             r = (BigDecimal) num;
-        } else {
+        }
+        else {
             r = new BigDecimal(num.toString());
         }
 
@@ -310,7 +318,8 @@ public class BigDecimalUtil {
         for (BigDecimal v : vs) {
             if (v == null) {
                 if (!skipNull) return ZERO;
-            } else {
+            }
+            else {
                 total = total.multiply(v);
             }
         }
@@ -544,20 +553,25 @@ public class BigDecimalUtil {
             if (b == null) {
                 if (c == null) {
                     return ZERO;
-                } else {
+                }
+                else {
                     return c;
                 }
-            } else {
+            }
+            else {
                 return b;
             }
-        } else {
+        }
+        else {
             if (b == null) {
                 if (c == null) {
                     return a;
-                } else {
+                }
+                else {
                     return a.add(c);
                 }
-            } else {
+            }
+            else {
                 return a.add(b);
             }
         }
@@ -679,20 +693,25 @@ public class BigDecimalUtil {
             if (b == null) {
                 if (c == null) {
                     return ZERO;
-                } else {
+                }
+                else {
                     return c.negate();
                 }
-            } else {
+            }
+            else {
                 return b.negate();
             }
-        } else {
+        }
+        else {
             if (b == null) {
                 if (c == null) {
                     return a;
-                } else {
+                }
+                else {
                     return a.subtract(c);
                 }
-            } else {
+            }
+            else {
                 return a.subtract(b);
             }
         }
@@ -812,14 +831,17 @@ public class BigDecimalUtil {
     public static BigDecimal mul(BigDecimal a, BigDecimal b, BigDecimal c) {
         if (a == null) {
             return ZERO;
-        } else {
+        }
+        else {
             if (b == null) {
                 if (c == null) {
                     return ZERO;
-                } else {
+                }
+                else {
                     return a.multiply(c);
                 }
-            } else {
+            }
+            else {
                 return a.multiply(b);
             }
         }
@@ -941,10 +963,12 @@ public class BigDecimalUtil {
 
         if (a == null) {
             return ZERO;
-        } else {
+        }
+        else {
             if (b == null) {
                 return a.divide(c, MC);
-            } else {
+            }
+            else {
                 return a.divide(b, MC);
             }
         }
@@ -1102,7 +1126,8 @@ public class BigDecimalUtil {
         }
         if (value.scale() == scale) {
             return value;
-        } else {
+        }
+        else {
             return value.setScale(scale + 1, FLOOR).setScale(scale, mode);
         }
     }
@@ -1137,7 +1162,8 @@ public class BigDecimalUtil {
 
         if (value == null) {
             value = ZERO;
-        } else {
+        }
+        else {
             if (down == null) down = ZERO;
             BigDecimal[] dr = value.divideAndRemainder(unit);
             value = dr[0].multiply(unit);
@@ -1154,10 +1180,10 @@ public class BigDecimalUtil {
     }
 
     /**
-     * @see #unitDown(BigDecimal, BigDecimal, BigDecimal)
      * @param value 数值
      * @param unit  单位
      * @return 处理结果
+     * @see #unitDown(BigDecimal, BigDecimal, BigDecimal)
      */
     @NotNull
     public static BigDecimal unitDown(BigDecimal value, BigDecimal unit) {
@@ -1183,7 +1209,8 @@ public class BigDecimalUtil {
 
         if (value == null) {
             value = ZERO;
-        } else {
+        }
+        else {
             BigDecimal[] dr = value.divideAndRemainder(unit);
             value = dr[0].multiply(unit);
 
@@ -1373,7 +1400,8 @@ public class BigDecimalUtil {
             if (d == null) {
                 this.value = ZERO;
                 this.scale = 0;
-            } else {
+            }
+            else {
                 this.value = d;
                 this.scale = d.scale();
             }

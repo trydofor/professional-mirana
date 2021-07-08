@@ -10,7 +10,7 @@ import java.util.concurrent.locks.Lock;
  * 应该每次使用，每次getLock，符合以下模式。
  *
  * <p>A typical usage idiom for this method would be:
- *  <pre> {@code
+ * <pre> {@code
  * final Lock lock = xxx.getLock("...");
  * if (lock.tryLock()) {
  *   try {

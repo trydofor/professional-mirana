@@ -19,7 +19,7 @@ class BytesTest {
             final byte[] b2 = Bytes.hex(h1);
             String s2 = new String(b2);
             assertEquals(s1, s2);
-            final String h3 = h1.replaceAll("(\\d)","$1 ");
+            final String h3 = h1.replaceAll("(\\d)", "$1 ");
             System.out.println(h3);
             String s3 = new String(Bytes.hex(h3));
             assertEquals(s1, s3);
@@ -33,16 +33,16 @@ class BytesTest {
         final byte[] b2 = Bytes.hex(h1);
         String s2 = new String(b2);
         assertEquals(s1, s2);
-        final String h3 = h1.replaceAll("(\\d)","$1 ");
+        final String h3 = h1.replaceAll("(\\d)", "$1 ");
         System.out.println(h3);
         String s3 = new String(Bytes.hex(h3));
         assertEquals(s1, s3);
     }
 
     @Test
-    void print(){
+    void print() {
         final byte[] bytes = RandCode.human(20).getBytes();
-        System.out.println(Bytes.hex(bytes,true));
-        System.out.println(Bytes.hex(bytes,false));
+        System.out.println(Bytes.hex(bytes, true));
+        System.out.println(Bytes.hex(bytes, false));
     }
 }

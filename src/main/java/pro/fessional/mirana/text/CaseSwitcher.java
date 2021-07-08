@@ -58,47 +58,57 @@ public class CaseSwitcher {
                     if (up == 1) {
                         if (cas == Case.Dot) {
                             sb.append('.');
-                        } else if (cas == Case.Kebab) {
+                        }
+                        else if (cas == Case.Kebab) {
                             sb.append('-');
-                        } else if (cas == Case.Snake || cas == Case.Scream) {
+                        }
+                        else if (cas == Case.Snake || cas == Case.Scream) {
                             sb.append('_');
                         }
                     }
 
                     if (cas == Case.Scream
-                            || (cas == Case.Pascal && up == 1)
-                            || (cas == Case.Camel && i > 0 && up == 1)
+                        || (cas == Case.Pascal && up == 1)
+                        || (cas == Case.Camel && i > 0 && up == 1)
                     ) {
                         sb.append(c);
-                    } else {
+                    }
+                    else {
                         sb.append(Character.toLowerCase(c));
                     }
-                } else {
+                }
+                else {
                     up = 0;
                     if (cas == Case.Scream || (cas == Case.Pascal && i == 0)) {
                         sb.append(Character.toUpperCase(c));
-                    } else {
+                    }
+                    else {
                         sb.append(c);
                     }
                 }
             }
-        } else {
+        }
+        else {
             boolean ed = false;
             boolean up;
             for (int i = 0; i < len; i++) {
                 char c = str.charAt(i);
                 if (c == '.' || c == '_' || c == '-') {
                     ed = true;
-                } else {
+                }
+                else {
                     up = false;
                     if (ed) {
                         if (cas == Case.Dot) {
                             sb.append('.');
-                        } else if (cas == Case.Kebab) {
+                        }
+                        else if (cas == Case.Kebab) {
                             sb.append('-');
-                        } else if (cas == Case.Snake || cas == Case.Scream) {
+                        }
+                        else if (cas == Case.Snake || cas == Case.Scream) {
                             sb.append('_');
-                        } else if (cas == Case.Camel || cas == Case.Pascal) {
+                        }
+                        else if (cas == Case.Camel || cas == Case.Pascal) {
                             up = true;
                         }
                         ed = false;
@@ -106,7 +116,8 @@ public class CaseSwitcher {
 
                     if (up || cas == Case.Scream || (cas == Case.Pascal && i == 0)) {
                         sb.append(Character.toUpperCase(c));
-                    } else {
+                    }
+                    else {
                         sb.append(Character.toLowerCase(c));
                     }
                 }

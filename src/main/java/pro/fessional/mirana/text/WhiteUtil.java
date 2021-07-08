@@ -117,7 +117,8 @@ public class WhiteUtil {
             if (notWhiteSpace(c)) {
                 ws = false;
                 sb.append(c);
-            } else {
+            }
+            else {
                 if (!ws) {
                     sb.append(' ');
                 }
@@ -197,7 +198,8 @@ public class WhiteUtil {
             if (idx > 0) {
                 cnt++;
                 i = idx; // fast move
-            } else {
+            }
+            else {
                 break;
             }
         }
@@ -207,7 +209,8 @@ public class WhiteUtil {
             if (idx > 0) {
                 result.add(spd.substring(i, idx));
                 i = idx;  // fast move
-            } else {
+            }
+            else {
                 result.add(spd.substring(i));
                 break;
             }

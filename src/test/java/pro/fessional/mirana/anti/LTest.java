@@ -11,7 +11,7 @@ class LTest {
     @Test
     void parse() {
         L.error("error message");
-        L.error("userid={}",1);
+        L.error("userid={}", 1);
         L.message("message");
         final String rs1 = L.finish();
         System.out.println(rs1);

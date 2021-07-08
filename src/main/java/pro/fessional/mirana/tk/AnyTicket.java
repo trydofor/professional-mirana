@@ -93,7 +93,8 @@ public class AnyTicket implements Ticket.Mutable {
     public @NotNull String getSigData(boolean build) {
         if (build || sigData.isEmpty()) {
             return Ticket.Mutable.super.getSigData(false);
-        } else {
+        }
+        else {
             return sigData;
         }
     }
@@ -123,10 +124,10 @@ public class AnyTicket implements Ticket.Mutable {
         if (o == null || getClass() != o.getClass()) return false;
         AnyTicket anyTicket = (AnyTicket) o;
         return pubExp == anyTicket.pubExp &&
-                pubSeq == anyTicket.pubSeq &&
-                pubMod.equals(anyTicket.pubMod) &&
-                bizPart.equals(anyTicket.bizPart) &&
-                sigPart.equals(anyTicket.sigPart);
+               pubSeq == anyTicket.pubSeq &&
+               pubMod.equals(anyTicket.pubMod) &&
+               bizPart.equals(anyTicket.bizPart) &&
+               sigPart.equals(anyTicket.sigPart);
     }
 
     @Override
@@ -138,11 +139,11 @@ public class AnyTicket implements Ticket.Mutable {
     @Override
     public String toString() {
         return "AnyTicket{" +
-                "pubMod='" + pubMod + '\'' +
-                ", pubExp=" + pubExp +
-                ", pubSeq=" + pubSeq +
-                ", bizPart='" + bizPart + '\'' +
-                ", sigPart='" + sigPart + '\'' +
-                '}';
+               "pubMod='" + pubMod + '\'' +
+               ", pubExp=" + pubExp +
+               ", pubSeq=" + pubSeq +
+               ", bizPart='" + bizPart + '\'' +
+               ", sigPart='" + sigPart + '\'' +
+               '}';
     }
 }

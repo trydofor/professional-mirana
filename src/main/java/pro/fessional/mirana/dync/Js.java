@@ -118,7 +118,8 @@ public class Js {
                 }
             }
             return (T) engine.eval(js);
-        } catch (ScriptException e) {
+        }
+        catch (ScriptException e) {
             throw new IllegalStateException(e);
         }
     }

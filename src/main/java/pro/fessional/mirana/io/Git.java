@@ -53,16 +53,16 @@ public class Git {
         @Override
         public String toString() {
             return "{" +
-                    "originRepo='" + originRepo + '\'' +
-                    ", commitHash='" + commitHash + '\'' +
-                    ", authorName='" + authorName + '\'' +
-                    ", authorDate=" + authorDate +
-                    ", commitInfo='" + commitInfo + '\'' +
-                    ", linenumAdd=" + linenumAdd +
-                    ", linenumDel=" + linenumDel +
-                    ", commitFile='" + commitFile + '\'' +
-                    ", renameFile='" + renameFile + '\'' +
-                    '}';
+                   "originRepo='" + originRepo + '\'' +
+                   ", commitHash='" + commitHash + '\'' +
+                   ", authorName='" + authorName + '\'' +
+                   ", authorDate=" + authorDate +
+                   ", commitInfo='" + commitInfo + '\'' +
+                   ", linenumAdd=" + linenumAdd +
+                   ", linenumDel=" + linenumDel +
+                   ", commitFile='" + commitFile + '\'' +
+                   ", renameFile='" + renameFile + '\'' +
+                   '}';
         }
 
         @Override
@@ -71,8 +71,8 @@ public class Git {
             if (o == null || getClass() != o.getClass()) return false;
             S s = (S) o;
             return originRepo.equals(s.originRepo) &&
-                    commitHash.equals(s.commitHash) &&
-                    commitFile.equals(s.commitFile);
+                   commitHash.equals(s.commitHash) &&
+                   commitFile.equals(s.commitFile);
         }
 
         @Override
@@ -100,7 +100,8 @@ public class Git {
             String s = sb.toString().trim();
             String[] pts = s.split("[/\\\\]+");
             repo = (pts.length > 0) ? pts[pts.length - 1].trim() : s;
-        } else {
+        }
+        else {
             repo = Null.Str;
         }
 
@@ -129,7 +130,8 @@ public class Git {
                 f.authorDate = LocalDateTime.parse(pt[2], dtf);
                 f.commitInfo = pt[3];
                 root.set(f);
-            } else {
+            }
+            else {
                 String[] pt = s.split("\t", 3);
                 if (pt.length != 3) return;
 
@@ -156,7 +158,8 @@ public class Git {
                     if (p1 < 0) {
                         f.commitFile = trimFile(fl.substring(0, no).trim());
                         f.renameFile = trimFile(fl.substring(no + 2).trim());
-                    } else {
+                    }
+                    else {
                         int p2 = fl.indexOf("}", no);
                         String s1 = fl.substring(0, p1);
                         String s2 = fl.substring(p1 + 1, no).trim();
@@ -166,7 +169,8 @@ public class Git {
                         f.renameFile = trimFile(s1, s2, s4);
                     }
 
-                } else {
+                }
+                else {
                     f.commitFile = trimFile(fl);
                 }
             }
@@ -204,14 +208,17 @@ public class Git {
                             buf.write(octal - 256);
                             i = i + 3;
                         }
-                    } else {
+                    }
+                    else {
                         out.append(c);
                     }
-                } else {
+                }
+                else {
                     if (buf.size() > 0) {
                         try {
                             out.append(buf.toString("UTF8"));
-                        } catch (UnsupportedEncodingException e) {
+                        }
+                        catch (UnsupportedEncodingException e) {
                             // never
                         }
                         buf.reset();
@@ -225,7 +232,8 @@ public class Git {
             if (buf.size() > 0) {
                 try {
                     out.append(buf.toString("UTF8"));
-                } catch (UnsupportedEncodingException e) {
+                }
+                catch (UnsupportedEncodingException e) {
                     // never
                 }
                 buf.reset();
@@ -233,7 +241,8 @@ public class Git {
         }
         if (out.length() > 2 && out.charAt(0) == '"' && out.charAt(out.length() - 1) == '"') {
             return out.substring(1, out.length() - 1);
-        } else {
+        }
+        else {
             return out.toString();
         }
     }
@@ -252,26 +261,26 @@ public class Git {
             }
             if (not) {
                 stm.execute("CREATE TABLE `" + table + "` (\n" +
-                        "  `id` int(11) NOT NULL AUTO_INCREMENT,\n" +
-                        "  `origin_repo` varchar(100) NOT NULL DEFAULT '' COMMENT '仓库名称',\n" +
-                        "  `commit_hash` varchar(40) NOT NULL DEFAULT '' COMMENT '提交hash',\n" +
-                        "  `author_name` varchar(50) NOT NULL DEFAULT '' COMMENT '提交者名',\n" +
-                        "  `author_date` datetime NOT NULL DEFAULT '1000-01-01' COMMENT '提交日期',\n" +
-                        "  `commit_info` varchar(200) NOT NULL DEFAULT '' COMMENT '提交信息',\n" +
-                        "  `linenum_add` int(11) NOT NULL DEFAULT 0 COMMENT '增加行数',\n" +
-                        "  `linenum_del` int(11) NOT NULL DEFAULT 0 COMMENT '删除行数',\n" +
-                        "  `commit_file` varchar(200) NOT NULL DEFAULT '' COMMENT '提交文件',\n" +
-                        "  `rename_file` varchar(200) NOT NULL DEFAULT '' COMMENT '更名文件',\n" +
-                        "  PRIMARY KEY (`id`),\n" +
-                        "  UNIQUE KEY `uq_repo_hash_file` (`origin_repo`,`commit_hash`,`commit_file`)\n" +
-                        ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+                            "  `id` int(11) NOT NULL AUTO_INCREMENT,\n" +
+                            "  `origin_repo` varchar(100) NOT NULL DEFAULT '' COMMENT '仓库名称',\n" +
+                            "  `commit_hash` varchar(40) NOT NULL DEFAULT '' COMMENT '提交hash',\n" +
+                            "  `author_name` varchar(50) NOT NULL DEFAULT '' COMMENT '提交者名',\n" +
+                            "  `author_date` datetime NOT NULL DEFAULT '1000-01-01' COMMENT '提交日期',\n" +
+                            "  `commit_info` varchar(200) NOT NULL DEFAULT '' COMMENT '提交信息',\n" +
+                            "  `linenum_add` int(11) NOT NULL DEFAULT 0 COMMENT '增加行数',\n" +
+                            "  `linenum_del` int(11) NOT NULL DEFAULT 0 COMMENT '删除行数',\n" +
+                            "  `commit_file` varchar(200) NOT NULL DEFAULT '' COMMENT '提交文件',\n" +
+                            "  `rename_file` varchar(200) NOT NULL DEFAULT '' COMMENT '更名文件',\n" +
+                            "  PRIMARY KEY (`id`),\n" +
+                            "  UNIQUE KEY `uq_repo_hash_file` (`origin_repo`,`commit_hash`,`commit_file`)\n" +
+                            ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
 
                 stm.close();
             }
 
             PreparedStatement pstm = conn.prepareStatement("INSERT IGNORE INTO " + table +
-                    "(origin_repo,commit_hash,author_name,author_date,commit_info,linenum_add,linenum_del,commit_file,rename_file) VALUES" +
-                    "(?,?,?,?,?,?,?,?,?)");
+                                                           "(origin_repo,commit_hash,author_name,author_date,commit_info,linenum_add,linenum_del,commit_file,rename_file) VALUES" +
+                                                           "(?,?,?,?,?,?,?,?,?)");
             // 按author date正序排列
             infos.sort(Comparator.comparing(o -> o.authorDate));
 
@@ -292,7 +301,8 @@ public class Git {
             }
             pstm.executeBatch();
 
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new IllegalStateException(e);
         }
     }
@@ -338,7 +348,8 @@ public class Git {
         if (infos == null || pattern == null) return;
         if (alias == null) {
             alias = Collections.emptyMap();
-        } else {
+        }
+        else {
             Map<String, String> tmp = new HashMap<>();
             for (Map.Entry<String, String> e : alias.entrySet()) {
                 String v = e.getValue();
@@ -418,7 +429,8 @@ public class Git {
             if (han > 0) {
                 if (han2) {
                     pad -= han;
-                } else {
+                }
+                else {
                     pad -= (int) Math.floor(han * 0.789);
                 }
                 if (pad <= 0) pad = 1;
@@ -451,7 +463,8 @@ public class Git {
                 if (c == null) {
                     rowN.append(String.format("%s%" + m[0] + "s %" + m[1] + "s %" + m[2] + "s %" + m[3] + "s",
                             bar, "-", "-", "-", "-"));
-                } else {
+                }
+                else {
                     rowN.append(String.format("%s%" + m[0] + "s %" + m[1] + "s %" + m[2] + "s %" + m[3] + "s",
                             bar, c.commits.size(), c.cofiles.size(), c.linenumAdd, c.linenumDel));
                 }

@@ -105,7 +105,8 @@ public class StringTemplate {
                 p.solid();
                 C c = cac.computeIfAbsent(p, p1 -> new C(this, p1));
                 return c.build(p);
-            } finally {
+            }
+            finally {
                 p.clear();
             }
         }
@@ -230,7 +231,8 @@ public class StringTemplate {
                     if (v != null) {
                         sb.append(v);
                     }
-                } else {
+                }
+                else {
                     char[] cs = (char[]) o;
                     sb.append(cs);
                 }
@@ -250,7 +252,8 @@ public class StringTemplate {
                     while (m.find()) {
                         pos.add(new H(m.start(), m.end(), k));
                     }
-                } else {
+                }
+                else {
                     int ix, of = 0, ln = key.length();
                     while ((ix = str.indexOf(key, of)) >= 0) {
                         int n = ix + ln;
@@ -271,19 +274,22 @@ public class StringTemplate {
                         if (x0 > 0) {
                             rst.add(str.substring(0, x0).toCharArray());
                         }
-                    } else {
+                    }
+                    else {
                         rst.add(str.substring(p1, x0).toCharArray());
                     }
                     rst.add(nt.k);
                     p1 = nt.p2;
-                } else {
+                }
+                else {
                     it.remove();
                 }
             }
 
             if (p1 < 0) {
                 rst.add(str.toCharArray());
-            } else if (p1 > 0 && p1 < str.length()) {
+            }
+            else if (p1 > 0 && p1 < str.length()) {
                 rst.add(str.substring(p1).toCharArray());
             }
 

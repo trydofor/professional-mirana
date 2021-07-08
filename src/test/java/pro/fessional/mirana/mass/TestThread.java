@@ -9,8 +9,8 @@ public class TestThread {
     private static final Object lock = new Object();
 
     public static void main(String[] args) {
-        synchronized (lock){
-         lock.notifyAll();
+        synchronized (lock) {
+            lock.notifyAll();
         }
     }
 }

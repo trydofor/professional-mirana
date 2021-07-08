@@ -35,18 +35,18 @@ public class GitTest {
 
 
     @Test
-    public void stat(){
+    public void stat() {
         File workDir = new File("/Users/trydofor/Workspace/捷特/jetplus-src/jetplus-backend");
         List<Git.S> infos = Git.logAll(workDir, null);
-        Map<String,String> alias = new HashMap<>();
-        alias.put("KangKang","小李飞刀");
-        alias.put("小T","胡一刀");
-        alias.put("叫我胖虎","胡一刀");
-        alias.put("牧冬","王老五");
-        alias.put("mortal","王老五");
-        alias.put("morph","程咬金");
-        alias.put("chengxiaojun","程咬金");
-        alias.put("xuyongjie","徐州重工业");
+        Map<String, String> alias = new HashMap<>();
+        alias.put("KangKang", "小李飞刀");
+        alias.put("小T", "胡一刀");
+        alias.put("叫我胖虎", "胡一刀");
+        alias.put("牧冬", "王老五");
+        alias.put("mortal", "王老五");
+        alias.put("morph", "程咬金");
+        alias.put("chengxiaojun", "程咬金");
+        alias.put("xuyongjie", "徐州重工业");
         // 中文会出现汉字对齐问题，需要调整字体，保证1中文=2英文
         Git.stat(infos, STAT_WEEK_YEAR, alias, false);
     }

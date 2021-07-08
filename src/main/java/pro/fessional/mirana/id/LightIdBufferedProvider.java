@@ -121,7 +121,8 @@ public class LightIdBufferedProvider implements LightIdProvider {
         if (t > 0) {
             loadTimeout.set(t);
             return true;
-        } else {
+        }
+        else {
             return false;
         }
     }
@@ -136,7 +137,8 @@ public class LightIdBufferedProvider implements LightIdProvider {
         if (n >= 0) {
             loadMaxError.set(n);
             return true;
-        } else {
+        }
+        else {
             return false;
         }
     }
@@ -151,7 +153,8 @@ public class LightIdBufferedProvider implements LightIdProvider {
         if (n >= 0) {
             loadMaxCount.set(n);
             return true;
-        } else {
+        }
+        else {
             return false;
         }
     }
@@ -233,9 +236,11 @@ public class LightIdBufferedProvider implements LightIdProvider {
             int max = loadMaxCount.get();
             if (count < 0 || count > max) { // overflow
                 return max;
-            } else if (count < 100) {
+            }
+            else if (count < 100) {
                 return 100;
-            } else {
+            }
+            else {
                 return (int) count;
             }
         }
@@ -293,14 +298,17 @@ public class LightIdBufferedProvider implements LightIdProvider {
             String err = null;
             if (seg.getBlock() != block) {
                 err = "difference block, name=" + name + ", block=" + block + ",seg.block=" + seg.getBlock();
-            } else if (!name.equalsIgnoreCase(seg.getName())) {
+            }
+            else if (!name.equalsIgnoreCase(seg.getName())) {
                 err = "difference name, name=" + name + ", block=" + block + ",seg.name=" + seg.getName();
-            } else {
+            }
+            else {
                 // 保证插入顺序，不可分读写
                 synchronized (segmentPool) {
                     if (!segmentPool.isEmpty() && seg.getHead() <= segmentPool.getLast().getFoot()) {
                         err = "seg.start must bigger than last.endin, name=" + name + ",block=" + block; // 可覆盖之前的err
-                    } else {
+                    }
+                    else {
                         segmentPool.addLast(seg);
                     }
                 }
@@ -315,7 +323,8 @@ public class LightIdBufferedProvider implements LightIdProvider {
                 errorCount.set(0);
                 errorNewer.set(null);
                 errorEpoch.set(0);
-            } else {
+            }
+            else {
                 errorCount.incrementAndGet();
                 errorNewer.set(e);
                 errorEpoch.set(System.currentTimeMillis());
@@ -327,7 +336,8 @@ public class LightIdBufferedProvider implements LightIdProvider {
             if (loaderIdle.compareAndSet(true, false)) {
                 if (async) {
                     executor.submit(() -> loadSegment(count));
-                } else {
+                }
+                else {
                     loadSegment(count);
                 }
             }
@@ -338,9 +348,11 @@ public class LightIdBufferedProvider implements LightIdProvider {
                 Segment seg = loader.require(name, block, count);
                 handleError(null); // before fillSegment
                 fillSegment(seg);
-            } catch (RuntimeException e) {
+            }
+            catch (RuntimeException e) {
                 handleError(e);
-            } finally {
+            }
+            finally {
                 loaderIdle.set(true); // 不必sync
             }
         }
@@ -357,19 +369,22 @@ public class LightIdBufferedProvider implements LightIdProvider {
                     synchronized (switchIdle) {
                         if (switchIdle.get()) {
                             return; // 不用检查超时
-                        } else {
+                        }
+                        else {
                             awaitCount.incrementAndGet();
                             switchIdle.wait(timeout);
                         }
                     }
-                } catch (InterruptedException e) {
+                }
+                catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                     throw new IllegalStateException("dont interrupt me", e);
                 }
                 long now = System.currentTimeMillis();
                 if (now > throwMs) {
                     throw new TimeoutRuntimeException("waiting segment pollTimeout=" + (now - throwMs + timeout));
-                } else {
+                }
+                else {
                     return;
                 }
             }
@@ -384,7 +399,8 @@ public class LightIdBufferedProvider implements LightIdProvider {
                         Segment seg = segmentPool.poll();
                         if (seg == null) { // empty
                             status = segmentSlot.get();
-                        } else {
+                        }
+                        else {
                             segmentSlot.set(new SegmentStatus(seg));
                             status = null;
                         }
@@ -392,7 +408,8 @@ public class LightIdBufferedProvider implements LightIdProvider {
 
                     if (status == null) {
                         break; // 切换完毕，不检查超时
-                    } else {
+                    }
+                    else {
                         loadSegment(status.count60s(awaitCount.get()), false); // 升级load线程
                     }
 
@@ -401,7 +418,8 @@ public class LightIdBufferedProvider implements LightIdProvider {
                         throw new TimeoutRuntimeException("switching segment loadTimeout=" + (now - throwMs + timeout));
                     }
                 }
-            } finally {
+            }
+            finally {
                 synchronized (switchIdle) {
                     switchIdle.set(true);
                     awaitCount.set(0);

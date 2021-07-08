@@ -159,9 +159,11 @@ public class Exec {
             }
 
             return p.waitFor();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new IllegalStateException(e);
-        } finally {
+        }
+        finally {
             if (p != null) p.destroy();
         }
     }
@@ -185,36 +187,44 @@ public class Exec {
                 if (esc) {
                     buf.append(c);
                     esc = false;
-                } else {
+                }
+                else {
                     esc = true;
                 }
-            } else if (c == '"' || c == '\'') {
+            }
+            else if (c == '"' || c == '\'') {
                 if (esc) {
                     buf.append(c);
                     esc = false;
-                } else {
+                }
+                else {
                     if (qto == 0) {
                         qto = c;
-                    } else {
+                    }
+                    else {
                         if (qto == c) {
                             args.add(buf.toString());
                             buf.setLength(0);
                             qto = 0;
-                        } else {
+                        }
+                        else {
                             buf.append(c);
                         }
                     }
                 }
-            } else if (c == ' ' || c == '\t') {
+            }
+            else if (c == ' ' || c == '\t') {
                 if (qto > 0) {
                     buf.append(c);
-                } else {
+                }
+                else {
                     if (buf.length() > 0) {
                         args.add(buf.toString());
                         buf.setLength(0);
                     }
                 }
-            } else {
+            }
+            else {
                 if (esc) {
                     buf.append('\\');
                     esc = false;

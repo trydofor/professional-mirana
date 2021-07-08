@@ -28,7 +28,8 @@ class JvmStaticGlobalLockTest {
                 lockFail(latch);
                 latch.await();
             }
-        } finally {
+        }
+        finally {
             lock.unlock();
         }
     }
@@ -41,7 +42,8 @@ class JvmStaticGlobalLockTest {
             try {
                 b = lock.tryLock(1, TimeUnit.MILLISECONDS);
                 assertFalse(b);
-            } catch (InterruptedException e) {
+            }
+            catch (InterruptedException e) {
                 e.printStackTrace();
             }
             latch.countDown();
@@ -62,7 +64,8 @@ class JvmStaticGlobalLockTest {
                 for (int j = 0; j < lcs; j++) {
                     try {
                         Thread.sleep((j % 5) + 1);
-                    } catch (InterruptedException e) {
+                    }
+                    catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                     final Lock lk = globalLock.getLock("lock-" + j);

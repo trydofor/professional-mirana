@@ -43,9 +43,11 @@ public class FullCharUtil {
             if (hzCnt == hfCnt) {
                 sb.append(c);
                 break;
-            } else if (hzCnt > hfCnt) {
+            }
+            else if (hzCnt > hfCnt) {
                 break;
-            } else {
+            }
+            else {
                 sb.append(c);
             }
         }
@@ -86,9 +88,11 @@ public class FullCharUtil {
             if (hzCnt == hfCnt) {
                 sb.append(c);
                 break;
-            } else if (hzCnt > hfCnt) {
+            }
+            else if (hzCnt > hfCnt) {
                 break;
-            } else {
+            }
+            else {
                 sb.append(c);
             }
         }

@@ -35,7 +35,8 @@ public class JvmStaticGlobalLock implements GlobalLock {
         final Hd hd;
         if (key.length == 1 && key[0] instanceof ArrayKey) {
             hd = new Hd((ArrayKey) key[0]);
-        } else {
+        }
+        else {
             hd = new Hd(key);
         }
         synchronized (locks) {

@@ -42,23 +42,29 @@ public class Bytes {
             char c = hex.charAt(i);
             if (c >= '0' && c <= '9') {
                 c2 = c - '0';
-            } else if (c >= 'A' && c <= 'F') {
+            }
+            else if (c >= 'A' && c <= 'F') {
                 c2 = c - 'A' + 10;
-            } else if (c >= 'a' && c <= 'f') {
+            }
+            else if (c >= 'a' && c <= 'f') {
                 c2 = c - 'a' + 10;
-            } else if (c == ' ' || c == '\t' || c == '\r' || c == '\n') {
+            }
+            else if (c == ' ' || c == '\t' || c == '\r' || c == '\n') {
                 continue;
-            } else {
+            }
+            else {
                 throw new IllegalArgumentException("not hex char " + c);
             }
 
             if (c1 == -1) {
                 c1 = c2;
-            } else {
+            }
+            else {
                 try {
                     os.write(c1 << 4 | c2);
                     cnt++;
-                } catch (IOException e) {
+                }
+                catch (IOException e) {
                     throw new IllegalArgumentException(e);
                 }
                 c1 = -1;
@@ -128,7 +134,8 @@ public class Bytes {
             ob[4] = HEX_BYTE[(i >>> 4) & 0xF];
             ob[5] = HEX_BYTE[i & 0xF];
             return 6;
-        } else {
+        }
+        else {
             ob[0] = (byte) c;
             return 1;
         }

@@ -68,7 +68,8 @@ public interface BiConvertor<S, T> {
         if (canToTarget(source)) {
             try {
                 t = toTarget((S) source);
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 // ignore
             }
         }
@@ -88,7 +89,8 @@ public interface BiConvertor<S, T> {
         if (canToSource(target)) {
             try {
                 s = toSource((T) target);
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 // ignore
             }
         }

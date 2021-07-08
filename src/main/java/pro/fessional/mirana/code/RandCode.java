@@ -188,7 +188,8 @@ public abstract class RandCode {
         int sln = seeds.length;
         if (sln == 1) {
             seeds[0].rand(random, sb, len);
-        } else {
+        }
+        else {
             int[] seed = new int[len];
             for (int i = 0; i < len; i++) {
                 seed[i] = i % sln;
@@ -254,7 +255,8 @@ public abstract class RandCode {
             int rsiz = rangeUniq.size() * 2;
             if (rsiz == rlen) {
                 this.range = range;
-            } else {
+            }
+            else {
                 CharBuffer cb = CharBuffer.allocate(rsiz);
                 for (char[] cs : rangeUniq.values()) {
                     cb.put(cs);
@@ -266,7 +268,8 @@ public abstract class RandCode {
             int csiz = charsUniq.size();
             if (csiz == chars.length) {
                 this.chars = chars;
-            } else {
+            }
+            else {
                 this.chars = new char[csiz];
                 int idx = 0;
                 for (Character c : charsUniq) {
@@ -293,7 +296,8 @@ public abstract class RandCode {
             final boolean useRange;
             if (range.length != 0 && chars.length != 0) {
                 useRange = rnd % 2 == 0;
-            } else {
+            }
+            else {
                 useRange = range.length != 0;
             }
 
@@ -302,10 +306,12 @@ public abstract class RandCode {
                 int len = range[prt + 1] - range[prt];
                 if (len == 0) {
                     return range[prt];
-                } else {
+                }
+                else {
                     return (char) (range[prt] + (rnd % len));
                 }
-            } else {
+            }
+            else {
                 int idx = rnd % chars.length;
                 return chars[idx];
             }

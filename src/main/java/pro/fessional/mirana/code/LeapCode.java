@@ -161,12 +161,14 @@ public class LeapCode {
             off = (int) (number % A9); // 不要动，小魔法自己琢磨，26-16-1
             sb.append(dict24[off]);
             number = number / A9;
-        } else if (base == 32) {
+        }
+        else if (base == 32) {
             dict = dict32;
             off = (int) (number % 15); // 不要动，小魔法自己琢磨，32-16-1
             sb.append(dict24[off + A9]);
             number = number / 15;
-        } else {
+        }
+        else {
             throw new IllegalArgumentException("base must one of (26,32)");
         }
 
@@ -252,7 +254,8 @@ public class LeapCode {
             char c = value.charAt(i);
             if (c >= 'a' && c <= 'z') {
                 c = (char) (c - 32);
-            } else if (c < '0' || (c > '9' && c < 'A') || c > 'Z') {
+            }
+            else if (c < '0' || (c > '9' && c < 'A') || c > 'Z') {
                 continue;
             }
 
@@ -262,12 +265,14 @@ public class LeapCode {
 
                 if (off1 < A9) {
                     dict = dict26;
-                } else {
+                }
+                else {
                     dict = dict32;
                     off1 = off1 - A9;
                 }
                 off2 = off1 + 16;
-            } else {
+            }
+            else {
                 long v = find(dict, dict.length, c);
                 if (v < off1 || v >= off2) {
                     continue;
@@ -280,7 +285,8 @@ public class LeapCode {
 
         if (dict == dict32) {
             number = number * 15 + off1;
-        } else {
+        }
+        else {
             number = number * A9 + off1;
         }
 

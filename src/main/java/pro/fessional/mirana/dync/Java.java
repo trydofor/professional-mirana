@@ -31,7 +31,8 @@ public class Java {
 
             Constructor<T> con = clz.getConstructor(pc);
             return con.newInstance(arg);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new IllegalStateException("failed to new instance of " + clz, e);
         }
     }
@@ -90,7 +91,8 @@ public class Java {
             @SuppressWarnings("unchecked")
             Class<T> test = (Class<T>) classLoader.loadClass(javaFile);
             return test;
-        } catch (Throwable e) {
+        }
+        catch (Throwable e) {
             throw new IllegalStateException("\njava-file=" + javaFile + "\njava-code=\n" + javaCode, e);
         }
     }

@@ -69,7 +69,8 @@ public class EnumConvertor<E extends Enum<E>> implements BiConvertor<String, E> 
                 n = s.substring(p + 1);
             }
             return Enum.valueOf(t, n);
-        } catch (ClassNotFoundException e) {
+        }
+        catch (ClassNotFoundException e) {
             throw new IllegalArgumentException("failed to parse enum class " + s);
         }
     }

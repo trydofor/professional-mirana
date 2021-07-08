@@ -40,7 +40,8 @@ public class BuilderHolder {
         if (len > max) {
             builder = new StringBuilder(min);
             this.builder.set(builder); // shrink
-        } else if (len > 0) {
+        }
+        else if (len > 0) {
             builder.setLength(0);
         }
         return builder;

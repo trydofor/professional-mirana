@@ -44,7 +44,8 @@ public class InputStreams {
             ByteArrayOutputStream os = new ByteArrayOutputStream(is.available());
             readBytes(os, is);
             return os.toByteArray();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new IllegalStateException("failed to read text", e);
         }
     }
@@ -65,12 +66,15 @@ public class InputStreams {
                 os.write(data, 0, len);
             }
             os.flush();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new IllegalStateException("failed to read text", e);
-        } finally {
+        }
+        finally {
             try {
                 is.close();
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 //ignore
             }
         }
@@ -111,7 +115,8 @@ public class InputStreams {
             while ((len = rd.read(buf)) != -1) {
                 sb.append(buf, 0, len);
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new IllegalStateException("failed to read text", e);
         }
     }
@@ -156,7 +161,8 @@ public class InputStreams {
                 out.add(line);
                 line = rd.readLine();
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new IllegalStateException("failed to read line", e);
         }
     }
@@ -181,7 +187,8 @@ public class InputStreams {
             while ((len = is.read(buf)) != -1) {
                 fos.write(buf, 0, len);
             }
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new IllegalStateException("failed to save file " + file, e);
         }
     }
@@ -203,7 +210,8 @@ public class InputStreams {
                 file.deleteOnExit();
             }
             return file;
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new IllegalStateException("failed to save temp", e);
         }
     }

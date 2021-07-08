@@ -112,13 +112,13 @@ public class AverageDecimal implements Iterable<BigDecimal> {
     @Override
     public String toString() {
         return "AverageDecimal{" +
-                "size=" + size +
-                ", scale=" + scale +
-                ", total=" + total +
-                ", avgValue=" + avgValue +
-                ", fixValue=" + fixValue +
-                ", fixCount=" + fixCount +
-                '}';
+               "size=" + size +
+               ", scale=" + scale +
+               ", total=" + total +
+               ", avgValue=" + avgValue +
+               ", fixValue=" + fixValue +
+               ", fixCount=" + fixCount +
+               '}';
     }
 
 }

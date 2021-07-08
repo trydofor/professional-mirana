@@ -27,7 +27,8 @@ public class BuilderHelper {
 
         if (obj instanceof char[]) {
             sb.append((char[]) obj);
-        } else {
+        }
+        else {
             sb.append(obj);
         }
         return sb;

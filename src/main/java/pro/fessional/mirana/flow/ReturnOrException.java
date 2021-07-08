@@ -116,7 +116,8 @@ public class ReturnOrException extends NoStackRuntimeException {
         if (cause == null) return;
         if (cause instanceof RuntimeException) {
             throw (RuntimeException) cause;
-        } else {
+        }
+        else {
             throw new RuntimeException(cause);
         }
     }

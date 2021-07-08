@@ -88,14 +88,15 @@ public class StringTemplateTest {
                 try {
                     latch.await();
                     mainl.countDown();
-                } catch (InterruptedException e) {
+                }
+                catch (InterruptedException e) {
                     e.printStackTrace();
                 }
                 for (int j = 0; j < stp; j++) {
                     String token = "token_" + (t * stp + j);
                     String t1 = "https://api.weixin.qq.com/cgi-bin/user/info?access_token="
-                            + token + "&openid="
-                            + token + "&lang=en";
+                                + token + "&openid="
+                                + token + "&lang=en";
 
                     String t2 = StringTemplate.dyn("https://api.weixin.qq.com/cgi-bin/user/info?access_token=ACCESS_TOKEN&openid=OPENID&lang=en")
                                               .bindStr("ACCESS_TOKEN", token)
@@ -125,8 +126,8 @@ public class StringTemplateTest {
         for (int i = 0; i < len; i++) {
             String token = "token_" + i;
             String t = "https://api.weixin.qq.com/cgi-bin/user/info?access_token="
-                    + token + "&openid="
-                    + token + "&lang=en";
+                       + token + "&openid="
+                       + token + "&lang=en";
         }
         System.out.println("String.concat = " + (System.currentTimeMillis() - s));
 
@@ -134,8 +135,8 @@ public class StringTemplateTest {
         for (int i = 0; i < len; i++) {
             String token = "token_" + i;
             String t = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=" +
-                    token + "&openid=" +
-                    token + "&lang=en";
+                       token + "&openid=" +
+                       token + "&lang=en";
         }
         System.out.println("String.append = " + (System.currentTimeMillis() - s));
 

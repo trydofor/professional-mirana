@@ -49,7 +49,8 @@ public class TypedCastUtil {
     public static <T> T castObject(Object obj, Class<T> claz) {
         if (claz == null || claz.isInstance(obj)) {
             return (T) obj;
-        } else {
+        }
+        else {
             return null;
         }
     }

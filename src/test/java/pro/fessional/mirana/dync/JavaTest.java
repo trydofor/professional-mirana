@@ -21,12 +21,12 @@ public class JavaTest {
         Class<DynTest> dtClz = Java.compile("pro.fessional.mirana.dync.DyncJava",
                 "package pro.fessional.mirana.dync;\n" +
                 "import static pro.fessional.mirana.dync.JavaTest.DynTest;\n" +
-                        "public class DyncJava implements DynTest {\n" +
-                        "  @Override\n" +
-                        "  public String test() {\n" +
-                        "      return \"good\";\n" +
-                        "  }\n" +
-                        "}");
+                "public class DyncJava implements DynTest {\n" +
+                "  @Override\n" +
+                "  public String test() {\n" +
+                "      return \"good\";\n" +
+                "  }\n" +
+                "}");
 
         DynTest dt = Java.create(dtClz);
 

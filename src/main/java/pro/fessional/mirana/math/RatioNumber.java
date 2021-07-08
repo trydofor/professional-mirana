@@ -172,7 +172,7 @@ public class RatioNumber {
         if (!(o instanceof RatioNumber)) return false;
         RatioNumber that = (RatioNumber) o;
         return oneKeep == that.oneKeep &&
-                useKeep == that.useKeep;
+               useKeep == that.useKeep;
     }
 
     @Override
@@ -213,7 +213,7 @@ public class RatioNumber {
             if (!(o instanceof Ratio)) return false;
             Ratio ratio = (Ratio) o;
             return oneRate == ratio.oneRate &&
-                    useRate == ratio.useRate;
+                   useRate == ratio.useRate;
         }
 
         @Override

@@ -57,7 +57,7 @@ public interface LightIdProvider {
          * @param block 区块编号，生产中心，分库关键
          * @param count 请求的数量，返回值不少于该数量
          * @return 可用的序号
-         * @throws NoSuchElementException   name不存在。
+         * @throws NoSuchElementException name不存在。
          */
         @NotNull
         Segment require(@NotNull String name, int block, int count);

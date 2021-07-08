@@ -96,7 +96,7 @@ public class R<T> implements DataResult<T>, I18nAware {
         this.i18nArgs = message.getI18nArgs();
         return (S) this;
     }
-    
+
     @SuppressWarnings("unchecked")
     public <S extends R<T>> S setMessage(I18nAware message) {
         this.i18nCode = message.getI18nCode();

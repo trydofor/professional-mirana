@@ -31,7 +31,8 @@ public class Excel26Az {
             char c = col.charAt(i);
             if (c >= 'A' && c <= 'Z') {
                 n += ((int) c - 'A' + 1) * j;
-            } else if (c >= 'a' && c <= 'z') {
+            }
+            else if (c >= 'a' && c <= 'z') {
                 n += ((int) c - 'a' + 1) * j;
             }
         }
@@ -93,12 +94,13 @@ public class Excel26Az {
         if (prefix == null || prefix.isEmpty()) {
             for (String row : rows) {
                 Integer old = head.putIfAbsent(row, idx++);
-                if (old == null)  cnt++;
+                if (old == null) cnt++;
             }
-        } else {
+        }
+        else {
             for (String row : rows) {
                 Integer old = head.putIfAbsent(prefix + row, idx++);
-                if (old == null)  cnt++;
+                if (old == null) cnt++;
             }
         }
 

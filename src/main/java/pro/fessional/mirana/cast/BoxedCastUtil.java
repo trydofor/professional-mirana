@@ -286,23 +286,32 @@ public class BoxedCastUtil {
         List<?> vs;
         if (obj instanceof boolean[]) {
             vs = BoxedCastUtil.list((boolean[]) obj);
-        } else if (obj instanceof byte[]) {
+        }
+        else if (obj instanceof byte[]) {
             vs = BoxedCastUtil.list((byte[]) obj);
-        } else if (obj instanceof char[]) {
+        }
+        else if (obj instanceof char[]) {
             vs = BoxedCastUtil.list((char[]) obj);
-        } else if (obj instanceof int[]) {
+        }
+        else if (obj instanceof int[]) {
             vs = BoxedCastUtil.list((int[]) obj);
-        } else if (obj instanceof long[]) {
+        }
+        else if (obj instanceof long[]) {
             vs = BoxedCastUtil.list((long[]) obj);
-        } else if (obj instanceof float[]) {
+        }
+        else if (obj instanceof float[]) {
             vs = BoxedCastUtil.list((float[]) obj);
-        } else if (obj instanceof double[]) {
+        }
+        else if (obj instanceof double[]) {
             vs = BoxedCastUtil.list((double[]) obj);
-        } else if (obj instanceof Collection) {
+        }
+        else if (obj instanceof Collection) {
             vs = new ArrayList<>((Collection<?>) obj);
-        } else if (obj.getClass().isArray()) {
+        }
+        else if (obj.getClass().isArray()) {
             vs = Arrays.asList((Object[]) obj);
-        } else {
+        }
+        else {
             vs = Collections.singletonList(obj);
         }
 

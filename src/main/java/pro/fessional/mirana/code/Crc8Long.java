@@ -125,7 +125,8 @@ public class Crc8Long {
             long tail = value & (body - 1);
             if (zero != 0) {
                 value = head | body | tail;
-            } else {
+            }
+            else {
                 value = head | tail;
             }
         }

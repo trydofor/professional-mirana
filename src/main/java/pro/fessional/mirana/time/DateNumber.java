@@ -67,7 +67,7 @@ public class DateNumber {
 
     public static long dateTime14(@NotNull LocalDateTime date) {
         return date.getYear() * 1_00_00_00_00_00L + date.getMonthValue() * 1_00_00_00_00L + date.getDayOfMonth() * 1_00_00_00L
-                + date.getHour() * 1_00_00 + date.getMinute() * 1_00 + date.getSecond();
+               + date.getHour() * 1_00_00 + date.getMinute() * 1_00 + date.getSecond();
     }
 
     /**
@@ -78,7 +78,7 @@ public class DateNumber {
      */
     public static long dateTime14(@NotNull ZonedDateTime date) {
         return date.getYear() * 1_00_00_00_00_00L + date.getMonthValue() * 1_00_00_00_00L + date.getDayOfMonth() * 1_00_00_00L
-                + date.getHour() * 1_00_00 + date.getMinute() * 1_00 + date.getSecond();
+               + date.getHour() * 1_00_00 + date.getMinute() * 1_00 + date.getSecond();
     }
 
     /**
@@ -90,8 +90,8 @@ public class DateNumber {
 
     public static long dateTime17(@NotNull LocalDateTime date) {
         return date.getYear() * 1_00_00_00_00_00_000L + date.getMonthValue() * 1_00_00_00_00_000L + date.getDayOfMonth() * 1_00_00_00_000L
-                + date.getHour() * 1_00_00_000 + date.getMinute() * 1_00_000 + date.getSecond() * 1_000
-                + (date.getNano() / 1_000_000);
+               + date.getHour() * 1_00_00_000 + date.getMinute() * 1_00_000 + date.getSecond() * 1_000
+               + (date.getNano() / 1_000_000);
     }
 
     /**
@@ -103,8 +103,8 @@ public class DateNumber {
 
     public static long dateTime17(@NotNull ZonedDateTime date) {
         return date.getYear() * 1_00_00_00_00_00_000L + date.getMonthValue() * 1_00_00_00_00_000L + date.getDayOfMonth() * 1_00_00_00_000L
-                + date.getHour() * 1_00_00_000 + date.getMinute() * 1_00_000 + date.getSecond() * 1_000
-                + (date.getNano() / 1_000_000);
+               + date.getHour() * 1_00_00_000 + date.getMinute() * 1_00_000 + date.getSecond() * 1_000
+               + (date.getNano() / 1_000_000);
     }
 
     /**

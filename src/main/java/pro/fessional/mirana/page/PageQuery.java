@@ -94,10 +94,10 @@ public class PageQuery implements Serializable {
     @Override
     public String toString() {
         return "PageQuery{" +
-                "page=" + page +
-                ", size=" + size +
-                ", sort='" + sort + '\'' +
-                '}';
+               "page=" + page +
+               ", size=" + size +
+               ", sort='" + sort + '\'' +
+               '}';
     }
 
     @Override
@@ -106,8 +106,8 @@ public class PageQuery implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         PageQuery pageQuery = (PageQuery) o;
         return page == pageQuery.page &&
-                size == pageQuery.size &&
-                sort.equals(pageQuery.sort);
+               size == pageQuery.size &&
+               sort.equals(pageQuery.sort);
     }
 
     @Override

@@ -29,7 +29,8 @@ public class ZoneIdResolver {
     public static ZoneId zoneId(@NotNull String tag) {
         try {
             return ZoneId.of(standard(tag));
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             return ZoneId.systemDefault();
         }
     }
@@ -39,7 +40,8 @@ public class ZoneIdResolver {
     public static TimeZone timeZone(@NotNull String tag) {
         try {
             return TimeZone.getTimeZone(standard(tag));
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             return TimeZone.getDefault();
         }
     }

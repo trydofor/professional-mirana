@@ -54,7 +54,8 @@ public class LightIdBufferedProviderTest {
             if (s > 0) {
                 try {
                     Thread.sleep(s);
-                } catch (InterruptedException e) {
+                }
+                catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
@@ -102,7 +103,8 @@ public class LightIdBufferedProviderTest {
         for (int i = 0; i < 10; i++) {
             try {
                 provider.next("403", 0);
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 err.put(e, e);
             }
         }
@@ -118,9 +120,11 @@ public class LightIdBufferedProviderTest {
         LightIdProvider directProvider = directProvider();
         try {
             long next = directProvider.next("404", 0);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             assertTrue(e instanceof NoSuchElementException);
-        } finally {
+        }
+        finally {
             System.out.println("direct 404 cost = " + (System.currentTimeMillis() - s2));
         }
 
@@ -128,18 +132,22 @@ public class LightIdBufferedProviderTest {
         LightIdBufferedProvider bufferedProvider = bufferedProvider();
         try {
             long next = bufferedProvider.next("404", 0);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             assertTrue(e instanceof NoSuchElementException);
-        } finally {
+        }
+        finally {
             System.out.println("buffered-1 404 cost = " + (System.currentTimeMillis() - s3));
         }
 
         long s4 = System.currentTimeMillis();
         try {
             long next = bufferedProvider.next("404", 0);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             assertTrue(e instanceof NoSuchElementException);
-        } finally {
+        }
+        finally {
             System.out.println("buffered-2 404 cost = " + (System.currentTimeMillis() - s4));
         }
 
@@ -148,9 +156,11 @@ public class LightIdBufferedProviderTest {
             s404.set(false);
             bufferedProvider.cleanError("404", 0);
             long next = bufferedProvider.next("404", 0, 10_000_000);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
-        } finally {
+        }
+        finally {
             System.out.println("buffered-3 404 cost = " + (System.currentTimeMillis() - s5));
         }
     }
@@ -222,7 +232,8 @@ public class LightIdBufferedProviderTest {
         try {
             System.gc();
             Thread.sleep(1000);
-        } catch (InterruptedException e) {
+        }
+        catch (InterruptedException e) {
             // ignore
         }
         final long timeout = 1000000;
@@ -246,10 +257,12 @@ public class LightIdBufferedProviderTest {
                             long id;
                             try {
                                 id = provider.next(name, 0, timeout);
-                            } catch (RuntimeException e) {
+                            }
+                            catch (RuntimeException e) {
                                 if (errorBreak) {
                                     throw e;
-                                } else {
+                                }
+                                else {
                                     System.err.println(this.getName() + " error=" + e.getMessage());
                                     continue;
                                 }
@@ -264,10 +277,12 @@ public class LightIdBufferedProviderTest {
                             }
                             //Thread.sleep(5);
                         }
-                    } catch (Exception e) {
+                    }
+                    catch (Exception e) {
                         e.printStackTrace();
                         System.exit(-1);
-                    } finally {
+                    }
+                    finally {
                         latchStop.countDown();
                     }
                 }
@@ -302,7 +317,8 @@ public class LightIdBufferedProviderTest {
                     throw new RuntimeException("capacity=" + capacity + " not equals ids'size=" + sz);
                 }
             }
-        } catch (InterruptedException e) {
+        }
+        catch (InterruptedException e) {
             e.printStackTrace();
         }
     }

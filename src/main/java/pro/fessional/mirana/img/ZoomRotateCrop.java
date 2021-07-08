@@ -86,7 +86,8 @@ public class ZoomRotateCrop {
 
         if (isFlipX) {
             g.drawImage(image, 0, 0, width, height, 0, height, width, 0, null);
-        } else {
+        }
+        else {
             g.drawImage(image, 0, 0, width, height, width, 0, 0, height, null);
         }
 

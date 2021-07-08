@@ -3,7 +3,7 @@ package pro.fessional.mirana.code;
 /**
  * crc4 mixed number with the readable last 4th digit.
  * number to crc4int's length mapping<p>
- *
+ * <p>
  * 1 - 9_999 = 6 <p>
  * 10_000 - 99_999 = 7 <p>
  * 100_000 - 999_999 = 8 <p>

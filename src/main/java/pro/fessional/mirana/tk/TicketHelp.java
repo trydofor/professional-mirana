@@ -129,7 +129,8 @@ public class TicketHelp {
         public <T> T decodeBiz(Ticket tk, Class<T> clz) {
             if (String.class.equals(clz)) {
                 return (T) tk.decodeBiz(bizString);
-            } else if (byte[].class.equals(clz)) {
+            }
+            else if (byte[].class.equals(clz)) {
                 return (T) tk.decodeBiz(bizBytes);
             }
             return null;
@@ -168,7 +169,8 @@ public class TicketHelp {
         public <T> T decodeBiz(Ticket tk, Class<T> clz) {
             if (String.class.equals(clz)) {
                 return (T) tk.decodeBiz(bizString);
-            } else if (byte[].class.equals(clz)) {
+            }
+            else if (byte[].class.equals(clz)) {
                 return (T) tk.decodeBiz(bizBytes);
             }
             return null;
@@ -207,7 +209,8 @@ public class TicketHelp {
         public <T> T decodeBiz(Ticket tk, Class<T> clz) {
             if (String.class.equals(clz)) {
                 return (T) tk.decodeBiz(bizString);
-            } else if (byte[].class.equals(clz)) {
+            }
+            else if (byte[].class.equals(clz)) {
                 return (T) tk.decodeBiz(bizBytes);
             }
             return null;
@@ -364,7 +367,8 @@ public class TicketHelp {
                 char c = tk.charAt(i);
                 if (c == '-' && idx < 2) {
                     pos[idx++] = i;
-                } else if (c == '.') {
+                }
+                else if (c == '.') {
                     pos[idx++] = i;
                 }
             }
@@ -387,10 +391,12 @@ public class TicketHelp {
                     ticket.setBizPart(tk.substring(off, pos[3]));
                     ticket.setSigPart(tk.substring(pos[3] + 1));
                     ticket.setSigData(tk.substring(0, pos[3]));
-                } else {
+                }
+                else {
                     if (pos[3] > 0) {
                         return null;
-                    } else {
+                    }
+                    else {
                         ticket.setBizPart(Null.Str);
                         ticket.setSigPart(tk.substring(off));
                         ticket.setSigData(tk.substring(0, off));
@@ -398,7 +404,8 @@ public class TicketHelp {
                 }
 
                 return ticket;
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 return null;
             }
         }

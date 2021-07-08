@@ -36,7 +36,8 @@ public interface Z {
         if (fn == null || fn.length == 0) {
             if (ts instanceof List) {
                 return (List<T>) ts;
-            } else {
+            }
+            else {
                 return new ArrayList<>(ts);
             }
         }
@@ -93,7 +94,8 @@ public interface Z {
                 try {
                     R r = f.apply(t);
                     if (r != null) return r;
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     // ignore
                 }
             }
@@ -154,7 +156,8 @@ public interface Z {
                 if (s.length() > 0) {
                     try {
                         return new BigDecimal(s);
-                    } catch (Exception e) {
+                    }
+                    catch (Exception e) {
                         // ignore
                     }
                 }
@@ -184,7 +187,8 @@ public interface Z {
                 if (s.length() > 0) {
                     try {
                         return Long.valueOf(s);
-                    } catch (Exception e) {
+                    }
+                    catch (Exception e) {
                         // ignore
                     }
                 }
@@ -214,7 +218,8 @@ public interface Z {
                 if (s.length() > 0) {
                     try {
                         return Integer.valueOf(s);
-                    } catch (Exception e) {
+                    }
+                    catch (Exception e) {
                         // ignore
                     }
                 }

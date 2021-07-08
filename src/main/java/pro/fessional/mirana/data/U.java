@@ -79,7 +79,7 @@ public interface U {
             if (!(o instanceof Or)) return false;
             Or<?, ?> or = (Or<?, ?>) o;
             return Objects.equals(l, or.l) &&
-                    Objects.equals(r, or.r);
+                   Objects.equals(r, or.r);
         }
 
         @Override
@@ -90,9 +90,9 @@ public interface U {
         @Override
         public String toString() {
             return "{" +
-                    "l=" + l +
-                    " | r=" + r +
-                    '}';
+                   "l=" + l +
+                   " | r=" + r +
+                   '}';
         }
     }
 
@@ -143,8 +143,8 @@ public interface U {
         @Override
         public String toString() {
             return "(" + t1 +
-                    "," + t2 +
-                    ")";
+                   "," + t2 +
+                   ")";
         }
     }
 
@@ -207,9 +207,9 @@ public interface U {
         @Override
         public String toString() {
             return "(" + t1 +
-                    "," + t2 +
-                    "," + t3 +
-                    ")";
+                   "," + t2 +
+                   "," + t3 +
+                   ")";
         }
     }
 
@@ -285,10 +285,10 @@ public interface U {
         @Override
         public String toString() {
             return "(" + t1 +
-                    "," + t2 +
-                    "," + t3 +
-                    "," + t4 +
-                    ")";
+                   "," + t2 +
+                   "," + t3 +
+                   "," + t4 +
+                   ")";
         }
     }
 
@@ -376,11 +376,11 @@ public interface U {
         @Override
         public String toString() {
             return "(" + t1 +
-                    "," + t2 +
-                    "," + t3 +
-                    "," + t4 +
-                    "," + t5 +
-                    ")";
+                   "," + t2 +
+                   "," + t3 +
+                   "," + t4 +
+                   "," + t5 +
+                   ")";
         }
     }
 
@@ -479,12 +479,12 @@ public interface U {
         @Override
         public String toString() {
             return "(" + t1 +
-                    "," + t2 +
-                    "," + t3 +
-                    "," + t4 +
-                    "," + t5 +
-                    "," + t6 +
-                    ")";
+                   "," + t2 +
+                   "," + t3 +
+                   "," + t4 +
+                   "," + t5 +
+                   "," + t6 +
+                   ")";
         }
     }
 
@@ -595,13 +595,13 @@ public interface U {
         @Override
         public String toString() {
             return "(" + t1 +
-                    "," + t2 +
-                    "," + t3 +
-                    "," + t4 +
-                    "," + t5 +
-                    "," + t6 +
-                    "," + t7 +
-                    ")";
+                   "," + t2 +
+                   "," + t3 +
+                   "," + t4 +
+                   "," + t5 +
+                   "," + t6 +
+                   "," + t7 +
+                   ")";
         }
     }
 
@@ -724,14 +724,14 @@ public interface U {
         @Override
         public String toString() {
             return "(" + t1 +
-                    "," + t2 +
-                    "," + t3 +
-                    "," + t4 +
-                    "," + t5 +
-                    "," + t6 +
-                    "," + t7 +
-                    "," + t8 +
-                    ")";
+                   "," + t2 +
+                   "," + t3 +
+                   "," + t4 +
+                   "," + t5 +
+                   "," + t6 +
+                   "," + t7 +
+                   "," + t8 +
+                   ")";
         }
     }
 
@@ -865,15 +865,15 @@ public interface U {
         @Override
         public String toString() {
             return "(" + t1 +
-                    "," + t2 +
-                    "," + t3 +
-                    "," + t4 +
-                    "," + t5 +
-                    "," + t6 +
-                    "," + t7 +
-                    "," + t8 +
-                    "," + t9 +
-                    ")";
+                   "," + t2 +
+                   "," + t3 +
+                   "," + t4 +
+                   "," + t5 +
+                   "," + t6 +
+                   "," + t7 +
+                   "," + t8 +
+                   "," + t9 +
+                   ")";
         }
     }
 }

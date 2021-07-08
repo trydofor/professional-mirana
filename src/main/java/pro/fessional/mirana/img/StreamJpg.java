@@ -22,12 +22,13 @@ import java.util.Iterator;
  */
 public class StreamJpg {
 
-    public static final String FORMAT  = "JPG";
-    public static final float  QUALITY = 0.85f;
+    public static final String FORMAT = "JPG";
+    public static final float QUALITY = 0.85f;
 
     /**
      * 按85%压缩jpg
-     * @param jpg 输出图片 jpg
+     *
+     * @param jpg   输出图片 jpg
      * @param image 输入图片
      * @throws IOException if io exception
      */
@@ -37,8 +38,9 @@ public class StreamJpg {
 
     /**
      * 压缩jpg
-     * @param jpg 输出图片 jpg
-     * @param image 输入图片
+     *
+     * @param jpg     输出图片 jpg
+     * @param image   输入图片
      * @param quality 压缩质量
      * @throws IOException if io exception
      */
@@ -53,7 +55,8 @@ public class StreamJpg {
             writer.setOutput(ios);
             writer.write(null, new IIOImage(image, null, null), iwp);
             writer.dispose();
-        } else {
+        }
+        else {
             ImageIO.write(image, FORMAT, jpg); // default 70%
         }
     }
@@ -78,7 +81,7 @@ public class StreamJpg {
      *
      * @param image  图片
      * @param outjpg 输出文件
-     * @throws IOException  if io exception
+     * @throws IOException if io exception
      */
     public static void file(BufferedImage image, File outjpg) throws IOException {
 
@@ -93,7 +96,8 @@ public class StreamJpg {
 
     /**
      * 双向输出，文件和InputStream
-     * @param image 图片
+     *
+     * @param image  图片
      * @param outjpg jpg文件
      * @return inputStream
      * @throws IOException if io exception
@@ -108,8 +112,9 @@ public class StreamJpg {
 
     /**
      * 双向输出，文件和InputStream
+     *
      * @param image 图片
-     * @param out jpg流
+     * @param out   jpg流
      * @return inputStream
      * @throws IOException if io exception
      */

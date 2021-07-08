@@ -19,6 +19,6 @@ public class RankTest {
     public void lineup() {
         List<String> list = Arrays.asList("1", "2");
         ArrayList<String> lineup = Rank.lineup(list, e -> e.equals("2"), e -> e.equals("1"));
-        assertEquals("[2, 1]",lineup.toString());
+        assertEquals("[2, 1]", lineup.toString());
     }
 }

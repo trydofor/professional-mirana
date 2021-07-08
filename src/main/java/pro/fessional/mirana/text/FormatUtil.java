@@ -71,11 +71,13 @@ public class FormatUtil {
 
                     if (j + 1 >= n) {
                         builder.append(c); /* last */
-                    } else {
+                    }
+                    else {
                         char x = fmt.charAt(++j);
                         if (x == '\\' || (x == '{' || x == '}')) {
                             builder.append(x); /* 'escape' */
-                        } else {
+                        }
+                        else {
                             builder.append(c);
                             builder.append(x);
                         }
@@ -142,9 +144,11 @@ public class FormatUtil {
         int len = str.length();
         if (len == fix) {
             return str;
-        } else if (len > fix) {
+        }
+        else if (len > fix) {
             return str.substring(len - fix);
-        } else {
+        }
+        else {
             StringBuilder sb = new StringBuilder(fix);
             for (int i = fix - len; i > 0; i--) {
                 sb.append(pad);
@@ -168,9 +172,11 @@ public class FormatUtil {
         int len = str.length();
         if (len == fix) {
             return str;
-        } else if (len > fix) {
+        }
+        else if (len > fix) {
             return str.substring(0, fix);
-        } else {
+        }
+        else {
             StringBuilder sb = new StringBuilder(fix);
             sb.append(str);
             for (int i = fix - len; i > 0; i--) {
@@ -221,7 +227,8 @@ public class FormatUtil {
                             ix[j] = -1;
                         }
                     }
-                } else {
+                }
+                else {
                     if (ix[j] > 0) {
                         ix[j] = 0;
                     }

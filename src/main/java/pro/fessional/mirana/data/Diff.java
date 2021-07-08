@@ -40,12 +40,14 @@ public class Diff {
             for (E a : setA) {
                 if (tb.remove(a)) {
                     d.aAndB.add(a);
-                } else {
+                }
+                else {
                     d.aNotB.add(a);
                 }
             }
             d.bNotA.addAll(tb);
-        } else {
+        }
+        else {
             if (hasA) {
                 d.aNotB.addAll(setA);
             }
@@ -102,10 +104,12 @@ public class Diff {
                 E b = tb.remove(k);
                 if (b == null) {
                     d.newInsert.add(a);
-                } else {
+                }
+                else {
                     if (same.test(a, b)) {
                         d.oldEqsNew.add(a);
-                    } else {
+                    }
+                    else {
                         d.newUpdate.add(a);
                         d.oldUpdate.add(b);
                     }
@@ -113,7 +117,8 @@ public class Diff {
             }
             d.oldDelete.addAll(tb.values());
 
-        } else {
+        }
+        else {
             if (hasA) {
                 d.newInsert.addAll(setNew);
             }

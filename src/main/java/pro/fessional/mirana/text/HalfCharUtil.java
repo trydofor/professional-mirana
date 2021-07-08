@@ -18,7 +18,8 @@ public class HalfCharUtil {
             char c = cs.charAt(i);
             if (c == '\u3000') {
                 c = ' ';
-            } else if (c > '\uFF00' && c < '\uFF5F') {
+            }
+            else if (c > '\uFF00' && c < '\uFF5F') {
                 c = (char) (c - 65248);
             }
             sb.append(c);
@@ -29,7 +30,8 @@ public class HalfCharUtil {
     public static char half(char c) {
         if (c == '\u3000') {
             c = ' ';
-        } else if (c > '\uFF00' && c < '\uFF5F') {
+        }
+        else if (c > '\uFF00' && c < '\uFF5F') {
             c = (char) (c - 65248);
         }
         return c;

@@ -56,21 +56,25 @@ public class Wildcard {
                 // skip else
                 // `**` 按`*`处理
                 lastChr = ch;
-            } else if (ch == '?') {
+            }
+            else if (ch == '?') {
                 if (lastChr == '*') {
                     // `*?` 按`?*`处理
                     int ps = ptn.size();
                     if (ps == 1) {
                         ptn.add(0, "?");
-                    } else {
+                    }
+                    else {
                         ptn.set(ps - 1, ptn.get(ps - 1) + "?");
                     }
                     lastChr = '*';
-                } else {
+                }
+                else {
                     buf.append(ch);
                     lastChr = ch;
                 }
-            } else {
+            }
+            else {
                 buf.append(ch);
                 lastChr = ch;
             }
@@ -126,7 +130,8 @@ public class Wildcard {
                         strIdx = sln;
                     }
 
-                } else {
+                }
+                else {
                     if (any) {
                         strIdx = index(igc, str, strIdx, ptn[ptnIdx]);
                         if (strIdx == -1) {
@@ -136,7 +141,8 @@ public class Wildcard {
                         if (repeat >= 0) {
                             deque.push(new int[]{ptnIdx, repeat});
                         }
-                    } else {
+                    }
+                    else {
                         if (index(igc, str, strIdx, ptn[ptnIdx]) == -1) {
                             break;
                         }

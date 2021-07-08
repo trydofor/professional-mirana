@@ -58,15 +58,18 @@ public class Mod10Code {
             char c = str.charAt(i);
             if (c >= '0' && c <= '9') {
                 s = c - '0';
-            } else if (c >= '０' && c <= '９') {
+            }
+            else if (c >= '０' && c <= '９') {
                 s = c - '０';
-            } else {
+            }
+            else {
                 continue;
             }
 
             if (p++ % 2 == 0) {
                 even += s;
-            } else {
+            }
+            else {
                 odd += s;
             }
         }
@@ -91,7 +94,8 @@ public class Mod10Code {
         int s = -1;
         if (c >= '0' && c <= '9') {
             s = c - '0';
-        } else if (c >= '０' && c <= '９') {
+        }
+        else if (c >= '０' && c <= '９') {
             s = c - '０';
         }
 

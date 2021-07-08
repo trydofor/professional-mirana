@@ -57,7 +57,8 @@ public class SslTrustAll {
                 if (HOSTNAME_TRUSTED.isEmpty() || HOSTNAME_TRUSTED.contains(hostname)) return true;
                 return DEFAULT_HOSTNAME_VERIFIER.verify(hostname, sslSession);
             };
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new IllegalStateException("unable to init ssl manager", e);
         }
     }

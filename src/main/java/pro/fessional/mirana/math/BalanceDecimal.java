@@ -106,7 +106,8 @@ public class BalanceDecimal implements Iterable<BigDecimal> {
             if (useCount <= 0 || j == lastIndex) {
                 resultVal[i] = resultVal[i].add(precision.multiply(new BigDecimal(useCount + cnt)));
                 break;
-            } else {
+            }
+            else {
                 resultVal[i] = resultVal[i].add(precision.multiply(new BigDecimal(cnt)));
             }
         }

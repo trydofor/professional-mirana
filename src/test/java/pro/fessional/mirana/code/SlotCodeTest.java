@@ -68,7 +68,8 @@ public class SlotCodeTest {
             new Thread(() -> {
                 try {
                     start.await();
-                } catch (InterruptedException e) {
+                }
+                catch (InterruptedException e) {
                     e.printStackTrace();
                 }
                 for (int j = 0; j < size; j++) {

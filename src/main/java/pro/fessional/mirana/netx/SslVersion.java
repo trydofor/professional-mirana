@@ -20,9 +20,11 @@ public class SslVersion {
         String v12 = "TLSv1.2";
         if (version == null || version.isEmpty()) {
             System.setProperty("https.protocols", v12);
-        } else if (version.contains(v12)) {
+        }
+        else if (version.contains(v12)) {
             v12 = version;
-        } else {
+        }
+        else {
             v12 = version + ",TLSv1.2";
             System.setProperty("https.protocols", v12);
         }

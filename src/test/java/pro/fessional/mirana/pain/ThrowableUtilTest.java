@@ -20,14 +20,17 @@ class ThrowableUtilTest {
     public void ex2() {
         try {
             ex1();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw e2;
         }
     }
+
     public void ex1() {
         try {
             ex0();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw e1;
         }
     }
@@ -40,7 +43,8 @@ class ThrowableUtilTest {
     void testToString() {
         try {
             ex2();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             final String s = ThrowableUtil.toString(e);
             System.out.println(s);
         }
@@ -50,7 +54,8 @@ class ThrowableUtilTest {
     void root() {
         try {
             ex2();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             Throwable root = ThrowableUtil.root(e);
             assertSame(e0, root);
         }
@@ -60,7 +65,8 @@ class ThrowableUtilTest {
     void contains() {
         try {
             ex2();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             assertTrue(ThrowableUtil.contains(e, NullPointerException.class));
             assertTrue(ThrowableUtil.contains(e, IllegalArgumentException.class));
             assertFalse(ThrowableUtil.contains(e, IllegalStateException.class));
@@ -71,9 +77,10 @@ class ThrowableUtilTest {
     void firstCause() {
         try {
             ex2();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             final IllegalArgumentException f = ThrowableUtil.firstCause(e, IllegalArgumentException.class);
-            assertSame(e1,f);
+            assertSame(e1, f);
         }
     }
 
@@ -81,9 +88,10 @@ class ThrowableUtilTest {
     void lastCause() {
         try {
             ex2();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             final IllegalArgumentException f = ThrowableUtil.lastCause(e, IllegalArgumentException.class);
-            assertSame(e2,f);
+            assertSame(e2, f);
         }
     }
 
@@ -92,7 +100,8 @@ class ThrowableUtilTest {
         assertThrows(IllegalArgumentException.class, () -> {
             try {
                 ex2();
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 ThrowableUtil.throwMatch(e, IllegalArgumentException.class);
             }
         });
@@ -100,14 +109,16 @@ class ThrowableUtilTest {
         assertThrows(RuntimeException.class, () -> {
             try {
                 ex2();
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 ThrowableUtil.throwMatch(e, IllegalStateException.class);
             }
         });
         assertThrows(IllegalArgumentException.class, () -> {
             try {
                 ex2();
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 ThrowableUtil.throwMatch(e, RuntimeException.class);
             }
         });
@@ -118,7 +129,8 @@ class ThrowableUtilTest {
         assertThrows(NullPointerException.class, () -> {
             try {
                 ex2();
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 ThrowableUtil.throwCause(e, NullPointerException.class);
             }
         });

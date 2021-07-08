@@ -85,7 +85,8 @@ public class Aes128 {
             Cipher ins = Cipher.getInstance(CYP_NAME);//"算法/模式/补码方式"
             ins.init(Cipher.ENCRYPT_MODE, keySpec, algSpec);
             return ins.doFinal(plain);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new IllegalStateException(e);
         }
     }
@@ -103,7 +104,8 @@ public class Aes128 {
             Cipher ins = Cipher.getInstance(CYP_NAME);//"算法/模式/补码方式"
             ins.init(Cipher.DECRYPT_MODE, keySpec, algSpec);
             return ins.doFinal(cipher);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new IllegalStateException(e);
         }
     }

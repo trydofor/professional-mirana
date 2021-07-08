@@ -22,9 +22,9 @@ public class StringCastUtil {
     public static boolean asTrue(@Nullable String str) {
         if (str == null) return false;
         return "true".equalsIgnoreCase(str) ||
-                "t".equalsIgnoreCase(str) ||
-                "yes".equalsIgnoreCase(str) ||
-                "y".equalsIgnoreCase(str);
+               "t".equalsIgnoreCase(str) ||
+               "yes".equalsIgnoreCase(str) ||
+               "y".equalsIgnoreCase(str);
     }
 
     /**
@@ -37,11 +37,11 @@ public class StringCastUtil {
     public static boolean asFalse(@Nullable String str) {
         if (str == null) return true;
         return "false".equalsIgnoreCase(str) ||
-                "f".equalsIgnoreCase(str) ||
-                "no".equalsIgnoreCase(str) ||
-                "n".equalsIgnoreCase(str) ||
-                str.isEmpty() ||
-                str.trim().isEmpty();
+               "f".equalsIgnoreCase(str) ||
+               "no".equalsIgnoreCase(str) ||
+               "n".equalsIgnoreCase(str) ||
+               str.isEmpty() ||
+               str.trim().isEmpty();
     }
 
     /**
@@ -55,7 +55,8 @@ public class StringCastUtil {
         if (str == null) return elz;
         try {
             return Long.parseLong(str);
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e) {
             return elz;
         }
     }
@@ -71,7 +72,8 @@ public class StringCastUtil {
         if (str == null) return elz;
         try {
             return Integer.parseInt(str);
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e) {
             return elz;
         }
     }
@@ -87,7 +89,8 @@ public class StringCastUtil {
         if (str == null) return elz;
         try {
             return Float.parseFloat(str);
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e) {
             return elz;
         }
     }
@@ -103,7 +106,8 @@ public class StringCastUtil {
         if (str == null) return elz;
         try {
             return Double.parseDouble(str);
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e) {
             return elz;
         }
     }
@@ -120,7 +124,8 @@ public class StringCastUtil {
         if (str == null) return elz;
         try {
             return new BigDecimal(str);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             return elz;
         }
     }

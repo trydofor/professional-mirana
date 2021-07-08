@@ -48,7 +48,8 @@ public class ThrowableUtil {
             Throwable x = t.getCause();
             if (x == null) {
                 return t;
-            } else {
+            }
+            else {
                 t = x;
             }
         }
@@ -123,7 +124,8 @@ public class ThrowableUtil {
         }
         if (t instanceof RuntimeException) {
             throw (RuntimeException) t;
-        } else {
+        }
+        else {
             throw new RuntimeException(t);
         }
     }
@@ -142,7 +144,8 @@ public class ThrowableUtil {
         }
         if (t instanceof RuntimeException) {
             throw (RuntimeException) t;
-        } else {
+        }
+        else {
             throw new RuntimeException(t);
         }
     }

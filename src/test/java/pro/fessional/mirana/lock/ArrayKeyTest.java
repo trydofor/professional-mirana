@@ -28,8 +28,8 @@ class ArrayKeyTest {
         map.put(k22, k22);
 
         assertEquals(2, map.size());
-        assertSame(k12,map.get(k11));
-        assertSame(k22,map.get(new ArrayKey(1)));
+        assertSame(k12, map.get(k11));
+        assertSame(k22, map.get(new ArrayKey(1)));
 
         Integer[] ar = new Integer[]{2};
         ArrayKey k31 = new ArrayKey((Object[]) ar);
@@ -38,7 +38,7 @@ class ArrayKeyTest {
         map.put(k31, k31);
         map.put(k32, k32);
         assertEquals(4, map.size());
-        assertSame(k31,map.get(new ArrayKey(2)));
-        assertSame(k32,map.get(new ArrayKey(3)));
+        assertSame(k31, map.get(new ArrayKey(2)));
+        assertSame(k32, map.get(new ArrayKey(3)));
     }
 }

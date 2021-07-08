@@ -53,7 +53,8 @@ public class LightIdUtil {
 
         if (valid(block, sequence)) {
             return new LightId(block, sequence);
-        } else {
+        }
+        else {
             return LightId.NONE;
         }
     }
@@ -82,7 +83,8 @@ public class LightIdUtil {
         final long sequence = lightId.getSequence();
         if (validSequence(sequence)) {
             return sequence;
-        } else {
+        }
+        else {
             return elze;
         }
     }

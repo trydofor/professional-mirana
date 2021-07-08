@@ -111,7 +111,8 @@ public class Watermark {
             if (widthPhoto > heightPhoto) {
                 heightPhoto = maxSize * heightPhoto / widthPhoto;
                 widthPhoto = maxSize;
-            } else {
+            }
+            else {
                 widthPhoto = maxSize * widthPhoto / heightPhoto;
                 heightPhoto = maxSize;
             }
@@ -128,7 +129,8 @@ public class Watermark {
             double offset = (heightPhoto - widthPhoto) / 2D;
             graphics.translate(offset, -offset);
             graphics.rotate(ROTATE, widthPhoto / 2D, heightPhoto / 2D);
-        } else {
+        }
+        else {
             bufferImg = new BufferedImage(widthPhoto, heightPhoto, photoImg.getType());
             graphics = bufferImg.createGraphics();
         }
@@ -136,7 +138,8 @@ public class Watermark {
         // 绘制图片
         if (scaled) {
             graphics.drawImage(photoImg.getScaledInstance(widthPhoto, heightPhoto, Image.SCALE_SMOOTH), 0, 0, null);
-        } else {
+        }
+        else {
             graphics.drawImage(photoImg, 0, 0, null);
         }
 

@@ -17,7 +17,8 @@ public class ArrayKey {
         if (keys == null || keys.length == 0) {
             this.keys = Null.Objects;
             this.hashCode = Integer.MIN_VALUE;
-        } else {
+        }
+        else {
             this.keys = keys.clone();
             this.hashCode = Arrays.deepHashCode(keys);
         }

@@ -126,7 +126,7 @@ public class BigDecimalUtilTest {
     }
 
     @Test
-    public void unitUp(){
+    public void unitUp() {
         final BigDecimal unit = new BigDecimal("0.50");
         final BigDecimal down = new BigDecimal("0.10");
 

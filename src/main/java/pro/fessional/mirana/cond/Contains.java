@@ -58,7 +58,8 @@ public class Contains {
         for (Number n : nums) {
             if (n instanceof BigDecimal) {
                 if (num.compareTo((BigDecimal) n) == 0) return true;
-            } else if (n != null) {
+            }
+            else if (n != null) {
                 BigDecimal d = BigDecimal.valueOf(n.doubleValue()).setScale(num.scale(), BigDecimal.ROUND_UP);
                 if (num.compareTo(d) == 0) return true;
             }
@@ -71,7 +72,8 @@ public class Contains {
         for (Number n : nums) {
             if (n instanceof BigDecimal) {
                 if (num.compareTo((BigDecimal) n) == 0) return true;
-            } else if (n != null) {
+            }
+            else if (n != null) {
                 BigDecimal d = BigDecimal.valueOf(n.doubleValue()).setScale(num.scale(), BigDecimal.ROUND_UP);
                 if (num.compareTo(d) == 0) return true;
             }
