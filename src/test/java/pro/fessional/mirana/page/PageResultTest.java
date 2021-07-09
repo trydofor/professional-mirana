@@ -11,6 +11,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
+ * 在wings warlock中有序列化测试
+ *
  * @author trydofor
  * @since 2020-09-29
  */
@@ -43,8 +45,8 @@ public class PageResultTest {
         assertEquals(4, o3.getTotalPage());
 
         List<String> sls = Collections.emptyList();
-        PageResult<String> rs = o3.into(sls);
+        PageResult<String> rs = o3.castData(sls);
 
-        final R<String> s3 = o3.into("");
+        final R<String> s3 = o3.castData("");
     }
 }

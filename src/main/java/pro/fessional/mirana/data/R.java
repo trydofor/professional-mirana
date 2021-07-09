@@ -7,17 +7,23 @@ import pro.fessional.mirana.i18n.I18nString;
 import pro.fessional.mirana.pain.CodeException;
 
 import java.beans.Transient;
+import java.util.Objects;
 import java.util.function.Function;
 
 /**
+ * <pre>
  * 基础结果类，
- * success 判定操作成功|失败。
- * message 用户消息，有则显示。
- * code 业务code，有则判定。注意CodeEnum类，会自动替换code
- * data 业务数据，有则使用。
- * cause 内部错误，用于跟踪。如异常，字符串，enum等标识中断执行的原因。
- * <p>
- * i18nCode和i18nArgs用来处理I18N信息，一般用来替换Message
+ * - success 判定操作成功|失败。
+ * - message 用户消息，有则显示。
+ * - code 业务code，有则判定。注意CodeEnum类，会自动替换code。
+ * - data 业务数据，有则使用。
+ *
+ * 以下字段为@Transient，hashCode,equals,json时默认忽略
+ * - cause 内部错误，用于跟踪。如异常，字符串，enum等标识中断执行的原因。
+ * - i18nCode, i18nArgs用来处理I18N信息，一般用来替换Message。
+ *
+ * 使用cast*方法时，注意避免产生ClassCast异常。
+ * </pre>
  *
  * @param <T> Data的类型
  */
@@ -26,14 +32,14 @@ public class R<T> implements DataResult<T>, I18nAware {
     protected boolean success;
     protected String message;
     protected String code;
-    private Object data;
+    protected Object data;
 
     //
-    protected transient Object cause = null;
-    private transient String i18nCode;
-    private transient Object[] i18nArgs;
+    private Object cause = null;
+    private String i18nCode;
+    private Object[] i18nArgs;
 
-    protected R() {
+    public R() {
         this.success = false;
         this.message = null;
         this.code = null;
@@ -51,8 +57,8 @@ public class R<T> implements DataResult<T>, I18nAware {
         this.success = success;
         this.data = data;
         if (code != null) {
-            this.message = code.getHint();
             this.code = code.getCode();
+            this.message = code.getHint();
             this.i18nCode = code.getI18nCode();
         }
     }
@@ -62,10 +68,9 @@ public class R<T> implements DataResult<T>, I18nAware {
         return success;
     }
 
-    @SuppressWarnings("unchecked")
-    public <S extends R<T>> S setSuccess(boolean success) {
+    public R<T> setSuccess(boolean success) {
         this.success = success;
-        return (S) this;
+        return this;
     }
 
     @Nullable
@@ -74,34 +79,57 @@ public class R<T> implements DataResult<T>, I18nAware {
         return message;
     }
 
-    @SuppressWarnings("unchecked")
-    public <S extends R<T>> S setMessage(String message) {
+    public R<T> setMessage(String message) {
         this.message = message;
-        return (S) this;
+        return this;
     }
 
-    @SuppressWarnings("unchecked")
-    public <S extends R<T>> S setMessage(CodeEnum ce, Object... arg) {
-        this.code = ce.getCode();
-        this.message = ce.getHint();
+    /**
+     * 设置i18nCode和i18nArgs，
+     * code和message为null时，设置
+     *
+     * @param ce  code
+     * @param arg i18n 参数
+     * @return this
+     */
+    public R<T> setI18nMessage(CodeEnum ce, Object... arg) {
+        if (this.code == null) {
+            this.code = ce.getCode();
+        }
+        if (this.message == null) {
+            this.message = ce.getHint();
+        }
         this.i18nCode = ce.getI18nCode();
         this.i18nArgs = arg;
-        return (S) this;
+        return this;
     }
 
-    @SuppressWarnings("unchecked")
-    public <S extends R<T>> S setMessage(I18nString message) {
-        this.message = message.getHint();
+    /**
+     * 设置i18nCode和i18nArgs，
+     * message为null时，设置
+     *
+     * @param message i18n 参数
+     * @return this
+     */
+    public R<T> setI18nMessage(I18nString message) {
+        if (this.message == null) {
+            this.message = message.getHint();
+        }
         this.i18nCode = message.getI18nCode();
         this.i18nArgs = message.getI18nArgs();
-        return (S) this;
+        return this;
     }
 
-    @SuppressWarnings("unchecked")
-    public <S extends R<T>> S setMessage(I18nAware message) {
+    public R<T> setI18nMessage(I18nAware message) {
         this.i18nCode = message.getI18nCode();
         this.i18nArgs = message.getI18nArgs();
-        return (S) this;
+        return this;
+    }
+
+    public R<T> setI18nMessage(String i18nCode, Object... args) {
+        this.i18nCode = i18nCode;
+        i18nArgs = args;
+        return this;
     }
 
     @Nullable
@@ -111,22 +139,9 @@ public class R<T> implements DataResult<T>, I18nAware {
         return (T) data;
     }
 
-    @SuppressWarnings("unchecked")
-    public <S extends R<T>> S setData(T data) {
+    public R<T> setData(T data) {
         this.data = data;
-        return (S) this;
-    }
-
-    @SuppressWarnings("unchecked")
-    public <S extends R<X>, X> S into(X data) {
-        this.data = data;
-        return (S) this;
-    }
-
-    @SuppressWarnings("unchecked")
-    public <S extends R<X>, X> S into(Function<T, X> fun) {
-        this.data = fun.apply((T) data);
-        return (S) this;
+        return this;
     }
 
     @Override
@@ -134,10 +149,9 @@ public class R<T> implements DataResult<T>, I18nAware {
         return code;
     }
 
-    @SuppressWarnings("unchecked")
-    public <S extends R<T>> S setCode(String code) {
+    public R<T> setCode(String code) {
         this.code = code;
-        return (S) this;
+        return this;
     }
 
     @Transient
@@ -158,34 +172,64 @@ public class R<T> implements DataResult<T>, I18nAware {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    public <S extends R<T>> S setCause(Object cause) {
+    public R<T> setCause(Object cause) {
         this.cause = cause;
-        return (S) this;
+        return this;
     }
 
     @Transient
     @Override
-    public @Nullable String getI18nCode() {
+    @Nullable
+    public String getI18nCode() {
         return i18nCode;
     }
 
     @Transient
     @Override
-    public @Nullable Object[] getI18nArgs() {
+    @Nullable
+    public Object[] getI18nArgs() {
         return i18nArgs;
     }
 
-    // i18n
+    /**
+     * 根据返回值，强转子类型，供编译器编译
+     *
+     * @param <S> 子类型
+     * @return 子类型
+     * @throws ClassCastException 如果类型不匹配
+     */
     @SuppressWarnings("unchecked")
-    public <S extends R<T>> S toI18n(String messageCode, Object... args) {
-        if (messageCode != null && messageCode.length() > 0) {
-            i18nCode = messageCode;
-        }
+    public <S extends R<T>> S castType() {
+        return (S) this;
+    }
 
-        if (args != null && args.length > 0) {
-            i18nArgs = args;
-        }
+    /**
+     * 替换data，并强转子类型
+     *
+     * @param <S>  子类型
+     * @param data 新数据
+     * @param <X>  数据类型
+     * @return 子类型
+     * @throws ClassCastException 如果类型不匹配
+     */
+    @SuppressWarnings("unchecked")
+    public <S extends R<X>, X> S castData(X data) {
+        this.data = data;
+        return (S) this;
+    }
+
+    /**
+     * 替换data，并强转子类型
+     *
+     * @param <S> 子类型
+     * @param <X> 新类型
+     * @param fun 类型转换
+     * @return 子类型
+     * @throws ClassCastException 如果类型不匹配
+     */
+    @SuppressWarnings("unchecked")
+    public <S extends R<X>, X> S castData(Function<T, X> fun) {
+        this.data = fun.apply((T) data);
         return (S) this;
     }
 
@@ -197,6 +241,20 @@ public class R<T> implements DataResult<T>, I18nAware {
                ", code='" + code + '\'' +
                ", data=" + data +
                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof R)) return false;
+        R<?> r = (R<?>) o;
+        return success == r.success && message.equals(r.message)
+               && code.equals(r.code) && data.equals(r.data);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(success, message, code, data);
     }
 
     // /////////////////////

@@ -9,8 +9,11 @@ import java.beans.Transient;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * 不建议构造之后，修改页内数据，因此应最后构造。
@@ -20,6 +23,7 @@ import java.util.List;
  * sort，排序字符串
  * totalPage，不小于1，计算所得。
  * totalData 不小于0，超过21亿的数字不可想象。
+ * meta，元信息，对data信息的补充
  * </pre>
  *
  * @author trydofor
@@ -34,6 +38,8 @@ public class PageResult<E> extends R<Collection<E>> implements Iterable<E> {
     private String sort = Null.Str;
     private int totalPage = Null.Int32;
     private int totalData = Null.Int32;
+
+    private Map<String, Object> meta = null;
 
     public PageResult() {
         setData(empty);
@@ -60,6 +66,10 @@ public class PageResult<E> extends R<Collection<E>> implements Iterable<E> {
      */
     public int getSize() {
         return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
     }
 
     /**
@@ -94,6 +104,10 @@ public class PageResult<E> extends R<Collection<E>> implements Iterable<E> {
         return totalPage;
     }
 
+    public void setTotalPage(int totalPage) {
+        this.totalPage = totalPage;
+    }
+
     /**
      * 总数据数，从1开始，不小于0。
      *
@@ -101,6 +115,10 @@ public class PageResult<E> extends R<Collection<E>> implements Iterable<E> {
      */
     public int getTotalData() {
         return totalData;
+    }
+
+    public void setTotalData(int totalData) {
+        this.totalData = totalData;
     }
 
     /**
@@ -134,14 +152,13 @@ public class PageResult<E> extends R<Collection<E>> implements Iterable<E> {
         return this;
     }
 
-    @SuppressWarnings("unchecked")
-    public PageResult<E> setData(Collection<? extends E> ds) {
+    @Override
+    public PageResult<E> setData(Collection<E> ds) {
         if (ds == null || ds.isEmpty()) {
             super.setData(empty);
         }
         else {
-            Collection<E> data = (Collection<E>) ds;
-            super.setData(data);
+            super.setData(ds);
         }
         return this;
     }
@@ -180,6 +197,59 @@ public class PageResult<E> extends R<Collection<E>> implements Iterable<E> {
         return data == null ? empty.iterator() : data.iterator();
     }
 
+    public Map<String, ?> getMeta() {
+        return meta;
+    }
+
+    public PageResult<E> setMeta(Map<String, Object> meta) {
+        this.meta = meta;
+        return this;
+    }
+
+    public PageResult<E> addMeta(String key, Object value) {
+        if (meta == null) {
+            meta = new HashMap<>();
+        }
+        meta.put(key, value);
+        return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Transient
+    public <T> T getMeta(String key) {
+        return meta == null ? null : (T) meta.get(key);
+    }
+
+    @Override public String toString() {
+        return "PageResult{" +
+               "success=" + success +
+               ", message='" + message + '\'' +
+               ", code='" + code + '\'' +
+               ", data=" + data +
+               ", page=" + page +
+               ", size=" + size +
+               ", sort='" + sort + '\'' +
+               ", totalPage=" + totalPage +
+               ", totalData=" + totalData +
+               ", meta=" + meta +
+               '}';
+    }
+
+    @Override public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PageResult)) return false;
+        if (!super.equals(o)) return false;
+        PageResult<?> that = (PageResult<?>) o;
+        return page == that.page && size == that.size
+               && totalPage == that.totalPage && totalData == that.totalData
+               && Objects.equals(empty, that.empty) && Objects.equals(sort, that.sort)
+               && Objects.equals(meta, that.meta);
+    }
+
+    @Override public int hashCode() {
+        return Objects.hash(super.hashCode(), empty, page, size, sort, totalPage, totalData, meta);
+    }
+
     // ////////
 
     /**
@@ -191,13 +261,14 @@ public class PageResult<E> extends R<Collection<E>> implements Iterable<E> {
      * @param <T>   数据
      * @return 分页结果
      */
-    public static <T> PageResult<T> ok(int total, Collection<? extends T> data, PageQuery pg) {
+    public static <T> PageResult<T> ok(int total, Collection<T> data, PageQuery pg) {
         return new PageResult<T>()
-                .setData(data)
                 .setPage(pg.getPage())
                 .setTotalInfo(total, pg.getSize())
                 .setSort(pg.getSort())
-                .setSuccess(true);
+                .setData(data)
+                .setSuccess(true)
+                .castType();
     }
 
     /**
@@ -210,11 +281,12 @@ public class PageResult<E> extends R<Collection<E>> implements Iterable<E> {
      * @param <T>   数据
      * @return 分页结果
      */
-    public static <T> PageResult<T> ok(int total, Collection<? extends T> data, int page, int size) {
+    public static <T> PageResult<T> ok(int total, Collection<T> data, int page, int size) {
         return new PageResult<T>()
-                .setData(data)
                 .setPage(page)
                 .setTotalInfo(total, size)
-                .setSuccess(true);
+                .setData(data)
+                .setSuccess(true)
+                .castType();
     }
 }
