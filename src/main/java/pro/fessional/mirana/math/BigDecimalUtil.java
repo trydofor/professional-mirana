@@ -314,16 +314,21 @@ public class BigDecimalUtil {
      */
     @NotNull
     public static BigDecimal prd(boolean skipNull, BigDecimal... vs) {
-        BigDecimal total = ZERO;
+        BigDecimal total = null;
         for (BigDecimal v : vs) {
             if (v == null) {
                 if (!skipNull) return ZERO;
             }
             else {
-                total = total.multiply(v);
+                if (total == null) {
+                    total = v;
+                }
+                else {
+                    total = total.multiply(v);
+                }
             }
         }
-        return total;
+        return total == null ? ZERO : total;
     }
 
     // ////// notnull //////
