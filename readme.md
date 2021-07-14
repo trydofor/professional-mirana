@@ -237,7 +237,6 @@ ID能保证严格的`单调递增`(升序)，但不保证连续，其long型的6
  * CircleInputStream - 可循环读取的流
  * DirHasher 本地文件系统不可保存太多文件
  * Exec - 单线程同步执行，高级功能用Apache Commons Exec
- * Git - 对git提交按日期作者统计，或在mysql建表保存
  * InputStreams - 不使用commons的补位
  * Zipper 递归zip/unzip
 
@@ -281,6 +280,12 @@ ID能保证严格的`单调递增`(升序)，但不保证连续，其long型的6
  * NoStackRuntimeException - 无需填充堆栈的异常，用于性能优先场景，堆栈无用的场景
  * ThrowableUtil - Throwable堆栈和cause工具
  * TimeoutRuntimeException - Runtime版TimeoutException
+
+## `stat/` 统计与监控
+
+* GitStat - 对git提交按日期作者统计，或在mysql建表保存
+* JvmStat - 返回当前jvm的Cpu，Mem，Thread信息
+* LogStat - 对日志增长，关键词进行收集
 
 ## `text/` 全半角，白字符，格式化工具
 

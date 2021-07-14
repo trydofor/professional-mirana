@@ -1,7 +1,8 @@
-package pro.fessional.mirana.io;
+package pro.fessional.mirana.stat;
 
 import pro.fessional.mirana.cast.StringCastUtil;
 import pro.fessional.mirana.data.Null;
+import pro.fessional.mirana.io.Exec;
 
 import javax.sql.DataSource;
 import java.io.ByteArrayOutputStream;
@@ -31,7 +32,7 @@ import java.util.function.BiConsumer;
  * @author trydofor
  * @since 2020-09-15
  */
-public class Git {
+public class GitStat {
 
     private static final List<String> LOG_PARA = Arrays.asList(
             "--all",
@@ -476,5 +477,18 @@ public class Git {
             System.out.println(rowN);
             rowN.setLength(0);
         }
+    }
+
+    public static void main(String[] args) {
+        System.out.println("usage: [git-dir:File] [git-args:String]");
+
+        final File dir = new File(args.length > 0 ? args[0] : ".");
+        List<String> para = null;
+        if (args.length > 1) {
+            para = new ArrayList<>(args.length);
+            para.addAll(Arrays.asList(args).subList(1, args.length));
+        }
+        List<GitStat.S> infos = GitStat.logAll(dir, para);
+        GitStat.stat(infos, STAT_WEEK_YEAR, null, false);
     }
 }

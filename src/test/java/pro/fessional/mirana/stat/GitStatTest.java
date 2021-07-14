@@ -1,4 +1,4 @@
-package pro.fessional.mirana.io;
+package pro.fessional.mirana.stat;
 
 import com.mysql.cj.jdbc.MysqlDataSource;
 import org.junit.jupiter.api.Disabled;
@@ -11,14 +11,14 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static pro.fessional.mirana.io.Git.STAT_WEEK_YEAR;
+import static pro.fessional.mirana.stat.GitStat.STAT_WEEK_YEAR;
 
 /**
  * @author trydofor
  * @since 2020-09-16
  */
 @Disabled("手动执行")
-public class GitTest {
+public class GitStatTest {
 
     @Test
     public void mysql() {
@@ -29,15 +29,15 @@ public class GitTest {
         dataSource.setServerName("127.0.0.1");
 
         File workDir = new File("/Users/trydofor/Workspace/github.com/pro.fessional.wings");
-        List<Git.S> infos = Git.logAll(workDir, "2 weeks ago", "2020-10-01");
-        Git.saveMysql(infos, "git_log_wings", dataSource);
+        List<GitStat.S> infos = GitStat.logAll(workDir, "2 weeks ago", "2020-10-01");
+        GitStat.saveMysql(infos, "git_log_wings", dataSource);
     }
 
 
     @Test
     public void stat() {
         File workDir = new File("/Users/trydofor/Workspace/捷特/jetplus-src/jetplus-backend");
-        List<Git.S> infos = Git.logAll(workDir, null);
+        List<GitStat.S> infos = GitStat.logAll(workDir, null);
         Map<String, String> alias = new HashMap<>();
         alias.put("KangKang", "小李飞刀");
         alias.put("小T", "胡一刀");
@@ -48,7 +48,7 @@ public class GitTest {
         alias.put("chengxiaojun", "程咬金");
         alias.put("xuyongjie", "徐州重工业");
         // 中文会出现汉字对齐问题，需要调整字体，保证1中文=2英文
-        Git.stat(infos, STAT_WEEK_YEAR, alias, false);
+        GitStat.stat(infos, STAT_WEEK_YEAR, alias, false);
     }
 
     @Test
@@ -57,7 +57,7 @@ public class GitTest {
         String x = new String(c, StandardCharsets.UTF_8);
         System.out.println(x);
 
-        String s = Git.trimFile("Tst\\344\\270\\255\\346\\226\\207\\344\\271\\237\\345\\210\\206\\350\\241\\250Record.java");
+        String s = GitStat.trimFile("Tst\\344\\270\\255\\346\\226\\207\\344\\271\\237\\345\\210\\206\\350\\241\\250Record.java");
         System.out.println(s);
         assertEquals(x, s);
     }

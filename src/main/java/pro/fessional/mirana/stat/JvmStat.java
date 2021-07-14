@@ -10,9 +10,9 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
 import java.lang.management.OperatingSystemMXBean;
+import java.lang.management.RuntimeMXBean;
 import java.lang.management.ThreadMXBean;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.List;
 
 /**
  * 输出jvm内的cpu，mem，thread的信息
@@ -23,8 +23,10 @@ import java.util.concurrent.atomic.AtomicReference;
 public class JvmStat {
 
     public static class Stat {
-        private long now = -1;
         private int pid = -1;
+        private List<String> arguments;
+        private long timeDone = -1;
+        private long timeCost = -1;
         private int processor = -1;
         private int systemLoad = -1;
         private int processLoad = -1;
@@ -35,12 +37,22 @@ public class JvmStat {
         private int memoryLoad = -1;
 
         /**
-         * 生成的毫秒时间戳
+         * 完成时的毫秒时间戳
          *
          * @return 时间戳
          */
-        public long getNow() {
-            return now;
+        public long getTimeDone() {
+            return timeDone;
+        }
+
+        /**
+         * 完成时的毫秒耗时
+         *
+         * @return 毫秒
+         */
+
+        public long getTimeCost() {
+            return timeCost;
         }
 
         /**
@@ -126,6 +138,15 @@ public class JvmStat {
         }
 
         /**
+         * 等同于getMemoryLoad
+         *
+         * @return 内存占用率
+         */
+        public int getMemoryCent() {
+            return memoryLoad;
+        }
+
+        /**
          * 获取进程的%CPU，范围[0-100]
          *
          * @return 占比
@@ -143,11 +164,12 @@ public class JvmStat {
             return systemLoad < 0 ? -1 : (systemLoad / processor);
         }
 
-        @Override
-        public String toString() {
+        @Override public String toString() {
             return "Stat{" +
-                   "now=" + now +
-                   ", pid=" + pid +
+                   "pid=" + pid +
+                   ", arguments=" + arguments +
+                   ", timeDone=" + timeDone +
+                   ", timeCost=" + timeCost +
                    ", processor=" + processor +
                    ", systemLoad=" + systemLoad +
                    ", processLoad=" + processLoad +
@@ -158,60 +180,6 @@ public class JvmStat {
                    ", memoryLoad=" + memoryLoad +
                    '}';
         }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof Stat)) return false;
-            Stat stat = (Stat) o;
-            return now == stat.now && pid == stat.pid && processor == stat.processor
-                   && systemLoad == stat.systemLoad && processLoad == stat.processLoad
-                   && threadCount == stat.threadCount && daemonCount == stat.daemonCount
-                   && memorySize == stat.memorySize && memoryFree == stat.memoryFree
-                   && memoryLoad == stat.memoryLoad;
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(now, pid, processor, systemLoad, processLoad,
-                    threadCount, daemonCount, memorySize, memoryFree, memoryLoad);
-        }
-    }
-
-    private static final AtomicReference<Stat> cache = new AtomicReference<>();
-
-    /**
-     * 距上次stat的间隔毫秒数
-     *
-     * @param ttl 毫秒数
-     * @return stat
-     */
-    @NotNull
-    public static Stat stat(long ttl) {
-        final Stat old = cache.get();
-        if (old != null) {
-            if (System.currentTimeMillis() - ttl <= old.now) {
-                return old;
-            }
-            else {
-                cache.set(null);
-            }
-        }
-
-        //
-        final Stat stat;
-        synchronized (cache) {
-            final Stat st = cache.get();
-            if (st == null) {
-                stat = stat();
-                cache.set(stat);
-            }
-            else {
-                stat = st;
-            }
-        }
-
-        return stat;
     }
 
     /**
@@ -219,21 +187,25 @@ public class JvmStat {
      *
      * @return stat
      */
+    @NotNull
     public static Stat stat() {
+        final long bgn = System.currentTimeMillis();
         final Stat stat = new Stat();
-        buildPid(stat);
+        buildRuntime(stat);
         buildCpuLoad(stat);
         buildThread(stat);
         buildMemory(stat);
-        stat.now = System.currentTimeMillis();
+        stat.timeDone = System.currentTimeMillis();
+        stat.timeCost = stat.timeDone - bgn;
         return stat;
     }
 
-    public static void buildPid(Stat stat) {
+    public static void buildRuntime(Stat stat) {
         try {
-            String jvmName = ManagementFactory.getRuntimeMXBean().getName();
-            final String pid = jvmName.split("@")[0];
+            final RuntimeMXBean runtimeMXBean = ManagementFactory.getRuntimeMXBean();
+            final String pid = runtimeMXBean.getName().split("@")[0];
             stat.pid = Integer.parseInt(pid);
+            stat.arguments = runtimeMXBean.getInputArguments();
         }
         catch (Throwable ex) {
             // ignore
@@ -305,5 +277,9 @@ public class JvmStat {
         catch (Throwable ex) {
             // ignore
         }
+    }
+
+    public static void main(String[] args) {
+        System.out.println(stat());
     }
 }

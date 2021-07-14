@@ -7,8 +7,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.charset.StandardCharsets;
-import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 读取，不超过 Integer.Max 行数的小日志文件。单行长度不要超过10k。
@@ -20,19 +18,30 @@ import java.util.concurrent.ConcurrentHashMap;
 public class LogStat {
 
     public static class Stat {
-        private long now = -1;
+        private long timeDone = -1;
+        private long timeCost = -1;
         private long byteFrom = -1;
         private long byteDone = -1;
         private String pathLog = null;
         private String pathOut = null;
 
         /**
-         * 生成的毫秒时间戳
+         * 完成时的毫秒时间戳
          *
          * @return 时间戳
          */
-        public long getNow() {
-            return now;
+        public long getTimeDone() {
+            return timeDone;
+        }
+
+        /**
+         * 完成时的毫秒耗时
+         *
+         * @return 毫秒
+         */
+
+        public long getTimeCost() {
+            return timeCost;
         }
 
         /**
@@ -71,65 +80,37 @@ public class LogStat {
             return pathOut;
         }
 
+        /**
+         * 文件是否增长，每次byteDone 多于 byteFrom视为增长;
+         *
+         * @return 增长
+         */
+        public long getByteGrow() {
+            return byteDone - byteFrom;
+        }
+
         @Override
         public String toString() {
             return "Stat{" +
-                   "now=" + now +
+                   "timeDone=" + timeDone +
+                   ", timeCost=" + timeCost +
                    ", byteFrom=" + byteFrom +
                    ", byteDone=" + byteDone +
                    ", pathLog='" + pathLog + '\'' +
                    ", pathOut='" + pathOut + '\'' +
                    '}';
         }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof Stat)) return false;
-            Stat stat = (Stat) o;
-            return now == stat.now && byteFrom == stat.byteFrom && byteDone == stat.byteDone && Objects.equals(pathLog, stat.pathLog) && Objects.equals(pathOut, stat.pathOut);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(now, byteFrom, byteDone, pathLog, pathOut);
-        }
-    }
-
-    private static final ConcurrentHashMap<String, Stat> cache = new ConcurrentHashMap<>();
-
-    /**
-     * 距上次stat的间隔毫秒数
-     *
-     * @param ttl     毫秒数
-     * @param log     输入文件
-     * @param from    起始字节
-     * @param keyword 关键词
-     * @return stat
-     */
-    @NotNull
-    public static Stat stat(long ttl, String log, int from, String... keyword) {
-        final Stat old = cache.get(log);
-        if (old != null) {
-            if (System.currentTimeMillis() - ttl <= old.now) {
-                return old;
-            }
-            else {
-                cache.remove(log);
-            }
-        }
-
-        return cache.computeIfAbsent(log, key -> stat(log, from, keyword));
     }
 
     /**
      * 直接获取 stat
      *
      * @param log     输入文件
-     * @param from    起始字节
+     * @param from    起始字节，负数表示从末端开始
      * @param keyword 关键词
      * @return stat
      */
+    @NotNull
     public static Stat stat(String log, long from, String... keyword) {
         final Stat stat;
         try {
@@ -138,24 +119,40 @@ public class LogStat {
         catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-        stat.now = System.currentTimeMillis();
         return stat;
     }
 
+    /**
+     * 直接获取 stat
+     *
+     * @param log     输入文件
+     * @param from    起始字节，负数表示从末端开始
+     * @param keyword 关键词
+     * @return stat
+     * @throws IOException 文件错误
+     */
     public static Stat buildStat(String log, long from, String... keyword) throws IOException {
+        final long bgn = System.currentTimeMillis();
+
         final Stat stat = new Stat();
         final File ins = new File(log);
 
         final long fln = ins.length();
-        if (from < 0 || from > fln) from = 0;
+
+        if (from < 0) {
+            from = fln + from;
+        }
+
+        if (from > fln || from < 0) from = 0;
 
         stat.pathLog = ins.getAbsolutePath();
         stat.byteFrom = from;
 
-        if (keyword == null || keyword.length == 0) {
+        if (fln == 0 || keyword == null || keyword.length == 0) {
             stat.byteDone = fln;
             stat.pathOut = null;
+            stat.timeDone = bgn;
+            stat.timeCost = 0;
             return stat;
         }
 
@@ -173,8 +170,7 @@ public class LogStat {
             try (RandomAccessFile raf = new RandomAccessFile(log, "r")) {
                 raf.seek(from);
 
-                // ---lineEnd---findLen---readOff---readLim
-                final byte[] buff = new byte[cap]; // 16k
+                final byte[] buff = new byte[cap];
                 final byte cr = '\n';
                 int readOff = 0, readEnd, readLen;
                 int findLen = -1, lineEnd, nextOff;
@@ -193,7 +189,7 @@ public class LogStat {
                         }
                         else {
                             if (findLen <= 0) {
-                                int m = match(buff, i, keys);
+                                int m = find(buff, i, keys);
                                 if (m < 0) {
                                     findLen = -1;
                                     break;
@@ -231,61 +227,47 @@ public class LogStat {
                     }
                 }
             }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            throw e;
+            //        catch (Exception e) {
+            //            e.printStackTrace();
+            //            throw e;
+            //        }
         }
 
         stat.pathOut = out.getAbsolutePath();
         stat.byteDone = done;
+        stat.timeDone = System.currentTimeMillis();
+        stat.timeCost = stat.timeDone - bgn;
 
         return stat;
     }
 
     // -1:buff长度不够; 0:不匹配
-    private static int match(byte[] buff, int pos, byte[][] keys) {
+    private static int find(byte[] buff, int pos, byte[][] keys) {
         int m = -1;
-        int left = buff.length - pos;
+        int len = buff.length - pos;
+        out:
         for (byte[] key : keys) {
-            if (left > key.length) {
-                boolean f = true;
+            if (len >= key.length) {
                 for (int j = 0; j < key.length; j++) {
                     if (buff[pos + j] != key[j]) {
                         m = 0;
-                        f = false;
-                        break;
+                        continue out;
                     }
                 }
-                if (f) return key.length;
+                return key.length;
             }
         }
-
         return m;
     }
 
     public static void main(String[] args) {
+        System.out.println("usage: log-file:File [byte-from:Long]");
         final String log = args.length > 0 ? args[0] : "/Users/trydofor/Downloads/tmp/admin.log";
         final long from = args.length > 1 ? Long.parseLong(args[1]) : 0;
+
         final long len = new File(log).length();
-        final long st = System.currentTimeMillis();
-        final Thread thread = new Thread(() -> {
-            while (true) {
-                final JvmStat.Stat stat = JvmStat.stat();
-                System.out.println(stat);
-                try {
-                    Thread.sleep(1000);
-                }
-                catch (InterruptedException e) {
-                    // ignore
-                }
-            }
-        });
-        thread.setDaemon(true);
-        thread.start();
         final Stat stat = stat(log, from, " ERROR ", " WARN ");
         System.out.println("file=" + len + ", stat=" + stat.byteDone + ", eq=" + (len == stat.byteDone));
         System.out.println(stat);
-        System.out.println("cost ms=" + (System.currentTimeMillis() - st));
     }
 }
