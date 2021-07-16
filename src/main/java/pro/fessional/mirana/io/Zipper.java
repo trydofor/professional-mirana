@@ -45,7 +45,10 @@ public class Zipper {
     public static void zip(String zip, List<File> files) throws IOException {
         File zipFile = new File(zip);
         File dir = zipFile.getParentFile();
-        if (!dir.exists()) dir.mkdirs();
+        if (!dir.exists()) {
+            //noinspection ResultOfMethodCallIgnored
+            dir.mkdirs();
+        }
         zip(new FileOutputStream(zipFile), files);
     }
 
@@ -88,7 +91,10 @@ public class Zipper {
     public static void zip(String zip, Map<String, InputStream> files) throws IOException {
         File zipFile = new File(zip);
         File dir = zipFile.getParentFile();
-        if (!dir.exists()) dir.mkdirs();
+        if (!dir.exists()) {
+            //noinspection ResultOfMethodCallIgnored
+            dir.mkdirs();
+        }
         zip(new FileOutputStream(zipFile), files);
     }
 
@@ -138,7 +144,10 @@ public class Zipper {
      */
     public static void unzip(InputStream zip, String path) throws IOException {
         File dir = new File(path);
-        if (!dir.exists()) dir.mkdirs();
+        if (!dir.exists()) {
+            //noinspection ResultOfMethodCallIgnored
+            dir.mkdirs();
+        }
 
         byte[] buffer = new byte[1024];
         try (ZipInputStream zis = new ZipInputStream(zip)) {
@@ -147,6 +156,7 @@ public class Zipper {
                 String fileName = ze.getName();
                 File newFile = new File(dir, fileName);
                 if (ze.isDirectory()) {
+                    //noinspection ResultOfMethodCallIgnored
                     newFile.mkdirs();
                 }
                 else {
@@ -239,7 +249,7 @@ public class Zipper {
     //
 
     public static class Z {
-        Map<String, InputStream> files = new HashMap<>();
+        final Map<String, InputStream> files = new HashMap<>();
 
         public Z add(String path) throws IOException {
             if (path == null) return this;

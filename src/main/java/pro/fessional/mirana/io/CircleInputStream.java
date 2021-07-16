@@ -17,7 +17,7 @@ import java.io.InputStream;
 public class CircleInputStream extends InputStream {
 
     protected InputStream backend;
-    protected ByteArrayOutputStream cache = new ByteArrayOutputStream();
+    protected final ByteArrayOutputStream cache = new ByteArrayOutputStream();
 
     protected ByteArrayInputStream circle = null;
     protected byte[] content = null;

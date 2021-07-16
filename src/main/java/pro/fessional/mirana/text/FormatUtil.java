@@ -74,13 +74,10 @@ public class FormatUtil {
                     }
                     else {
                         char x = fmt.charAt(++j);
-                        if (x == '\\' || (x == '{' || x == '}')) {
-                            builder.append(x); /* 'escape' */
-                        }
-                        else {
+                        if (x != '\\' && (x != '{' && x != '}')) {
                             builder.append(c);
-                            builder.append(x);
                         }
+                        builder.append(x); /* 'escape' */
                     }
                     break;
 

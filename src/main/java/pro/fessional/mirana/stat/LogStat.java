@@ -20,6 +20,7 @@ public class LogStat {
     public static class Stat {
         private long timeDone = -1;
         private long timeCost = -1;
+        private long logMtime = -1;
         private long byteFrom = -1;
         private long byteDone = -1;
         private String pathLog = null;
@@ -42,6 +43,15 @@ public class LogStat {
 
         public long getTimeCost() {
             return timeCost;
+        }
+
+        /**
+         * 日志文件的last modify
+         *
+         * @return -1:不可知，0:文件不存在或异常
+         */
+        public long getLogMtime() {
+            return logMtime;
         }
 
         /**
@@ -94,6 +104,7 @@ public class LogStat {
             return "Stat{" +
                    "timeDone=" + timeDone +
                    ", timeCost=" + timeCost +
+                   ", logMtime=" + logMtime +
                    ", byteFrom=" + byteFrom +
                    ", byteDone=" + byteDone +
                    ", pathLog='" + pathLog + '\'' +
@@ -107,14 +118,31 @@ public class LogStat {
      *
      * @param log     输入文件
      * @param from    起始字节，负数表示从末端开始
-     * @param keyword 关键词
+     * @param keyword 关键词，按UTF8读入
      * @return stat
      */
     @NotNull
     public static Stat stat(String log, long from, String... keyword) {
+        byte[][] keys = new byte[keyword.length][];
+        for (int i = 0; i < keyword.length; i++) {
+            keys[i] = keyword[i].getBytes(StandardCharsets.UTF_8);
+        }
+        return stat(log, from, keys);
+    }
+
+    /**
+     * 直接获取 stat。log按byte读入。
+     *
+     * @param log  输入文件
+     * @param from 起始字节，负数表示从末端开始
+     * @param keys 关键词
+     * @return stat
+     */
+    @NotNull
+    public static Stat stat(String log, long from, byte[]... keys) {
         final Stat stat;
         try {
-            stat = buildStat(log, from, keyword);
+            stat = buildStat(log, from, keys);
         }
         catch (IOException e) {
             throw new RuntimeException(e);
@@ -125,19 +153,20 @@ public class LogStat {
     /**
      * 直接获取 stat
      *
-     * @param log     输入文件
-     * @param from    起始字节，负数表示从末端开始
-     * @param keyword 关键词
+     * @param log  输入文件
+     * @param from 起始字节，负数表示从末端开始
+     * @param keys 关键词
      * @return stat
      * @throws IOException 文件错误
      */
-    public static Stat buildStat(String log, long from, String... keyword) throws IOException {
+    public static Stat buildStat(String log, long from, byte[]... keys) throws IOException {
         final long bgn = System.currentTimeMillis();
 
         final Stat stat = new Stat();
         final File ins = new File(log);
 
         final long fln = ins.length();
+        stat.logMtime = ins.lastModified();
 
         if (from < 0) {
             from = fln + from;
@@ -148,17 +177,12 @@ public class LogStat {
         stat.pathLog = ins.getAbsolutePath();
         stat.byteFrom = from;
 
-        if (fln == 0 || keyword == null || keyword.length == 0) {
+        if (fln == 0 || keys == null || keys.length == 0) {
             stat.byteDone = fln;
             stat.pathOut = null;
             stat.timeDone = bgn;
             stat.timeCost = 0;
             return stat;
-        }
-
-        byte[][] keys = new byte[keyword.length][];
-        for (int i = 0; i < keyword.length; i++) {
-            keys[i] = keyword[i].getBytes(StandardCharsets.UTF_8);
         }
 
         long done = from;
@@ -233,7 +257,14 @@ public class LogStat {
             //        }
         }
 
-        stat.pathOut = out.getAbsolutePath();
+        if (out.length() > 0) {
+            stat.pathOut = out.getAbsolutePath();
+        }
+        else {
+            stat.pathOut = null;
+            //noinspection ResultOfMethodCallIgnored
+            out.delete();
+        }
         stat.byteDone = done;
         stat.timeDone = System.currentTimeMillis();
         stat.timeCost = stat.timeDone - bgn;

@@ -87,6 +87,7 @@ public class StreamJpg {
 
         File dir = outjpg.getParentFile();
         if (!dir.exists())
+            //noinspection ResultOfMethodCallIgnored
             dir.mkdirs();
 
         try (FileOutputStream os = new FileOutputStream(outjpg)) {
@@ -105,6 +106,7 @@ public class StreamJpg {
     public static InputStream tee(BufferedImage image, File outjpg) throws IOException {
         File dir = outjpg.getParentFile();
         if (!dir.exists())
+            //noinspection ResultOfMethodCallIgnored
             dir.mkdirs();
 
         return tee(image, new FileOutputStream(outjpg));

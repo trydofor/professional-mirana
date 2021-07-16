@@ -37,6 +37,7 @@ public class DirHasher {
         String sub = mkdirs(fileId);
         File dir = new File(root, sub);
         if (!dir.exists()) {
+            //noinspection ResultOfMethodCallIgnored
             dir.mkdirs();
         }
         return dir;

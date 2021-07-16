@@ -12,7 +12,6 @@ import java.lang.management.MemoryUsage;
 import java.lang.management.OperatingSystemMXBean;
 import java.lang.management.RuntimeMXBean;
 import java.lang.management.ThreadMXBean;
-import java.util.List;
 
 /**
  * 输出jvm内的cpu，mem，thread的信息
@@ -24,7 +23,7 @@ public class JvmStat {
 
     public static class Stat {
         private int pid = -1;
-        private List<String> arguments;
+        private String name = null;
         private long timeDone = -1;
         private long timeCost = -1;
         private int processor = -1;
@@ -62,6 +61,15 @@ public class JvmStat {
          */
         public int getPid() {
             return pid;
+        }
+
+        /**
+         * 当前进程name
+         *
+         * @return name
+         */
+        public String getName() {
+            return name;
         }
 
         /**
@@ -164,10 +172,19 @@ public class JvmStat {
             return systemLoad < 0 ? -1 : (systemLoad / processor);
         }
 
+        /**
+         * 获得平均每processor的线程数
+         *
+         * @return 每核平均线程数
+         */
+        public int getThreadLoad() {
+            return threadCount * 100 / processor;
+        }
+
         @Override public String toString() {
             return "Stat{" +
                    "pid=" + pid +
-                   ", arguments=" + arguments +
+                   ", name=" + name +
                    ", timeDone=" + timeDone +
                    ", timeCost=" + timeCost +
                    ", processor=" + processor +
@@ -203,9 +220,9 @@ public class JvmStat {
     public static void buildRuntime(Stat stat) {
         try {
             final RuntimeMXBean runtimeMXBean = ManagementFactory.getRuntimeMXBean();
-            final String pid = runtimeMXBean.getName().split("@")[0];
-            stat.pid = Integer.parseInt(pid);
-            stat.arguments = runtimeMXBean.getInputArguments();
+            final String name = runtimeMXBean.getName();
+            stat.name = name;
+            stat.pid = Integer.parseInt(name.split("@")[0]);
         }
         catch (Throwable ex) {
             // ignore
