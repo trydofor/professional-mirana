@@ -7,6 +7,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * 读取，不超过 Integer.Max 行数的小日志文件。单行长度不要超过10k。
@@ -113,21 +115,29 @@ public class LogStat {
         }
     }
 
+    public static class Word {
+        public int range1 = 0;
+        public int range2 = Integer.MAX_VALUE;
+        public byte[] bytes;
+    }
+
     /**
      * 直接获取 stat
      *
-     * @param log     输入文件
-     * @param from    起始字节，负数表示从末端开始
-     * @param keyword 关键词，按UTF8读入
+     * @param log  输入文件
+     * @param from 起始字节，负数表示从末端开始
+     * @param keys 关键词，按UTF8读入
      * @return stat
      */
     @NotNull
-    public static Stat stat(String log, long from, String... keyword) {
-        byte[][] keys = new byte[keyword.length][];
-        for (int i = 0; i < keyword.length; i++) {
-            keys[i] = keyword[i].getBytes(StandardCharsets.UTF_8);
+    public static Stat stat(String log, long from, String... keys) {
+        Word[] words = new Word[keys.length];
+        for (int i = 0; i < keys.length; i++) {
+            Word wd = new Word();
+            wd.bytes = keys[i].getBytes(StandardCharsets.UTF_8);
+            words[i] = wd;
         }
-        return stat(log, from, keys);
+        return stat(log, from, words);
     }
 
     /**
@@ -140,6 +150,38 @@ public class LogStat {
      */
     @NotNull
     public static Stat stat(String log, long from, byte[]... keys) {
+        Word[] words = new Word[keys.length];
+        for (int i = 0; i < keys.length; i++) {
+            Word wd = new Word();
+            wd.bytes = keys[i];
+            words[i] = wd;
+        }
+        return stat(log, from, words);
+    }
+
+    /**
+     * 直接获取 stat。log按byte读入。
+     *
+     * @param log  输入文件
+     * @param from 起始字节，负数表示从末端开始
+     * @param keys 关键词
+     * @return stat
+     */
+    @NotNull
+    public static Stat stat(String log, long from, Word... keys) {
+        return stat(log, from, Arrays.asList(keys));
+    }
+
+    /**
+     * 直接获取 stat。log按byte读入。
+     *
+     * @param log  输入文件
+     * @param from 起始字节，负数表示从末端开始
+     * @param keys 关键词
+     * @return stat
+     */
+    @NotNull
+    public static Stat stat(String log, long from, List<Word> keys) {
         final Stat stat;
         try {
             stat = buildStat(log, from, keys);
@@ -159,7 +201,7 @@ public class LogStat {
      * @return stat
      * @throws IOException 文件错误
      */
-    public static Stat buildStat(String log, long from, byte[]... keys) throws IOException {
+    public static Stat buildStat(String log, long from, List<Word> keys) throws IOException {
         final long bgn = System.currentTimeMillis();
 
         final Stat stat = new Stat();
@@ -177,12 +219,19 @@ public class LogStat {
         stat.pathLog = ins.getAbsolutePath();
         stat.byteFrom = from;
 
-        if (fln == 0 || keys == null || keys.length == 0) {
+        if (fln == 0 || keys == null || keys.size() == 0) {
             stat.byteDone = fln;
             stat.pathOut = null;
             stat.timeDone = bgn;
             stat.timeCost = 0;
             return stat;
+        }
+
+        int keyMax = 0;
+        for (Word key : keys) {
+            if (key.bytes.length > keyMax) {
+                keyMax = key.bytes.length;
+            }
         }
 
         long done = from;
@@ -213,14 +262,17 @@ public class LogStat {
                         }
                         else {
                             if (findLen <= 0) {
-                                int m = find(buff, i, keys);
-                                if (m < 0) {
+                                int len = buff.length - i;
+                                if (len >= keyMax) {
+                                    Word m = find(buff, i, lineEnd, keys);
+                                    if (m != null) {
+                                        findLen = m.bytes.length;
+                                        i = i + findLen - 1;
+                                    }
+                                }
+                                else {
                                     findLen = -1;
                                     break;
-                                }
-                                else if (m > 0) {
-                                    findLen = m;
-                                    i = i + m - 1;
                                 }
                             }
                         }
@@ -272,32 +324,58 @@ public class LogStat {
         return stat;
     }
 
-    // -1:buff长度不够; 0:不匹配
-    private static int find(byte[] buff, int pos, byte[][] keys) {
-        int m = -1;
-        int len = buff.length - pos;
+    private static Word find(byte[] buff, int pos, int pcr, List<Word> keys) {
+        final int idx = pos - pcr;
         out:
-        for (byte[] key : keys) {
-            if (len >= key.length) {
-                for (int j = 0; j < key.length; j++) {
-                    if (buff[pos + j] != key[j]) {
-                        m = 0;
+        for (Word key : keys) {
+            if (key.range1 <= idx && idx <= key.range2) {
+                final byte[] bytes = key.bytes;
+                for (int j = 0; j < bytes.length; j++) {
+                    if (buff[pos + j] != bytes[j]) {
                         continue out;
                     }
                 }
-                return key.length;
+                return key;
             }
         }
-        return m;
+        return null;
     }
 
     public static void main(String[] args) {
-        System.out.println("usage: log-file:File [byte-from:Long]");
-        final String log = args.length > 0 ? args[0] : "/Users/trydofor/Downloads/tmp/admin.log";
-        final long from = args.length > 1 ? Long.parseLong(args[1]) : 0;
+        System.out.println("usage: log-file:File [byte-from:Long] [Word:String,rang1:int,rang2:int]");
+        final int aln = args.length;
+        final String log = aln > 0 ? args[0] : "/Users/trydofor/Downloads/tmp/admin.log";
+        final long from = aln > 1 ? Long.parseLong(args[1]) : 0;
+        final Word[] wd;
+        if (aln > 2) {
+            wd = new Word[aln - 2];
+            for (int i = 2; i < aln; i++) {
+                final Word w = new Word();
+                final String[] pt = args[i].split(",");
+                if (pt.length == 3) {
+                    w.bytes = pt[0].getBytes(StandardCharsets.UTF_8);
+                    w.range1 = Integer.parseInt(pt[1]);
+                    w.range2 = Integer.parseInt(pt[2]);
+                }
+                else {
+                    w.bytes = args[i].getBytes(StandardCharsets.UTF_8);
+                }
+                wd[i - 2] = w;
+            }
+
+        }
+        else {
+            wd = new Word[2];
+            wd[0] = new Word();
+            wd[0].range2 = 60;
+            wd[0].bytes = "WARN" .getBytes(StandardCharsets.UTF_8);
+            wd[1] = new Word();
+            wd[1].range2 = 60;
+            wd[1].bytes = "ERROR" .getBytes(StandardCharsets.UTF_8);
+        }
 
         final long len = new File(log).length();
-        final Stat stat = stat(log, from, " ERROR ", " WARN ");
+        final Stat stat = stat(log, from, wd);
         System.out.println("file=" + len + ", stat=" + stat.byteDone + ", eq=" + (len == stat.byteDone));
         System.out.println(stat);
     }
