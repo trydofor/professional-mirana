@@ -7,7 +7,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -121,6 +123,8 @@ public class LogStat {
         public byte[] bytes;
     }
 
+    public static final String Suffix = ".scanned.txt";
+
     /**
      * 直接获取 stat
      *
@@ -193,6 +197,35 @@ public class LogStat {
     }
 
     /**
+     * 清除 N days 以前的扫描文件
+     *
+     * @param log  输入文件
+     * @param days 天数，小于等于零，按零处理
+     * @return 被清理的文件路径
+     */
+    public static List<String> clean(String log, int days) {
+        final File file = new File(log);
+        final File dir = file.getParentFile();
+        final String pre = file.getName();
+        if (dir == null) return Collections.emptyList();
+
+        final long min = days <= 0 ? System.currentTimeMillis() : System.currentTimeMillis() - days * 24 * 3600 * 1000L;
+        final File[] tmp = dir.listFiles(fl -> {
+            final String fn = fl.getName();
+            return fn.startsWith(pre) && fn.endsWith(Suffix) && fl.lastModified() < min;
+        });
+
+        if (tmp == null || tmp.length == 0) return Collections.emptyList();
+        final List<String> rst = new ArrayList<>(tmp.length);
+        for (File t : tmp) {
+            if (t.delete()) {
+                rst.add(t.getAbsolutePath());
+            }
+        }
+        return rst;
+    }
+
+    /**
      * 直接获取 stat
      *
      * @param log  输入文件
@@ -235,7 +268,7 @@ public class LogStat {
         }
 
         long done = from;
-        final File out = File.createTempFile("stat-", ".txt");
+        final File out = File.createTempFile(ins.getName() + ".", Suffix, ins.getParentFile());
         final int cap = 1024 * 64;
         final int min = cap / 4;
 
@@ -342,6 +375,9 @@ public class LogStat {
     }
 
     public static void main(String[] args) {
+        clean("/Users/trydofor/Downloads/tmp/admin.log", -1);
+        System.exit(0);
+
         System.out.println("usage: log-file:File [byte-from:Long] [Word:String,rang1:int,rang2:int]");
         final int aln = args.length;
         final String log = aln > 0 ? args[0] : "/Users/trydofor/Downloads/tmp/admin.log";
