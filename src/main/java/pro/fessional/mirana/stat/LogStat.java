@@ -7,6 +7,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -126,7 +128,7 @@ public class LogStat {
     public static final String Suffix = ".scanned.txt";
 
     /**
-     * 直接获取 stat
+     * 直接获取 stat，同日志同毫秒内同时输出日志时有可能会覆盖。
      *
      * @param log  输入文件
      * @param from 起始字节，负数表示从末端开始
@@ -145,7 +147,7 @@ public class LogStat {
     }
 
     /**
-     * 直接获取 stat。log按byte读入。
+     * 直接获取 stat。log按byte读入，同日志同毫秒内同时输出日志时有可能会覆盖。
      *
      * @param log  输入文件
      * @param from 起始字节，负数表示从末端开始
@@ -164,7 +166,7 @@ public class LogStat {
     }
 
     /**
-     * 直接获取 stat。log按byte读入。
+     * 直接获取 stat。log按byte读入，同日志同毫秒内同时输出日志时有可能会覆盖。
      *
      * @param log  输入文件
      * @param from 起始字节，负数表示从末端开始
@@ -177,7 +179,7 @@ public class LogStat {
     }
 
     /**
-     * 直接获取 stat。log按byte读入。
+     * 直接获取 stat。log按byte读入，同日志同毫秒内同时输出日志时有可能会覆盖。
      *
      * @param log  输入文件
      * @param from 起始字节，负数表示从末端开始
@@ -226,7 +228,7 @@ public class LogStat {
     }
 
     /**
-     * 直接获取 stat
+     * 直接获取 stat，同日志同毫秒内同时输出日志时有可能会覆盖。
      *
      * @param log  输入文件
      * @param from 起始字节，负数表示从末端开始
@@ -268,7 +270,11 @@ public class LogStat {
         }
 
         long done = from;
-        final File out = File.createTempFile(ins.getName() + ".", Suffix, ins.getParentFile());
+
+        final DateTimeFormatter df = DateTimeFormatter.ofPattern("yyMMddHHmmssSSS");
+        final String dts = df.format(LocalDateTime.now());
+
+        final File out = new File(stat.pathLog + "." + dts + Suffix);
         final int cap = 1024 * 64;
         final int min = cap / 4;
 
@@ -375,7 +381,10 @@ public class LogStat {
     }
 
     public static void main(String[] args) {
-        clean("/Users/trydofor/Downloads/tmp/admin.log", -1);
+        if(args.length == 1 && args[0].equalsIgnoreCase("clean")) {
+            clean("/Users/trydofor/Downloads/tmp/admin.log", -1);
+            System.exit(0);
+        }
         System.exit(0);
 
         System.out.println("usage: log-file:File [byte-from:Long] [Word:String,rang1:int,rang2:int]");
@@ -404,10 +413,10 @@ public class LogStat {
             wd = new Word[2];
             wd[0] = new Word();
             wd[0].range2 = 60;
-            wd[0].bytes = "WARN" .getBytes(StandardCharsets.UTF_8);
+            wd[0].bytes = "WARN".getBytes(StandardCharsets.UTF_8);
             wd[1] = new Word();
             wd[1].range2 = 60;
-            wd[1].bytes = "ERROR" .getBytes(StandardCharsets.UTF_8);
+            wd[1].bytes = "ERROR".getBytes(StandardCharsets.UTF_8);
         }
 
         final long len = new File(log).length();
