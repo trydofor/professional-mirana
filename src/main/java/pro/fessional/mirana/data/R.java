@@ -111,18 +111,16 @@ public class R<T> implements DataResult<T>, I18nAware {
      * @param message i18n 参数
      * @return this
      */
-    public R<T> setI18nMessage(I18nString message) {
-        if (this.message == null) {
-            this.message = message.getHint();
-        }
-        this.i18nCode = message.getI18nCode();
-        this.i18nArgs = message.getI18nArgs();
-        return this;
-    }
-
     public R<T> setI18nMessage(I18nAware message) {
+        if (message instanceof I18nString) {
+            if (this.message == null) {
+                this.message = ((I18nString) message).getHint();
+            }
+        }
+
         this.i18nCode = message.getI18nCode();
         this.i18nArgs = message.getI18nArgs();
+
         return this;
     }
 
