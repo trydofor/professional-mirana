@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -243,6 +244,31 @@ public class DateParser {
     }
 
     @NotNull
+    public static OffsetDateTime parseOffset(@NotNull TemporalAccessor ta, @NotNull ZoneId elze) {
+        if (ta instanceof ZonedDateTime) {
+            return ((ZonedDateTime) ta).toOffsetDateTime();
+        }
+
+        if (ta instanceof OffsetDateTime) {
+            return (OffsetDateTime) ta;
+        }
+
+        final LocalDateTime ldt = ta.query(QueryDateTime);
+        ZoneOffset zof = ta.query(TemporalQueries.offset());
+        if (zof != null) {
+            return OffsetDateTime.of(ldt, zof);
+        }
+        ZoneId zid = ta.query(TemporalQueries.zone());
+        return ZonedDateTime.of(ldt, zid == null ? elze : zid).toOffsetDateTime();
+    }
+
+    @NotNull
+    public static OffsetDateTime parseOffset(@NotNull CharSequence str, @NotNull ZoneId elze, Collection<DateTimeFormatter> dtf) {
+        final TemporalAccessor ta = parseTemporal(str, dtf, false);
+        return parseOffset(ta, elze);
+    }
+
+    @NotNull
     public static LocalTime parseTime(@NotNull CharSequence str, DateTimeFormatter... dtf) {
         return parseTime(str, Arrays.asList(dtf));
     }
@@ -260,6 +286,11 @@ public class DateParser {
     @NotNull
     public static ZonedDateTime parseZoned(@NotNull CharSequence str, @NotNull ZoneId elze, DateTimeFormatter... dtf) {
         return parseZoned(str, elze, Arrays.asList(dtf));
+    }
+
+    @NotNull
+    public static OffsetDateTime parseOffset(@NotNull CharSequence str, @NotNull ZoneId elze, DateTimeFormatter... dtf) {
+        return parseOffset(str, elze, Arrays.asList(dtf));
     }
 
     /**

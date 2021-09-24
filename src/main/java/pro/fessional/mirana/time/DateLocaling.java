@@ -125,13 +125,8 @@ public class DateLocaling {
      */
     public static LocalDateTime toZone(LocalDateTime time, ZoneId from, ZoneId to) {
         if (time == null) return null;
-        if (to == null || from == null) return time;
-        if (from.equals(to)) {
-            return time;
-        }
-        else {
-            return time.atZone(from).withZoneSameInstant(to).toLocalDateTime();
-        }
+        if (to == null || from.equals(to)) return time;
+        return time.atZone(from).withZoneSameInstant(to).toLocalDateTime();
     }
 
     /**
@@ -152,6 +147,43 @@ public class DateLocaling {
             return time.withZoneSameInstant(to).toLocalDateTime();
         }
     }
+
+    /**
+     * 把time从系统时区
+     *
+     * @param time 时间
+     * @return 目标时间
+     */
+    public static ZonedDateTime atZone(LocalDateTime time) {
+        if (time == null) return null;
+        return time.atZone(ZoneId.systemDefault());
+    }
+
+    /**
+     * 把time从系统时区变为 to的时区
+     *
+     * @param time 时间
+     * @param to   目标时区
+     * @return 目标时间
+     */
+    public static ZonedDateTime atZone(LocalDateTime time, ZoneId to) {
+        return atZone(time, ZoneId.systemDefault(), to);
+    }
+
+    /**
+     * 把时间从from变为to时区
+     *
+     * @param time 时间
+     * @param from 来源
+     * @param to   目标
+     * @return 目标时间
+     */
+    public static ZonedDateTime atZone(LocalDateTime time, ZoneId from, ZoneId to) {
+        if (time == null) return null;
+        if (to == null || from.equals(to)) return time.atZone(from);
+        return time.atZone(from).withZoneSameInstant(to);
+    }
+
 
     /**
      * 把时间变为系统时区
