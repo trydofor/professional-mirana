@@ -139,6 +139,15 @@ public class FormatUtilTest {
     }
 
     @Test
+    public void message() {
+        String f = "{0}{1}{3}";
+        assertEquals("1", FormatUtil.message(f, "1"));
+        assertEquals("1", FormatUtil.message(f, "1", null));
+        assertEquals("1", FormatUtil.message(f, "1", null, null));
+        assertEquals("12", FormatUtil.message(f, "1", 2, 3));
+    }
+
+    @Test
     public void leftFix() {
         assertEquals("0123456789", FormatUtil.leftFix("123456789", 10, '0'));
         assertEquals("1234567890", FormatUtil.leftFix("1234567890", 10, '0'));

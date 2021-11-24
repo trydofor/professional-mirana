@@ -5,6 +5,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pro.fessional.mirana.data.Null;
 
+import java.text.Format;
+import java.text.MessageFormat;
 import java.util.Arrays;
 
 /**
@@ -95,9 +97,50 @@ public class FormatUtil {
     }
 
     /**
-     * 处理 printf的`%`占位符
+     * 包装了 MessageFormat的{0}，自动以empty string补全参数。
+     * 涉及复制数组，有一点的性能损失。
+     *
+     * @param fmt  格式
+     * @param args 参数
+     * @return 格式化后的字符
+     * @see java.text.MessageFormat
+     */
+    public static String message(CharSequence fmt, Object... args) {
+        if (fmt == null) return Null.Str;
+
+        final MessageFormat format = new MessageFormat(fmt.toString());
+        final Format[] index = format.getFormatsByArgumentIndex();
+        if (index.length == 0) return fmt.toString();
+        Object[] tmp = null;
+        if (args == null || args.length < index.length) {
+            tmp = new Object[index.length];
+        }
+        else {
+            for (Object arg : args) {
+                if (arg == null) {
+                    tmp = new Object[index.length];
+                    break;
+                }
+            }
+        }
+
+        if (tmp != null) {
+            Arrays.fill(tmp, Null.Str);
+            if (args != null) {
+                for (int i = 0; i < args.length; i++) {
+                    if (args[i] != null) tmp[i] = args[i];
+                }
+            }
+            args = tmp;
+        }
+
+        return format.format(args);
+    }
+
+    /**
+     * 处理 printf的`%`占位符，涉及复制数组，有一点的性能损失。
      * 安全的，自动补全的 String#format。
-     * 更优雅的format建议使用 java.text.format.MessageFormat.
+     * 更优雅的format建议使用 java.text.MessageFormat.
      *
      * @param fmt  格式
      * @param args 参数
@@ -108,20 +151,24 @@ public class FormatUtil {
     @NotNull
     public static String format(CharSequence fmt, Object... args) {
         if (fmt == null) return Null.Str;
-        if (args == null || args.length == 0) return fmt.toString();
 
         int[] count = count(fmt, "%", "%%");
         if (count[0] == 0) return fmt.toString();
-        for (int i = 0; i < args.length; i++) {
+
+        int len = args == null ? 0 : args.length;
+
+        for (int i = 0; i < len; i++) {
             if (args[i] == null) args[i] = Null.Str;
         }
 
         int holds = count[0] - count[1] * 2;
-        if (args.length < holds) {
-            Object[] g = new Object[holds];
-            Arrays.fill(g, Null.Str);
-            System.arraycopy(args, 0, g, 0, args.length);
-            args = g;
+        if (len < holds) {
+            Object[] tmp = new Object[holds];
+            Arrays.fill(tmp, Null.Str);
+            if (args != null) {
+                System.arraycopy(args, 0, tmp, 0, args.length);
+            }
+            args = tmp;
         }
 
         return String.format(fmt.toString(), args);
