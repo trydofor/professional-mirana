@@ -5,12 +5,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pro.fessional.mirana.data.Null;
 
-import java.text.Format;
 import java.text.MessageFormat;
 import java.util.Arrays;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 安全且内存碎片少的formatter，能够处理 slf4j的`{}`和printf的`%`
+ * 安全且内存碎片少的formatter，能够处理
+ * slf4j的`{}`；printf的`%`；Message的`{0}`
  *
  * @author trydofor
  * @author Baoyi Chen
@@ -96,9 +97,10 @@ public class FormatUtil {
         return builder.toString();
     }
 
+    private static final ConcurrentHashMap<String, FormatHolder> Formats = new ConcurrentHashMap<>();
+
     /**
      * 包装了 MessageFormat的{0}，自动以empty string补全参数。
-     * 涉及复制数组，有一点的性能损失。
      *
      * @param fmt  格式
      * @param args 参数
@@ -107,35 +109,13 @@ public class FormatUtil {
      */
     public static String message(CharSequence fmt, Object... args) {
         if (fmt == null) return Null.Str;
-
-        final MessageFormat format = new MessageFormat(fmt.toString());
-        final Format[] index = format.getFormatsByArgumentIndex();
-        if (index.length == 0) return fmt.toString();
-        Object[] tmp = null;
-        if (args == null || args.length < index.length) {
-            tmp = new Object[index.length];
-        }
-        else {
-            for (Object arg : args) {
-                if (arg == null) {
-                    tmp = new Object[index.length];
-                    break;
-                }
-            }
-        }
-
-        if (tmp != null) {
-            Arrays.fill(tmp, Null.Str);
-            if (args != null) {
-                for (int i = 0; i < args.length; i++) {
-                    if (args[i] != null) tmp[i] = args[i];
-                }
-            }
-            args = tmp;
-        }
-
-        return format.format(args);
+        final FormatHolder f = Formats.computeIfAbsent(fmt.toString(), FormatHolder::new);
+        final int size = f.getSize();
+        final MessageFormat format = f.use();
+        return format.format(fixArgs(size, args));
     }
+
+    private static final ConcurrentHashMap<String, Integer> Printf = new ConcurrentHashMap<>();
 
     /**
      * 处理 printf的`%`占位符，涉及复制数组，有一点的性能损失。
@@ -151,27 +131,49 @@ public class FormatUtil {
     @NotNull
     public static String format(CharSequence fmt, Object... args) {
         if (fmt == null) return Null.Str;
+        final String str = fmt.toString();
 
-        int[] count = count(fmt, "%", "%%");
-        if (count[0] == 0) return fmt.toString();
+        final int size = Printf.computeIfAbsent(str, k -> {
+            int[] count = count(k, "%", "%%");
+            return count[0] - count[1] * 2;
+        });
 
-        int len = args == null ? 0 : args.length;
+        return String.format(str, fixArgs(size, args));
+    }
 
-        for (int i = 0; i < len; i++) {
-            if (args[i] == null) args[i] = Null.Str;
+
+    /**
+     * 使用 EmptyString补全和填充null参加
+     *
+     * @param size  参数期望长度
+     * @param args 参数
+     * @return 非null参数
+     */
+    @NotNull
+    public static Object[] fixArgs(int size, Object... args) {
+        if (size <= 0) return Null.Objects;
+
+        Object[] tmp = null;
+        if (args == null || args.length < size) {
+            tmp = new Object[size];
         }
-
-        int holds = count[0] - count[1] * 2;
-        if (len < holds) {
-            Object[] tmp = new Object[holds];
-            Arrays.fill(tmp, Null.Str);
-            if (args != null) {
-                System.arraycopy(args, 0, tmp, 0, args.length);
+        else {
+            for (Object arg : args) {
+                if (arg == null) {
+                    tmp = new Object[size];
+                    break;
+                }
             }
-            args = tmp;
         }
+        if (tmp == null) return args;
 
-        return String.format(fmt.toString(), args);
+        Arrays.fill(tmp, Null.Str);
+        if (args != null) {
+            for (int i = 0; i < args.length; i++) {
+                if (args[i] != null) tmp[i] = args[i];
+            }
+        }
+        return tmp;
     }
 
     /**

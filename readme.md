@@ -292,7 +292,7 @@ ID能保证严格的`单调递增`(升序)，但不保证连续，其long型的6
  * BuilderHelper - null友好碎片少的StringBuilder操作
  * BuilderHolder - 减少碎片的StringBuilder
  * CaseSwitcher - camel,snake,pascal,kebab命名转换
- * FormatUtil - printf的`%`和logbak的`{}`，截断填充
+ * FormatUtil - printf的`%`;logbak的`{}`;message的`{0}`，参数填充
  * FullCharUtil - 全角字符工具
  * HalfCharUtil - 半角字符工具
  * StringTemplate - 字符串模板，免替换尴尬，可读性好，性能优
