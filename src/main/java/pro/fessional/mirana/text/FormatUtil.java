@@ -7,6 +7,8 @@ import pro.fessional.mirana.data.Null;
 
 import java.text.MessageFormat;
 import java.util.Arrays;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -20,6 +22,47 @@ import java.util.concurrent.ConcurrentHashMap;
 public class FormatUtil {
 
     private static final BuilderHolder Builder = new BuilderHolder();
+
+    /**
+     * 默认使用`&`和`=`符链接
+     *
+     * @see #sortParam(Map, String, String)
+     */
+    @NotNull
+    public static String sortParam(@NotNull Map<?, ?> params) {
+        return sortParam(params, "&", "=");
+    }
+
+    /**
+     * 对于按key进行ascii顺序排序的参数进行拼接，默认使用TreeMap。
+     * 如果param值为null，则忽略该key
+     *
+     * @param param 参数
+     * @param join1 参数间链接符
+     * @param join2 Kv链接符
+     * @return 拼接后字符串
+     */
+    @NotNull
+    public static String sortParam(@NotNull Map<?, ?> param, @NotNull String join1, @NotNull String join2) {
+        final TreeMap<?, ?> sorted;
+        if (param instanceof TreeMap) {
+            sorted = (TreeMap<?, ?>) param;
+        }
+        else {
+            sorted = new TreeMap<>(param);
+        }
+
+        final StringBuilder builder = Builder.use();
+        for (Map.Entry<?, ?> en : sorted.entrySet()) {
+            final Object value = en.getValue();
+            if (value == null) continue;
+
+            builder.append(join1);
+            builder.append(en.getKey()).append(join2).append(value);
+        }
+
+        return builder.substring(join1.length());
+    }
 
     /**
      * 处理slf4j的 `{}`占位符
@@ -145,7 +188,7 @@ public class FormatUtil {
     /**
      * 使用 EmptyString补全和填充null参加
      *
-     * @param size  参数期望长度
+     * @param size 参数期望长度
      * @param args 参数
      * @return 非null参数
      */
