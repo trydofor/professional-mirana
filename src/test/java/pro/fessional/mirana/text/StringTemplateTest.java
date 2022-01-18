@@ -56,6 +56,13 @@ public class StringTemplateTest {
                 .bindStr("${ttl}", "123")
                 .toString();
         assertEquals("key='',ttl=", body);
+
+        final String next = StringTemplate
+                .dyn("${key}${ttl}")
+                .bindStr("${key}", "KEY")
+                .bindStr("${ttl}", "123")
+                .toString();
+        assertEquals("KEY123", next);
     }
 
     @Test

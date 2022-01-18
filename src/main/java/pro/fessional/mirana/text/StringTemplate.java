@@ -269,7 +269,7 @@ public class StringTemplate {
             while (it.hasNext()) {
                 H nt = it.next();
                 int x0 = nt.p1;
-                if (x0 > p1) {
+                if (x0 >= p1) {
                     if (p1 < 0) {
                         if (x0 > 0) {
                             rst.add(str.substring(0, x0).toCharArray());
