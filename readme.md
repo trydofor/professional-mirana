@@ -121,6 +121,7 @@ java8, 0依赖，是guava,commons-*的补充。
 ## `cond/` 条件断言
 
  * Contains - 包含
+ * StaticFlag - 全局Flag
 
 ## `data/` 数据传递
 

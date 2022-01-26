@@ -24,8 +24,10 @@ public class FormatUtil {
     private static final BuilderHolder Builder = new BuilderHolder();
 
     /**
-     * 默认使用`&`和`=`符链接
+     * 默认使用`&amp;`和`=`符链接
      *
+     * @param params 参数
+     * @return 拼接后字符串
      * @see #sortParam(Map, String, String)
      */
     @NotNull
