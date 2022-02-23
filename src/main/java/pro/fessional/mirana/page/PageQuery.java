@@ -18,6 +18,7 @@ import java.util.Objects;
  * @since 2020-09-29
  */
 public class PageQuery implements Serializable {
+    private static final long serialVersionUID = 19791023L;
 
     protected int page = 1;
     protected int size = 1;

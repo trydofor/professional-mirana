@@ -9,6 +9,7 @@ import pro.fessional.mirana.data.CodeEnum;
  * @since 2019-10-05
  */
 public class BadArgsException extends CodeException {
+    private static final long serialVersionUID = 19791023L;
 
     public BadArgsException(String code) {
         super(code);

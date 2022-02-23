@@ -17,6 +17,7 @@ import java.util.Locale;
  * @since 2019-09-19
  */
 public class I18nString implements I18nAware {
+    private static final long serialVersionUID = 19791023L;
 
     public static final Object[] EMPTY_ARGS = {};
 

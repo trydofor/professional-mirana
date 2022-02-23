@@ -30,6 +30,7 @@ import java.util.Objects;
  * @since 2020-09-29
  */
 public class PageResult<E> extends R<Collection<E>> implements Iterable<E> {
+    private static final long serialVersionUID = 19791023L;
 
     private final List<E> empty = Collections.emptyList();
 

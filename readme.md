@@ -236,6 +236,7 @@ ID能保证严格的`单调递增`(升序)，但不保证连续，其long型的6
 ## `io/` IO及fs操作
 
  * CircleInputStream - 可循环读取的流
+ * CompatibleObjectStream - 当serialVersionUID不兼容时，采用本地Class反序列化
  * DirHasher 本地文件系统不可保存太多文件
  * Exec - 单线程同步执行，高级功能用Apache Commons Exec
  * InputStreams - 不使用commons的补位

@@ -13,6 +13,7 @@ import pro.fessional.mirana.i18n.I18nString;
  * @since 2019-05-29
  */
 public class CodeException extends RuntimeException implements I18nAware {
+    private static final long serialVersionUID = 19791023L;
 
     private final String code;
 

@@ -13,6 +13,8 @@ import java.util.Objects;
  */
 public class AnyTicket implements Ticket.Mutable {
 
+    private static final long serialVersionUID = 19791023L;
+
     private String pubMod = Null.Str;
     private long pubExp = 0;
     private int pubSeq = 0;
