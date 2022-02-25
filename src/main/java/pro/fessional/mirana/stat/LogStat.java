@@ -125,7 +125,7 @@ public class LogStat {
         public byte[] bytes;
     }
 
-    public static final String Suffix = ".scanned.txt";
+    public static final String Suffix = ".scanned.tmp";
 
     /**
      * 直接获取 stat，同日志同毫秒内同时输出日志时有可能会覆盖。
@@ -206,15 +206,19 @@ public class LogStat {
      * @return 被清理的文件路径
      */
     public static List<String> clean(String log, int days) {
+        return clean(log, days, Suffix);
+    }
+
+    public static List<String> clean(String log, int days, String suffix) {
         final File file = new File(log);
         final File dir = file.getParentFile();
         final String pre = file.getName();
         if (dir == null) return Collections.emptyList();
-
+        final String suf = suffix == null || suffix.isEmpty() ? Suffix : suffix;
         final long min = days <= 0 ? System.currentTimeMillis() : System.currentTimeMillis() - days * 24 * 3600 * 1000L;
         final File[] tmp = dir.listFiles(fl -> {
             final String fn = fl.getName();
-            return fn.startsWith(pre) && fn.endsWith(Suffix) && fl.lastModified() < min;
+            return fn.startsWith(pre) && fn.endsWith(suf) && fl.lastModified() < min;
         });
 
         if (tmp == null || tmp.length == 0) return Collections.emptyList();
@@ -237,6 +241,10 @@ public class LogStat {
      * @throws IOException 文件错误
      */
     public static Stat buildStat(String log, long from, List<Word> keys) throws IOException {
+        return buildStat(log, from, keys, Suffix);
+    }
+
+    public static Stat buildStat(String log, long from, List<Word> keys, String suffix) throws IOException {
         final long bgn = System.currentTimeMillis();
 
         final Stat stat = new Stat();
@@ -270,11 +278,11 @@ public class LogStat {
         }
 
         long done = from;
+        if (suffix == null || suffix.isEmpty()) suffix = Suffix;
 
         final DateTimeFormatter df = DateTimeFormatter.ofPattern("yyMMddHHmmssSSS");
         final String dts = df.format(LocalDateTime.now());
-
-        final File out = new File(stat.pathLog + "." + dts + Suffix);
+        final File out = new File(stat.pathLog + "." + dts + suffix);
         final int cap = 1024 * 64;
         final int min = cap / 4;
 
@@ -381,7 +389,7 @@ public class LogStat {
     }
 
     public static void main(String[] args) {
-        if(args.length == 1 && args[0].equalsIgnoreCase("clean")) {
+        if (args.length == 1 && args[0].equalsIgnoreCase("clean")) {
             clean("/Users/trydofor/Downloads/tmp/admin.log", -1);
             System.exit(0);
         }
