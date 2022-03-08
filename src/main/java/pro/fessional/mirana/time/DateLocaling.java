@@ -8,73 +8,93 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 /**
+ * 对LocalDateTime和ZonedDateTime进行时区的转换，默认立足System时区看Viewer时区
+ *
  * @author trydofor
  * @since 2019-10-16
  */
 public class DateLocaling {
 
-    public static LocalDateTime nowDateTime(ZoneId to) {
-        return ZonedDateTime.now(to).toLocalDateTime();
-    }
-
-    public static LocalDate nowDate(ZoneId to) {
-        return ZonedDateTime.now(to).toLocalDate();
-    }
-
-    public static LocalTime nowTime(ZoneId to) {
-        return ZonedDateTime.now(to).toLocalTime();
+    /**
+     * 当前的日时
+     *
+     * @param at 时区
+     * @return now
+     */
+    public static LocalDateTime dateTime(ZoneId at) {
+        return ZonedDateTime.now(at).toLocalDateTime();
     }
 
     /**
-     * 今天的 0:0:0.0
+     * 当前的日期
      *
-     * @param to 时区
+     * @param at 时区
+     * @return now
+     */
+    public static LocalDate date(ZoneId at) {
+        return ZonedDateTime.now(at).toLocalDate();
+    }
+
+    /**
+     * 当前的时间
+     *
+     * @param at 时区
+     * @return now
+     */
+    public static LocalTime time(ZoneId at) {
+        return ZonedDateTime.now(at).toLocalTime();
+    }
+
+    /**
+     * 今天的零时（0:0:0.0）
+     *
+     * @param at 时区
      * @return 凌晨
      */
-    public static LocalDateTime today(ZoneId to) {
-        return ZonedDateTime.now(to).toLocalDate().atStartOfDay();
+    public static LocalDateTime today(ZoneId at) {
+        return ZonedDateTime.now(at).toLocalDate().atStartOfDay();
     }
 
     /**
-     * 月初的 0:0:0.0
+     * 月初（最近的一日）的零时（0:0:0.0）
      *
-     * @param to 时区
+     * @param at 时区
      * @return 月初的 0:0:0.0
      */
-    public static LocalDateTime thisMonth(ZoneId to) {
-        return ZonedDateTime.now(to).toLocalDate().withDayOfMonth(1).atStartOfDay();
+    public static LocalDateTime month(ZoneId at) {
+        return ZonedDateTime.now(at).toLocalDate().withDayOfMonth(1).atStartOfDay();
     }
 
     /**
-     * 当前或过去的周一的 0:0:0.0
+     * 最近的周一的零时（0:0:0.0）
      *
-     * @param to 时区
+     * @param at 时区
      * @return 日时
      */
-    public static LocalDateTime pastMonday(ZoneId to) {
-        return pastWeek(to, DayOfWeek.MONDAY);
+    public static LocalDateTime monday(ZoneId at) {
+        return week(at, DayOfWeek.MONDAY);
     }
 
     /**
-     * 当前或过去的周日的 0:0:0.0
+     * 最近的周日的零时（0:0:0.0）
      *
-     * @param to 时区
+     * @param at 时区
      * @return 日时
      */
-    public static LocalDateTime pastSunday(ZoneId to) {
-        return pastWeek(to, DayOfWeek.SUNDAY);
+    public static LocalDateTime sunday(ZoneId at) {
+        return week(at, DayOfWeek.SUNDAY);
     }
 
     /**
-     * 当前或过去的周几的 0:0:0.0
+     * 最近的周几的零时（0:0:0.0）
      *
-     * @param to  时区
+     * @param at  时区
      * @param day 星期
      * @return 日时
      */
-    public static LocalDateTime pastWeek(ZoneId to, DayOfWeek day) {
-        LocalDateTime ldt = ZonedDateTime.now(to).toLocalDate().atStartOfDay();
-        int v = ldt.getDayOfWeek().getValue();
+    public static LocalDateTime week(ZoneId at, DayOfWeek day) {
+        LocalDateTime ldt = ZonedDateTime.now(at).toLocalDate().atStartOfDay();
+        int v = ldt.getDayOfWeek().getValue(); // 0:Monday; 6:Sunday
         int m = day.getValue();
         if (m > v) {
             return ldt.plusDays((m - v - 7));
@@ -87,140 +107,173 @@ public class DateLocaling {
         }
     }
 
+    // ////////// system //////////
+
     /**
-     * 把time从来源时区变为系统时区
+     * 转为System时区
      *
-     * @param time 时间
-     * @param from 来源时区
-     * @return 系统时间
+     * @param ldt 日时
+     * @return System日时
      */
-    public static LocalDateTime fromZone(LocalDateTime time, ZoneId from) {
-        if (time == null) return null;
-        if (from == null) return time;
-        ZoneId to = ZoneId.systemDefault();
-        return toZone(time, from, to);
+    public static ZonedDateTime sysZdt(LocalDateTime ldt) {
+        if (ldt == null) return null;
+        return ldt.atZone(ZoneId.systemDefault());
     }
 
     /**
-     * 把time从系统时区变为 to的时区
+     * 转为System时区
      *
-     * @param time 时间
-     * @param to   目标时区
-     * @return 目标时间
+     * @param zdt 日时
+     * @return System日时
      */
-    public static LocalDateTime toZone(LocalDateTime time, ZoneId to) {
-        if (time == null) return null;
-        if (to == null) return time;
-        ZoneId from = ZoneId.systemDefault();
-        return toZone(time, from, to);
+    public static LocalDateTime sysLdt(ZonedDateTime zdt) {
+        return local(zdt, ZoneId.systemDefault());
     }
 
     /**
-     * 把时间从from变为to时区
+     * 转为System时区
      *
-     * @param time 时间
-     * @param from 来源
-     * @param to   目标
-     * @return 目标时间
+     * @param zdt 日时
+     * @return System日时
      */
-    public static LocalDateTime toZone(LocalDateTime time, ZoneId from, ZoneId to) {
-        if (time == null) return null;
-        if (to == null || from.equals(to)) return time;
-        return time.atZone(from).withZoneSameInstant(to).toLocalDateTime();
+    public static ZonedDateTime sysZdt(ZonedDateTime zdt) {
+        return zoned(zdt, ZoneId.systemDefault());
     }
 
     /**
-     * 把时间变为to时区
+     * 转为System时区
      *
-     * @param time 时间
-     * @param to   目标时区
-     * @return 目标时间
+     * @param viewer 时区
+     * @param ldt    日时
+     * @return System日时
      */
-    public static LocalDateTime toZone(ZonedDateTime time, ZoneId to) {
-        if (time == null) return null;
-        if (to == null) return time.toLocalDateTime();
+    public static LocalDateTime sysLdt(ZoneId viewer, LocalDateTime ldt) {
+        return local(viewer, ldt, ZoneId.systemDefault());
+    }
 
-        if (time.getZone().equals(to)) {
-            return time.toLocalDateTime();
+    /**
+     * 转为System时区
+     *
+     * @param viewer 时区
+     * @param ldt    日时
+     * @return System日时
+     */
+    public static ZonedDateTime sysZdt(ZoneId viewer, LocalDateTime ldt) {
+        return zoned(viewer, ldt, ZoneId.systemDefault());
+    }
+
+    // ////////// viewer //////////
+
+    /**
+     * 转为Viewer时区
+     *
+     * @param zdt    日时
+     * @param viewer 时区
+     * @return Viewer日时
+     */
+    public static LocalDateTime useLdt(ZonedDateTime zdt, ZoneId viewer) {
+        return local(zdt, viewer);
+    }
+
+    /**
+     * 转为Viewer时区
+     *
+     * @param zdt    日时
+     * @param viewer 时区
+     * @return Viewer日时
+     */
+    public static ZonedDateTime useZdt(ZonedDateTime zdt, ZoneId viewer) {
+        return zoned(zdt, viewer);
+    }
+
+    /**
+     * 转为Viewer时区
+     *
+     * @param ldt    日时
+     * @param viewer 时区
+     * @return Viewer日时
+     */
+    public static LocalDateTime useLdt(LocalDateTime ldt, ZoneId viewer) {
+        return local(ZoneId.systemDefault(), ldt, viewer);
+    }
+
+    /**
+     * 转为Viewer时区
+     *
+     * @param ldt    日时
+     * @param viewer 时区
+     * @return Viewer日时
+     */
+    public static ZonedDateTime useZdt(LocalDateTime ldt, ZoneId viewer) {
+        return zoned(ZoneId.systemDefault(), ldt, viewer);
+    }
+
+
+    // ////////// locate //////////
+
+    /**
+     * 从at转为to时区
+     *
+     * @param at  所在
+     * @param ldt 日时
+     * @param to  目标
+     * @return 目标日时
+     */
+    public static LocalDateTime local(ZoneId at, LocalDateTime ldt, ZoneId to) {
+        if (ldt == null) return null;
+        if (to == null || at.equals(to)) return ldt;
+        return ldt.atZone(at).withZoneSameInstant(to).toLocalDateTime();
+    }
+
+    /**
+     * 从at转为to时区
+     *
+     * @param at  所在
+     * @param ldt 日时
+     * @param to  目标
+     * @return 目标日时
+     */
+    public static ZonedDateTime zoned(ZoneId at, LocalDateTime ldt, ZoneId to) {
+        if (ldt == null) return null;
+        if (to == null || at.equals(to)) return ldt.atZone(at);
+        return ldt.atZone(at).withZoneSameInstant(to);
+    }
+
+    /**
+     * 转为to时区
+     *
+     * @param zdt 日时
+     * @param to  目标
+     * @return 目标日时
+     */
+    public static LocalDateTime local(ZonedDateTime zdt, ZoneId to) {
+        if (zdt == null) return null;
+        if (to == null) return zdt.toLocalDateTime();
+
+        if (zdt.getZone().equals(to)) {
+            return zdt.toLocalDateTime();
         }
         else {
-            return time.withZoneSameInstant(to).toLocalDateTime();
+            return zdt.withZoneSameInstant(to).toLocalDateTime();
         }
     }
 
     /**
-     * 把time从系统时区
+     * 转为to时区
      *
-     * @param time 时间
-     * @return 目标时间
+     * @param zdt 日时
+     * @param to  目标
+     * @return 目标日时
      */
-    public static ZonedDateTime atZone(LocalDateTime time) {
-        if (time == null) return null;
-        return time.atZone(ZoneId.systemDefault());
-    }
+    public static ZonedDateTime zoned(ZonedDateTime zdt, ZoneId to) {
+        if (zdt == null) return null;
+        if (to == null) return zdt;
 
-    /**
-     * 把time从系统时区变为 to的时区
-     *
-     * @param time 时间
-     * @param to   目标时区
-     * @return 目标时间
-     */
-    public static ZonedDateTime atZone(LocalDateTime time, ZoneId to) {
-        return atZone(time, ZoneId.systemDefault(), to);
-    }
-
-    /**
-     * 把时间从from变为to时区
-     *
-     * @param time 时间
-     * @param from 来源
-     * @param to   目标
-     * @return 目标时间
-     */
-    public static ZonedDateTime atZone(LocalDateTime time, ZoneId from, ZoneId to) {
-        if (time == null) return null;
-        if (to == null || from.equals(to)) return time.atZone(from);
-        return time.atZone(from).withZoneSameInstant(to);
-    }
-
-
-    /**
-     * 把时间变为系统时区
-     *
-     * @param time 时间
-     * @return 目标时间
-     */
-    public static LocalDateTime toSystem(ZonedDateTime time) {
-        return toZone(time, ZoneId.systemDefault());
-    }
-
-    /**
-     * 把同一时间不同时区
-     *
-     * @param time 时间
-     * @param to   目标时区
-     * @return 目标时间
-     */
-    public static ZonedDateTime zoneZone(ZonedDateTime time, ZoneId to) {
-        if (time == null) return null;
-        if (to == null) return time;
-
-        if (time.getZone().equals(to)) {
-            return time;
+        if (zdt.getZone().equals(to)) {
+            return zdt;
         }
         else {
-            return time.withZoneSameInstant(to);
+            return zdt.withZoneSameInstant(to);
         }
-    }
-
-    /**
-     * 调整到系统时区
-     *
-     * @param time 时间
-     * @return 目标时间
-     */
-    public static ZonedDateTime zoneSystem(ZonedDateTime time) {
-        return zoneZone(time, ZoneId.systemDefault());
     }
 }

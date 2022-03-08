@@ -29,9 +29,11 @@ public class EnumConvertorTest {
         System.out.println(e1);
         System.out.println(e2);
 
-        assertSame(Tx.ONE, EnumConvertor.str2Enum(e0, Tx.class));
-        assertSame(Tx.ONE, EnumConvertor.str2Enum(e1, Tx.class));
-        assertSame($Ic.Ix.TWO, EnumConvertor.str2Enum(e2, $Ic.Ix.class));
+        assertSame(Tx.ONE, EnumConvertor.str2Enum(Tx.class, e0));
+        assertSame(Tx.ONE, EnumConvertor.str2Enum(Tx.class, e1));
+        assertSame($Ic.Ix.TWO, EnumConvertor.str2Enum($Ic.Ix.class, e2));
+        assertSame(Tx.ONE, EnumConvertor.str2Enum(e1));
+        assertSame($Ic.Ix.TWO, EnumConvertor.str2Enum(e2));
         final Enum<?> d1 = EnumConvertor.str2Enum(e1);
         assertSame(Tx.ONE, d1);
         final Enum<?> d2 = EnumConvertor.str2Enum(e2);
