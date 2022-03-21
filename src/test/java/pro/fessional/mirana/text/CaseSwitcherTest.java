@@ -24,12 +24,14 @@ public class CaseSwitcherTest {
         assertEquals("helloWorld", CaseSwitcher.camel("Hello-World"));
         assertEquals("helloWorld", CaseSwitcher.camel("hello-world"));
         assertEquals("helloWorld", CaseSwitcher.camel("helloWorld"));
+        assertEquals("helloWorldAbc", CaseSwitcher.camel("HelloWorldAbc"));
 
         assertEquals("helloWorld", CaseSwitcher.camel("hello__world"));
         assertEquals("helloWorld", CaseSwitcher.camel("HELLO__WORLD"));
         assertEquals("helloWorld", CaseSwitcher.camel("Hello--World"));
         assertEquals("helloWorld", CaseSwitcher.camel("hello--world"));
         assertEquals("helloWorld", CaseSwitcher.camel("helloWORld"));
+        assertEquals("helloWorldAbc", CaseSwitcher.camel("HelloWORldAbc"));
     }
 
     @Test
@@ -45,12 +47,14 @@ public class CaseSwitcherTest {
         assertEquals("hello-world", CaseSwitcher.kebab("Hello-World"));
         assertEquals("hello-world", CaseSwitcher.kebab("hello-world"));
         assertEquals("hello-world", CaseSwitcher.kebab("helloWorld"));
+        assertEquals("hello-world-abc", CaseSwitcher.kebab("HelloWorldAbc"));
 
         assertEquals("hello-world", CaseSwitcher.kebab("hello__world"));
         assertEquals("hello-world", CaseSwitcher.kebab("HELLO__WORLD"));
         assertEquals("hello-world", CaseSwitcher.kebab("Hello--World"));
         assertEquals("hello-world", CaseSwitcher.kebab("hello--world"));
         assertEquals("hello-world", CaseSwitcher.kebab("helloWORld"));
+        assertEquals("hello-world-abc", CaseSwitcher.kebab("HelloWORldAbc"));
     }
 
     @Test
@@ -66,12 +70,14 @@ public class CaseSwitcherTest {
         assertEquals("hello_world", CaseSwitcher.snake("Hello-World"));
         assertEquals("hello_world", CaseSwitcher.snake("hello-world"));
         assertEquals("hello_world", CaseSwitcher.snake("helloWorld"));
+        assertEquals("hello_world_abc", CaseSwitcher.snake("HelloWorldAbc"));
 
         assertEquals("hello_world", CaseSwitcher.snake("hello__world"));
         assertEquals("hello_world", CaseSwitcher.snake("HELLO__WORLD"));
         assertEquals("hello_world", CaseSwitcher.snake("Hello--World"));
         assertEquals("hello_world", CaseSwitcher.snake("hello--world"));
         assertEquals("hello_world", CaseSwitcher.snake("helloWORld"));
+        assertEquals("hello_world_abc", CaseSwitcher.snake("HelloWORldAbc"));
     }
 
     @Test
@@ -87,12 +93,14 @@ public class CaseSwitcherTest {
         assertEquals("HelloWorld", CaseSwitcher.pascal("Hello-World"));
         assertEquals("HelloWorld", CaseSwitcher.pascal("hello-world"));
         assertEquals("HelloWorld", CaseSwitcher.pascal("helloWorld"));
+        assertEquals("HelloWorldAbc", CaseSwitcher.pascal("HelloWorldAbc"));
 
         assertEquals("HelloWorld", CaseSwitcher.pascal("hello__world"));
         assertEquals("HelloWorld", CaseSwitcher.pascal("HELLO__WORLD"));
         assertEquals("HelloWorld", CaseSwitcher.pascal("Hello--World"));
         assertEquals("HelloWorld", CaseSwitcher.pascal("hello--world"));
         assertEquals("HelloWorld", CaseSwitcher.pascal("helloWORld"));
+        assertEquals("HelloWorldAbc", CaseSwitcher.pascal("helloWORldAbc"));
     }
 
     @Test
@@ -108,11 +116,13 @@ public class CaseSwitcherTest {
         assertEquals("HELLO_WORLD", CaseSwitcher.scream("Hello-World"));
         assertEquals("HELLO_WORLD", CaseSwitcher.scream("hello-world"));
         assertEquals("HELLO_WORLD", CaseSwitcher.scream("helloWorld"));
+        assertEquals("HELLO_WORLD_ABC", CaseSwitcher.scream("HelloWorldAbc"));
 
         assertEquals("HELLO_WORLD", CaseSwitcher.scream("hello__world"));
         assertEquals("HELLO_WORLD", CaseSwitcher.scream("HELLO__WORLD"));
         assertEquals("HELLO_WORLD", CaseSwitcher.scream("Hello--World"));
         assertEquals("HELLO_WORLD", CaseSwitcher.scream("hello--world"));
         assertEquals("HELLO_WORLD", CaseSwitcher.scream("helloWORld"));
+        assertEquals("HELLO_WORLD_ABC", CaseSwitcher.scream("helloWORldAbc"));
     }
 }

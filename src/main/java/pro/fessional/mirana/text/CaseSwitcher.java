@@ -55,7 +55,7 @@ public class CaseSwitcher {
                 char c = str.charAt(i);
                 if (c >= 'A' && c <= 'Z') {
                     up++;
-                    if (up == 1) {
+                    if (up == 1 && i > 0) {
                         if (cas == Case.Dot) {
                             sb.append('.');
                         }
