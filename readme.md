@@ -130,6 +130,7 @@ java8, 0依赖，是guava,commons-*的补充。
  * DataResult - 携带data的DTO
  * Diff - diff2个集合，如数据集中判断插入，更新，删除
  * Null - 以`空`消除null是我们的目标。
+ * Q - 单参数Query类
  * R - Result的场景类
  * Rank - 按多条件顺序来排序
  * U - 内部传递数据的Tuple,Either

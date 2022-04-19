@@ -1,5 +1,6 @@
 package pro.fessional.mirana.cast;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,7 +30,7 @@ public class TypedCastUtil {
      * @return 希望类型的对象
      * @throws ClassCastException 如果类型不匹配。
      */
-    @Nullable
+    @Contract("!null->!null")
     @SuppressWarnings("unchecked")
     public static <T> T castObject(Object obj) {
         return (T) obj;
