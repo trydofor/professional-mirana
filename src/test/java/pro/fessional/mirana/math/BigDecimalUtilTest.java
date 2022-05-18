@@ -77,6 +77,7 @@ public class BigDecimalUtilTest {
         assertEquals("0.00", BigDecimalUtil.string(ZERO, 2));
         assertEquals("1.00", BigDecimalUtil.string(ONE, 2));
         assertEquals("10", BigDecimalUtil.string(ONE, -1));
+        assertEquals("1", BigDecimalUtil.string(new BigDecimal("1.00"), 1, true));
     }
 
     @Test

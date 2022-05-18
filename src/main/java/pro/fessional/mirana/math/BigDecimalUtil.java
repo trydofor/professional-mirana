@@ -61,6 +61,45 @@ public class BigDecimalUtil {
         return v.toPlainString();
     }
 
+    /**
+     * 舍去末尾多余的0
+     *
+     * @param v     数字
+     * @param strip 舍去末尾的多余的0
+     * @return 字符串
+     */
+    @NotNull
+    public static String string(BigDecimal v, boolean strip) {
+        return string(v, "", strip);
+    }
+
+    /**
+     * 舍去scale+1位后，向上取值，并舍去末尾多余的0
+     *
+     * @param v     数字
+     * @param scale 保留小数点几位
+     * @param strip 舍去末尾的多余的0
+     * @return 字符串
+     */
+    @NotNull
+    public static String string(BigDecimal v, int scale, boolean strip) {
+        BigDecimal dec = ceil(v, scale);
+        return string(dec, "", strip);
+    }
+
+    /**
+     * 舍去scale+1位后，向上取值，并舍去末尾多余的0
+     *
+     * @param v     数字
+     * @param elz   null时返回
+     * @param strip 舍去末尾的多余的0
+     * @return 字符串
+     */
+    public static String string(BigDecimal v, String elz, boolean strip) {
+        if (v == null) return elz;
+        return strip ? v.stripTrailingZeros().toPlainString() : v.toPlainString();
+    }
+
     // ////// object //////
 
     public static BigDecimal object(Number num) {
