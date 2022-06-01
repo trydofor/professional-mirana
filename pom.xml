@@ -20,7 +20,7 @@
 
     <groupId>pro.fessional</groupId>
     <artifactId>mirana</artifactId>
-    <version>2.2.4-SNAPSHOT</version>
+    <version>2.4.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>mirana moon girl</name>
@@ -161,6 +161,9 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.1.0</version>
+                <configuration>
+                    <doclint>none</doclint>
+                </configuration>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
@@ -169,6 +172,38 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <!-- build info -->
+            <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+                <version>4.9.10</version>
+                <executions>
+                    <execution>
+                        <id>get-the-git-infos</id>
+                        <goals>
+                            <goal>revision</goal>
+                        </goals>
+                        <phase>initialize</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <verbose>true</verbose>
+                    <offline>true</offline>
+                    <failOnNoGitDirectory>false</failOnNoGitDirectory>
+                    <generateGitPropertiesFile>true</generateGitPropertiesFile>
+                    <generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties</generateGitPropertiesFilename>
+                    <includeOnlyProperties>
+                        <includeOnlyProperty>git.branch</includeOnlyProperty>
+                        <includeOnlyProperty>git.build.(host|time|version|user.name|number.*)</includeOnlyProperty>
+                        <includeOnlyProperty>git.closest.*</includeOnlyProperty>
+                        <includeOnlyProperty>git.commit.(time|user.name|id.abbrev|id.full|message.full)</includeOnlyProperty>
+                        <includeOnlyProperty>git.dirty</includeOnlyProperty>
+                        <includeOnlyProperty>git.local.*</includeOnlyProperty>
+                        <includeOnlyProperty>git.tags</includeOnlyProperty>
+                    </includeOnlyProperties>
+                    <commitIdGenerationMode>full</commitIdGenerationMode>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
