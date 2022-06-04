@@ -241,6 +241,7 @@ ID能保证严格的`单调递增`(升序)，但不保证连续，其long型的6
  * DirHasher 本地文件系统不可保存太多文件
  * Exec - 单线程同步执行，高级功能用Apache Commons Exec
  * InputStreams - 不使用commons的补位
+ * NonCloseStream - 屏蔽掉close的流
  * Zipper 递归zip/unzip
 
 ## `jaxb/` xml

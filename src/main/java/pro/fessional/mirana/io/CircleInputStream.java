@@ -8,9 +8,11 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * 当读完stream，即-1时，再次read时，自动从头读起，重新available。
+ * 采用 ByteArray 缓存读过的流，当读完stream，即-1时，再次read时，自动从头读起，重新available。
  * 特殊需要，非线程安全，谨慎使用，尤其要正确使用mark, reset功能。
+ * 注意：若原 InputStream 支持重复读，从性能考虑，应该使用 UncloseInputStream 代替
  *
+ * @see NonCloseStream
  * @author trydofor
  * @since 2020-09-25
  */
@@ -72,12 +74,12 @@ public class CircleInputStream extends InputStream {
     }
 
     @Override
-    public int read(@NotNull byte[] b) throws IOException {
+    public int read(byte @NotNull [] b) throws IOException {
         return read(b, 0, b.length);
     }
 
     @Override
-    public int read(@NotNull byte[] b, int off, int len) throws IOException {
+    public int read(byte @NotNull [] b, int off, int len) throws IOException {
         if (backend == null) {
             switchIfCircle();
             int c = circle.read(b, off, len);
