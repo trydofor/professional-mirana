@@ -3,6 +3,15 @@ package pro.fessional.mirana.id;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import static pro.fessional.mirana.id.LightId.BIT_SEQ_BLOCK;
+import static pro.fessional.mirana.id.LightId.BIT_SEQ_WHOLE;
+import static pro.fessional.mirana.id.LightId.MAX_BLOCK;
+import static pro.fessional.mirana.id.LightId.MAX_SEQ_BLOCK;
+import static pro.fessional.mirana.id.LightId.MAX_SEQ_WHOLE;
+import static pro.fessional.mirana.id.LightId.MIN_BLOCK;
+import static pro.fessional.mirana.id.LightId.MIN_SEQ;
+import static pro.fessional.mirana.id.LightId.NONE;
+
 /**
  * @author trydofor
  * @since 2019-05-20
@@ -12,55 +21,55 @@ public class LightIdUtil {
     }
 
     public static boolean valid(@Nullable LightId id) {
-        return id != null && id.getBlock() >= 0 && id.getSequence() >= 0;
+        return id != null && valid(id.getBlock(), id.getSequence());
     }
 
     public static boolean valid(@Nullable Integer block, @Nullable Long sequence) {
-        return validBlock(block) && validSequence(sequence);
+        return block != null && sequence != null && valid(block.intValue(), sequence.longValue());
     }
 
     public static boolean valid(int block, long sequence) {
-        return validBlock(block) && validSequence(sequence);
-    }
-
-    public static boolean validBlock(@Nullable Integer block) {
-        if (block == null) return false;
-        return validBlock(block.intValue());
-    }
-
-    public static boolean validBlock(int block) {
-        return block >= LightId.MIN_BLOCK && block <= LightId.MAX_BLOCK;
-    }
-
-    public static boolean validSequence(@Nullable Long sequence) {
-        if (sequence == null) return false;
-        return validSequence(sequence.longValue());
-    }
-
-    public static boolean validSequence(long sequence) {
-        return sequence >= LightId.MIN_SEQUENCE && sequence <= LightId.MAX_SEQUENCE;
+        if (block < MIN_BLOCK || block > MAX_BLOCK) return false;
+        if (block == 0) {
+            return sequence >= MIN_SEQ && sequence <= MAX_SEQ_WHOLE;
+        }
+        else {
+            return sequence >= MIN_SEQ && sequence <= MAX_SEQ_BLOCK;
+        }
     }
 
     public static LightId toLightId(@Nullable Long lightId) {
-        if (lightId == null) return LightId.NONE;
+        if (lightId == null) return NONE;
         return toLightId(lightId.longValue());
     }
 
     @NotNull
     public static LightId toLightId(long lightId) {
-        long sequence = lightId & LightId.MAX_SEQUENCE;
-        int block = (int) ((lightId >> LightId.BIT_SEQUENCE) & LightId.MAX_BLOCK);
+        final int block;
+        final long sequence;
+
+        if (((lightId >> BIT_SEQ_WHOLE) & 1) == 0) {
+            block = 0;
+            sequence = lightId & MAX_SEQ_WHOLE;
+        }
+        else {
+            block = (int) ((lightId >> BIT_SEQ_BLOCK) & (MAX_BLOCK - 1)) + 1;
+            sequence = lightId & MAX_SEQ_BLOCK;
+        }
 
         if (valid(block, sequence)) {
             return new LightId(block, sequence);
         }
         else {
-            return LightId.NONE;
+            return NONE;
         }
     }
 
     public static long toId(int block, long sequence) {
-        return (((long) block) << LightId.BIT_SEQUENCE) | sequence;
+        if (block <= 0) return sequence;
+        long id = MAX_BLOCK | (block - 1);
+        id = (id << BIT_SEQ_BLOCK) | sequence;
+        return id;
     }
 
     public static boolean isNone(@Nullable LightId id) {
@@ -81,7 +90,7 @@ public class LightIdUtil {
     public static long sequenceOrElse(@Nullable LightId lightId, long elze) {
         if (lightId == null) return elze;
         final long sequence = lightId.getSequence();
-        if (validSequence(sequence)) {
+        if (valid(lightId.getBlock(), sequence)) {
             return sequence;
         }
         else {
@@ -90,7 +99,7 @@ public class LightIdUtil {
     }
 
     public static long sequenceLong(long lightId) {
-        return lightId & LightId.MAX_SEQUENCE;
+        return lightId & MAX_SEQ_WHOLE;
     }
 
     private static final long INT_MAX = Integer.MAX_VALUE;

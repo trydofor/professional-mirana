@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class LightIdTest {
 
     @Test
-    public void testAll() {
+    public void testZero() {
         LightId zero = new LightId(0, 0);
         assertEquals(LightId.ZERO, zero);
         assertEquals(0, zero.component1());
@@ -25,19 +25,27 @@ public class LightIdTest {
     public void testCode() {
         Random random = new Random();
         for (int i = 1; i <= 10000; i++) {
+            long seq = random.nextLong();
 
-            long seq = random.nextLong() & LightId.MAX_SEQUENCE;
-            LightId id = new LightId(1, seq);
-            assertTrue(LightIdUtil.valid(id));
-            long di = id.toLong();
-            LightId id1 = LightIdUtil.toLightId(di);
-            assertEquals(id, id1);
+            LightId wid = new LightId(0, seq & LightId.MAX_SEQ_WHOLE);
+            assertTrue(LightIdUtil.valid(wid));
+            long wdi = wid.toLong();
+            LightId wid1 = LightIdUtil.toLightId(wdi);
+            assertEquals(wid, wid1);
+
+            for (int j = 1; j <= 512; j++) {
+                LightId bid = new LightId(j, seq & LightId.MAX_SEQ_BLOCK);
+                assertTrue(LightIdUtil.valid(bid));
+                long bdi = bid.toLong();
+                LightId bid1 = LightIdUtil.toLightId(bdi);
+                assertEquals(bid, bid1);
+            }
         }
     }
 
     @Test
     public void testBound() {
-        assertEquals(Integer.MAX_VALUE, LightIdUtil.sequenceInt(LightId.MAX_SEQUENCE));
+        assertEquals(Integer.MAX_VALUE, LightIdUtil.sequenceInt(LightId.MAX_SEQ_WHOLE));
         assertEquals(Integer.MAX_VALUE, LightIdUtil.sequenceInt((1L << 33) - 1));
         assertEquals(Integer.MAX_VALUE, LightIdUtil.sequenceInt(Long.MAX_VALUE));
         assertEquals(0, LightIdUtil.sequenceInt(Long.MIN_VALUE));

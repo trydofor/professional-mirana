@@ -6,8 +6,7 @@ import pro.fessional.mirana.pain.TimeoutRuntimeException;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import static pro.fessional.mirana.id.LightIdUtil.validBlock;
-import static pro.fessional.mirana.id.LightIdUtil.validSequence;
+import static pro.fessional.mirana.id.LightIdUtil.valid;
 
 /**
  * @author trydofor
@@ -92,10 +91,8 @@ public interface LightIdProvider {
         public Segment(String name, int block, long head, long foot) {
             if (name == null) throw new NullPointerException("name is null");
             if (head > foot) throw new IllegalArgumentException("head=" + head + " is bigger than foot=" + foot);
-            if (!validBlock(block)) throw new IllegalArgumentException("block=" + block + " is out of range");
-            if (!validSequence(head)) throw new IllegalArgumentException("head=" + head + " is out of range");
-            if (!validSequence(foot)) throw new IllegalArgumentException("foot=" + foot + " is out of range");
-
+            if (!valid(block, head)) throw new IllegalArgumentException("block=" + block + ", head=" + head + " is out of range");
+            if (!valid(block, foot)) throw new IllegalArgumentException("block=" + block + ", foot=" + foot + " is out of range");
 
             this.name = name;
             this.block = block;
