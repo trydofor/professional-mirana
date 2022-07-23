@@ -60,6 +60,6 @@ java8, 0依赖，是guava,commons-*的补充。
 
 ## 详细文档
 
-* <https://wings.fessional.pro/5-radiant/5a.mirana/>
-* <https://github.com/fessionalpro/wings-doc/tree/main/docs/5-radiant/5a.mirana/>
-* <https://gitee.com/fessionalpro/wings-doc/tree/main/docs/5-radiant/5a.mirana/>
+* <https://wings.fessional.pro/a-mirana/>
+* <https://github.com/fessionalpro/wings-doc/tree/main/docs/a-mirana/>
+* <https://gitee.com/fessionalpro/wings-doc/tree/main/docs/a-mirana/>
