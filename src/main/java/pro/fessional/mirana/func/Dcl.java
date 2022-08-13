@@ -1,5 +1,7 @@
 package pro.fessional.mirana.func;
 
+import java.util.function.Supplier;
+
 /**
  * Double Checked Locking of Runnable.
  * 适用于准备期多次写，运行时只处理一次的多次读场景。
@@ -7,27 +9,26 @@ package pro.fessional.mirana.func;
  * @author trydofor
  * @since 2021-02-19
  */
-public class Dcl {
+public class Dcl<T> {
 
-    private final Runnable runnable;
+    private final Supplier<T> supplier;
     private volatile boolean dirty = true;
+    private volatile T result = null;
 
-    public Dcl(Runnable runnable) {
-        this.runnable = runnable;
+    public Dcl(Supplier<T> supplier) {
+        this.supplier = supplier;
     }
 
-    /**
-     * 未排序则排序，已排序则返回
-     */
-    public void runIfDirty() {
+    public T runIfDirty() {
         if (dirty) {
-            synchronized (runnable) {
+            synchronized (supplier) {
                 if (dirty) {
-                    runnable.run();
+                    result = supplier.get();
                     dirty = false;
                 }
             }
         }
+        return result;
     }
 
     public boolean isDirty() {
@@ -42,7 +43,14 @@ public class Dcl {
         dirty = b;
     }
 
-    public static Dcl of(Runnable runnable) {
-        return new Dcl(runnable);
+    public static Dcl<Void> of(Runnable runnable) {
+        return new Dcl<>(() -> {
+            runnable.run();
+            return null;
+        });
+    }
+
+    public static <T> Dcl<T> of(Supplier<T> supplier) {
+        return new Dcl<>(supplier);
     }
 }
