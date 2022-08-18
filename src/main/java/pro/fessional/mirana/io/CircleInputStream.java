@@ -12,14 +12,14 @@ import java.io.InputStream;
  * 特殊需要，非线程安全，谨慎使用，尤其要正确使用mark, reset功能。
  * 注意：若原 InputStream 支持重复读，从性能考虑，应该使用 UncloseInputStream 代替
  *
- * @see NonCloseStream
  * @author trydofor
+ * @see NonCloseStream
  * @since 2020-09-25
  */
 public class CircleInputStream extends InputStream {
 
     protected InputStream backend;
-    protected final ByteArrayOutputStream cache = new ByteArrayOutputStream();
+    protected final ByteArrayOutputStream cache;
 
     protected ByteArrayInputStream circle = null;
     protected byte[] content = null;
@@ -27,6 +27,13 @@ public class CircleInputStream extends InputStream {
 
     public CircleInputStream(InputStream backend) {
         this.backend = backend;
+        this.cache = new ByteArrayOutputStream();
+    }
+
+    public CircleInputStream(ByteArrayOutputStream cache) {
+        this.backend = null;
+        this.cache = cache;
+        switchIfCircle();
     }
 
     /**
@@ -96,7 +103,7 @@ public class CircleInputStream extends InputStream {
                 backend = null;
             }
             else {
-                cache.write(b, 0, c);
+                cache.write(b, off, c);
             }
             return c;
         }
