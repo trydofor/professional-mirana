@@ -7,7 +7,7 @@ import pro.fessional.mirana.i18n.I18nAware;
 import pro.fessional.mirana.i18n.I18nString;
 
 /**
- * 性能优先，无cause传入时，可构造无堆栈异常
+ * 可读性和性能优先，可构造无堆栈异常
  *
  * @author trydofor
  * @since 2019-05-29
