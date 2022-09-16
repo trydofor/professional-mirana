@@ -7,7 +7,9 @@ import pro.fessional.mirana.data.Null;
 
 import java.text.MessageFormat;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Map;
+import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -22,6 +24,20 @@ import java.util.concurrent.ConcurrentHashMap;
 public class FormatUtil {
 
     private static final BuilderHolder Builder = new BuilderHolder();
+
+    /**
+     * @param skipNull 是否忽略null
+     * @param join     连接符
+     * @param objs     对象组
+     * @return 返回
+     * @see BuilderHelper#join(StringBuilder, boolean, String, Collection)
+     */
+    @NotNull
+    public static String join(boolean skipNull, String join, Collection<?> objs) {
+        StringBuilder builder = Builder.use();
+        BuilderHelper.join(builder, skipNull, join, objs);
+        return builder.toString();
+    }
 
     /**
      * 默认使用`&amp;`和`=`符链接
@@ -46,9 +62,9 @@ public class FormatUtil {
      */
     @NotNull
     public static String sortParam(@NotNull Map<?, ?> param, @NotNull String join1, @NotNull String join2) {
-        final TreeMap<?, ?> sorted;
-        if (param instanceof TreeMap) {
-            sorted = (TreeMap<?, ?>) param;
+        final SortedMap<?, ?> sorted;
+        if (param instanceof SortedMap) {
+            sorted = (SortedMap<?, ?>) param;
         }
         else {
             sorted = new TreeMap<>(param);
@@ -63,7 +79,7 @@ public class FormatUtil {
             builder.append(en.getKey()).append(join2).append(value);
         }
 
-        return builder.substring(join1.length());
+        return builder.length() > 0 ? builder.substring(join1.length()) : "";
     }
 
     /**
