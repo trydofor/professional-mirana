@@ -23,7 +23,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class FormatUtil {
 
-    private static final BuilderHolder Builder = new BuilderHolder();
+    /** no leak, for static */
+    private static final BuilderHolder Holder = new BuilderHolder();
 
     /**
      * @param skipNull 是否忽略null
@@ -34,7 +35,7 @@ public class FormatUtil {
      */
     @NotNull
     public static String join(boolean skipNull, String join, Collection<?> objs) {
-        StringBuilder builder = Builder.use();
+        StringBuilder builder = Holder.use();
         BuilderHelper.join(builder, skipNull, join, objs);
         return builder.toString();
     }
@@ -70,7 +71,7 @@ public class FormatUtil {
             sorted = new TreeMap<>(param);
         }
 
-        final StringBuilder builder = Builder.use();
+        final StringBuilder builder = Holder.use();
         for (Map.Entry<?, ?> en : sorted.entrySet()) {
             final Object value = en.getValue();
             if (value == null) continue;
@@ -104,7 +105,7 @@ public class FormatUtil {
     @NotNull
     public static String logback(CharSequence fmt, Object... args) {
         if (fmt == null || fmt.length() == 0) return Null.Str;
-        StringBuilder builder = Builder.use();
+        StringBuilder builder = Holder.use();
         char c;
         boolean start = false;
         for (int i = 0, j = 0, n = fmt.length(); j < n; j++) {
@@ -158,6 +159,7 @@ public class FormatUtil {
         return builder.toString();
     }
 
+    /** no leak, for static */
     private static final ConcurrentHashMap<String, FormatHolder> Formats = new ConcurrentHashMap<>();
 
     /**
@@ -171,7 +173,7 @@ public class FormatUtil {
     public static String message(CharSequence fmt, Object... args) {
         if (fmt == null) return Null.Str;
         final FormatHolder f = Formats.computeIfAbsent(fmt.toString(), FormatHolder::new);
-        final int size = f.getSize();
+        final int size = f.argumentLength();
         final MessageFormat format = f.use();
         return format.format(fixArgs(size, args));
     }

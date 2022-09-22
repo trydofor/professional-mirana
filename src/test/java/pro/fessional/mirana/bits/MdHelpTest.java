@@ -50,7 +50,7 @@ class MdHelpTest {
     }
 
     void inside(MdHelp md) {
-        final MessageDigest inside = md.inside();
+        final MessageDigest inside = md.newOne();
         String s1 = RandCode.human(10);
         String s2 = RandCode.human(10);
         String s3 = RandCode.human(10);

@@ -5,8 +5,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -25,7 +25,9 @@ import java.util.regex.Pattern;
  * "https://api.weixin.qq.com/cgi-bin/user/info?access_token="+token+"&amp;openid="+openid+"&amp;lang=en"
  * 比String.format, replace，或其他动态替换的性能好。
  *
- * 需要注意的，是bindStr和bindReg字符串相同时会覆盖。
+ * 需要注意的，
+ * ① bindStr和bindReg字符串相同时会覆盖
+ * ② 必须以toString()结束，避免ThreadLocal泄露
  * </pre>
  *
  * @author trydofor
@@ -33,7 +35,6 @@ import java.util.regex.Pattern;
  */
 public class StringTemplate {
 
-    private static final BuilderHolder Builder = new BuilderHolder();
     private static final ConcurrentHashMap<String, B> FIX = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<String, B> DYN = new ConcurrentHashMap<>();
 
@@ -75,6 +76,7 @@ public class StringTemplate {
         private final String txt;
 
         private final ConcurrentHashMap<P, C> cac = new ConcurrentHashMap<>();
+        // no leak, must remove by toString
         private final ThreadLocal<P> arg = ThreadLocal.withInitial(P::new);
 
         public B(boolean fix, String txt) {
@@ -85,7 +87,8 @@ public class StringTemplate {
         @NotNull
         public B bindStr(String str, Object obj) {
             if (str.length() > 0) {
-                arg.get().put(false, str, obj);
+                final P p = arg.get();
+                p.put(false, str, obj);
             }
             return this;
         }
@@ -93,7 +96,8 @@ public class StringTemplate {
         @NotNull
         public B bindReg(String reg, Object obj) {
             if (reg.length() > 0) {
-                arg.get().put(true, reg, obj);
+                final P p = arg.get();
+                p.put(true, reg, obj);
             }
             return this;
         }
@@ -103,10 +107,11 @@ public class StringTemplate {
             final P p = arg.get();
             try {
                 p.solid();
-                C c = cac.computeIfAbsent(p, p1 -> new C(this, p1));
+                C c = cac.computeIfAbsent(p, k -> new C(k, txt, fix));
                 return c.build(p);
             }
             finally {
+                arg.remove();
                 p.clear();
             }
         }
@@ -146,7 +151,7 @@ public class StringTemplate {
     // 一定在单线程中
     private static class P {
 
-        private final HashMap<K, Object> arg = new HashMap<>();
+        private final LinkedHashMap<K, Object> arg = new LinkedHashMap<>();
 
         private K[] key = null;
         private int hcd = -1;
@@ -158,14 +163,12 @@ public class StringTemplate {
         public void solid() {
             K[] k = new K[arg.size()];
             arg.keySet().toArray(k);
-            Arrays.sort(k);
             key = k;
             hcd = Arrays.hashCode(k);
         }
 
         public void clear() {
             arg.clear();
-            key = null;
         }
 
         public K[] getKey() {
@@ -208,15 +211,15 @@ public class StringTemplate {
     }
 
     private static class C {
-        private final B hld;
         private final P arg;
+        private final String tpl;
         private final List<Object> rst = new ArrayList<>();
         private final String fix;
 
-        public C(B hld, P arg) {
-            this.hld = hld;
+        public C(P arg, String tpl, boolean fxd) {
             this.arg = arg;
-            this.fix = parse();
+            this.tpl = tpl;
+            this.fix = parse(fxd);
         }
 
         @NotNull
@@ -224,7 +227,7 @@ public class StringTemplate {
             if (fix != null) return fix;
 
             Map<K, Object> a = arg.getArg();
-            StringBuilder sb = Builder.use();
+            StringBuilder sb = new StringBuilder();
             for (Object o : rst) {
                 if (o instanceof K) {
                     Object v = a.get(o);
@@ -240,8 +243,8 @@ public class StringTemplate {
             return sb.toString();
         }
 
-        private String parse() {
-            String str = hld.txt;
+        private String parse(boolean fxd) {
+            String str = tpl;
             K[] ks = arg.getKey();
             ArrayList<H> pos = new ArrayList<>(ks.length * 2);
             for (K k : ks) {
@@ -293,7 +296,7 @@ public class StringTemplate {
                 rst.add(str.substring(p1).toCharArray());
             }
 
-            return hld.fix ? build(arg) : null;
+            return fxd ? build(arg) : null;
         }
     }
 }

@@ -23,11 +23,11 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public class HmacHelp {
 
     public final String algorithm;
-    private final ThreadLocal<Mac> instance;
+    public final byte[] key;
 
     protected HmacHelp(String algorithm, byte[] key) {
         this.algorithm = algorithm;
-        this.instance = ThreadLocal.withInitial(() -> newOne(algorithm, key));
+        this.key = key;
     }
 
     @NotNull
@@ -41,7 +41,7 @@ public class HmacHelp {
     }
 
     @NotNull
-    public String sum(@Nullable byte[] bytes) {
+    public String sum(byte @Nullable [] bytes) {
         return sum(bytes, true);
     }
 
@@ -59,16 +59,15 @@ public class HmacHelp {
     }
 
     @NotNull
-    public String sum(@Nullable byte[] bytes, boolean upper) {
+    public String sum(byte @Nullable [] bytes, boolean upper) {
         if (bytes == null) return Null.Str;
         byte[] hash = digest(bytes);
         return Bytes.hex(hash, upper);
     }
 
-    @NotNull
-    public byte[] digest(@Nullable byte[] bytes) {
+    public byte @NotNull[] digest(byte @Nullable [] bytes) {
         if (bytes == null) return Null.Bytes;
-        Mac mac = inside();
+        Mac mac = newOne();
         return mac.doFinal(bytes);
     }
 
@@ -77,13 +76,11 @@ public class HmacHelp {
      *
      * @return 实例
      */
-    public Mac inside() {
-        Mac mac = instance.get();
-        mac.reset();
-        return mac;
+    public Mac newOne() {
+        return newOne(algorithm, key);
     }
 
-    public boolean check(@Nullable String sum, @Nullable byte[] bytes) {
+    public boolean check(@Nullable String sum, byte @Nullable [] bytes) {
         if (bytes == null || sum == null) return false;
         String md5 = sum(bytes);
         return sum.equalsIgnoreCase(md5);

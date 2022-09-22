@@ -55,7 +55,9 @@ public class DateFormatter {
     public static final DateTimeFormatter FMT_FULL_PSE = DateTimeFormatter.ofPattern(PTN_FULL_PSE);
     public static final DateTimeFormatter FMT_ZONE_PSE = DateTimeFormatter.ofPattern(PTN_ZONE_PSE);
 
+    /** no leak, for static */
     public static final ThreadLocal<DateFormat> DATE_FORMAT_19 = ThreadLocal.withInitial(() -> new SimpleDateFormat(PTN_FULL_19));
+    /** no leak, for static */
     public static final ThreadLocal<DateFormat> DATE_FORMAT_23 = ThreadLocal.withInitial(() -> new SimpleDateFormat(PTN_FULL_23));
 
 

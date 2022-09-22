@@ -20,11 +20,9 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public class MdHelp {
 
     public final String algorithm;
-    private final ThreadLocal<MessageDigest> instance;
 
     protected MdHelp(String algorithm) {
         this.algorithm = algorithm;
-        this.instance = ThreadLocal.withInitial(() -> newOne(algorithm));
     }
 
     @NotNull
@@ -38,7 +36,7 @@ public class MdHelp {
     }
 
     @NotNull
-    public String sum(@Nullable byte[] bytes) {
+    public String sum(byte @Nullable [] bytes) {
         return Bytes.hex(bytes, true);
     }
 
@@ -56,16 +54,16 @@ public class MdHelp {
     }
 
     @NotNull
-    public String sum(@Nullable byte[] bytes, boolean upper) {
+    public String sum(byte @Nullable [] bytes, boolean upper) {
         if (bytes == null) return Null.Str;
         byte[] hash = digest(bytes);
         return Bytes.hex(hash, upper);
     }
 
-    @NotNull
-    public byte[] digest(@Nullable byte[] bytes) {
+
+    public byte @NotNull[] digest(byte @Nullable[] bytes) {
         if (bytes == null) return Null.Bytes;
-        MessageDigest digest = inside();
+        MessageDigest digest = newOne();
         digest.update(bytes);
         return digest.digest();
     }
@@ -75,13 +73,11 @@ public class MdHelp {
      *
      * @return 实例
      */
-    public MessageDigest inside() {
-        MessageDigest digest = instance.get();
-        digest.reset();
-        return digest;
+    public MessageDigest newOne() {
+        return newOne(algorithm);
     }
 
-    public boolean check(@Nullable String sum, @Nullable byte[] bytes) {
+    public boolean check(@Nullable String sum, byte @Nullable [] bytes) {
         if (bytes == null || sum == null) return false;
         String md5 = sum(bytes);
         return sum.equalsIgnoreCase(md5);

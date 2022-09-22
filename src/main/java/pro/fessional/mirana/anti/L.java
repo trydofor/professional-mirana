@@ -25,7 +25,9 @@ public class L {
     public static volatile String CateTkn = ":";
     public static volatile String LineTkn = "\n";
 
+    /** no leak, for static */
     private static final BuilderHolder Builder = new BuilderHolder();
+    /** no leak, for static */
     private static final ThreadLocal<SoftReference<List<D>>> Holder = new ThreadLocal<>();
 
     public static void error(String message) {

@@ -1,19 +1,25 @@
 package pro.fessional.mirana.text;
 
 import org.jetbrains.annotations.NotNull;
+import pro.fessional.mirana.anti.S;
 
 /**
+ * <pre>
+ * 内部使用 ThreadLocal，有leak隐患，必须使用以下模式之一。
+ * ① static，JVM内唯一Ref，避免多次创建临时Ref
+ * ② 使用 try-finally-close 模式，remove掉Ref
+ * </pre>
+ *
  * @author trydofor
  * @since 2021-03-24
  */
-public class BuilderHolder {
+public class BuilderHolder extends S<StringBuilder> {
 
     private final int min;
     private final int max;
-    private final ThreadLocal<StringBuilder> builder;
 
     public BuilderHolder() {
-        this(256, 1024);
+        this(1024, 8096);
     }
 
     /**
@@ -25,25 +31,21 @@ public class BuilderHolder {
     public BuilderHolder(int min, int max) {
         this.min = min;
         this.max = max;
-        this.builder = ThreadLocal.withInitial(() -> new StringBuilder(min));
     }
 
-    /**
-     * 获得一个线程中的StringBuilder，不要混用
-     *
-     * @return StringBuilder
-     */
-    @NotNull
-    public StringBuilder use() {
-        StringBuilder builder = this.builder.get();
-        int len = builder.length();
-        if (len > max) {
-            builder = new StringBuilder(min);
-            this.builder.set(builder); // shrink
+    @Override
+    public @NotNull StringBuilder initValue() {
+        return new StringBuilder(min);
+    }
+
+    @Override
+    public boolean anewValue(@NotNull StringBuilder bd) {
+        if (bd.length() > max) {
+            return true;
         }
-        else if (len > 0) {
-            builder.setLength(0);
+        else {
+            bd.setLength(0);
+            return false;
         }
-        return builder;
     }
 }

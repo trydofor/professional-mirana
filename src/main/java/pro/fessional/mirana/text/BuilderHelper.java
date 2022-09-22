@@ -188,8 +188,11 @@ public class BuilderHelper {
         return sb;
     }
 
+    /** no leak, for static */
+    private static final BuilderHolder Holder = new BuilderHolder();
+
     public static W w() {
-        return new W();
+        return new W(Holder.use());
     }
 
     public static W w(StringBuilder sb) {
@@ -198,15 +201,10 @@ public class BuilderHelper {
 
     public static class W implements Appendable, CharSequence {
 
-        private static final BuilderHolder holder = new BuilderHolder();
         public final StringBuilder builder;
 
-        public W() {
-            this.builder = holder.use();
-        }
-
         public W(StringBuilder builder) {
-            this.builder = builder == null ? holder.use() : builder;
+            this.builder = builder;
         }
 
         public StringBuilder result() {

@@ -74,7 +74,7 @@ class HmacHelpTest {
     }
 
     void inside(HmacHelp md) {
-        final Mac inside = md.inside();
+        final Mac inside = md.newOne();
         String s1 = RandCode.human(20);
         String s2 = RandCode.human(20);
         String s3 = RandCode.human(20);

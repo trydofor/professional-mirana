@@ -42,7 +42,7 @@ public class TicketHelp {
         }
 
         public SigMds(MdHelp help, byte[] salt) {
-            this.supplier = help::inside;
+            this.supplier = help::newOne;
             this.salt = Null.notNull(salt);
         }
 
@@ -67,7 +67,7 @@ public class TicketHelp {
         }
 
         public SigHmac(HmacHelp help) {
-            this.help = help::inside;
+            this.help = help::newOne;
         }
 
         @Override

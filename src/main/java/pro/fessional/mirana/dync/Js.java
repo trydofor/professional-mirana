@@ -20,6 +20,7 @@ import java.util.Map;
 public class Js {
 
     private static final ScriptEngineManager MANAGER = new ScriptEngineManager();
+    /** no leak, for static */
     private static final ThreadLocal<ScriptEngine> ENGINES = ThreadLocal.withInitial(() -> MANAGER.getEngineByName("JavaScript"));
 
     public static ScriptEngine getEngine() {

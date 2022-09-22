@@ -1,6 +1,7 @@
 package pro.fessional.mirana.text;
 
 import org.jetbrains.annotations.NotNull;
+import pro.fessional.mirana.anti.S;
 
 import java.text.MessageFormat;
 
@@ -8,27 +9,22 @@ import java.text.MessageFormat;
  * @author trydofor
  * @since 2021-03-24
  */
-public class FormatHolder {
+public class FormatHolder extends S<MessageFormat> {
 
     private final String pattern;
     private volatile int size = -1;
-    private final ThreadLocal<MessageFormat> holder;
+
 
     public FormatHolder(String p) {
         this.pattern = p;
-        this.holder = ThreadLocal.withInitial(() -> new MessageFormat(p));
     }
 
-    /**
-     * 获得一个线程中的MessageFormat
-     *
-     * @return MessageFormat
-     */
+    @Override
+    public @NotNull MessageFormat initValue() {
+        return new MessageFormat(pattern);
+    }
+
     @NotNull
-    public MessageFormat use() {
-        return holder.get();
-    }
-
     public String getPattern() {
         return pattern;
     }
@@ -38,7 +34,7 @@ public class FormatHolder {
      *
      * @return 长度
      */
-    public int getSize() {
+    public int argumentLength() {
         if (size == -1) {
             size = use().getFormatsByArgumentIndex().length;
         }

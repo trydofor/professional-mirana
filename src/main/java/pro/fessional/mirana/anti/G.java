@@ -12,6 +12,7 @@ import java.util.WeakHashMap;
 public class G {
 
     private static final WeakHashMap<Object, Object> GMap = new WeakHashMap<>();
+    /** no leak, for static */
     private static final ThreadLocal<WeakHashMap<Object, Object>> LMap = new ThreadLocal<>();
 
     public static void globalPut(Object key, Object value) {
