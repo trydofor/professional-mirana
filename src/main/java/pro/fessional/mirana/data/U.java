@@ -18,6 +18,10 @@ public interface U {
         return new Or<>(null, r);
     }
 
+    static <T1> One<T1> of(T1 t1) {
+        return new One<>(t1);
+    }
+
     static <T1, T2> Two<T1, T2> of(T1 t1, T2 t2) {
         return new Two<>(t1, t2);
     }
@@ -96,25 +100,56 @@ public interface U {
         }
     }
 
-    class Two<T1, T2> {
-        private final T1 t1;
-        private final T2 t2;
+    class One<T1> {
+        protected final T1 t1;
 
-        public Two(T1 t1, T2 t2) {
+        public One(T1 t1) {
             this.t1 = t1;
-            this.t2 = t2;
+        }
+
+        public T1 getT1() {
+            return t1;
         }
 
         public T1 one() {
             return t1;
         }
 
-        public T2 two() {
+        public T1 component1() {
+            return t1;
+        }
+
+        @Override public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof One)) return false;
+            One<?> one = (One<?>) o;
+            return Objects.equals(t1, one.t1);
+        }
+
+        @Override public int hashCode() {
+            return Objects.hash(t1);
+        }
+
+        @Override
+        public String toString() {
+            return "(" + t1 + ")";
+        }
+    }
+
+    class Two<T1, T2> extends One<T1> {
+        protected final T2 t2;
+
+        public Two(T1 t1, T2 t2) {
+            super(t1);
+            this.t2 = t2;
+        }
+
+        public T2 getT2() {
             return t2;
         }
 
-        public T1 component1() {
-            return t1;
+        public T2 two() {
+            return t2;
         }
 
         public T2 component2() {
@@ -148,35 +183,20 @@ public interface U {
         }
     }
 
-    class Three<T1, T2, T3> {
-        private final T1 t1;
-        private final T2 t2;
-        private final T3 t3;
+    class Three<T1, T2, T3> extends Two<T1, T2> {
+        protected final T3 t3;
 
         public Three(T1 t1, T2 t2, T3 t3) {
-            this.t1 = t1;
-            this.t2 = t2;
+            super(t1, t2);
             this.t3 = t3;
         }
 
-        public T1 one() {
-            return t1;
-        }
-
-        public T2 two() {
-            return t2;
+        public T3 getT3() {
+            return t3;
         }
 
         public T3 three() {
             return t3;
-        }
-
-        public T1 component1() {
-            return t1;
-        }
-
-        public T2 component2() {
-            return t2;
         }
 
         public T3 component3() {
@@ -213,47 +233,20 @@ public interface U {
         }
     }
 
-    class Four<T1, T2, T3, T4> {
+    class Four<T1, T2, T3, T4> extends Three<T1, T2, T3> {
+        protected final T4 t4;
 
         public Four(T1 t1, T2 t2, T3 t3, T4 t4) {
-            this.t1 = t1;
-            this.t2 = t2;
-            this.t3 = t3;
+            super(t1, t2, t3);
             this.t4 = t4;
         }
 
-        private final T1 t1;
-        private final T2 t2;
-        private final T3 t3;
-        private final T4 t4;
-
-        public T1 one() {
-            return t1;
-        }
-
-        public T2 two() {
-            return t2;
-        }
-
-        public T3 three() {
-            return t3;
+        public T4 getT4() {
+            return t4;
         }
 
         public T4 four() {
             return t4;
-        }
-
-
-        public T1 component1() {
-            return t1;
-        }
-
-        public T2 component2() {
-            return t2;
-        }
-
-        public T3 component3() {
-            return t3;
         }
 
         public T4 component4() {
@@ -292,57 +285,20 @@ public interface U {
         }
     }
 
-    class Five<T1, T2, T3, T4, T5> {
-
-        private final T1 t1;
-        private final T2 t2;
-        private final T3 t3;
-        private final T4 t4;
-        private final T5 t5;
+    class Five<T1, T2, T3, T4, T5> extends Four<T1, T2, T3, T4> {
+        protected final T5 t5;
 
         public Five(T1 t1, T2 t2, T3 t3, T4 t4, T5 t5) {
-            this.t1 = t1;
-            this.t2 = t2;
-            this.t3 = t3;
-            this.t4 = t4;
+            super(t1, t2, t3, t4);
             this.t5 = t5;
         }
 
-        public T1 one() {
-            return t1;
-        }
-
-        public T2 two() {
-            return t2;
-        }
-
-        public T3 three() {
-            return t3;
-        }
-
-        public T4 four() {
-            return t4;
+        public T5 getT5() {
+            return t5;
         }
 
         public T5 five() {
             return t5;
-        }
-
-
-        public T1 component1() {
-            return t1;
-        }
-
-        public T2 component2() {
-            return t2;
-        }
-
-        public T3 component3() {
-            return t3;
-        }
-
-        public T4 component4() {
-            return t4;
         }
 
         public T5 component5() {
@@ -384,66 +340,20 @@ public interface U {
         }
     }
 
-    class Six<T1, T2, T3, T4, T5, T6> {
-        private final T1 t1;
-        private final T2 t2;
-        private final T3 t3;
-        private final T4 t4;
-        private final T5 t5;
-        private final T6 t6;
+    class Six<T1, T2, T3, T4, T5, T6> extends Five<T1, T2, T3, T4, T5> {
+        protected final T6 t6;
 
         public Six(T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6) {
-            this.t1 = t1;
-            this.t2 = t2;
-            this.t3 = t3;
-            this.t4 = t4;
-            this.t5 = t5;
+            super(t1, t2, t3, t4, t5);
             this.t6 = t6;
         }
 
-        public T1 one() {
-            return t1;
-        }
-
-        public T2 two() {
-            return t2;
-        }
-
-        public T3 three() {
-            return t3;
-        }
-
-        public T4 four() {
-            return t4;
-        }
-
-        public T5 five() {
-            return t5;
+        public T6 getT6() {
+            return t6;
         }
 
         public T6 six() {
             return t6;
-        }
-
-
-        public T1 component1() {
-            return t1;
-        }
-
-        public T2 component2() {
-            return t2;
-        }
-
-        public T3 component3() {
-            return t3;
-        }
-
-        public T4 component4() {
-            return t4;
-        }
-
-        public T5 component5() {
-            return t5;
         }
 
         public T6 component6() {
@@ -488,76 +398,20 @@ public interface U {
         }
     }
 
-    class Seven<T1, T2, T3, T4, T5, T6, T7> {
-        private final T1 t1;
-        private final T2 t2;
-        private final T3 t3;
-        private final T4 t4;
-        private final T5 t5;
-        private final T6 t6;
-        private final T7 t7;
+    class Seven<T1, T2, T3, T4, T5, T6, T7> extends Six<T1, T2, T3, T4, T5, T6> {
+        protected final T7 t7;
 
         public Seven(T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7) {
-            this.t1 = t1;
-            this.t2 = t2;
-            this.t3 = t3;
-            this.t4 = t4;
-            this.t5 = t5;
-            this.t6 = t6;
+            super(t1, t2, t3, t4, t5, t6);
             this.t7 = t7;
         }
 
-        public T1 one() {
-            return t1;
-        }
-
-        public T2 two() {
-            return t2;
-        }
-
-        public T3 three() {
-            return t3;
-        }
-
-        public T4 four() {
-            return t4;
-        }
-
-        public T5 five() {
-            return t5;
-        }
-
-        public T6 six() {
-            return t6;
+        public T7 getT7() {
+            return t7;
         }
 
         public T7 seven() {
             return t7;
-        }
-
-
-        public T1 component1() {
-            return t1;
-        }
-
-        public T2 component2() {
-            return t2;
-        }
-
-        public T3 component3() {
-            return t3;
-        }
-
-        public T4 component4() {
-            return t4;
-        }
-
-        public T5 component5() {
-            return t5;
-        }
-
-        public T6 component6() {
-            return t6;
         }
 
         public T7 component7() {
@@ -605,86 +459,20 @@ public interface U {
         }
     }
 
-    class Eight<T1, T2, T3, T4, T5, T6, T7, T8> {
-        private final T1 t1;
-        private final T2 t2;
-        private final T3 t3;
-        private final T4 t4;
-        private final T5 t5;
-        private final T6 t6;
-        private final T7 t7;
-        private final T8 t8;
+    class Eight<T1, T2, T3, T4, T5, T6, T7, T8> extends Seven<T1, T2, T3, T4, T5, T6, T7> {
+        protected final T8 t8;
 
         public Eight(T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8) {
-            this.t1 = t1;
-            this.t2 = t2;
-            this.t3 = t3;
-            this.t4 = t4;
-            this.t5 = t5;
-            this.t6 = t6;
-            this.t7 = t7;
+            super(t1, t2, t3, t4, t5, t6, t7);
             this.t8 = t8;
         }
 
-        public T1 one() {
-            return t1;
-        }
-
-        public T2 two() {
-            return t2;
-        }
-
-        public T3 three() {
-            return t3;
-        }
-
-        public T4 four() {
-            return t4;
-        }
-
-        public T5 five() {
-            return t5;
-        }
-
-        public T6 six() {
-            return t6;
-        }
-
-        public T7 seven() {
-            return t7;
+        public T8 getT8() {
+            return t8;
         }
 
         public T8 eight() {
             return t8;
-        }
-
-
-        public T1 component1() {
-            return t1;
-        }
-
-        public T2 component2() {
-            return t2;
-        }
-
-        public T3 component3() {
-            return t3;
-        }
-
-        public T4 component4() {
-            return t4;
-        }
-
-        public T5 component5() {
-            return t5;
-        }
-
-        public T6 component6() {
-            return t6;
-        }
-
-        public T7 component7() {
-            return t7;
         }
 
         public T8 component8() {
@@ -735,95 +523,21 @@ public interface U {
         }
     }
 
-    class Nine<T1, T2, T3, T4, T5, T6, T7, T8, T9> {
-        private final T1 t1;
-        private final T2 t2;
-        private final T3 t3;
-        private final T4 t4;
-        private final T5 t5;
-        private final T6 t6;
-        private final T7 t7;
-        private final T8 t8;
-        private final T9 t9;
+    class Nine<T1, T2, T3, T4, T5, T6, T7, T8, T9> extends Eight<T1, T2, T3, T4, T5, T6, T7, T8> {
+
+        protected final T9 t9;
 
         public Nine(T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9) {
-            this.t1 = t1;
-            this.t2 = t2;
-            this.t3 = t3;
-            this.t4 = t4;
-            this.t5 = t5;
-            this.t6 = t6;
-            this.t7 = t7;
-            this.t8 = t8;
+            super(t1, t2, t3, t4, t5, t6, t7, t8);
             this.t9 = t9;
         }
 
-        public T1 one() {
-            return t1;
-        }
-
-        public T2 two() {
-            return t2;
-        }
-
-        public T3 three() {
-            return t3;
-        }
-
-        public T4 four() {
-            return t4;
-        }
-
-        public T5 five() {
-            return t5;
-        }
-
-        public T6 six() {
-            return t6;
-        }
-
-        public T7 seven() {
-            return t7;
-        }
-
-        public T8 eight() {
-            return t8;
+        public T9 getT9() {
+            return t9;
         }
 
         public T9 nine() {
             return t9;
-        }
-
-        public T1 component1() {
-            return t1;
-        }
-
-        public T2 component2() {
-            return t2;
-        }
-
-        public T3 component3() {
-            return t3;
-        }
-
-        public T4 component4() {
-            return t4;
-        }
-
-        public T5 component5() {
-            return t5;
-        }
-
-        public T6 component6() {
-            return t6;
-        }
-
-        public T7 component7() {
-            return t7;
-        }
-
-        public T8 component8() {
-            return t8;
         }
 
         public T9 component9() {
