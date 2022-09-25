@@ -3,12 +3,9 @@ package pro.fessional.mirana.text;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
@@ -35,9 +32,6 @@ import java.util.regex.Pattern;
  */
 public class StringTemplate {
 
-    private static final ConcurrentHashMap<String, B> FIX = new ConcurrentHashMap<>();
-    private static final ConcurrentHashMap<String, B> DYN = new ConcurrentHashMap<>();
-
     /**
      * 静态字符串，首次替换，后续直接取得缓存
      *
@@ -46,7 +40,7 @@ public class StringTemplate {
      */
     @NotNull
     public static B fix(@NotNull String str) {
-        return FIX.computeIfAbsent(str, s -> new B(true, s));
+        return new B(true, str);
     }
 
     /**
@@ -57,7 +51,7 @@ public class StringTemplate {
      */
     @NotNull
     public static B dyn(@NotNull String str) {
-        return DYN.computeIfAbsent(str, s -> new B(false, s));
+        return new B(false, str);
     }
 
     /**
@@ -68,52 +62,72 @@ public class StringTemplate {
      */
     @NotNull
     public static B one(@NotNull String str) {
-        return new B(false, str);
+        final B b = new B(false, str);
+        b.cache = false;
+        return b;
     }
 
     public static class B {
         private final boolean fix;
         private final String txt;
 
-        private final ConcurrentHashMap<P, C> cac = new ConcurrentHashMap<>();
-        // no leak, must remove by toString
-        private final ThreadLocal<P> arg = ThreadLocal.withInitial(P::new);
+        private final ArrayList<K> keys = new ArrayList<>(16);
+        private final ArrayList<Object> objs = new ArrayList<>(16);
 
-        public B(boolean fix, String txt) {
+        private boolean cache = true;
+
+        private B(boolean fix, String txt) {
             this.fix = fix;
             this.txt = txt;
         }
 
         @NotNull
         public B bindStr(String str, Object obj) {
-            if (str.length() > 0) {
-                final P p = arg.get();
-                p.put(false, str, obj);
+            if (str != null && str.length() > 0) {
+                final K k = new K(false, str, keys.size());
+                keys.add(k);
+                objs.add(obj);
             }
             return this;
         }
 
         @NotNull
         public B bindReg(String reg, Object obj) {
-            if (reg.length() > 0) {
-                final P p = arg.get();
-                p.put(true, reg, obj);
+            if (reg != null && reg.length() > 0) {
+                final K k = new K(true, reg, keys.size());
+                keys.add(k);
+                objs.add(obj);
             }
             return this;
         }
 
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof B)) return false;
+            B b = (B) o;
+            return fix == b.fix && txt.equals(b.txt) && keys.equals(b.keys);
+        }
+
+        @Override
+        public int hashCode() {
+            int result = Boolean.hashCode(fix) * 31 + txt.hashCode();
+            return 31 * result + keys.hashCode();
+        }
+
+        // ///
+        private static final ConcurrentHashMap<B, C> Cac = new ConcurrentHashMap<>();
+
         @NotNull
         public String toString() {
-            final P p = arg.get();
-            try {
-                p.solid();
-                C c = cac.computeIfAbsent(p, k -> new C(k, txt, fix));
-                return c.build(p);
+            final C c;
+            if (cache) {
+                c = Cac.computeIfAbsent(this, C::new);
             }
-            finally {
-                arg.remove();
-                p.clear();
+            else {
+                c = new C(this);
             }
+            return c.build(this);
         }
     }
 
@@ -121,11 +135,13 @@ public class StringTemplate {
     private static class K implements Comparable<K> {
         private final boolean reg;
         private final String key;
+        private final int idx;
         private final int hcd;
 
-        public K(boolean reg, String key) {
+        public K(boolean reg, String key, int idx) {
             this.reg = reg;
             this.key = key;
+            this.idx = idx;
             this.hcd = key.hashCode();
         }
 
@@ -148,51 +164,6 @@ public class StringTemplate {
         }
     }
 
-    // 一定在单线程中
-    private static class P {
-
-        private final LinkedHashMap<K, Object> arg = new LinkedHashMap<>();
-
-        private K[] key = null;
-        private int hcd = -1;
-
-        public void put(boolean reg, String str, Object obj) {
-            arg.put(new K(reg, str), obj);
-        }
-
-        public void solid() {
-            K[] k = new K[arg.size()];
-            arg.keySet().toArray(k);
-            key = k;
-            hcd = Arrays.hashCode(k);
-        }
-
-        public void clear() {
-            arg.clear();
-        }
-
-        public K[] getKey() {
-            return key;
-        }
-
-        public Map<K, Object> getArg() {
-            return arg;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            P p = (P) o;
-            return Arrays.equals(key, p.key);
-        }
-
-        @Override
-        public int hashCode() {
-            return hcd;
-        }
-    }
-
     private static class H implements Comparable<H> {
         private final int p1;
         private final int p2;
@@ -211,26 +182,22 @@ public class StringTemplate {
     }
 
     private static class C {
-        private final P arg;
-        private final String tpl;
-        private final List<Object> rst = new ArrayList<>();
         private final String fix;
+        private final List<Object> ptn = new ArrayList<>();
 
-        public C(P arg, String tpl, boolean fxd) {
-            this.arg = arg;
-            this.tpl = tpl;
-            this.fix = parse(fxd);
+        public C(B b) {
+            this.fix = parse(b);
         }
 
         @NotNull
-        public String build(P arg) {
+        public String build(B b) {
             if (fix != null) return fix;
 
-            Map<K, Object> a = arg.getArg();
+            List<Object> a = b.objs;
             StringBuilder sb = new StringBuilder();
-            for (Object o : rst) {
+            for (Object o : ptn) {
                 if (o instanceof K) {
-                    Object v = a.get(o);
+                    Object v = a.get(((K) o).idx);
                     if (v != null) {
                         sb.append(v);
                     }
@@ -243,11 +210,11 @@ public class StringTemplate {
             return sb.toString();
         }
 
-        private String parse(boolean fxd) {
-            String str = tpl;
-            K[] ks = arg.getKey();
-            ArrayList<H> pos = new ArrayList<>(ks.length * 2);
-            for (K k : ks) {
+        private String parse(B b) {
+            String str = b.txt;
+            List<K> arg = b.keys;
+            ArrayList<H> pos = new ArrayList<>(arg.size() * 2);
+            for (K k : arg) {
                 String key = k.key;
                 if (k.reg) {
                     Pattern ptn = Pattern.compile(key);
@@ -275,13 +242,13 @@ public class StringTemplate {
                 if (x0 >= p1) {
                     if (p1 < 0) {
                         if (x0 > 0) {
-                            rst.add(str.substring(0, x0).toCharArray());
+                            ptn.add(str.substring(0, x0).toCharArray());
                         }
                     }
                     else {
-                        rst.add(str.substring(p1, x0).toCharArray());
+                        ptn.add(str.substring(p1, x0).toCharArray());
                     }
-                    rst.add(nt.k);
+                    ptn.add(nt.k);
                     p1 = nt.p2;
                 }
                 else {
@@ -290,13 +257,13 @@ public class StringTemplate {
             }
 
             if (p1 < 0) {
-                rst.add(str.toCharArray());
+                ptn.add(str.toCharArray());
             }
             else if (p1 > 0 && p1 < str.length()) {
-                rst.add(str.substring(p1).toCharArray());
+                ptn.add(str.substring(p1).toCharArray());
             }
 
-            return fxd ? build(arg) : null;
+            return b.fix ? build(b) : null;
         }
     }
 }

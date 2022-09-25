@@ -119,13 +119,13 @@ public class StringTemplateTest {
     }
 
     /*
-    String.concat = 195
-    String.append = 95
-    String.replace = 1737
-    String.format = 1354
-    StringTemplate.fix = 290
-    StringTemplate.dyn = 352
-    StringTemplate.one = 1489
+    String.concat = 212
+    String.append = 103
+    String.replace = 1695
+    String.format = 1171
+    StringTemplate.fix = 186
+    StringTemplate.dyn = 265
+    StringTemplate.one = 574
      */
     public static void main(String[] args) {
         int len = 100_0000;
