@@ -139,11 +139,14 @@ public class StringTemplateTest {
         System.out.println("String.concat = " + (System.currentTimeMillis() - s));
 
         s = System.currentTimeMillis();
+        final StringBuilder sb = new StringBuilder();
         for (int i = 0; i < len; i++) {
             String token = "token_" + i;
-            String t = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=" +
-                       token + "&openid=" +
-                       token + "&lang=en";
+            sb.append("https://api.weixin.qq.com/cgi-bin/user/info?access_token=");
+            sb.append(token).append("&openid=");
+            sb.append(token).append("&lang=en");
+            String t = sb.toString();
+            sb.setLength(0);
         }
         System.out.println("String.append = " + (System.currentTimeMillis() - s));
 

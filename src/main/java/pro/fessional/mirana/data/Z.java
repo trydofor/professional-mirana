@@ -1,10 +1,12 @@
 package pro.fessional.mirana.data;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -22,16 +24,17 @@ import java.util.function.Predicate;
 public interface Z {
 
     /**
-     * 根据制定的项目，保证顺序的唯一对象
+     * 按指定的方式提取key，保证顺序的唯一对象
      *
      * @param ts  对象
-     * @param fn  唯一项
+     * @param fn  唯一项提取期
      * @param <T> 元素
      * @return 保证顺序的唯一对象
      */
+    @SuppressWarnings("unchecked")
     @SafeVarargs
     @NotNull
-    static <T> List<T> uniq(Collection<T> ts, Function<? super T, ?>... fn) {
+    static <T> List<T> uniq(Collection<? extends T> ts, Function<? super T, ?>... fn) {
         if (ts == null) return Collections.emptyList();
         if (fn == null || fn.length == 0) {
             if (ts instanceof List) {
@@ -63,6 +66,12 @@ public interface Z {
     @Nullable
     static <T> T find(Predicate<T> p, T... ts) {
         if (ts == null) return null;
+        return find(p, Arrays.asList(ts));
+    }
+
+    @Nullable
+    static <T> T find(Predicate<T> p, Collection<? extends T> ts) {
+        if (ts == null) return null;
         for (T t : ts) {
             if (t != null && p.test(t)) return t;
         }
@@ -72,7 +81,12 @@ public interface Z {
     @SafeVarargs
     @Nullable
     static <T, R> R make(Function<T, R> f, T... ts) {
-        return make(null, f, ts);
+        return makeSafe(null, f, ts);
+    }
+
+    @Nullable
+    static <T, R> R make(Function<T, R> f, Collection<? extends T> ts) {
+        return makeSafe(null, f, ts);
     }
 
     /**
@@ -86,9 +100,15 @@ public interface Z {
      * @return 第一个能转换的对象
      */
     @SafeVarargs
-    @Nullable
-    static <T, R> R make(R d, Function<T, R> f, T... ts) {
-        if (ts == null) return null;
+    @Contract("!null,_,_ ->!null")
+    static <T, R> R makeSafe(R d, Function<T, R> f, T... ts) {
+        if (ts == null) return d;
+        return makeSafe(d, f, Arrays.asList(ts));
+    }
+
+    @Contract("!null,_,_ ->!null")
+    static <T, R> R makeSafe(R d, Function<T, R> f, Collection<? extends T> ts) {
+        if (ts == null) return d;
         for (T t : ts) {
             if (t != null) {
                 try {
@@ -103,41 +123,14 @@ public interface Z {
         return d;
     }
 
-    @SafeVarargs
-    @Nullable
-    static <T> T notNull(T... ts) {
-        if (ts == null) return null;
-        for (T t : ts) {
-            if (t != null) return t;
-        }
-        return null;
-    }
-
-    @SafeVarargs
-    @Nullable
-    static <T extends CharSequence> T notEmpty(T... ts) {
-        if (ts == null) return null;
-        for (T t : ts) {
-            if (t != null && t.length() > 0) return t;
-        }
-        return null;
-    }
-
-    @Nullable
-    static String notBlank(CharSequence... ts) {
-        if (ts == null) return null;
-        for (CharSequence t : ts) {
-            if (t != null && t.length() > 0) {
-                String s = t.toString().trim();
-                if (s.length() > 0) return s;
-            }
-        }
-        return null;
-    }
-
     @Nullable
     static BigDecimal decimal(CharSequence... ts) {
-        return decimal(null, ts);
+        return decimalSafe(null, ts);
+    }
+
+    @Nullable
+    static BigDecimal decimal(Collection<? extends CharSequence> ts) {
+        return decimalSafe(null, ts);
     }
 
     /**
@@ -147,9 +140,15 @@ public interface Z {
      * @param ts 转换前
      * @return 转换后
      */
-    @Nullable
-    static BigDecimal decimal(BigDecimal d, CharSequence... ts) {
-        if (ts == null) return null;
+    @Contract("!null,_ ->!null")
+    static BigDecimal decimalSafe(BigDecimal d, CharSequence... ts) {
+        if (ts == null) return d;
+        return decimalSafe(d, Arrays.asList(ts));
+    }
+
+    @Contract("!null,_ ->!null")
+    static BigDecimal decimalSafe(BigDecimal d, Collection<? extends CharSequence> ts) {
+        if (ts == null) return d;
         for (CharSequence t : ts) {
             if (t != null && t.length() > 0) {
                 String s = t.toString().trim();
@@ -168,7 +167,12 @@ public interface Z {
 
     @Nullable
     static Long int64(CharSequence... ts) {
-        return int64(null, ts);
+        return int64Safe(null, ts);
+    }
+
+    @Nullable
+    static Long int64(Collection<? extends CharSequence> ts) {
+        return int64Safe(null, ts);
     }
 
     /**
@@ -178,9 +182,15 @@ public interface Z {
      * @param ts 转换前
      * @return 转换后
      */
-    @Nullable
-    static Long int64(Long d, CharSequence... ts) {
-        if (ts == null) return null;
+    @Contract("!null,_ ->!null")
+    static Long int64Safe(Long d, CharSequence... ts) {
+        if (ts == null) return d;
+        return int64Safe(d, Arrays.asList(ts));
+    }
+
+    @Contract("!null,_ ->!null")
+    static Long int64Safe(Long d, Collection<? extends CharSequence> ts) {
+        if (ts == null) return d;
         for (CharSequence t : ts) {
             if (t != null && t.length() > 0) {
                 String s = t.toString().trim();
@@ -199,7 +209,12 @@ public interface Z {
 
     @Nullable
     static Integer int32(CharSequence... ts) {
-        return int32(null, ts);
+        return int32Safe(null, ts);
+    }
+
+    @Nullable
+    static Integer int32(Collection<? extends CharSequence> ts) {
+        return int32Safe(null, ts);
     }
 
     /**
@@ -209,9 +224,15 @@ public interface Z {
      * @param ts 转换前
      * @return 转换后
      */
-    @Nullable
-    static Integer int32(Integer d, CharSequence... ts) {
-        if (ts == null) return null;
+    @Contract("!null,_ ->!null")
+    static Integer int32Safe(Integer d, CharSequence... ts) {
+        if (ts == null) return d;
+        return int32Safe(d, Arrays.asList(ts));
+    }
+
+    @Contract("!null,_ ->!null")
+    static Integer int32Safe(Integer d, Collection<? extends CharSequence> ts) {
+        if (ts == null) return d;
         for (CharSequence t : ts) {
             if (t != null && t.length() > 0) {
                 String s = t.toString().trim();
@@ -223,6 +244,94 @@ public interface Z {
                         // ignore
                     }
                 }
+            }
+        }
+        return d;
+    }
+
+    @SafeVarargs
+    @Nullable
+    static <T> T notNull(T... ts) {
+        return notNullSafe(null, ts);
+    }
+
+    @Nullable
+    static <T> T notNull(Collection<? extends T> ts) {
+        return notNullSafe(null, ts);
+    }
+
+    @Contract("!null,_ ->!null")
+    static <T> T notNullSafe(T d, T t) {
+        return t == null ? d : t;
+    }
+
+    @Contract("!null,_ ->!null")
+    @SafeVarargs
+    static <T> T notNullSafe(T d, T... ts) {
+        return notNullSafe(d, Arrays.asList(ts));
+    }
+
+    @Contract("!null,_ ->!null")
+    static <T> T notNullSafe(T d, Collection<? extends T> ts) {
+        if (ts == null) return d;
+        for (T t : ts) {
+            if (t != null) return t;
+        }
+        return d;
+    }
+
+
+    @SafeVarargs
+    @Nullable
+    static <T extends CharSequence> T notEmpty(T... ts) {
+        return notEmptySafe(null, ts);
+    }
+
+    @Nullable
+    static <T extends CharSequence> T notEmpty(Collection<? extends T> ts) {
+        return notEmptySafe(null, ts);
+    }
+
+    @Contract("!null,_ ->!null")
+    @SafeVarargs
+    static <T extends CharSequence> T notEmptySafe(T d, T... ts) {
+        if (ts == null) return d;
+        return notEmptySafe(d, Arrays.asList(ts));
+    }
+
+    @Contract("!null,_ ->!null")
+    static <T extends CharSequence> T notEmptySafe(T d, Collection<? extends T> ts) {
+        if (ts == null) return d;
+        for (T t : ts) {
+            if (t != null && t.length() > 0) return t;
+        }
+        return d;
+    }
+
+    @Nullable
+    static String notBlank(CharSequence... ts) {
+        return notBlankSafe(null, ts);
+    }
+
+    @Nullable
+    static String notBlank(Collection<? extends CharSequence> ts) {
+        return notBlankSafe(null, ts);
+    }
+
+
+    @Contract("!null,_ ->!null")
+    static String notBlankSafe(String d, CharSequence... ts) {
+        if (ts == null) return d;
+        return notBlankSafe(d, Arrays.asList(ts));
+    }
+
+    @Contract("!null,_ ->!null")
+    static String notBlankSafe(String d, Collection<? extends CharSequence> ts) {
+        if (ts == null) return d;
+        for (CharSequence t : ts) {
+            if (t != null && t.length() > 0) {
+                String s = t.toString().trim();
+                if (s.length() > 0) return s;
             }
         }
         return d;
