@@ -67,49 +67,64 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.test.skip>true</maven.test.skip>
         <deploy.private.repository>true</deploy.private.repository>
+        <!-- main -->
+        <nonull.version>23.0.0</nonull.version>
+        <jcip-anno.version>1.0</jcip-anno.version>
+        <xml-bind.version>2.3.3</xml-bind.version>
+        <!-- test -->
+        <junit.version>5.9.0</junit.version>
+        <jmh.version>1.35</jmh.version>
+        <mysql.version>8.0.30</mysql.version>
+        <fastjson2.version>2.0.12</fastjson2.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>net.jcip</groupId>
             <artifactId>jcip-annotations</artifactId>
-            <version>1.0</version>
+            <version>${jcip-anno.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <version>23.0.0</version>
+            <version>${nonull.version}</version>
         </dependency>
         <dependency>
             <!-- java 11 removed -->
             <groupId>jakarta.xml.bind</groupId>
             <artifactId>jakarta.xml.bind-api</artifactId>
             <scope>provided</scope>
-            <version>2.3.3</version>
+            <version>${xml-bind.version}</version>
         </dependency>
         <!-- test -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.9.0</version>
+            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.openjdk.jmh</groupId>
             <artifactId>jmh-core</artifactId>
-            <version>1.35</version>
+            <version>${jmh.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.openjdk.jmh</groupId>
             <artifactId>jmh-generator-annprocess</artifactId>
-            <version>1.35</version>
+            <version>${jmh.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.30</version>
+            <version>${mysql.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.fastjson2</groupId>
+            <artifactId>fastjson2</artifactId>
+            <version>${fastjson2.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
