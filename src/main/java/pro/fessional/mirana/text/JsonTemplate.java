@@ -2,6 +2,7 @@ package pro.fessional.mirana.text;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import pro.fessional.mirana.bits.Base64;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -9,7 +10,8 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 /**
- * 快速的构造Json的模板
+ * 快速的构造Json的模板，不适合构造复杂，动态的json。
+ * 因为直接写入buff，无法支持覆盖，删除特性。
  *
  * @author trydofor
  * @since 2022-09-29
@@ -19,32 +21,72 @@ public class JsonTemplate {
     // no leak, for static
     private final static BuilderHolder Buffs = new BuilderHolder();
 
-    public static String obj(Consumer<Obj> obj) {
-        return obj(Buffs.use(), obj);
+    /**
+     * 以复用的buff构造，json对象 `{...}`
+     *
+     * @param fun 构建方法
+     * @return json string
+     */
+    public static String obj(Consumer<Obj> fun) {
+        return obj(Buffs.use(), fun);
     }
 
-    public static String obj(int capacity, Consumer<Obj> obj) {
-        return obj(new StringBuilder(capacity), obj);
+    /**
+     * 初始新buff，json对象 `{...}`
+     *
+     * @param capacity capacity
+     * @param fun      构建方法
+     * @return json string
+     */
+    public static String obj(int capacity, Consumer<Obj> fun) {
+        return obj(new StringBuilder(capacity), fun);
     }
 
-    public static String obj(StringBuilder buff, Consumer<Obj> top) {
+    /**
+     * 指定buff构造，json对象 `{...}`
+     *
+     * @param buff 内容
+     * @param fun  内容
+     * @return json string
+     */
+    public static String obj(StringBuilder buff, Consumer<Obj> fun) {
         final Obj obj = new Obj(buff);
-        top.accept(obj);
+        fun.accept(obj);
         obj.close();
         return buff.toString();
     }
 
-    public static String arr(Consumer<Arr> arr) {
-        return arr(Buffs.use(), arr);
+    /**
+     * 以复用的buff构造，json数组 `[...]`
+     *
+     * @param fun 构建方法
+     * @return json string
+     */
+    public static String arr(Consumer<Arr> fun) {
+        return arr(Buffs.use(), fun);
     }
 
-    public static String arr(int capacity, Consumer<Arr> arr) {
-        return arr(new StringBuilder(capacity), arr);
+    /**
+     * 初始新buff，json数组 `[...]`
+     *
+     * @param capacity capacity
+     * @param fun      构建方法
+     * @return json string
+     */
+    public static String arr(int capacity, Consumer<Arr> fun) {
+        return arr(new StringBuilder(capacity), fun);
     }
 
-    public static String arr(StringBuilder buff, Consumer<Arr> top) {
+    /**
+     * 指定buff构造，json数组 `[...]`
+     *
+     * @param buff 内容
+     * @param fun  内容
+     * @return json string
+     */
+    public static String arr(StringBuilder buff, Consumer<Arr> fun) {
         final Arr arr = new Arr(buff);
-        top.accept(arr);
+        fun.accept(arr);
         arr.close();
         return buff.toString();
     }
@@ -64,23 +106,57 @@ public class JsonTemplate {
                 CharSequence cs = (CharSequence) obj;
                 for (int i = 0, len = cs.length(); i < len; i++) {
                     char c = cs.charAt(i);
-                    if (c == '"' || c == '\\') {
-                        buff.append('\\').append(c);
-                    }
+                    appendChar(c);
+                }
+                buff.append('"');
+            }
+            else if (obj instanceof char[]) {
+                buff.append('"');
+                for (char c : (char[]) obj) {
+                    appendChar(c);
+                }
+                buff.append('"');
+            }
+            else if (obj instanceof byte[]) {
+                buff.append('"');
+                buff.append(Base64.encode((byte[]) obj));
+                buff.append('"');
+            }
+            else if (obj instanceof boolean[]) {
+                FormatUtil.toString(buff, (boolean[]) obj);
+            }
+            else if (obj instanceof short[]) {
+                FormatUtil.toString(buff, (short[]) obj);
+            }
+            else if (obj instanceof int[]) {
+                FormatUtil.toString(buff, (int[]) obj);
+            }
+            else if (obj instanceof long[]) {
+                FormatUtil.toString(buff, (long[]) obj);
+            }
+            else if (obj instanceof float[]) {
+                FormatUtil.toString(buff, (float[]) obj);
+            }
+            else if (obj instanceof double[]) {
+                FormatUtil.toString(buff, (double[]) obj);
+            }
+            else {
+                buff.append(obj);
+            }
+        }
+
+        private void appendChar(char c) {
+            if (c == '"' || c == '\\') {
+                buff.append('\\').append(c);
+            }
 //                    else if (c == '\n') {
 //                        buff.append('\\').append('n');
 //                    }
 //                    else if (c == '\r') {
 //                        buff.append('\\').append('r');
 //                    }
-                    else {
-                        buff.append(c);
-                    }
-                }
-                buff.append('"');
-            }
             else {
-                buff.append(obj);
+                buff.append(c);
             }
         }
 
@@ -121,6 +197,13 @@ public class JsonTemplate {
             buff.append('}');
         }
 
+        /**
+         * 写入 `"key":{ ... }`
+         *
+         * @param key key
+         * @param sub 子对象
+         * @return this
+         */
         @Contract("_, _ -> this")
         public Obj putObj(@NotNull String key, Consumer<Obj> sub) {
             if (sub == null) return this;
@@ -136,6 +219,13 @@ public class JsonTemplate {
             return this;
         }
 
+        /**
+         * 写入 `"key":[ ... ]`
+         *
+         * @param key key
+         * @param sub 子数组
+         * @return this
+         */
         @Contract("_, _ -> this")
         public Obj putArr(@NotNull String key, Consumer<Arr> sub) {
             if (sub == null) return this;
@@ -151,6 +241,12 @@ public class JsonTemplate {
             return this;
         }
 
+        /**
+         * 写入全部KV值 `"k1":...,"k2":...`
+         *
+         * @param kvs map
+         * @return this
+         */
         @Contract("_ -> this")
         public Obj putObj(Map<?, ?> kvs) {
             if (kvs == null || kvs.isEmpty()) return this;
@@ -166,6 +262,13 @@ public class JsonTemplate {
             return this;
         }
 
+        /**
+         * 写入 `"key":{"k1":...,"k2":...}`
+         *
+         * @param key key
+         * @param kvs 对象
+         * @return this
+         */
         @Contract("_, _ -> this")
         public Obj putObj(@NotNull String key, Map<?, ?> kvs) {
             if (kvs == null) return this;
@@ -181,6 +284,13 @@ public class JsonTemplate {
             return this;
         }
 
+        /**
+         * 写入 `"key":[v1,...]`
+         *
+         * @param key key
+         * @param vs  数组
+         * @return this
+         */
         @Contract("_, _ -> this")
         public Obj putArr(@NotNull String key, Collection<?> vs) {
             if (vs == null) return this;
@@ -198,12 +308,26 @@ public class JsonTemplate {
             return this;
         }
 
+        /**
+         * 写入 `"key":[v1,...]`
+         *
+         * @param key key
+         * @param vs  数组
+         * @return this
+         */
         @Contract("_, _ -> this")
         public Obj putArr(@NotNull String key, Object[] vs) {
             if (vs == null) return this;
             return putArr(key, Arrays.asList(vs));
         }
 
+        /**
+         * 写入 `"key":...`，支持 ①map=`{...}` ②arr=`[...]` ③原始类型数组=`[...]`
+         *
+         * @param key key
+         * @param obj value/kvs/array/primaryArr
+         * @return this
+         */
         @Contract("_, _ -> this")
         public Obj putVal(@NotNull String key, Object obj) {
             if (obj == null) return this;
@@ -243,6 +367,12 @@ public class JsonTemplate {
             buff.append(']');
         }
 
+        /**
+         * 写入 `{...}`
+         *
+         * @param sub 对象
+         * @return this
+         */
         @Contract("_ -> this")
         public Arr addObj(Consumer<Obj> sub) {
             if (sub == null) return this;
@@ -256,6 +386,12 @@ public class JsonTemplate {
             return this;
         }
 
+        /**
+         * 写入 `[...]`
+         *
+         * @param sub 数组
+         * @return this
+         */
         @Contract("_ -> this")
         public Arr addArr(Consumer<Arr> sub) {
             if (sub == null) return this;
@@ -269,6 +405,12 @@ public class JsonTemplate {
             return this;
         }
 
+        /**
+         * 写入 `{"k1":...,"k2":...}`
+         *
+         * @param kvs 对象
+         * @return this
+         */
         @Contract("_ -> this")
         public Arr addObj(Map<?, ?> kvs) {
             if (kvs == null) return this;
@@ -287,6 +429,12 @@ public class JsonTemplate {
             return this;
         }
 
+        /**
+         * 写入 `[v1,...]`
+         *
+         * @param vs 数组
+         * @return this
+         */
         @Contract("_ -> this")
         public Arr addArr(Collection<?> vs) {
             if (vs == null) return this;
@@ -298,6 +446,12 @@ public class JsonTemplate {
             return this;
         }
 
+        /**
+         * 写入 `v1,...`
+         *
+         * @param vs 数组
+         * @return this
+         */
         @Contract("_ -> this")
         public Arr addVal(Collection<?> vs) {
             if (vs == null) return this;
@@ -308,6 +462,12 @@ public class JsonTemplate {
             return this;
         }
 
+        /**
+         * 写入 `v1,...`
+         *
+         * @param vs 数组
+         * @return this
+         */
         @Contract("_ -> this")
         public Arr addVal(Object[] vs) {
             if (vs == null) return this;
@@ -318,6 +478,12 @@ public class JsonTemplate {
             return this;
         }
 
+        /**
+         * 写入 `,...`支持 ①map=`{...}` ②arr=`[...]` ③原始类型数组=`[...]`
+         *
+         * @param obj value/kvs/array/primaryArr
+         * @return this
+         */
         @Contract("_ -> this")
         public Arr addVal(Object obj) {
             if (obj == null) return this;

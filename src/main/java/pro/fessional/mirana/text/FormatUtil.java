@@ -347,6 +347,121 @@ public class FormatUtil {
         return ct;
     }
 
+    @NotNull
+    public static String toString(boolean[] arr) {
+        StringBuilder buff = Holder.use();
+        toString(buff, arr);
+        return buff.toString();
+    }
+
+    public static void toString(StringBuilder buff, boolean[] arr) {
+        if (arr == null) return;
+        buff.append('[');
+        if (arr.length > 0) {
+            buff.append(arr[0]);
+            for (int i = 1; i < arr.length; i++) {
+                buff.append(',').append(arr[i]);
+            }
+        }
+        buff.append(']');
+    }
+
+    @NotNull
+    public static String toString(short[] arr) {
+        StringBuilder buff = Holder.use();
+        toString(buff, arr);
+        return buff.toString();
+    }
+
+    public static void toString(StringBuilder buff, short[] arr) {
+        if (arr == null) return;
+        buff.append('[');
+        if (arr.length > 0) {
+            buff.append(arr[0]);
+            for (int i = 1; i < arr.length; i++) {
+                buff.append(',').append(arr[i]);
+            }
+        }
+        buff.append(']');
+    }
+
+    @NotNull
+    public static String toString(int[] arr) {
+        StringBuilder buff = Holder.use();
+        toString(buff, arr);
+        return buff.toString();
+    }
+
+    public static void toString(StringBuilder buff, int[] arr) {
+        if (arr == null) return;
+        buff.append('[');
+        if (arr.length > 0) {
+            buff.append(arr[0]);
+            for (int i = 1; i < arr.length; i++) {
+                buff.append(',').append(arr[i]);
+            }
+        }
+        buff.append(']');
+    }
+
+    @NotNull
+    public static String toString(long[] arr) {
+        StringBuilder buff = Holder.use();
+        toString(buff, arr);
+        return buff.toString();
+    }
+
+    public static void toString(StringBuilder buff, long[] arr) {
+        if (arr == null) return;
+        buff.append('[');
+        if (arr.length > 0) {
+            buff.append(arr[0]);
+            for (int i = 1; i < arr.length; i++) {
+                buff.append(',').append(arr[i]);
+            }
+        }
+        buff.append(']');
+    }
+
+    @NotNull
+    public static String toString(float[] arr) {
+        StringBuilder buff = Holder.use();
+        toString(buff, arr);
+        return buff.toString();
+    }
+
+    public static void toString(StringBuilder buff, float[] arr) {
+        if (arr == null) return;
+        buff.append('[');
+        if (arr.length > 0) {
+            buff.append(arr[0]);
+            for (int i = 1; i < arr.length; i++) {
+                buff.append(',').append(arr[i]);
+            }
+        }
+        buff.append(']');
+    }
+
+    @NotNull
+    public static String toString(double[] arr) {
+        StringBuilder buff = Holder.use();
+        toString(buff, arr);
+        return buff.toString();
+    }
+
+    public static void toString(StringBuilder buff, double[] arr) {
+        if (arr == null) return;
+        buff.append('[');
+        if (arr.length > 0) {
+            buff.append(arr[0]);
+            for (int i = 1; i < arr.length; i++) {
+                buff.append(',').append(arr[i]);
+            }
+        }
+        buff.append(']');
+    }
+
+    //
     public interface V {
         /**
          * @param src 查找源

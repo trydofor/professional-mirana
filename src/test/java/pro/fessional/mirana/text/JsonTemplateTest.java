@@ -136,4 +136,25 @@ class JsonTemplateTest {
         final String r2 = "[" + r1 + "]";
         Assertions.assertEquals(r2, j2);
     }
+
+    @Test
+    void testPrimary() {
+        final String j1 = JsonTemplate.obj(o -> o
+                .putVal("ba", new boolean[]{true, false})
+                .putVal("ia", new int[]{1, 2}));
+
+        final String r1 = "{\"ba\":[true,false],"
+                          + "\"ia\":[1,2]"
+                          + "}";
+        Assertions.assertEquals(r1, j1);
+
+        final String j2 = JsonTemplate.arr(o -> o
+                .addVal(new boolean[]{true, false})
+                .addVal(new int[]{1, 2}));
+
+        final String r2 = "[[true,false],"
+                          + "[1,2]"
+                          + "]";
+        Assertions.assertEquals(r2, j2);
+    }
 }
