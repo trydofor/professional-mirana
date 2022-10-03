@@ -188,8 +188,13 @@ public class DateParser {
     }
 
     @NotNull
-    public static ZonedDateTime parseZoned(@NotNull CharSequence str, @NotNull ZoneId elze) {
-        return parseZoned(str, elze, 0);
+    public static ZonedDateTime parseZoned(@NotNull CharSequence str) {
+        return parseZoned(str, null, 0);
+    }
+
+    @NotNull
+    public static ZonedDateTime parseZoned(@NotNull CharSequence str, ZoneId zid) {
+        return parseZoned(str, zid, 0);
     }
 
     @NotNull
@@ -223,49 +228,90 @@ public class DateParser {
     }
 
     @NotNull
-    public static ZonedDateTime parseZoned(@NotNull TemporalAccessor ta, @NotNull ZoneId elze) {
+    public static ZonedDateTime parseZoned(@NotNull TemporalAccessor ta, ZoneId zid) {
         if (ta instanceof ZonedDateTime) {
-            return (ZonedDateTime) ta;
+            ZonedDateTime zdt = (ZonedDateTime) ta;
+            return zid == null ? zdt : zdt.withZoneSameInstant(zid);
         }
 
         if (ta instanceof OffsetDateTime) {
-            return ((OffsetDateTime) ta).toZonedDateTime();
+            final OffsetDateTime odt = (OffsetDateTime) ta;
+            return zid == null ? odt.toZonedDateTime() : odt.atZoneSameInstant(zid);
         }
 
         final LocalDateTime ldt = ta.query(QueryDateTime);
-        ZoneId zid = ta.query(TemporalQueries.zone());
-        return ZonedDateTime.of(ldt, zid == null ? elze : zid);
+        final ZoneId z = ta.query(TemporalQueries.zone());
+        return concatZoned(ldt, z, zid);
     }
 
     @NotNull
-    public static ZonedDateTime parseZoned(@NotNull CharSequence str, @NotNull ZoneId elze, Collection<DateTimeFormatter> dtf) {
+    private static ZonedDateTime concatZoned(LocalDateTime ldt, ZoneId may, ZoneId zid) {
+        if (may == null) {
+            if (zid == null) {
+                return ZonedDateTime.of(ldt, ZoneId.systemDefault());
+            }
+            else {
+                return ZonedDateTime.of(ldt, zid);
+            }
+        }
+        else {
+            if (zid == null) {
+                return ZonedDateTime.of(ldt, may);
+            }
+            else {
+                return ZonedDateTime.of(ldt, may).withZoneSameInstant(zid);
+            }
+        }
+    }
+
+    @NotNull
+    public static ZonedDateTime parseZoned(@NotNull CharSequence str, ZoneId zid, Collection<DateTimeFormatter> dtf) {
         final TemporalAccessor ta = parseTemporal(str, dtf, false);
-        return parseZoned(ta, elze);
+        return parseZoned(ta, zid);
     }
 
     @NotNull
-    public static OffsetDateTime parseOffset(@NotNull TemporalAccessor ta, @NotNull ZoneId elze) {
+    public static OffsetDateTime parseOffset(@NotNull TemporalAccessor ta, ZoneId zid) {
         if (ta instanceof ZonedDateTime) {
-            return ((ZonedDateTime) ta).toOffsetDateTime();
+            ZonedDateTime zdt = (ZonedDateTime) ta;
+            if (zid == null) {
+                return zdt.toOffsetDateTime();
+            }
+            else {
+                return zdt.withZoneSameInstant(zid).toOffsetDateTime();
+            }
         }
 
         if (ta instanceof OffsetDateTime) {
-            return (OffsetDateTime) ta;
+            OffsetDateTime odt = (OffsetDateTime) ta;
+            if (zid == null) {
+                return odt;
+            }
+            else {
+                return odt.atZoneSameInstant(zid).toOffsetDateTime();
+            }
         }
 
         final LocalDateTime ldt = ta.query(QueryDateTime);
         ZoneOffset zof = ta.query(TemporalQueries.offset());
         if (zof != null) {
-            return OffsetDateTime.of(ldt, zof);
+            final OffsetDateTime odt = OffsetDateTime.of(ldt, zof);
+            if (zid == null) {
+                return odt;
+            }
+            else {
+                return odt.atZoneSameInstant(zid).toOffsetDateTime();
+            }
         }
-        ZoneId zid = ta.query(TemporalQueries.zone());
-        return ZonedDateTime.of(ldt, zid == null ? elze : zid).toOffsetDateTime();
+
+        final ZoneId z = ta.query(TemporalQueries.zone());
+        return concatZoned(ldt, z, zid).toOffsetDateTime();
     }
 
     @NotNull
-    public static OffsetDateTime parseOffset(@NotNull CharSequence str, @NotNull ZoneId elze, Collection<DateTimeFormatter> dtf) {
+    public static OffsetDateTime parseOffset(@NotNull CharSequence str, ZoneId zid, Collection<DateTimeFormatter> dtf) {
         final TemporalAccessor ta = parseTemporal(str, dtf, false);
-        return parseOffset(ta, elze);
+        return parseOffset(ta, zid);
     }
 
     @NotNull
@@ -284,13 +330,13 @@ public class DateParser {
     }
 
     @NotNull
-    public static ZonedDateTime parseZoned(@NotNull CharSequence str, @NotNull ZoneId elze, DateTimeFormatter... dtf) {
-        return parseZoned(str, elze, Arrays.asList(dtf));
+    public static ZonedDateTime parseZoned(@NotNull CharSequence str, ZoneId zid, DateTimeFormatter... dtf) {
+        return parseZoned(str, zid, Arrays.asList(dtf));
     }
 
     @NotNull
-    public static OffsetDateTime parseOffset(@NotNull CharSequence str, @NotNull ZoneId elze, DateTimeFormatter... dtf) {
-        return parseOffset(str, elze, Arrays.asList(dtf));
+    public static OffsetDateTime parseOffset(@NotNull CharSequence str, ZoneId zid, DateTimeFormatter... dtf) {
+        return parseOffset(str, zid, Arrays.asList(dtf));
     }
 
     /**
@@ -392,13 +438,13 @@ public class DateParser {
      * Z zone-offset              offset-Z  +0000; -0800; -08:00;<p>
      * ISO_ZONED_DATE_TIME +01:00[Europe/Paris]
      *
-     * @param str  任意包括全角或半角数字的字符串
-     * @param elze 默认zone
-     * @param off  数字位置偏移量，不考虑非数字
+     * @param str 任意包括全角或半角数字的字符串
+     * @param zid 期望的zone
+     * @param off 数字位置偏移量，不考虑非数字
      * @return 日期
      */
     @NotNull
-    public static ZonedDateTime parseZoned(@NotNull CharSequence str, @NotNull ZoneId elze, int off) {
+    public static ZonedDateTime parseZoned(@NotNull CharSequence str, ZoneId zid, int off) {
         String ptn = digit(str, off, Ptn.ZONE);
         int ztk = 0;
         if (ptn.length() > 14 && ptn.charAt(14) == '@') {
@@ -415,9 +461,9 @@ public class DateParser {
         final String num = ptn.substring(0, ztk);
         final String zzz = ptn.substring(ztk + 1);
 
-        ZoneId zid = zid(zzz);
-
-        return ZonedDateTime.of(date(num), time(num, 8), zid == null ? elze : zid);
+        ZoneId z = zid(zzz);
+        LocalDateTime ldt = LocalDateTime.of(date(num), time(num, 8));
+        return concatZoned(ldt, z, zid);
     }
 
     /**
@@ -591,7 +637,7 @@ public class DateParser {
 
         // 处理时区，只取1段
         if (ptn == Ptn.ZONE) {
-            sb.append("@");
+            sb.append('@');
             boolean spc = false;
             for (int i = chi; i < len; i++) {
                 char c = str.charAt(i);

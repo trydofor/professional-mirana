@@ -51,18 +51,23 @@ public class DateParserTest {
         // 2011-12-03T10:15:30+01:00[Europe/Paris]
         String str1 = "２０１９年０５月２１日　12:34+0800 无效信息";
         String str2 = "２０１９年０５月２１日　１２点３４GMT+8 无效信息";
-        String str3 = "２０１９年５月２１日　１２点３４分５６秒789+01:00[Europe/Paris] 无效信息";
+        String str3 = "２０１９年５月２１日　１２点３４分５６秒789+01:00[Europe/Paris] 夏令时无效信息";
         final ZoneId zid = ZoneId.of("UTC");
         ZonedDateTime ld1 = DateParser.parseZoned(str1, zid);
         ZonedDateTime ld2 = DateParser.parseZoned(str2, zid);
         ZonedDateTime ld3 = DateParser.parseZoned(str3, zid);
 
-        assertEquals(LocalDateTime.of(2019, 5, 21, 12, 34, 0, 0), ld1.toLocalDateTime());
-        assertEquals(LocalDateTime.of(2019, 5, 21, 12, 34, 0, 0), ld2.toLocalDateTime());
-        assertEquals(LocalDateTime.of(2019, 5, 21, 12, 34, 56, 789_000_000), ld3.toLocalDateTime());
-        assertEquals(ZoneId.of("+0800"), ld1.getZone());
-        assertEquals(ZoneId.of("GMT+8"), ld2.getZone());
-        assertEquals(ZoneId.of("Europe/Paris"), ld3.getZone());
+        assertEquals(LocalDateTime.of(2019, 5, 21, 4, 34, 0, 0), ld1.toLocalDateTime());
+        assertEquals(LocalDateTime.of(2019, 5, 21, 4, 34, 0, 0), ld2.toLocalDateTime());
+        assertEquals(LocalDateTime.of(2019, 5, 21, 10, 34, 56, 789_000_000), ld3.toLocalDateTime());
+
+        assertEquals(zid, ld1.getZone());
+        assertEquals(zid, ld2.getZone());
+        assertEquals(zid, ld3.getZone());
+
+        assertEquals(ZoneId.of("+0800"), DateParser.parseZoned(str1).getZone());
+        assertEquals(ZoneId.of("GMT+8"), DateParser.parseZoned(str2).getZone());
+        assertEquals(ZoneId.of("Europe/Paris"), DateParser.parseZoned(str3).getZone());
     }
 
     @Test
