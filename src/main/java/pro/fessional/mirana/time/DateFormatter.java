@@ -2,6 +2,7 @@ package pro.fessional.mirana.time;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import pro.fessional.mirana.data.Null;
 import pro.fessional.mirana.text.HalfCharUtil;
 
 import java.text.DateFormat;
@@ -9,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -38,6 +40,9 @@ public class DateFormatter {
     public static final String PTN_FULL_19 = "yyyy-MM-dd HH:mm:ss";
     public static final String PTN_FULL_23 = "yyyy-MM-dd HH:mm:ss.SSS";
 
+    public static final String PTN_FULL_TZ = "yyyy[-MM][-dd][ ][HH][:mm][:ss][ ][VV]";
+    public static final String PTN_FULL_OZ = "yyyy[-MM][-dd][ ][HH][:mm][:ss][ ][xxx]";
+
     public static final String PTN_DATE_PSE = "[yyyy][yy][-][/][.][M][-][/][.][d]";
     public static final String PTN_TIME_PSE = "H[:m][:s][.SSS]";
     public static final String PTN_FULL_PSE = "[yyyy][yy][-][/][.][M][-][/][.][d][ ]['T'][H][:m][:s][.SSS]";
@@ -55,6 +60,10 @@ public class DateFormatter {
     public static final DateTimeFormatter FMT_FULL_PSE = DateTimeFormatter.ofPattern(PTN_FULL_PSE);
     public static final DateTimeFormatter FMT_ZONE_PSE = DateTimeFormatter.ofPattern(PTN_ZONE_PSE);
 
+    public static final DateTimeFormatter FMT_FULL_TZ = DateTimeFormatter.ofPattern(PTN_FULL_TZ);
+    public static final DateTimeFormatter FMT_FULL_OZ = DateTimeFormatter.ofPattern(PTN_FULL_OZ);
+
+
     /** no leak, for static */
     public static final ThreadLocal<DateFormat> DATE_FORMAT_19 = ThreadLocal.withInitial(() -> new SimpleDateFormat(PTN_FULL_19));
     /** no leak, for static */
@@ -67,6 +76,20 @@ public class DateFormatter {
 
     public static DateFormat full23() {
         return DATE_FORMAT_23.get();
+    }
+
+
+    @NotNull
+    public static String fullTz(@Nullable ZonedDateTime date) {
+        if (date == null) return Null.Str;
+        return FMT_FULL_TZ.format(date);
+    }
+
+
+    @NotNull
+    public static String fullTz(@Nullable OffsetDateTime date) {
+        if (date == null) return Null.Str;
+        return FMT_FULL_OZ.format(date);
     }
 
     /**
@@ -787,7 +810,7 @@ public class DateFormatter {
     }
 
     private static void fixNano(StringBuilder buf, int n) {
-        buf.append(".");
+        buf.append('.');
         // the nano-of-second, from 0 to 999,999,999
         int s = n / 1_000_000;
         if (s < 10) buf.append('0');
