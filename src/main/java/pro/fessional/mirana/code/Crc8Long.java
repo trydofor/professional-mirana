@@ -78,7 +78,7 @@ public class Crc8Long {
      * @param seed 伪随机seed
      * @throws IllegalArgumentException 去重后不足8个元素。
      */
-    public Crc8Long(@NotNull int[] seed) {
+    public Crc8Long(int @NotNull [] seed) {
         if (seed.length < 8) {
             throw new IllegalArgumentException("seed.length can not less than 8");
         }

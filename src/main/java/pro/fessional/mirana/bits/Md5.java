@@ -23,7 +23,7 @@ public class Md5 {
     }
 
     @NotNull
-    public static String sum(@Nullable byte[] bytes) {
+    public static String sum(byte[] bytes) {
         return MdHelp.md5.sum(bytes);
     }
 
@@ -38,11 +38,11 @@ public class Md5 {
     }
 
     @NotNull
-    public static String sum(@Nullable byte[] bytes, boolean upper) {
+    public static String sum(byte[] bytes, boolean upper) {
         return MdHelp.md5.sum(bytes, upper);
     }
 
-    public static boolean check(@Nullable String sum, @Nullable byte[] bytes) {
+    public static boolean check(@Nullable String sum, byte[] bytes) {
         return MdHelp.md5.check(sum, bytes);
     }
 

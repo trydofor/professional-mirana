@@ -37,8 +37,7 @@ public class InputStreams {
      * @param is 输入流
      * @return byte内容
      */
-    @NotNull
-    public static byte[] readBytes(InputStream is) {
+    public static byte @NotNull [] readBytes(InputStream is) {
         if (is == null) return Null.Bytes;
         try {
             ByteArrayOutputStream os = new ByteArrayOutputStream(is.available());

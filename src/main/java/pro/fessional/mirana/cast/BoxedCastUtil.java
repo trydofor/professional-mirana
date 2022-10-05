@@ -102,8 +102,7 @@ public class BoxedCastUtil {
         return n;
     }
 
-    @NotNull
-    public static boolean[] bools(Collection<Boolean> cols) {
+    public static boolean @NotNull [] bools(Collection<Boolean> cols) {
         if (cols == null || cols.isEmpty()) return Null.Bools;
         boolean[] arr = new boolean[cols.size()];
         int i = 0;
@@ -113,8 +112,7 @@ public class BoxedCastUtil {
         return arr;
     }
 
-    @NotNull
-    public static char[] chars(Collection<Character> cols) {
+    public static char @NotNull [] chars(Collection<Character> cols) {
         if (cols == null || cols.isEmpty()) return Null.Chars;
         char[] arr = new char[cols.size()];
         int i = 0;
@@ -124,8 +122,7 @@ public class BoxedCastUtil {
         return arr;
     }
 
-    @NotNull
-    public static byte[] bytes(Collection<? extends Number> cols) {
+    public static byte @NotNull [] bytes(Collection<? extends Number> cols) {
         if (cols == null || cols.isEmpty()) return Null.Bytes;
         byte[] arr = new byte[cols.size()];
         int i = 0;
@@ -135,8 +132,7 @@ public class BoxedCastUtil {
         return arr;
     }
 
-    @NotNull
-    public static short[] shorts(Collection<? extends Number> cols) {
+    public static short @NotNull [] shorts(Collection<? extends Number> cols) {
         if (cols == null || cols.isEmpty()) return Null.Shorts;
         short[] arr = new short[cols.size()];
         int i = 0;
@@ -146,8 +142,7 @@ public class BoxedCastUtil {
         return arr;
     }
 
-    @NotNull
-    public static int[] ints(Collection<? extends Number> cols) {
+    public static int @NotNull [] ints(Collection<? extends Number> cols) {
         if (cols == null || cols.isEmpty()) return Null.Ints;
         int[] arr = new int[cols.size()];
         int i = 0;
@@ -157,8 +152,7 @@ public class BoxedCastUtil {
         return arr;
     }
 
-    @NotNull
-    public static long[] longs(Collection<? extends Number> cols) {
+    public static long @NotNull [] longs(Collection<? extends Number> cols) {
         if (cols == null || cols.isEmpty()) return Null.Longs;
         long[] arr = new long[cols.size()];
         int i = 0;
@@ -168,8 +162,7 @@ public class BoxedCastUtil {
         return arr;
     }
 
-    @NotNull
-    public static float[] floats(Collection<? extends Number> cols) {
+    public static float @NotNull [] floats(Collection<? extends Number> cols) {
         if (cols == null || cols.isEmpty()) return Null.Floats;
         float[] arr = new float[cols.size()];
         int i = 0;
@@ -179,8 +172,7 @@ public class BoxedCastUtil {
         return arr;
     }
 
-    @NotNull
-    public static double[] doubles(Collection<? extends Number> cols) {
+    public static double @NotNull [] doubles(Collection<? extends Number> cols) {
         if (cols == null || cols.isEmpty()) return Null.Doubles;
         double[] arr = new double[cols.size()];
         int i = 0;

@@ -3,7 +3,6 @@ package pro.fessional.mirana.anti;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Closeable;
-import java.io.IOException;
 import java.lang.ref.SoftReference;
 
 /**
@@ -38,7 +37,7 @@ public abstract class S<T> implements Closeable {
      */
     public boolean anewValue(@NotNull T t){
         return false;
-    };
+    }
 
 
     /**
@@ -73,7 +72,7 @@ public abstract class S<T> implements Closeable {
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() {
         threadLocal.remove();
     }
 }

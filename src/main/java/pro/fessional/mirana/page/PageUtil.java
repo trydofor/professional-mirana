@@ -4,7 +4,6 @@ import org.jetbrains.annotations.NotNull;
 import pro.fessional.mirana.text.WhiteUtil;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -113,7 +112,7 @@ public class PageUtil {
         }
 
         @NotNull
-        public Sb by(Collection<By> sort) {
+        public Sb by(Iterable<By> sort) {
             if (sort != null) {
                 for (By st : sort) {
                     by(st);

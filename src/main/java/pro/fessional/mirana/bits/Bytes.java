@@ -75,7 +75,7 @@ public class Bytes {
     }
 
     @NotNull
-    public static String hex(@Nullable byte[] bytes) {
+    public static String hex(byte[] bytes) {
         return hex(bytes, true);
     }
 
@@ -87,7 +87,7 @@ public class Bytes {
      * @return hex
      */
     @NotNull
-    public static String hex(@Nullable byte[] bytes, boolean upper) {
+    public static String hex(byte[] bytes, boolean upper) {
         if (bytes == null) return Null.Str;
         StringBuilder sb = new StringBuilder(bytes.length * 2);
         char[] table = upper ? HEX_UPPER : HEX_LOWER;
@@ -122,7 +122,7 @@ public class Bytes {
      * @param ob 长度大于等于6的byte数组
      * @return ob中字符数量，ascii时候是1，unicode是6
      */
-    public static int unicode(char c, @Nullable byte[] ob) {
+    public static int unicode(char c, byte[] ob) {
         if (ob == null) return 0;
 
         if (c > Byte.MAX_VALUE) {

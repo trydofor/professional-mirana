@@ -6,7 +6,6 @@ import java.io.FilterInputStream;
 import java.io.FilterOutputStream;
 import java.io.FilterReader;
 import java.io.FilterWriter;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
@@ -43,7 +42,7 @@ public class NonCloseStream {
         }
 
         @Override
-        public void close() throws IOException {
+        public void close() {
             // skip
         }
     }
@@ -55,7 +54,7 @@ public class NonCloseStream {
         }
 
         @Override
-        public void close() throws IOException {
+        public void close() {
             // skip
         }
     }
@@ -66,7 +65,7 @@ public class NonCloseStream {
         }
 
         @Override
-        public void close() throws IOException {
+        public void close() {
             // skip
         }
     }
@@ -78,7 +77,7 @@ public class NonCloseStream {
         }
 
         @Override
-        public void close() throws IOException {
+        public void close() {
             // skip
         }
     }

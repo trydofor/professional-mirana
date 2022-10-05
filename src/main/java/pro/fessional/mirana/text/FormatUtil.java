@@ -7,7 +7,6 @@ import pro.fessional.mirana.data.Null;
 
 import java.text.MessageFormat;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -31,10 +30,10 @@ public class FormatUtil {
      * @param join     连接符
      * @param objs     对象组
      * @return 返回
-     * @see BuilderHelper#join(StringBuilder, boolean, String, Collection)
+     * @see BuilderHelper#join(StringBuilder, boolean, String, Iterable)
      */
     @NotNull
-    public static String join(boolean skipNull, String join, Collection<?> objs) {
+    public static String join(boolean skipNull, String join, Iterable<?> objs) {
         StringBuilder builder = Holder.use();
         BuilderHelper.join(builder, skipNull, join, objs);
         return builder.toString();

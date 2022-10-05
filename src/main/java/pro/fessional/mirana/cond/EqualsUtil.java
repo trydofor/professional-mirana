@@ -3,7 +3,6 @@ package pro.fessional.mirana.cond;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
-import java.util.Collection;
 
 /**
  * 大部分情况，可以通过stream构造
@@ -68,7 +67,7 @@ public class EqualsUtil {
 
     }
 
-    public static boolean inVal(Number a, Collection<? extends Number> nums) {
+    public static boolean inVal(Number a, Iterable<? extends Number> nums) {
         if (a == null || nums == null) return false;
         for (Number n : nums) {
             if (n != null && eqVal(a, n)) {
@@ -132,7 +131,7 @@ public class EqualsUtil {
         return e ? e : inCase(a, Arrays.asList(strs));
     }
 
-    public static boolean inCase(String a, Collection<? extends CharSequence> strs) {
+    public static boolean inCase(String a, Iterable<? extends CharSequence> strs) {
         if (a == null || strs == null) return false;
         for (CharSequence s : strs) {
             if (s != null && a.equals(s.toString())) {
@@ -158,7 +157,7 @@ public class EqualsUtil {
         return e ? e : inNoCase(a, Arrays.asList(strs));
     }
 
-    public static boolean inNoCase(String a, Collection<? extends CharSequence> strs) {
+    public static boolean inNoCase(String a, Iterable<? extends CharSequence> strs) {
         if (a == null || strs == null) return false;
         for (CharSequence s : strs) {
             if (s != null && a.equalsIgnoreCase(s.toString())) {

@@ -2,7 +2,6 @@ package pro.fessional.mirana.text;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
@@ -109,10 +108,10 @@ public class BuilderHelper {
      * @param jn  joiner
      * @param arr 数组
      * @return 当前builder
-     * @see #join(StringBuilder, boolean, String, Collection)
+     * @see #join(StringBuilder, boolean, String, Iterable)
      */
     @NotNull
-    public static StringBuilder join(@NotNull StringBuilder sb, String jn, Collection<?> arr) {
+    public static StringBuilder join(@NotNull StringBuilder sb, String jn, Iterable<?> arr) {
         return join(sb, false, jn, arr);
     }
 
@@ -127,9 +126,10 @@ public class BuilderHelper {
      * @return 当前builder
      */
     @NotNull
-    public static StringBuilder join(@NotNull StringBuilder sb, boolean skipNull, String jn, Collection<?> arr) {
-        if (arr == null || arr.size() == 0) return sb;
+    public static StringBuilder join(@NotNull StringBuilder sb, boolean skipNull, String jn, Iterable<?> arr) {
+        if (arr == null) return sb;
 
+        final int len = sb.length();
         for (Object o : arr) {
             if (o != null) {
                 sb.append(o);
@@ -138,7 +138,9 @@ public class BuilderHelper {
                 sb.append(jn);
             }
         }
-        delete(sb, jn.length());
+        if (sb.length() > len) {
+            delete(sb, jn.length());
+        }
         return sb;
     }
 
@@ -152,10 +154,10 @@ public class BuilderHelper {
      * @param <T> fun输入类型
      * @param <R> fun返回类型
      * @return 当前builder
-     * @see #join(StringBuilder, boolean, String, Collection, Function)
+     * @see #join(StringBuilder, boolean, String, Iterable, Function)
      */
     @NotNull
-    public static <T, R> StringBuilder join(@NotNull StringBuilder sb, String jn, Collection<T> arr, Function<T, R> fn) {
+    public static <T, R> StringBuilder join(@NotNull StringBuilder sb, String jn, Iterable<T> arr, Function<T, R> fn) {
         return join(sb, false, jn, arr, fn);
     }
 
@@ -173,9 +175,10 @@ public class BuilderHelper {
      * @return 当前builder
      */
     @NotNull
-    public static <T, R> StringBuilder join(@NotNull StringBuilder sb, boolean skipNull, String jn, Collection<T> arr, Function<T, R> fn) {
-        if (arr == null || arr.size() == 0) return sb;
+    public static <T, R> StringBuilder join(@NotNull StringBuilder sb, boolean skipNull, String jn, Iterable<T> arr, Function<T, R> fn) {
+        if (arr == null) return sb;
 
+        final int len = sb.length();
         for (T t : arr) {
             if (t != null) {
                 sb.append(fn.apply(t));
@@ -184,7 +187,9 @@ public class BuilderHelper {
                 sb.append(jn);
             }
         }
-        delete(sb, jn.length());
+        if (sb.length() > len) {
+            delete(sb, jn.length());
+        }
         return sb;
     }
 
@@ -231,12 +236,12 @@ public class BuilderHelper {
             return this;
         }
 
-        public W join(String jn, Collection<?> arr) {
+        public W join(String jn, Iterable<?> arr) {
             BuilderHelper.join(builder, jn, arr);
             return this;
         }
 
-        public <T, R> W join(String jn, Collection<T> arr, Function<T, R> fun) {
+        public <T, R> W join(String jn, Iterable<T> arr, Function<T, R> fun) {
             BuilderHelper.join(builder, jn, arr, fun);
             return this;
         }
@@ -246,12 +251,12 @@ public class BuilderHelper {
             return this;
         }
 
-        public W join(boolean skipNull, String jn, Collection<?> arr) {
+        public W join(boolean skipNull, String jn, Iterable<?> arr) {
             BuilderHelper.join(builder, skipNull, jn, arr);
             return this;
         }
 
-        public <T, R> W join(boolean skipNull, String jn, Collection<T> arr, Function<T, R> fun) {
+        public <T, R> W join(boolean skipNull, String jn, Iterable<T> arr, Function<T, R> fun) {
             BuilderHelper.join(builder, skipNull, jn, arr, fun);
             return this;
         }

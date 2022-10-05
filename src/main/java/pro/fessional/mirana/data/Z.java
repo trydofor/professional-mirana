@@ -70,7 +70,7 @@ public interface Z {
     }
 
     @Nullable
-    static <T> T find(Predicate<T> p, Collection<? extends T> ts) {
+    static <T> T find(Predicate<T> p, Iterable<? extends T> ts) {
         if (ts == null) return null;
         for (T t : ts) {
             if (t != null && p.test(t)) return t;
@@ -85,7 +85,7 @@ public interface Z {
     }
 
     @Nullable
-    static <T, R> R make(Function<T, R> f, Collection<? extends T> ts) {
+    static <T, R> R make(Function<T, R> f, Iterable<? extends T> ts) {
         return makeSafe(null, f, ts);
     }
 
@@ -107,7 +107,7 @@ public interface Z {
     }
 
     @Contract("!null,_,_ ->!null")
-    static <T, R> R makeSafe(R d, Function<T, R> f, Collection<? extends T> ts) {
+    static <T, R> R makeSafe(R d, Function<T, R> f, Iterable<? extends T> ts) {
         if (ts == null) return d;
         for (T t : ts) {
             if (t != null) {
@@ -129,7 +129,7 @@ public interface Z {
     }
 
     @Nullable
-    static BigDecimal decimal(Collection<? extends CharSequence> ts) {
+    static BigDecimal decimal(Iterable<? extends CharSequence> ts) {
         return decimalSafe(null, ts);
     }
 
@@ -147,7 +147,7 @@ public interface Z {
     }
 
     @Contract("!null,_ ->!null")
-    static BigDecimal decimalSafe(BigDecimal d, Collection<? extends CharSequence> ts) {
+    static BigDecimal decimalSafe(BigDecimal d, Iterable<? extends CharSequence> ts) {
         if (ts == null) return d;
         for (CharSequence t : ts) {
             if (t != null && t.length() > 0) {
@@ -171,7 +171,7 @@ public interface Z {
     }
 
     @Nullable
-    static Long int64(Collection<? extends CharSequence> ts) {
+    static Long int64(Iterable<? extends CharSequence> ts) {
         return int64Safe(null, ts);
     }
 
@@ -189,7 +189,7 @@ public interface Z {
     }
 
     @Contract("!null,_ ->!null")
-    static Long int64Safe(Long d, Collection<? extends CharSequence> ts) {
+    static Long int64Safe(Long d, Iterable<? extends CharSequence> ts) {
         if (ts == null) return d;
         for (CharSequence t : ts) {
             if (t != null && t.length() > 0) {
@@ -213,7 +213,7 @@ public interface Z {
     }
 
     @Nullable
-    static Integer int32(Collection<? extends CharSequence> ts) {
+    static Integer int32(Iterable<? extends CharSequence> ts) {
         return int32Safe(null, ts);
     }
 
@@ -231,7 +231,7 @@ public interface Z {
     }
 
     @Contract("!null,_ ->!null")
-    static Integer int32Safe(Integer d, Collection<? extends CharSequence> ts) {
+    static Integer int32Safe(Integer d, Iterable<? extends CharSequence> ts) {
         if (ts == null) return d;
         for (CharSequence t : ts) {
             if (t != null && t.length() > 0) {
@@ -256,7 +256,7 @@ public interface Z {
     }
 
     @Nullable
-    static <T> T notNull(Collection<? extends T> ts) {
+    static <T> T notNull(Iterable<? extends T> ts) {
         return notNullSafe(null, ts);
     }
 
@@ -272,7 +272,7 @@ public interface Z {
     }
 
     @Contract("!null,_ ->!null")
-    static <T> T notNullSafe(T d, Collection<? extends T> ts) {
+    static <T> T notNullSafe(T d, Iterable<? extends T> ts) {
         if (ts == null) return d;
         for (T t : ts) {
             if (t != null) return t;
@@ -288,7 +288,7 @@ public interface Z {
     }
 
     @Nullable
-    static <T extends CharSequence> T notEmpty(Collection<? extends T> ts) {
+    static <T extends CharSequence> T notEmpty(Iterable<? extends T> ts) {
         return notEmptySafe(null, ts);
     }
 
@@ -300,7 +300,7 @@ public interface Z {
     }
 
     @Contract("!null,_ ->!null")
-    static <T extends CharSequence> T notEmptySafe(T d, Collection<? extends T> ts) {
+    static <T extends CharSequence> T notEmptySafe(T d, Iterable<? extends T> ts) {
         if (ts == null) return d;
         for (T t : ts) {
             if (t != null && t.length() > 0) return t;
@@ -314,7 +314,7 @@ public interface Z {
     }
 
     @Nullable
-    static String notBlank(Collection<? extends CharSequence> ts) {
+    static String notBlank(Iterable<? extends CharSequence> ts) {
         return notBlankSafe(null, ts);
     }
 
@@ -326,7 +326,7 @@ public interface Z {
     }
 
     @Contract("!null,_ ->!null")
-    static String notBlankSafe(String d, Collection<? extends CharSequence> ts) {
+    static String notBlankSafe(String d, Iterable<? extends CharSequence> ts) {
         if (ts == null) return d;
         for (CharSequence t : ts) {
             if (t != null && t.length() > 0) {

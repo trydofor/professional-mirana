@@ -57,7 +57,7 @@ public class Base64 {
     }
 
     @NotNull
-    public static String encode(@Nullable byte[] bytes) {
+    public static String encode(byte[] bytes) {
         return encode(bytes, true);
     }
 
@@ -75,7 +75,7 @@ public class Base64 {
     }
 
     @NotNull
-    public static String encode(@Nullable byte[] bytes, boolean urlSafe) {
+    public static String encode(byte[] bytes, boolean urlSafe) {
         if (bytes == null) return Null.Str;
         return getEncoder(urlSafe).encodeToString(bytes);
     }
@@ -88,7 +88,7 @@ public class Base64 {
     }
 
     @NotNull
-    public static String de2str(@Nullable byte[] bytes) {
+    public static String de2str(byte[] bytes) {
         if (bytes == null) return Null.Str;
         byte[] res = decode(bytes);
         return new String(res, UTF_8);
@@ -102,14 +102,12 @@ public class Base64 {
         return new String(res, UTF_8);
     }
 
-    @NotNull
-    public static byte[] decode(@Nullable String str) {
+    public static byte @NotNull [] decode(@Nullable String str) {
         if (str == null) return Null.Bytes;
         return decode(str.getBytes(UTF_8));
     }
 
-    @NotNull
-    public static byte[] decode(@Nullable byte[] bytes) {
+    public static byte @NotNull [] decode(byte[] bytes) {
         if (bytes == null) return Null.Bytes;
         boolean urlSafe = true;
         for (byte c : bytes) {
@@ -124,8 +122,7 @@ public class Base64 {
         return decoder.decode(bytes);
     }
 
-    @NotNull
-    public static byte[] decode(@Nullable InputStream ins) {
+    public static byte @NotNull [] decode(@Nullable InputStream ins) {
         if (ins == null) return Null.Bytes;
         byte[] bytes = InputStreams.readBytes(ins);
         return decode(bytes);

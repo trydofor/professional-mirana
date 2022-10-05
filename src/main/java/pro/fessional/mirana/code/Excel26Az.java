@@ -3,7 +3,6 @@ package pro.fessional.mirana.code;
 import net.jcip.annotations.ThreadSafe;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -87,7 +86,7 @@ public class Excel26Az {
      * @param prefix 前缀
      * @return 新增head数量，与rows.size()相等为无重复
      */
-    public static int title(Map<String, Integer> head, Collection<String> rows, String prefix) {
+    public static int title(Map<String, Integer> head, Iterable<String> rows, String prefix) {
         int cnt = 0;
         int idx = 0;
 

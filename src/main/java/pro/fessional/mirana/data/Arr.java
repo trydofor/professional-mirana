@@ -15,50 +15,42 @@ public class Arr {
         return ts;
     }
 
-    @NotNull
-    public static boolean[] of(boolean... ts) {
+    public static boolean @NotNull [] of(boolean... ts) {
         return Null.notNull(ts);
     }
 
-    @NotNull
-    public static byte[] of(byte... ts) {
+    public static byte @NotNull [] of(byte... ts) {
         return Null.notNull(ts);
     }
 
-    @NotNull
-    public static short[] of(short... ts) {
+    public static short @NotNull [] of(short... ts) {
         return Null.notNull(ts);
     }
 
-    @NotNull
-    public static char[] of(char... ts) {
+    public static char @NotNull [] of(char... ts) {
         return Null.notNull(ts);
     }
 
-    @NotNull
-    public static int[] of(int... ts) {
+    public static int @NotNull [] of(int... ts) {
         return Null.notNull(ts);
     }
 
-    @NotNull
-    public static long[] of(long... ts) {
+    public static long @NotNull [] of(long... ts) {
         return Null.notNull(ts);
     }
 
-    @NotNull
-    public static float[] of(float... ts) {
+    public static float @NotNull [] of(float... ts) {
         return Null.notNull(ts);
     }
 
-    @NotNull
-    public static double[] of(double... ts) {
+    public static double @NotNull [] of(double... ts) {
         return Null.notNull(ts);
     }
 
 
     public static boolean[] set(boolean[] arr, int idx, boolean v) {
         // ensure length
-        if (idx < arr.length) {
+        if (idx >= 0 && idx < arr.length) {
             arr[idx] = v;
             return arr;
         }

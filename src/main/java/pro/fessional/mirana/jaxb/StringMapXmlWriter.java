@@ -1,7 +1,6 @@
 package pro.fessional.mirana.jaxb;
 
 import javax.xml.namespace.NamespaceContext;
-import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -53,154 +52,154 @@ public class StringMapXmlWriter implements XMLStreamWriter {
     }
 
     @Override
-    public void writeStartElement(String localName) throws XMLStreamException {
+    public void writeStartElement(String localName) {
         currentKey = localName;
     }
 
     @Override
-    public void writeStartElement(String namespaceURI, String localName) throws XMLStreamException {
+    public void writeStartElement(String namespaceURI, String localName) {
         writeStartElement(localName);
     }
 
     @Override
-    public void writeStartElement(String prefix, String localName, String namespaceURI) throws XMLStreamException {
+    public void writeStartElement(String prefix, String localName, String namespaceURI) {
         writeStartElement(localName);
     }
 
     @Override
-    public void writeEmptyElement(String namespaceURI, String localName) throws XMLStreamException {
+    public void writeEmptyElement(String namespaceURI, String localName) {
         writeEmptyElement(localName);
     }
 
     @Override
-    public void writeEmptyElement(String prefix, String localName, String namespaceURI) throws XMLStreamException {
+    public void writeEmptyElement(String prefix, String localName, String namespaceURI) {
         writeEmptyElement(localName);
     }
 
     @Override
-    public void writeEmptyElement(String localName) throws XMLStreamException {
+    public void writeEmptyElement(String localName) {
         writeStartElement(localName);
         putStringValue("");
     }
 
     @Override
-    public void writeEndElement() throws XMLStreamException {
+    public void writeEndElement() {
         // ignore
     }
 
     @Override
-    public void writeEndDocument() throws XMLStreamException {
+    public void writeEndDocument() {
         // ignore
     }
 
     @Override
-    public void close() throws XMLStreamException {
+    public void close() {
         // ignore
 
     }
 
     @Override
-    public void flush() throws XMLStreamException {
+    public void flush() {
         // ignore
     }
 
     @Override
-    public void writeAttribute(String localName, String value) throws XMLStreamException {
+    public void writeAttribute(String localName, String value) {
         // ignore
     }
 
     @Override
-    public void writeAttribute(String prefix, String namespaceURI, String localName, String value) throws XMLStreamException {
+    public void writeAttribute(String prefix, String namespaceURI, String localName, String value) {
         // ignore
     }
 
     @Override
-    public void writeAttribute(String namespaceURI, String localName, String value) throws XMLStreamException {
+    public void writeAttribute(String namespaceURI, String localName, String value) {
         // ignore
     }
 
     @Override
-    public void writeNamespace(String prefix, String namespaceURI) throws XMLStreamException {
+    public void writeNamespace(String prefix, String namespaceURI) {
         // ignore
     }
 
     @Override
-    public void writeDefaultNamespace(String namespaceURI) throws XMLStreamException {
+    public void writeDefaultNamespace(String namespaceURI) {
         // ignore
     }
 
     @Override
-    public void writeComment(String data) throws XMLStreamException {
+    public void writeComment(String data) {
         // ignore
     }
 
     @Override
-    public void writeProcessingInstruction(String target) throws XMLStreamException {
+    public void writeProcessingInstruction(String target) {
         // ignore
     }
 
     @Override
-    public void writeProcessingInstruction(String target, String data) throws XMLStreamException {
+    public void writeProcessingInstruction(String target, String data) {
         // ignore
     }
 
     @Override
-    public void writeCData(String data) throws XMLStreamException {
+    public void writeCData(String data) {
         putStringValue(data);
     }
 
     @Override
-    public void writeDTD(String dtd) throws XMLStreamException {
+    public void writeDTD(String dtd) {
         // ignore
     }
 
     @Override
-    public void writeEntityRef(String name) throws XMLStreamException {
+    public void writeEntityRef(String name) {
         // ignore
     }
 
     @Override
-    public void writeStartDocument() throws XMLStreamException {
+    public void writeStartDocument() {
         // ignore
     }
 
     @Override
-    public void writeStartDocument(String version) throws XMLStreamException {
+    public void writeStartDocument(String version) {
         // ignore
     }
 
     @Override
-    public void writeStartDocument(String encoding, String version) throws XMLStreamException {
+    public void writeStartDocument(String encoding, String version) {
         // ignore
     }
 
     @Override
-    public void writeCharacters(String text) throws XMLStreamException {
+    public void writeCharacters(String text) {
         putStringValue(text);
     }
 
     @Override
-    public void writeCharacters(char[] text, int start, int len) throws XMLStreamException {
+    public void writeCharacters(char[] text, int start, int len) {
         writeCharacters(new String(text, start, len));
     }
 
     @Override
-    public String getPrefix(String uri) throws XMLStreamException {
+    public String getPrefix(String uri) {
         return null;
     }
 
     @Override
-    public void setPrefix(String prefix, String uri) throws XMLStreamException {
+    public void setPrefix(String prefix, String uri) {
         // ignore
     }
 
     @Override
-    public void setDefaultNamespace(String uri) throws XMLStreamException {
+    public void setDefaultNamespace(String uri) {
         // ignore
     }
 
     @Override
-    public void setNamespaceContext(NamespaceContext context) throws XMLStreamException {
+    public void setNamespaceContext(NamespaceContext context) {
         // ignore
     }
 
@@ -210,7 +209,7 @@ public class StringMapXmlWriter implements XMLStreamWriter {
     }
 
     @Override
-    public Object getProperty(String name) throws IllegalArgumentException {
+    public Object getProperty(String name) {
         return null;
     }
 }

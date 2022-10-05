@@ -292,7 +292,7 @@ public class JsonTemplate {
          * @return this
          */
         @Contract("_, _ -> this")
-        public Obj putArr(@NotNull String key, Collection<?> vs) {
+        public Obj putArr(@NotNull String key, Iterable<?> vs) {
             if (vs == null) return this;
 
             autoComma();
@@ -332,8 +332,8 @@ public class JsonTemplate {
         public Obj putVal(@NotNull String key, Object obj) {
             if (obj == null) return this;
 
-            if (obj instanceof Collection) {
-                return putArr(key, (Collection<?>) obj);
+            if (obj instanceof Iterable) {
+                return putArr(key, (Iterable<?>) obj);
             }
             if (obj instanceof Map) {
                 return putObj(key, (Map<?, ?>) obj);
@@ -436,7 +436,7 @@ public class JsonTemplate {
          * @return this
          */
         @Contract("_ -> this")
-        public Arr addArr(Collection<?> vs) {
+        public Arr addArr(Iterable<?> vs) {
             if (vs == null) return this;
 
             autoComma();
@@ -453,7 +453,7 @@ public class JsonTemplate {
          * @return this
          */
         @Contract("_ -> this")
-        public Arr addVal(Collection<?> vs) {
+        public Arr addVal(Iterable<?> vs) {
             if (vs == null) return this;
 
             for (Object v : vs) {
@@ -492,7 +492,7 @@ public class JsonTemplate {
                 return addObj((Map<?, ?>) obj);
             }
             if (obj instanceof Collection) {
-                return addArr((Collection<?>) obj);
+                return addArr((Iterable<?>) obj);
             }
             if (obj instanceof Object[]) {
                 return addArr(Arrays.asList((Object[]) obj));

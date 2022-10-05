@@ -29,9 +29,9 @@ public class Aes128 {
         this(secKey.getBytes(UTF_8));
     }
 
-    public Aes128(@NotNull byte[] bs) {
+    public Aes128(byte @NotNull [] bs) {
         int len = 16;
-        if (bs == null || bs.length < len) {
+        if (bs.length < len) {
             throw new IllegalArgumentException("key length must ge 16");
         }
 
@@ -52,8 +52,7 @@ public class Aes128 {
      * @param plain 明文
      * @return 密文
      */
-    @NotNull
-    public byte[] encode(@Nullable String plain) {
+    public byte @NotNull [] encode(@Nullable String plain) {
         if (plain == null) return Null.Bytes;
         byte[] bytes = plain.getBytes(UTF_8);
         return encode(bytes);
@@ -65,8 +64,7 @@ public class Aes128 {
      * @param plain 明文
      * @return 密文
      */
-    @NotNull
-    public byte[] encode(@Nullable InputStream plain) {
+    public byte @NotNull [] encode(@Nullable InputStream plain) {
         if (plain == null) return Null.Bytes;
         byte[] bytes = InputStreams.readBytes(plain);
         return encode(bytes);
@@ -78,8 +76,7 @@ public class Aes128 {
      * @param plain 明文
      * @return 密文
      */
-    @NotNull
-    public byte[] encode(@Nullable byte[] plain) {
+    public byte @NotNull [] encode(byte[] plain) {
         if (plain == null) return Null.Bytes;
         try {
             Cipher ins = Cipher.getInstance(CYP_NAME);//"算法/模式/补码方式"
@@ -97,8 +94,7 @@ public class Aes128 {
      * @param cipher 密文
      * @return 明文
      */
-    @NotNull
-    public byte[] decode(@Nullable byte[] cipher) {
+    public byte @NotNull [] decode(byte[] cipher) {
         if (cipher == null || cipher.length == 0) return Null.Bytes;
         try {
             Cipher ins = Cipher.getInstance(CYP_NAME);//"算法/模式/补码方式"
@@ -116,8 +112,7 @@ public class Aes128 {
      * @param cipher 密文
      * @return 明文
      */
-    @NotNull
-    public byte[] decode(@Nullable InputStream cipher) {
+    public byte @NotNull [] decode(@Nullable InputStream cipher) {
         if (cipher == null) return Null.Bytes;
         byte[] bytes = InputStreams.readBytes(cipher);
         return decode(bytes);
@@ -174,7 +169,7 @@ public class Aes128 {
     }
 
     @NotNull
-    public static Aes128 of(@NotNull byte[] secKey) {
+    public static Aes128 of(byte @NotNull [] secKey) {
         return new Aes128(secKey);
     }
 

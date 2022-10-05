@@ -22,7 +22,6 @@ import java.time.temporal.TemporalQuery;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -198,7 +197,7 @@ public class DateParser {
     }
 
     @NotNull
-    public static LocalTime parseTime(@NotNull CharSequence str, Collection<DateTimeFormatter> dtf) {
+    public static LocalTime parseTime(@NotNull CharSequence str, Iterable<DateTimeFormatter> dtf) {
         final TemporalAccessor ta = parseTemporal(str, dtf, false);
         final LocalTime dt = ta.query(QueryTime);
         if (dt == null) {
@@ -208,7 +207,7 @@ public class DateParser {
     }
 
     @NotNull
-    public static LocalDate parseDate(@NotNull CharSequence str, Collection<DateTimeFormatter> dtf) {
+    public static LocalDate parseDate(@NotNull CharSequence str, Iterable<DateTimeFormatter> dtf) {
         final TemporalAccessor ta = parseTemporal(str, dtf, false);
         final LocalDate dt = ta.query(QueryDate);
         if (dt == null) {
@@ -218,7 +217,7 @@ public class DateParser {
     }
 
     @NotNull
-    public static LocalDateTime parseDateTime(@NotNull CharSequence str, Collection<DateTimeFormatter> dtf) {
+    public static LocalDateTime parseDateTime(@NotNull CharSequence str, Iterable<DateTimeFormatter> dtf) {
         final TemporalAccessor ta = parseTemporal(str, dtf, false);
         final LocalDateTime dt = ta.query(QueryDateTime);
         if (dt == null) {
@@ -265,7 +264,7 @@ public class DateParser {
     }
 
     @NotNull
-    public static ZonedDateTime parseZoned(@NotNull CharSequence str, ZoneId zid, Collection<DateTimeFormatter> dtf) {
+    public static ZonedDateTime parseZoned(@NotNull CharSequence str, ZoneId zid, Iterable<DateTimeFormatter> dtf) {
         final TemporalAccessor ta = parseTemporal(str, dtf, false);
         return parseZoned(ta, zid);
     }
@@ -309,7 +308,7 @@ public class DateParser {
     }
 
     @NotNull
-    public static OffsetDateTime parseOffset(@NotNull CharSequence str, ZoneId zid, Collection<DateTimeFormatter> dtf) {
+    public static OffsetDateTime parseOffset(@NotNull CharSequence str, ZoneId zid, Iterable<DateTimeFormatter> dtf) {
         final TemporalAccessor ta = parseTemporal(str, dtf, false);
         return parseOffset(ta, zid);
     }
@@ -475,7 +474,7 @@ public class DateParser {
      * @return 日期
      */
     @Contract("_,_,false->!null")
-    public static TemporalAccessor parseTemporal(@NotNull CharSequence str, @NotNull Collection<DateTimeFormatter> dtf, boolean quiet) {
+    public static TemporalAccessor parseTemporal(@NotNull CharSequence str, @NotNull Iterable<DateTimeFormatter> dtf, boolean quiet) {
         QuietPos best = null;
 
         for (QuietPos qp : parseTemporal(dtf, str, true)) {
@@ -531,8 +530,8 @@ public class DateParser {
      * @return 结果
      */
     @NotNull
-    public static List<QuietPos> parseTemporal(@NotNull Collection<DateTimeFormatter> dtf, @NotNull CharSequence str, boolean stopOnSuccess) {
-        List<QuietPos> result = new ArrayList<>(dtf.size());
+    public static List<QuietPos> parseTemporal(@NotNull Iterable<DateTimeFormatter> dtf, @NotNull CharSequence str, boolean stopOnSuccess) {
+        List<QuietPos> result = new ArrayList<>();
         for (DateTimeFormatter ft : dtf) {
             QuietPos pos = new QuietPos(0);
             pos.formatter = ft;

@@ -9,7 +9,6 @@ import java.math.BigInteger;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -217,13 +216,13 @@ public class BigDecimalUtil {
     }
 
     @NotNull
-    public static BigDecimal avgMap(Collection<?> cols) {
+    public static BigDecimal avgMap(Iterable<?> cols) {
         BigDecimal total = avgMapNull(cols);
         return Objects.requireNonNull(total);
     }
 
     @NotNull
-    public static <T> BigDecimal avgMap(Collection<T> cols, Function<? super T, ?> mapper) {
+    public static <T> BigDecimal avgMap(Iterable<T> cols, Function<? super T, ?> mapper) {
         BigDecimal total = avgMapNull(cols, mapper);
         return Objects.requireNonNull(total);
     }
@@ -233,7 +232,7 @@ public class BigDecimalUtil {
         return avgMapNull(Arrays.asList(nums));
     }
 
-    public static BigDecimal avgMapNull(Collection<?> cols) {
+    public static BigDecimal avgMapNull(Iterable<?> cols) {
         BigDecimal total = null;
         int count = 0;
         for (Object e : cols) {
@@ -246,7 +245,7 @@ public class BigDecimalUtil {
         return total == null ? null : total.divide(new BigDecimal(count), MC);
     }
 
-    public static <T> BigDecimal avgMapNull(Collection<T> cols, Function<? super T, ?> mapper) {
+    public static <T> BigDecimal avgMapNull(Iterable<T> cols, Function<? super T, ?> mapper) {
         BigDecimal total = null;
         int count = 0;
         for (T e : cols) {
@@ -269,13 +268,13 @@ public class BigDecimalUtil {
     }
 
     @NotNull
-    public static BigDecimal maxMap(Collection<?> cols) {
+    public static BigDecimal maxMap(Iterable<?> cols) {
         final BigDecimal max = maxMapNull(cols);
         return Objects.requireNonNull(max);
     }
 
     @NotNull
-    public static <T> BigDecimal maxMap(Collection<T> cols, Function<? super T, ?> mapper) {
+    public static <T> BigDecimal maxMap(Iterable<T> cols, Function<? super T, ?> mapper) {
         final BigDecimal max = maxMapNull(cols, mapper);
         return Objects.requireNonNull(max);
     }
@@ -285,7 +284,7 @@ public class BigDecimalUtil {
         return maxMapNull(Arrays.asList(nums));
     }
 
-    public static BigDecimal maxMapNull(Collection<?> cols) {
+    public static BigDecimal maxMapNull(Iterable<?> cols) {
         if (cols == null) return null;
 
         BigDecimal max = null;
@@ -298,7 +297,7 @@ public class BigDecimalUtil {
         return max;
     }
 
-    public static <T> BigDecimal maxMapNull(Collection<T> cols, Function<? super T, ?> mapper) {
+    public static <T> BigDecimal maxMapNull(Iterable<T> cols, Function<? super T, ?> mapper) {
         if (cols == null) return null;
 
         BigDecimal max = null;
@@ -319,13 +318,13 @@ public class BigDecimalUtil {
     }
 
     @NotNull
-    public static BigDecimal minMap(Collection<?> cols) {
+    public static BigDecimal minMap(Iterable<?> cols) {
         final BigDecimal min = minMapNull(cols);
         return Objects.requireNonNull(min);
     }
 
     @NotNull
-    public static <T> BigDecimal minMap(Collection<T> cols, Function<? super T, ?> mapper) {
+    public static <T> BigDecimal minMap(Iterable<T> cols, Function<? super T, ?> mapper) {
         final BigDecimal min = minMapNull(cols, mapper);
         return Objects.requireNonNull(min);
     }
@@ -335,7 +334,7 @@ public class BigDecimalUtil {
         return minMapNull(Arrays.asList(nums));
     }
 
-    public static BigDecimal minMapNull(Collection<?> cols) {
+    public static BigDecimal minMapNull(Iterable<?> cols) {
         if (cols == null) return null;
 
         BigDecimal min = null;
@@ -348,7 +347,7 @@ public class BigDecimalUtil {
         return min;
     }
 
-    public static <T> BigDecimal minMapNull(Collection<T> cols, Function<? super T, ?> mapper) {
+    public static <T> BigDecimal minMapNull(Iterable<T> cols, Function<? super T, ?> mapper) {
         if (cols == null) return null;
 
         BigDecimal min = null;
@@ -373,12 +372,12 @@ public class BigDecimalUtil {
     }
 
     @NotNull
-    public static BigDecimal sumMap(Collection<?> cols) {
+    public static BigDecimal sumMap(Iterable<?> cols) {
         return addMapElse(ZERO, cols);
     }
 
     @NotNull
-    public static <T> BigDecimal sumMap(Collection<T> cols, Function<? super T, ?> mapper) {
+    public static <T> BigDecimal sumMap(Iterable<T> cols, Function<? super T, ?> mapper) {
         return addMapElse(ZERO, cols, mapper);
     }
 
@@ -395,13 +394,13 @@ public class BigDecimalUtil {
     }
 
     @NotNull
-    public static BigDecimal addMap(Collection<?> cols) {
+    public static BigDecimal addMap(Iterable<?> cols) {
         BigDecimal t = addMapNull(cols);
         return Objects.requireNonNull(t);
     }
 
     @NotNull
-    public static <T> BigDecimal addMap(Collection<T> cols, Function<? super T, ?> mapper) {
+    public static <T> BigDecimal addMap(Iterable<T> cols, Function<? super T, ?> mapper) {
         BigDecimal t = addMapNull(cols, mapper);
         return Objects.requireNonNull(t);
     }
@@ -419,13 +418,13 @@ public class BigDecimalUtil {
     }
 
     @Contract("!null,_ -> !null")
-    public static BigDecimal addMapElse(BigDecimal e, Collection<?> cols) {
+    public static BigDecimal addMapElse(BigDecimal e, Iterable<?> cols) {
         BigDecimal t = addMapNull(cols);
         return t == null ? e : t;
     }
 
     @Contract("!null,_,_ -> !null")
-    public static <T> BigDecimal addMapElse(BigDecimal e, Collection<T> cols, Function<? super T, ?> mapper) {
+    public static <T> BigDecimal addMapElse(BigDecimal e, Iterable<T> cols, Function<? super T, ?> mapper) {
         BigDecimal t = addMapNull(cols, mapper);
         return t == null ? e : t;
     }
@@ -454,7 +453,7 @@ public class BigDecimalUtil {
         return t;
     }
 
-    public static BigDecimal addMapNull(Collection<?> cols) {
+    public static BigDecimal addMapNull(Iterable<?> cols) {
         if (cols == null) return null;
         BigDecimal t = null;
         for (Object e : cols) {
@@ -466,7 +465,7 @@ public class BigDecimalUtil {
         return t;
     }
 
-    public static <T> BigDecimal addMapNull(Collection<T> cols, Function<? super T, ?> mapper) {
+    public static <T> BigDecimal addMapNull(Iterable<T> cols, Function<? super T, ?> mapper) {
         if (cols == null) return null;
         BigDecimal t = null;
         for (T e : cols) {
@@ -494,7 +493,7 @@ public class BigDecimalUtil {
     }
 
     @NotNull
-    public static BigDecimal subMap(Object a, Collection<?> cols) {
+    public static BigDecimal subMap(Object a, Iterable<?> cols) {
         BigDecimal t = Objects.requireNonNull(object(a));
         if (cols == null) return t;
 
@@ -509,7 +508,7 @@ public class BigDecimalUtil {
     }
 
     @NotNull
-    public static <T> BigDecimal subMap(Object a, Collection<T> cols, Function<? super T, ?> mapper) {
+    public static <T> BigDecimal subMap(Object a, Iterable<T> cols, Function<? super T, ?> mapper) {
         BigDecimal t = Objects.requireNonNull(object(a));
         if (cols == null) return t;
 
@@ -535,12 +534,12 @@ public class BigDecimalUtil {
     }
 
     @NotNull
-    public static BigDecimal prdMap(Collection<?> cols) {
+    public static BigDecimal prdMap(Iterable<?> cols) {
         return mulMapElse(ZERO, cols);
     }
 
     @NotNull
-    public static <T> BigDecimal prdMap(Collection<T> cols, Function<? super T, ?> mapper) {
+    public static <T> BigDecimal prdMap(Iterable<T> cols, Function<? super T, ?> mapper) {
         return mulMapElse(ZERO, cols, mapper);
     }
 
@@ -557,13 +556,13 @@ public class BigDecimalUtil {
     }
 
     @NotNull
-    public static BigDecimal mulMap(Collection<?> cols) {
+    public static BigDecimal mulMap(Iterable<?> cols) {
         BigDecimal t = mulMapNull(cols);
         return Objects.requireNonNull(t);
     }
 
     @NotNull
-    public static <T> BigDecimal mulMap(Collection<T> cols, Function<? super T, ?> mapper) {
+    public static <T> BigDecimal mulMap(Iterable<T> cols, Function<? super T, ?> mapper) {
         BigDecimal t = mulMapNull(cols, mapper);
         return Objects.requireNonNull(t);
     }
@@ -581,13 +580,13 @@ public class BigDecimalUtil {
     }
 
     @Contract("!null,_ -> !null")
-    public static <T> BigDecimal mulMapElse(BigDecimal e, Collection<T> cols) {
+    public static <T> BigDecimal mulMapElse(BigDecimal e, Iterable<T> cols) {
         BigDecimal t = mulMapNull(cols);
         return t == null ? e : t;
     }
 
     @Contract("!null,_,_ -> !null")
-    public static <T> BigDecimal mulMapElse(BigDecimal e, Collection<T> cols, Function<? super T, ?> mapper) {
+    public static <T> BigDecimal mulMapElse(BigDecimal e, Iterable<T> cols, Function<? super T, ?> mapper) {
         BigDecimal t = mulMapNull(cols, mapper);
         return t == null ? e : t;
     }
@@ -617,7 +616,7 @@ public class BigDecimalUtil {
         return t;
     }
 
-    public static BigDecimal mulMapNull(Collection<?> cols) {
+    public static BigDecimal mulMapNull(Iterable<?> cols) {
         if (cols == null) return null;
         BigDecimal t = null;
 
@@ -630,7 +629,7 @@ public class BigDecimalUtil {
         return t;
     }
 
-    public static <T> BigDecimal mulMapNull(Collection<T> cols, Function<? super T, ?> mapper) {
+    public static <T> BigDecimal mulMapNull(Iterable<T> cols, Function<? super T, ?> mapper) {
         if (cols == null) return null;
         BigDecimal t = null;
         for (T e : cols) {
@@ -659,7 +658,7 @@ public class BigDecimalUtil {
     }
 
     @NotNull
-    public static BigDecimal divMap(Object a, Collection<?> cols) {
+    public static BigDecimal divMap(Object a, Iterable<?> cols) {
         BigDecimal t = Objects.requireNonNull(object(a));
         if (cols == null) return t;
 
@@ -675,7 +674,7 @@ public class BigDecimalUtil {
 
 
     @NotNull
-    public static <T> BigDecimal divMap(Object a, Collection<T> cols, Function<? super T, ?> mapper) {
+    public static <T> BigDecimal divMap(Object a, Iterable<T> cols, Function<? super T, ?> mapper) {
         BigDecimal t = Objects.requireNonNull(object(a));
         if (cols == null) return t;
 
@@ -1031,14 +1030,14 @@ public class BigDecimalUtil {
         }
 
         @NotNull
-        public W addMap(Collection<?> cols) {
+        public W addMap(Iterable<?> cols) {
             final BigDecimal x = BigDecimalUtil.addMapNull(cols);
             value = BigDecimalUtil.add(value, x);
             return this;
         }
 
         @NotNull
-        public <T> W addMap(Collection<T> cols, Function<? super T, ?> mapper) {
+        public <T> W addMap(Iterable<T> cols, Function<? super T, ?> mapper) {
             final BigDecimal x = BigDecimalUtil.addMapNull(cols, mapper);
             value = BigDecimalUtil.add(value, x);
             return this;
@@ -1064,13 +1063,13 @@ public class BigDecimalUtil {
         }
 
         @NotNull
-        public W subMap(Collection<?> cols) {
+        public W subMap(Iterable<?> cols) {
             value = BigDecimalUtil.subMap(value, cols);
             return this;
         }
 
         @NotNull
-        public <T> W subMap(Collection<T> cols, Function<? super T, ?> mapper) {
+        public <T> W subMap(Iterable<T> cols, Function<? super T, ?> mapper) {
             value = BigDecimalUtil.subMap(value, cols, mapper);
             return this;
         }
@@ -1095,14 +1094,14 @@ public class BigDecimalUtil {
         }
 
         @NotNull
-        public W mulMap(Collection<?> cols) {
+        public W mulMap(Iterable<?> cols) {
             final BigDecimal x = BigDecimalUtil.mulMapNull(cols);
             value = BigDecimalUtil.mul(value, x);
             return this;
         }
 
         @NotNull
-        public <T> W mulMap(Collection<T> cols, Function<? super T, ?> mapper) {
+        public <T> W mulMap(Iterable<T> cols, Function<? super T, ?> mapper) {
             final BigDecimal x = BigDecimalUtil.mulMapNull(cols, mapper);
             value = BigDecimalUtil.mul(value, x);
             return this;
@@ -1130,13 +1129,13 @@ public class BigDecimalUtil {
 
 
         @NotNull
-        public W divMap(Collection<?> cols) {
+        public W divMap(Iterable<?> cols) {
             value = BigDecimalUtil.divMap(value, cols);
             return this;
         }
 
         @NotNull
-        public <T> W divMap(Collection<T> cols, Function<? super T, ?> mapper) {
+        public <T> W divMap(Iterable<T> cols, Function<? super T, ?> mapper) {
             value = BigDecimalUtil.divMap(value, cols, mapper);
             return this;
         }
