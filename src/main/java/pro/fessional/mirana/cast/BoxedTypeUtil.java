@@ -16,15 +16,15 @@ public class BoxedTypeUtil {
      */
     public static Class<?> box(Class<?> clz) {
         if (clz.isPrimitive()) {
-            if (clz == boolean.class) return Boolean.class;
-            if (clz == byte.class) return Byte.class;
-            if (clz == short.class) return Short.class;
-            if (clz == char.class) return Character.class;
-            if (clz == int.class) return Integer.class;
-            if (clz == long.class) return Long.class;
-            if (clz == float.class) return Float.class;
-            if (clz == double.class) return Double.class;
-            if (clz == void.class) return Void.class;
+            if (boolean.class.equals(clz)) return Boolean.class;
+            if (byte.class.equals(clz)) return Byte.class;
+            if (short.class.equals(clz)) return Short.class;
+            if (char.class.equals(clz)) return Character.class;
+            if (int.class.equals(clz)) return Integer.class;
+            if (long.class.equals(clz)) return Long.class;
+            if (float.class.equals(clz)) return Float.class;
+            if (double.class.equals(clz)) return Double.class;
+            if (void.class.equals(clz)) return Void.class;
         }
         return clz;
     }

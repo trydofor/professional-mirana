@@ -138,7 +138,7 @@ class JsonTemplateTest {
     }
 
     @Test
-    void testPrimary() {
+    void testPrimitive() {
         final String j1 = JsonTemplate.obj(o -> o
                 .putVal("ba", new boolean[]{true, false})
                 .putVal("ia", new int[]{1, 2}));

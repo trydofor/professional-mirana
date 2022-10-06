@@ -14,7 +14,7 @@ class I18nStringTest {
 
     @Test
     void test() {
-        I18nString is = new I18nString("200").setHint("{0} is ok").setArgs("name");
+        I18nString is = new I18nString("200", "{0} is ok", "name");
         final String s = is.toString(Locale.ENGLISH);
         assertEquals("name is ok", s);
     }

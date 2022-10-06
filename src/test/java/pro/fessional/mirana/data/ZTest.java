@@ -48,7 +48,7 @@ public class ZTest {
         assertEquals("1", Z.notNull(null, "1"));
         assertEquals(Null.Str, Z.notNull(Null.Str, null, "1"));
         final String str = null;
-        assertEquals("1", Z.notNullSafe(Null.Str, str));
+        assertEquals("", Z.notNullSafe(Null.Str, str));
         assertEquals("1", Z.notNullSafe(Null.Str, null, "1"));
     }
 }
