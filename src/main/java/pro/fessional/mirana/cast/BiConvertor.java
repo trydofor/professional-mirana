@@ -98,6 +98,50 @@ public interface BiConvertor<S, T> {
     }
 
     /**
+     * 尝试转换任意源，先检查canToTarget，然后try，不能转换时返回null
+     *
+     * @param target 对象
+     * @param source 任意源
+     * @return null或目标对象
+     */
+    @Nullable
+    @SuppressWarnings("unchecked")
+    default T tryToTarget(Class<?> target, Object source) {
+        T t = null;
+        if (canToTarget(target, source)) {
+            try {
+                t = toTarget((S) source);
+            }
+            catch (Exception e) {
+                // ignore
+            }
+        }
+        return t;
+    }
+
+    /**
+     * 尝试转换任意目标，先检查canToSource，然后try，不能转换时返回null
+     *
+     * @param source 指定类型
+     * @param target 任意目标
+     * @return null或源对象
+     */
+    @Nullable
+    @SuppressWarnings("unchecked")
+    default S tryToSource(Class<?> source, Object target) {
+        S s = null;
+        if (canToSource(source, target)) {
+            try {
+                s = toSource((T) target);
+            }
+            catch (Exception e) {
+                // ignore
+            }
+        }
+        return s;
+    }
+
+    /**
      * 是否可以把target对象，转换成指定的source类型
      *
      * @param source 指定类型
