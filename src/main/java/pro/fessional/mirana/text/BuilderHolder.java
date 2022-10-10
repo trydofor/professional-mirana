@@ -3,6 +3,8 @@ package pro.fessional.mirana.text;
 import org.jetbrains.annotations.NotNull;
 import pro.fessional.mirana.anti.S;
 
+import java.lang.ref.SoftReference;
+
 /**
  * <pre>
  * 内部使用 ThreadLocal，有leak隐患，必须使用以下模式之一。
@@ -29,6 +31,11 @@ public class BuilderHolder extends S<StringBuilder> {
      * @param max 最大size
      */
     public BuilderHolder(int min, int max) {
+        this(min, max, new ThreadLocal<>());
+    }
+
+    public BuilderHolder(int min, int max, ThreadLocal<SoftReference<StringBuilder>> threadLocal) {
+        super(threadLocal);
         this.min = min;
         this.max = max;
     }

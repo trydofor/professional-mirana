@@ -19,7 +19,7 @@ import java.util.function.Consumer;
 public class JsonTemplate {
 
     // no leak, for static
-    private final static BuilderHolder Buffs = new BuilderHolder();
+    private static final BuilderHolder Buffs = new BuilderHolder();
 
     /**
      * 以复用的buff构造，json对象 `{...}`

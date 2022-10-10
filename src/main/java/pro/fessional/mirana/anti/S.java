@@ -18,8 +18,11 @@ import java.lang.ref.SoftReference;
 public abstract class S<T> implements Closeable {
 
     /** follow usage pattern */
-    private final ThreadLocal<SoftReference<T>> threadLocal = new ThreadLocal<>();
+    private final ThreadLocal<SoftReference<T>> threadLocal;
 
+    public S(ThreadLocal<SoftReference<T>> threadLocal) {
+        this.threadLocal = threadLocal;
+    }
 
     /**
      * 在单线程中初始化，首次或anewValue()调用

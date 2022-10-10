@@ -3,6 +3,7 @@ package pro.fessional.mirana.text;
 import org.jetbrains.annotations.NotNull;
 import pro.fessional.mirana.anti.S;
 
+import java.lang.ref.SoftReference;
 import java.text.MessageFormat;
 
 /**
@@ -16,6 +17,11 @@ public class FormatHolder extends S<MessageFormat> {
 
 
     public FormatHolder(String p) {
+        this(p, new ThreadLocal<>());
+    }
+
+    public FormatHolder(String p, ThreadLocal<SoftReference<MessageFormat>> threadLocal) {
+        super(threadLocal);
         this.pattern = p;
     }
 
