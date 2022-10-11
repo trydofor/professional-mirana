@@ -20,12 +20,12 @@ public class LeapCodeTest {
     private final Random random = new Random();
 
     private void checkRandom(int base, LeapCode code) {
-        for (int i = 0; i < 100000; i++) {
+        for (int i = 0; i < 1000_000; i++) {
             String e = "--|" + code.encode(base, i, 30);
             long d = code.decode(e, 3, e.length());
             assertEquals(i, d);
         }
-        for (int i = 0; i < 100000; i++) {
+        for (int i = 0; i < 1000_000; i++) {
             long n = random.nextLong() & Crc8Long.MAX_NUMBER;
             String e = "--|" + code.encode(base, n, 30);
             long d = code.decode(e, 3, e.length());

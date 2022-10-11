@@ -9,10 +9,14 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Supplier;
 
 /**
- * 提供26字符(A-Z)和32字符（0-9A-Z，去掉01OI）编码。
+ * <pre>
+ * 提供26字符(A-Z)和32字符（0-9A-Z，去掉UOIL，简称去油U/OIL）编码。
  * 支持补齐填充，被编码数字取值范围是：[0,{@link Long#MIN_VALUE}]
- * <p>
+ *
  * log(16;2^63) = 63/4 = 15.75，正数long，最多16个字符。
+ *
+ * 去油法 参考 https://www.crockford.com/base32.html
+ * </pre>
  *
  * @author trydofor
  * @since 2019-05-20
@@ -23,10 +27,10 @@ public class LeapCode {
     public static final long MAX_NUMBER = Long.MAX_VALUE;
     public static final long MIN_NUMBER = 0;
 
-    // Im A9, so 9 is magic, and 9+15 = 24
+    // Im A9, so 9 is magic
     private static final int A9 = 9;
 
-    private final char[] dict24 = new char[24];
+    private final char[] dict22 = new char[22];
     private final char[] dict26 = new char[26];
     private final char[] dict32 = new char[32];
 
@@ -73,17 +77,16 @@ public class LeapCode {
                 continue;
             }
 
-            // remove `0`, `1`
-            if (c >= '2' && c <= '9') {
+            if (c >= '0' && c <= '9') {
                 dict32[idx32++] = c;
                 continue;
             }
             if (c >= 'A' && c <= 'Z') {
                 dict26[idx26++] = c;
-                // remove `I`,`O`
-                if (c != 'I' && c != 'O') {
+                // 去油
+                if (c != 'U' && c != 'O' && c != 'I' && c != 'L') {
                     dict32[idx32++] = c;
-                    dict24[idx24++] = c;
+                    dict22[idx24++] = c;
                 }
             }
         }
@@ -145,49 +148,52 @@ public class LeapCode {
      *
      * @param base   编码的方式，26或32固定
      * @param number 要编码的数字
-     * @param len    要编码的数字
+     * @param len    要编码的长度
      * @return 编码后字符串
      * @throws IllegalArgumentException 如果base不是26或32
      */
     @NotNull
     public String encode(final int base, long number, final int len) {
 
-        final int off;
+        final int off1;
         final char[] dict;
-        StringBuilder sb = new StringBuilder(Math.max(len, 16));
+        final StringBuilder buff = new StringBuilder(Math.max(len, 16));
 
+        // define dict and mode
         if (base == 26) {
             dict = dict26;
-            off = (int) (number % A9); // 不要动，小魔法自己琢磨，26-16-1
-            sb.append(dict24[off]);
+            off1 = (int) (number % A9);
+            buff.append(dict22[off1]);
             number = number / A9;
         }
         else if (base == 32) {
+            final int mod = dict22.length - A9;
             dict = dict32;
-            off = (int) (number % 15); // 不要动，小魔法自己琢磨，32-16-1
-            sb.append(dict24[off + A9]);
-            number = number / 15;
+            off1 = (int) (number % mod);
+            buff.append(dict22[off1 + A9]);
+            number = number / mod;
         }
         else {
             throw new IllegalArgumentException("base must one of (26,32)");
         }
 
+        // use 16 chars to encode
         while (number > 0) {
             int idx = (int) (number & 15); // 1111
             number = number >>> 4;
-            sb.append(dict[off + idx]);
+            buff.append(dict[off1 + idx]);
         }
 
-        if (sb.length() >= len) {
-            return sb.toString();
+        int bln = buff.length();
+        if (bln >= len) {
+            return buff.toString();
         }
 
-        int f2 = off + 16; // 第二段分界
-        int ln = dict.length - 16;
-        int[] uq = new int[ln / 2];
-        int pt = 0;
-        Random rand = random.get();
-        for (int rnd = rand.nextInt() & Integer.MAX_VALUE; sb.length() < len; pt++) {
+        final int off2 = off1 + 16; // 第二段分界，排除 16 char
+        final int ln = dict.length - 16;
+        final int[] uq = new int[ln / 2];
+        final Random rand = random.get();
+        for (int pt = 0, rnd = rand.nextInt() & Integer.MAX_VALUE; bln < len; pt++) {
 
             int idx = -1;
             while (idx < 0) {
@@ -208,17 +214,24 @@ public class LeapCode {
 
             uq[pt % uq.length] = idx;
 
-            if (idx >= off) {
-                idx = f2 + idx;
+            if (idx >= off1) {
+                idx = off2 + idx;
                 if (idx >= dict.length) {
                     idx = idx % dict.length;
                 }
             }
 
-            sb.append(dict[idx]);
+            bln = buff.length();
+            int p = rnd % bln;
+            if (p > 0) {
+                buff.insert(p, dict[idx]);
+            }
+            else {
+                buff.append(dict[idx]);
+            }
         }
 
-        return sb.toString();
+        return buff.toString();
     }
 
 
@@ -259,9 +272,15 @@ public class LeapCode {
                 continue;
             }
 
+            if (c == 'O') {
+                c = '0';
+            }
+            else if (c == 'I' || c == 'L') {
+                c = '1';
+            }
 
             if (dict == null) {
-                off1 = find(dict24, dict24.length, c);
+                off1 = find(dict22, dict22.length, c);
 
                 if (off1 < A9) {
                     dict = dict26;
@@ -284,7 +303,7 @@ public class LeapCode {
         }
 
         if (dict == dict32) {
-            number = number * 15 + off1;
+            number = number * (dict22.length - A9) + off1;
         }
         else {
             number = number * A9 + off1;
