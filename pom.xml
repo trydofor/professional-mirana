@@ -76,6 +76,7 @@
         <jmh.version>1.35</jmh.version>
         <mysql.version>8.0.30</mysql.version>
         <fastjson2.version>2.0.12</fastjson2.version>
+        <sulky-ulid.version>8.3.0</sulky-ulid.version>
     </properties>
 
     <dependencies>
@@ -125,6 +126,12 @@
             <groupId>com.alibaba.fastjson2</groupId>
             <artifactId>fastjson2</artifactId>
             <version>${fastjson2.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>de.huxhorn.sulky</groupId>
+            <artifactId>de.huxhorn.sulky.ulid</artifactId>
+            <version>${sulky-ulid.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
