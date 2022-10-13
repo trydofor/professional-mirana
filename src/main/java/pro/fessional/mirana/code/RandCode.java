@@ -22,6 +22,8 @@ public abstract class RandCode {
     public static final Seed Low = Seed.range('a', 'z');
     public static final Seed Upr = Seed.range('A', 'Z');
     public static final Seed Sym = Seed.chars("~!@#$%^&*()_+{}:<>?-=[];,.".toCharArray());
+    public static final Seed B32 = Seed.chars("0123456789ABCDEFGHJKMNPQRSTVWXYZ".toCharArray()); // UOIL
+    public static final Seed Hex = Seed.chars("0123456789ABCDEF".toCharArray()); // HEX
 
     /**
      * 中日韩通用800汉字
@@ -77,6 +79,26 @@ public abstract class RandCode {
             Seed.chars("ABDEFGHIJLQRTY".toCharArray()),
             Cjk
     };
+
+    /**
+     * 生成len长度的0-9A-F密码
+     *
+     * @param len 长度
+     * @return 密码
+     */
+    public static String hex(int len) {
+        return next(len, Hex);
+    }
+
+    /**
+     * 生成len长度的0-9A-Z去油(UOIL)的密码
+     *
+     * @param len 长度
+     * @return 密码
+     */
+    public static String oil(int len) {
+        return next(len, B32);
+    }
 
     /**
      * 生成len长度的数字密码
