@@ -249,21 +249,37 @@ public class LeapCode {
     /**
      * 解码出数值, {@link Long#MIN_VALUE}解码失败
      *
-     * @param value 编码后字符串
+     * @param value 编码后字符串，不区分大小写
      * @param off   开始位置
      * @param len   长度
      * @return 原始数字。
      */
     public long decode(@Nullable CharSequence value, int off, int len) {
-        if (value == null) return Long.MIN_VALUE;
+        if (value == null || len <= 1 || off < 0 || value.length() < len) return Long.MIN_VALUE;
 
-        int off1 = -1;
-        int off2 = -1;
-        char[] dict = null;
+        final char f = value.charAt(off);
+        final int f1 = find(dict22, dict22.length, f >= 'a' && f <= 'z' ? (char) (f - 32) : f);
+        if (f1 < 0) return Long.MIN_VALUE;
+
+        final char[] dict;
+        final boolean b32;
+        final int off1;
+        if (f1 < A9) {
+            dict = dict26;
+            b32 = false;
+            off1 = f1;
+        }
+        else {
+            dict = dict32;
+            b32 = true;
+            off1 = f1 - A9;
+        }
+
+        final int off2 = off1 + 16;
 
         long number = 0L;
         int pos = 0;
-        for (int i = off; i < len; i++) {
+        for (int i = off + 1; i < len; i++) {
             char c = value.charAt(i);
             if (c >= 'a' && c <= 'z') {
                 c = (char) (c - 32);
@@ -272,34 +288,22 @@ public class LeapCode {
                 continue;
             }
 
-            if (c == 'O') {
-                c = '0';
-            }
-            else if (c == 'I' || c == 'L') {
-                c = '1';
+            if (b32) {
+                if (c == 'O') {
+                    c = '0';
+                }
+                else if (c == 'I' || c == 'L') {
+                    c = '1';
+                }
             }
 
-            if (dict == null) {
-                off1 = find(dict22, dict22.length, c);
-
-                if (off1 < A9) {
-                    dict = dict26;
-                }
-                else {
-                    dict = dict32;
-                    off1 = off1 - A9;
-                }
-                off2 = off1 + 16;
+            long v = find(dict, dict.length, c);
+            if (v < off1 || v >= off2) {
+                continue;
             }
-            else {
-                long v = find(dict, dict.length, c);
-                if (v < off1 || v >= off2) {
-                    continue;
-                }
 
-                number = number | ((v - off1) << pos);
-                pos = pos + 4;
-            }
+            number = number | ((v - off1) << pos);
+            pos = pos + 4;
         }
 
         if (dict == dict32) {

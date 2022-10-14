@@ -13,6 +13,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class LightIdTest {
 
+    private final Random random = new Random();
+
     @Test
     public void testZero() {
         LightId zero = new LightId(0, 0);
@@ -23,7 +25,6 @@ public class LightIdTest {
 
     @Test
     public void testCode() {
-        Random random = new Random();
         for (int i = 1; i <= 10000; i++) {
             long seq = random.nextLong();
 
@@ -68,5 +69,56 @@ public class LightIdTest {
 
         assertEquals(n1.hashCode(), n2.hashCode());
         assertEquals(LightId.NONE.hashCode(), n2.hashCode());
+    }
+
+
+    @Test
+    public void testForce() {
+        try {
+            for (int f = 0; f < 2; f++) {
+                LightIdUtil.forceBlockFirst(f == 0);
+                for (int b = 3; b < 23; b++) {
+                    LightIdUtil.forceBlockBit(b);
+                    LightId wid = new LightId(2, 9);
+                    assertTrue(LightIdUtil.valid(wid));
+                    long wdi = wid.toLong();
+                    LightId wid1 = LightIdUtil.toLightId(wdi);
+                    assertEquals(wid, wid1);
+                    System.out.println(Long.toBinaryString(wdi) + "\t" +f + ":" + b + "|" + wdi + "\t" + wid1);
+                }
+            }
+            System.out.println("=========");
+            for (int f = 0; f < 2; f++) {
+                LightIdUtil.forceBlockFirst(f == 0);
+                for (int b = 3; b < 23; b++) {
+                    LightIdUtil.forceBlockBit(b);
+                    for (int i = 1; i <= 10000; i++) {
+                        long seq = random.nextLong();
+
+                        LightId wid = new LightId(b, seq & LightIdUtil.getSequenceMax());
+                        assertTrue(LightIdUtil.valid(wid));
+                        long wdi = wid.toLong();
+                        LightId wid1 = LightIdUtil.toLightId(wdi);
+                        assertEquals(wid, wid1);
+                        if (i == 1) {
+                            System.out.println(Long.toBinaryString(wdi) + "\t" + f + ":" + b + "|" + wdi + "\t" + wid1);
+                        }
+
+                        int max = (int) Math.pow(2, b);
+                        for (int j = 1; j <= 512 && j <= max; j++) {
+                            LightId bid = new LightId(j, seq & LightIdUtil.getSequenceMax());
+                            assertTrue(LightIdUtil.valid(bid));
+                            long bdi = bid.toLong();
+                            LightId bid1 = LightIdUtil.toLightId(bdi);
+                            assertEquals(bid, bid1);
+                        }
+                    }
+                }
+            }
+        }
+        finally {
+            LightIdUtil.forceBlockFirst(true);
+            LightIdUtil.forceBlockBit(LightId.BIT_BLOCK);
+        }
     }
 }

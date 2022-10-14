@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
  * 8bit reserved for Crc8Long encode, default 0
  * 1bit whole-seq(0); block-seq(1)
  * whole-seq(0) = sequence(54bit=18014398509481983)
- * block-seq(1) = block(9bit=512) + sequence(45bit=35184372088831)
+ * block-seq(1) = block(9bit=512) + sequence((54-9=45)bit=35184372088831)
  * for 512 block unstopped 50000 id/second, running
  * (2^45 -1)/(365*24*3600*50000) = 22.3 years
  * </pre>
@@ -34,14 +34,24 @@ public class LightId {
     public static final long MAX_SEQ_WHOLE = (1L << BIT_SEQ_WHOLE) - 1;
     public static final long MAX_SEQ_BLOCK = (1L << BIT_SEQ_BLOCK) - 1;
 
+    public static final long TKN_LAYOUT = 1L << BIT_SEQ_WHOLE;
+
     private final int block;
     private final long sequence;
 
+    /**
+     * 通过block和sequence构造。
+     * block默认值为从含0到含512，可通过LightIdUtil.forceBlockBit修改。
+     * 其中0表示whole-seq布局，1以上为block-seq布局
+     */
     public LightId(int block, long sequence) {
         this.block = block;
         this.sequence = sequence;
     }
 
+    /**
+     * 获取block，0表示whole-seq布局，1以上为block-seq布局
+     */
     public int getBlock() {
         return block;
     }
