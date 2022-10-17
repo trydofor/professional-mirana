@@ -205,7 +205,7 @@ public class LightIdBufferedProviderTest {
     [4089, sleep= 9, step= 45000] speed(ms), BufferedTest=35971, Buffered=24271, Stamped= 7012
      */
     @Test
-    @Disabled("手动执行，速度对比测试")
+    @Disabled("手动执行，简单的速度对比测试，基准测试在jmh")
     public void testSpeed() {
         int capacity = 500_0000;
         int threads = 500;

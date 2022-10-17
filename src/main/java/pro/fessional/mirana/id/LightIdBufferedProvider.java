@@ -57,6 +57,8 @@ public class LightIdBufferedProvider implements LightIdProvider {
     private final AtomicInteger loadMaxCount = new AtomicInteger(MAX_COUNT);
     private final AtomicLong loadErrAlive = new AtomicLong(ERR_ALIVE);
 
+    private final AtomicReference<SequenceHandler> sequenceHandler = new AtomicReference<>();
+
     /**
      * 序号加载器的线程池，默认使用线程模式 core-size=3, max-size=64, keep-alive 60S
      *
@@ -99,6 +101,10 @@ public class LightIdBufferedProvider implements LightIdProvider {
 
     public int getMaxCount() {
         return loadMaxCount.get();
+    }
+
+    public SequenceHandler getSequenceHandler() {
+        return sequenceHandler.get();
     }
 
     /**
@@ -160,6 +166,13 @@ public class LightIdBufferedProvider implements LightIdProvider {
     }
 
     /**
+     * 设置Sequence处理器，用于在生成LightId前，修改Sequence
+     */
+    public void setSequenceHandler(SequenceHandler sequenceHandler) {
+        this.sequenceHandler.set(sequenceHandler);
+    }
+
+    /**
      * 预先加载分区中所有LightId，建议启动时初始化一次就够了。
      *
      * @param block 分区
@@ -191,6 +204,16 @@ public class LightIdBufferedProvider implements LightIdProvider {
     public long next(@NotNull String name, int block, long timeout) {
         if (timeout <= 0) timeout = loadTimeout.get();
         return load(block, name).nextId(timeout);
+    }
+
+    public interface SequenceHandler {
+        /**
+         * 在Sequence合成LightId之前，对其进行加工
+         *
+         * @param seq 原始Sequence
+         * @return 新Sequence
+         */
+        long handle(long seq);
     }
 
     // 加载或初始化
@@ -272,7 +295,7 @@ public class LightIdBufferedProvider implements LightIdProvider {
 
             // not need sync
             final SegmentStatus slot = segmentSlot.get();
-            final long seq = slot.sequence.getAndIncrement();
+            long seq = slot.sequence.getAndIncrement();
 
             // 未初始化或序号枯竭，等待重装。
             if (seq > slot.footSeq) {
@@ -283,6 +306,12 @@ public class LightIdBufferedProvider implements LightIdProvider {
             // 预加载
             if (seq > slot.kneeSeq) {
                 loadSegment(slot.count60s(0), true);
+            }
+
+            //
+            final SequenceHandler sh = LightIdBufferedProvider.this.sequenceHandler.get();
+            if (sh != null) {
+                seq = sh.handle(seq);
             }
 
             return LightIdUtil.toId(block, seq);
