@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Bean指有Declared的Field及其Getter(isXxx/getXxx/xxx)
  * 忽略 final/transient的field和@Transient的Getter
  * (JLS 17.5.3 compile-time constants get inlined - 初始值的final在编译时inline，修改filed不改变getter)
- * 收敛于①没有Bean可遍历，或②this在遍历链中存在
+ * 收敛于①没有Bean可遍历，②this在遍历链中存在 ③到达遍历深度
  * 若返回值 != 原值，则以返回值覆盖原值，但原始类型，忽略null
  * 若原值为以下类型，且未被修改，则遍历元素
  * - Object[]: 元素
@@ -53,10 +53,14 @@ public class BeanVisitor {
 
     public static void visit(@Nullable Opt opt, @Nullable Object bean, @Nullable Collection<Vzt> visitors) {
         if (bean == null || visitors == null || visitors.isEmpty()) return;
-        vztStack(bean, visitors, new ArrayList<>(), opt == null ? Opt.Default : opt);
+        vztStack(bean, visitors, new ArrayList<>(), opt == null ? Opt.Default : opt, 1);
     }
 
-    private static void vztStack(@NotNull Object bean, @NotNull Collection<Vzt> visitors, @NotNull ArrayList<Object> stack, @NotNull Opt opt) {
+    private static void vztStack(@NotNull Object bean, @NotNull Collection<Vzt> visitors, @NotNull ArrayList<Object> stack, @NotNull Opt opt, int depth) {
+        if (depth > opt.walkDepth) {
+            return;
+        }
+
         for (Object o : stack) {
             if (o == bean) return;
         }
@@ -64,25 +68,25 @@ public class BeanVisitor {
 
         if (bean instanceof Object[]) {
             for (Object v : (Object[]) bean) {
-                vztStack(v, visitors, stack, opt);
+                vztStack(v, visitors, stack, opt, depth);
             }
         }
         else if (bean instanceof Iterable) {
             for (Object v : (Iterable<?>) bean) {
-                vztStack(v, visitors, stack, opt);
+                vztStack(v, visitors, stack, opt, depth);
             }
         }
         else if (bean instanceof Map) {
             for (Object v : ((Map<?, ?>) bean).values()) {
-                vztStack(v, visitors, stack, opt);
+                vztStack(v, visitors, stack, opt, depth);
             }
         }
         else {
-            vztBean(bean, visitors, stack, opt);
+            vztBean(bean, visitors, stack, opt, depth);
         }
     }
 
-    private static void vztBean(@NotNull Object bean, @NotNull Collection<Vzt> visitors, @NotNull ArrayList<Object> stack, @NotNull Opt opt) {
+    private static void vztBean(@NotNull Object bean, @NotNull Collection<Vzt> visitors, @NotNull ArrayList<Object> stack, @NotNull Opt opt, int depth) {
         for (Fd fd : genFields(bean.getClass(), opt)) {
             for (Vzt vz : visitors) {
                 final Field f = fd.field;
@@ -97,7 +101,7 @@ public class BeanVisitor {
                         }
                         //
                         if (r != null) {
-                            vztStack(r, visitors, stack, opt);
+                            vztStack(r, visitors, stack, opt, depth + 1);
                         }
                     }
                     catch (IllegalAccessException e) {
@@ -180,6 +184,7 @@ public class BeanVisitor {
         private boolean skipTransient = true;
         private boolean tryRawGetter = true;
         private boolean throwOnError = true;
+        private int walkDepth = Integer.MAX_VALUE;
 
         public boolean isAmendOnce() {
             return amendOnce;
@@ -199,6 +204,10 @@ public class BeanVisitor {
 
         public boolean isThrowOnError() {
             return throwOnError;
+        }
+
+        public int getWalkDepth() {
+            return walkDepth;
         }
 
         /**
@@ -243,6 +252,14 @@ public class BeanVisitor {
          */
         public Opt throwOnError(boolean b) {
             throwOnError = b;
+            return this;
+        }
+
+        /**
+         * 设置遍历深度，仅计算Bean，不算集合或数组，默认 Integer.MAX_VALUE
+         */
+        public Opt walkDepth(int depth) {
+            walkDepth = depth;
             return this;
         }
     }

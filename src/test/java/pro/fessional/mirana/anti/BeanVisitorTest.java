@@ -67,10 +67,22 @@ class BeanVisitorTest {
     }
 
     @Test
+    void visitBeanDepth1() {
+        Po po = new Po();
+        BeanVisitor.visit(new BeanVisitor.Opt().skipFinal(false).walkDepth(1), po, vzts);
+
+        Assertions.assertEquals(0L, po.getId());
+
+        final Co[] arr = po.getArr();
+        Assertions.assertNotNull(arr);
+        Assertions.assertEquals(1L, arr[0].getId());
+    }
+
+    @Test
     void visitList() {
         List<Po> pos = Collections.singletonList(new Po());
 
-        BeanVisitor.visit(new BeanVisitor.Opt().skipFinal(false),pos, vzts);
+        BeanVisitor.visit(new BeanVisitor.Opt().skipFinal(false), pos, vzts);
 
         Po po = pos.get(0);
         Assertions.assertEquals(0L, po.getId());
@@ -99,7 +111,7 @@ class BeanVisitorTest {
         m1.put("m2", m2);
         vo.voo = m1;
 
-        BeanVisitor.visit(new BeanVisitor.Opt().skipFinal(false),vo, ctnz);
+        BeanVisitor.visit(new BeanVisitor.Opt().skipFinal(false), vo, ctnz);
 
         Assertions.assertNotNull(co);
         Assertions.assertEquals(0L, co.getId());
