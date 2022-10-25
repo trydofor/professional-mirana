@@ -124,6 +124,7 @@ public class Watermark {
 
         // 是否横版，进行旋转
         if (landscape && widthPhoto < heightPhoto) {
+            //noinspection SuspiciousNameCombination
             bufferImg = new BufferedImage(heightPhoto, widthPhoto, photoImg.getType());
             graphics = bufferImg.createGraphics();
             double offset = (heightPhoto - widthPhoto) / 2D;
