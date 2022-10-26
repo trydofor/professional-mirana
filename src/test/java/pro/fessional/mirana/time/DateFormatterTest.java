@@ -66,6 +66,8 @@ public class DateFormatterTest {
         for (String zid : ZoneId.getAvailableZoneIds()) {
             System.out.println(zid);
         }
+        System.out.println(DateFormatter.fullTz(now));
+        System.out.println(DateFormatter.fullTz(now.toOffsetDateTime()));
     }
 
     @Test

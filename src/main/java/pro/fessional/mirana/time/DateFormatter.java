@@ -43,10 +43,13 @@ public class DateFormatter {
     public static final String PTN_FULL_TZ = "yyyy[-MM][-dd][ ][HH][:mm][:ss][ ][VV]";
     public static final String PTN_FULL_OZ = "yyyy[-MM][-dd][ ][HH][:mm][:ss][ ][xxx]";
 
-    public static final String PTN_DATE_PSE = "[yyyy][yy][-][/][.][M][-][/][.][d]";
     public static final String PTN_TIME_PSE = "H[:m][:s][.SSS]";
+    public static final String PTN_DATE_PSE = "[yyyy][yy][-][/][.][M][-][/][.][d]";
     public static final String PTN_FULL_PSE = "[yyyy][yy][-][/][.][M][-][/][.][d][ ]['T'][H][:m][:s][.SSS]";
     public static final String PTN_ZONE_PSE = "[yyyy][yy][-][/][.][M][-][/][.][d][ ]['T'][H][:m][:s][.SSS][XXX][XX][X]['['][ ][VV][']']";
+    public static final String PTN_DATE_PSE_US = "[MMMM][MMM][M][-][/][.][d][-][/][.][yyyy][yy]";
+    public static final String PTN_FULL_PSE_US = "[MMMM][MMM][M][-][/][.][d][-][/][.][yyyy][yy][ ]['T'][H][:m][:s][.SSS]";
+    public static final String PTN_ZONE_PSE_US = "[MMMM][MMM][M][-][/][.][d][-][/][.][yyyy][yy][ ]['T'][H][:m][:s][.SSS][XXXXX][XXXX][XXX][XX][X]['['][ ][VV][']']";
 
     // This class is immutable and thread-safe.
     public static final DateTimeFormatter FMT_DATE_10 = DateTimeFormatter.ofPattern(PTN_DATE_10);
@@ -55,10 +58,13 @@ public class DateFormatter {
     public static final DateTimeFormatter FMT_FULL_19 = DateTimeFormatter.ofPattern(PTN_FULL_19);
     public static final DateTimeFormatter FMT_FULL_23 = DateTimeFormatter.ofPattern(PTN_FULL_23);
 
-    public static final DateTimeFormatter FMT_DATE_PSE = DateTimeFormatter.ofPattern(PTN_DATE_PSE);
     public static final DateTimeFormatter FMT_TIME_PSE = DateTimeFormatter.ofPattern(PTN_TIME_PSE);
+    public static final DateTimeFormatter FMT_DATE_PSE = DateTimeFormatter.ofPattern(PTN_DATE_PSE);
     public static final DateTimeFormatter FMT_FULL_PSE = DateTimeFormatter.ofPattern(PTN_FULL_PSE);
     public static final DateTimeFormatter FMT_ZONE_PSE = DateTimeFormatter.ofPattern(PTN_ZONE_PSE);
+    public static final DateTimeFormatter FMT_DATE_PSE_US = DateTimeFormatter.ofPattern(PTN_DATE_PSE_US);
+    public static final DateTimeFormatter FMT_FULL_PSE_US = DateTimeFormatter.ofPattern(PTN_FULL_PSE_US);
+    public static final DateTimeFormatter FMT_ZONE_PSE_US = DateTimeFormatter.ofPattern(PTN_ZONE_PSE_US);
 
     public static final DateTimeFormatter FMT_FULL_TZ = DateTimeFormatter.ofPattern(PTN_FULL_TZ);
     public static final DateTimeFormatter FMT_FULL_OZ = DateTimeFormatter.ofPattern(PTN_FULL_OZ);
