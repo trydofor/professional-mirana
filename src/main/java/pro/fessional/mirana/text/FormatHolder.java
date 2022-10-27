@@ -1,7 +1,8 @@
 package pro.fessional.mirana.text;
 
 import org.jetbrains.annotations.NotNull;
-import pro.fessional.mirana.anti.S;
+import pro.fessional.mirana.evil.ThreadLocalAttention;
+import pro.fessional.mirana.evil.ThreadLocalSoft;
 
 import java.lang.ref.SoftReference;
 import java.text.MessageFormat;
@@ -10,17 +11,17 @@ import java.text.MessageFormat;
  * @author trydofor
  * @since 2021-03-24
  */
-public class FormatHolder extends S<MessageFormat> {
+public class FormatHolder extends ThreadLocalSoft<MessageFormat> {
 
     private final String pattern;
     private volatile int size = -1;
 
 
-    public FormatHolder(String p) {
+    public FormatHolder(String p) throws ThreadLocalAttention {
         this(p, new ThreadLocal<>());
     }
 
-    public FormatHolder(String p, ThreadLocal<SoftReference<MessageFormat>> threadLocal) {
+    public FormatHolder(String p, ThreadLocal<SoftReference<MessageFormat>> threadLocal) throws ThreadLocalAttention {
         super(threadLocal);
         this.pattern = p;
     }

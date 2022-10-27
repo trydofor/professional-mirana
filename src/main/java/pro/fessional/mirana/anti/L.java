@@ -2,6 +2,7 @@ package pro.fessional.mirana.anti;
 
 import org.jetbrains.annotations.NotNull;
 import pro.fessional.mirana.data.Null;
+import pro.fessional.mirana.evil.ThreadLocalAttention;
 import pro.fessional.mirana.text.BuilderHolder;
 import pro.fessional.mirana.text.FormatUtil;
 
@@ -22,11 +23,35 @@ import java.util.List;
  */
 public class L {
 
-    public static volatile String CateTkn = ":";
-    public static volatile String LineTkn = "\n";
+    private static volatile String CateTkn = ":";
+    private static volatile String LineTkn = "\n";
+
+
+    public static String getCateTkn() {
+        return CateTkn;
+    }
+
+    public static String getLineTkn() {
+        return LineTkn;
+    }
+
+    public static void setToken(String cate, String line) {
+        CateTkn = cate;
+        LineTkn = line;
+    }
 
     /** no leak, for static */
-    private static final BuilderHolder Builder = new BuilderHolder();
+    private static final BuilderHolder Builder;
+
+    static {
+        try {
+            Builder = new BuilderHolder();
+        }
+        catch (ThreadLocalAttention e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
     /** no leak, for static */
     private static final ThreadLocal<SoftReference<List<D>>> Holder = new ThreadLocal<>();
 

@@ -29,23 +29,4 @@ class ThreadNowTest {
             ThreadNow.remove();
         }
     }
-
-    @Test
-    void test2() {
-        try {
-            new ThreadNow() {{
-                init(new InheritableThreadLocal<>(), 2);
-            }};
-            new ThreadNow() {{
-                init(new InheritableThreadLocal<>(), 3);
-            }};
-            new ThreadNow() {{
-                init(new InheritableThreadLocal<>(), 3);
-            }};
-            Assertions.fail();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 }

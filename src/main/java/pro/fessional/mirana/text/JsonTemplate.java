@@ -3,6 +3,7 @@ package pro.fessional.mirana.text;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import pro.fessional.mirana.bits.Base64;
+import pro.fessional.mirana.evil.ThreadLocalAttention;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -19,7 +20,16 @@ import java.util.function.Consumer;
 public class JsonTemplate {
 
     // no leak, for static
-    private static final BuilderHolder Buffs = new BuilderHolder();
+    private static final BuilderHolder Buffs;
+
+    static {
+        try {
+            Buffs = new BuilderHolder();
+        }
+        catch (ThreadLocalAttention e) {
+            throw new IllegalStateException(e);
+        }
+    }
 
     /**
      * 以复用的buff构造，json对象 `{...}`

@@ -1,7 +1,8 @@
 package pro.fessional.mirana.time;
 
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import pro.fessional.mirana.evil.ThreadLocalAttention;
+import pro.fessional.mirana.evil.ThreadLocalProxy;
 
 import java.time.Clock;
 import java.time.Duration;
@@ -12,8 +13,8 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * <pre>
@@ -28,58 +29,17 @@ import java.util.Date;
  * @author trydofor
  * @since 2022-10-10
  */
-public abstract class ThreadNow {
+public class ThreadNow {
 
-    private static volatile ThreadLocal<Clock> ThreadClock = new ThreadLocal<>();
-    private static volatile Clock SystemClock = Clock.systemDefaultZone();
+    private static final ThreadLocalProxy<Clock> ThreadClock = new ThreadLocalProxy<>();
+    private static final AtomicReference<Clock> SystemClock = new AtomicReference<>(Clock.systemDefaultZone());
 
-    private static final ArrayList<String> Inits = new ArrayList<>(10);
-
-    @ApiStatus.Internal
-    protected static void init(Clock clock) {
-        SystemClock = clock;
+    public static void init(@NotNull Clock clock) {
+        SystemClock.set(clock);
     }
 
-    @ApiStatus.Internal
-    protected static int init(ThreadLocal<Clock> clocks, int max) {
-        synchronized (Inits) {
-            ThreadClock = clocks;
-            final int size = Inits.size() + 1;
-            if (size >= max) {
-                StringBuilder err = new StringBuilder();
-                err.append("init Clock more than ")
-                   .append(max)
-                   .append(" times, Bad Practice!\n Init by:");
-                for (int i = 0; i < Inits.size(); i++) {
-                    err.append('\n')
-                       .append(i + 1)
-                       .append('.')
-                       .append(Inits.get(i));
-                }
-                err.append("\n")
-                   .append(size)
-                   .append(".Current ");
-                throw new IllegalStateException(err.toString());
-            }
-            else {
-                Exception e = new Exception();
-                final StackTraceElement[] st = e.getStackTrace();
-                if (st != null && st.length > 0) {
-                    Inits.add(st[1].toString());
-                }
-                else {
-                    Inits.add("Unknown stack");
-                }
-            }
-            return size;
-        }
-    }
-
-    @ApiStatus.Internal
-    public static ArrayList<String> getInits() {
-        synchronized (Inits) {
-            return Inits;
-        }
+    public static void init(@NotNull ThreadLocal<Clock> clocks) throws ThreadLocalAttention {
+        ThreadClock.replaceBackend(clocks);
     }
 
     /**
@@ -87,7 +47,7 @@ public abstract class ThreadNow {
      * 建议使用 try{ adjust }finally{ remove } 模式
      */
     public static void adjust(Duration offset) {
-        adjust(Clock.offset(SystemClock, offset));
+        adjust(Clock.offset(SystemClock.get(), offset));
     }
 
     /**
@@ -114,7 +74,7 @@ public abstract class ThreadNow {
     @NotNull
     public static Clock clock() {
         final Clock clock = ThreadClock.get();
-        return clock == null ? SystemClock : clock;
+        return clock == null ? SystemClock.get() : clock;
     }
 
     @NotNull

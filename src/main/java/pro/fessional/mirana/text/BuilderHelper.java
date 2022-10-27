@@ -1,6 +1,7 @@
 package pro.fessional.mirana.text;
 
 import org.jetbrains.annotations.NotNull;
+import pro.fessional.mirana.evil.ThreadLocalAttention;
 
 import java.util.function.Function;
 import java.util.stream.IntStream;
@@ -194,7 +195,16 @@ public class BuilderHelper {
     }
 
     /** no leak, for static */
-    private static final BuilderHolder Holder = new BuilderHolder();
+    private static final BuilderHolder Holder;
+
+    static {
+        try {
+            Holder = new BuilderHolder();
+        }
+        catch (ThreadLocalAttention e) {
+            throw new IllegalStateException(e);
+        }
+    }
 
     public static W w() {
         return new W(Holder.use());

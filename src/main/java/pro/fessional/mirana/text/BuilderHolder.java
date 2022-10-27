@@ -1,7 +1,8 @@
 package pro.fessional.mirana.text;
 
 import org.jetbrains.annotations.NotNull;
-import pro.fessional.mirana.anti.S;
+import pro.fessional.mirana.evil.ThreadLocalAttention;
+import pro.fessional.mirana.evil.ThreadLocalSoft;
 
 import java.lang.ref.SoftReference;
 
@@ -15,12 +16,12 @@ import java.lang.ref.SoftReference;
  * @author trydofor
  * @since 2021-03-24
  */
-public class BuilderHolder extends S<StringBuilder> {
+public class BuilderHolder extends ThreadLocalSoft<StringBuilder> {
 
     private final int min;
     private final int max;
 
-    public BuilderHolder() {
+    public BuilderHolder() throws ThreadLocalAttention {
         this(1024, 8096);
     }
 
@@ -30,11 +31,11 @@ public class BuilderHolder extends S<StringBuilder> {
      * @param min 初始size
      * @param max 最大size
      */
-    public BuilderHolder(int min, int max) {
+    public BuilderHolder(int min, int max) throws ThreadLocalAttention {
         this(min, max, new ThreadLocal<>());
     }
 
-    public BuilderHolder(int min, int max, ThreadLocal<SoftReference<StringBuilder>> threadLocal) {
+    public BuilderHolder(int min, int max, ThreadLocal<SoftReference<StringBuilder>> threadLocal) throws ThreadLocalAttention {
         super(threadLocal);
         this.min = min;
         this.max = max;

@@ -19,27 +19,27 @@ public class HttpStatusException extends MessageException {
     }
 
     public HttpStatusException(int status) {
-        super(false, (String) null);
+        super((String) null);
         this.status = status;
     }
 
     public HttpStatusException(int status, String code) {
-        super(false, code);
+        super(code);
         this.status = status;
     }
 
     public HttpStatusException(int status, String code, String message) {
-        super(false, code, message);
+        super(code, message);
         this.status = status;
     }
 
     public HttpStatusException(int status, CodeEnum code) {
-        super(false, code);
+        super(code);
         this.status = status;
     }
 
     public HttpStatusException(int status, CodeEnum code, Object... args) {
-        super(false, code, args);
+        super(code, args);
         this.status = status;
     }
 

@@ -22,8 +22,9 @@ public abstract class FakeName {
      */
     @NotNull
     public static String chinese() {
-        final int s = ThreadLocalRandom.current().nextInt() % 3;
-        return RandCode.sur(1) + RandCode.cjk(Math.abs(s) + 1);
+        @SuppressWarnings("RandomModInteger")
+        final int s = Math.abs(ThreadLocalRandom.current().nextInt() % 3);
+        return RandCode.sur(1) + RandCode.cjk(s + 1);
     }
 
     /**

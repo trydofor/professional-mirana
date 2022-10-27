@@ -13,19 +13,19 @@ public class MessageException extends CodeException {
     private static final long serialVersionUID = 3630382084139069605L;
 
     public MessageException(String code) {
-        super(false, code);
+        super(code);
     }
 
     public MessageException(String code, String message) {
-        super(false, code, message);
+        super(code, message);
     }
 
     public MessageException(CodeEnum code) {
-        super(false, code);
+        super(code);
     }
 
     public MessageException(CodeEnum code, Object... args) {
-        super(false, code, args);
+        super(code, args);
     }
 
     public MessageException(boolean stack, String code) {

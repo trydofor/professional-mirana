@@ -26,7 +26,7 @@ public class DummyBlock {
      * 业务上不可到达的代码
      */
     @Contract("->fail")
-    public static void never() {
+    public static void never() throws IllegalStateException {
         throw new IllegalStateException("should NOT invoke NEVER");
     }
 
@@ -34,7 +34,7 @@ public class DummyBlock {
      * 业务上不可到达的代码
      */
     @Contract("_->fail")
-    public static void never(String msg) {
+    public static void never(String msg) throws IllegalStateException {
         throw new IllegalStateException("should NOT invoke NEVER:" + msg);
     }
 
@@ -42,7 +42,7 @@ public class DummyBlock {
      * 未实现的方法，不可执行
      */
     @Contract("->fail")
-    public static void todo() {
+    public static void todo() throws IllegalStateException {
         throw new IllegalStateException("should NOT invoke TODO");
     }
 
@@ -50,7 +50,7 @@ public class DummyBlock {
      * 未实现的方法，不可执行
      */
     @Contract("_->fail")
-    public static void todo(String msg) {
+    public static void todo(String msg) throws IllegalStateException {
         throw new IllegalStateException("should NOT invoke TODO:" + msg);
     }
 
@@ -58,7 +58,7 @@ public class DummyBlock {
      * 等待修复的代码，不可执行
      */
     @Contract("->fail")
-    public static void fixme() {
+    public static void fixme() throws IllegalStateException {
         throw new IllegalStateException("should NOT invoke FIXME");
     }
 
@@ -66,7 +66,7 @@ public class DummyBlock {
      * 等待修复的代码，不可执行
      */
     @Contract("_->fail")
-    public static void fixme(String msg) {
+    public static void fixme(String msg) throws IllegalStateException {
         throw new IllegalStateException("should NOT invoke FIXME:" + msg);
     }
 }

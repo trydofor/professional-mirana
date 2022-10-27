@@ -4,6 +4,7 @@ package pro.fessional.mirana.text;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pro.fessional.mirana.data.Null;
+import pro.fessional.mirana.evil.ThreadLocalAttention;
 
 import java.text.MessageFormat;
 import java.util.Arrays;
@@ -23,7 +24,16 @@ import java.util.concurrent.ConcurrentHashMap;
 public class FormatUtil {
 
     /** no leak, for static */
-    private static final BuilderHolder Holder = new BuilderHolder();
+    private static final BuilderHolder Holder;
+
+    static {
+        try {
+            Holder = new BuilderHolder();
+        }
+        catch (ThreadLocalAttention e) {
+            throw new IllegalStateException(e);
+        }
+    }
 
     /**
      * @param skipNull 是否忽略null
@@ -171,7 +181,14 @@ public class FormatUtil {
      */
     public static String message(CharSequence fmt, Object... args) {
         if (fmt == null) return Null.Str;
-        final FormatHolder f = Formats.computeIfAbsent(fmt.toString(), FormatHolder::new);
+        final FormatHolder f = Formats.computeIfAbsent(fmt.toString(), p -> {
+            try {
+                return new FormatHolder(p);
+            }
+            catch (ThreadLocalAttention e) {
+                throw new IllegalStateException(e);
+            }
+        });
         final int size = f.argumentLength();
         final MessageFormat format = f.use();
         return format.format(fixArgs(size, args));
