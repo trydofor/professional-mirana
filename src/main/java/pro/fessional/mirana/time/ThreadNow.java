@@ -1,6 +1,7 @@
 package pro.fessional.mirana.time;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import pro.fessional.mirana.evil.ThreadLocalAttention;
 import pro.fessional.mirana.evil.ThreadLocalProxy;
 
@@ -31,52 +32,107 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class ThreadNow {
 
-    private static final ThreadLocalProxy<Clock> ThreadClock = new ThreadLocalProxy<>();
-    private static final AtomicReference<Clock> SystemClock = new AtomicReference<>(Clock.systemDefaultZone());
+    protected static volatile Clock SystemClockDefault = Clock.systemDefaultZone();
+    protected static final AtomicReference<Clock> SystemClock = new AtomicReference<>();
+    protected static final ThreadLocalProxy<Clock> ThreadClock = new ThreadLocalProxy<>();
 
-    public static void init(@NotNull Clock clock) {
-        SystemClock.set(clock);
+    public static void initGlobal(@NotNull Duration offset) {
+        if (!Duration.ZERO.equals(offset)) {
+            final Clock clock = SystemClockDefault;
+            SystemClockDefault = Clock.offset(clock, offset);
+        }
     }
 
-    public static void init(@NotNull ThreadLocal<Clock> clocks) throws ThreadLocalAttention {
+    public static void initGlobal(@NotNull Clock clock) {
+        SystemClockDefault = clock;
+    }
+
+    public static void initThread(@NotNull ThreadLocal<Clock> clocks) throws ThreadLocalAttention {
         ThreadClock.replaceBackend(clocks);
     }
 
-    /**
-     * 调准时钟，与系统相差的毫秒数
-     * 建议使用 try{ adjust }finally{ remove } 模式
-     */
-    public static void adjust(Duration offset) {
-        adjust(Clock.offset(SystemClock.get(), offset));
+    @NotNull
+    public static Clock systemClock() {
+        final Clock clock = SystemClock.get();
+        return clock != null ? clock : SystemClockDefault;
     }
 
     /**
-     * 调准时钟
-     * 建议使用 try{ adjust }finally{ remove } 模式
+     * 设置系统时钟
      */
-    public static void adjust(Clock clock) {
-        ThreadClock.set(clock);
+    public static void adaptSystem(@NotNull Duration offset) {
+        SystemClock.set(Clock.offset(systemClock(), offset));
     }
 
     /**
-     * 移除调准
+     * 设置系统时钟
      */
-    public static void remove() {
+    public static void adaptSystem(@NotNull Clock clock) {
+        SystemClock.set(clock);
+    }
+
+    /**
+     * 重置系统时钟
+     */
+    public static void resetSystem() {
+        SystemClock.set(null);
+    }
+
+    @Nullable
+    public static Clock threadClock() {
+        return ThreadClock.get();
+    }
+
+    /**
+     * 调准线程时钟，与系统相差的毫秒数
+     * 建议使用 try{ adjust }finally{ remove } 模式
+     */
+    public static void adaptThread(@Nullable Duration offset) {
+        if (offset == null) {
+            resetThread();
+        }
+        else {
+            adaptThread(Clock.offset(systemClock(), offset));
+        }
+    }
+
+    /**
+     * 调准线程时钟
+     * 建议使用 try{ adjust }finally{ remove } 模式
+     */
+    public static void adaptThread(@Nullable Clock clock) {
+        if (clock == null) {
+            resetThread();
+        }
+        else {
+            ThreadClock.set(clock);
+        }
+    }
+
+    /**
+     * 移除线程调准
+     */
+    public static void resetThread() {
         ThreadClock.remove();
     }
 
-    //
+    /**
+     * 获取当前时钟
+     */
+    @NotNull
+    public static Clock clock() {
+        final Clock clock = ThreadClock.get();
+        return clock != null ? clock : systemClock();
+    }
+
+    /**
+     * 当前毫秒数
+     */
     public static long millis() {
         return clock().millis();
     }
 
     // part 0
-    @NotNull
-    public static Clock clock() {
-        final Clock clock = ThreadClock.get();
-        return clock == null ? SystemClock.get() : clock;
-    }
-
     @NotNull
     public static Instant instant() {
         return clock().instant();

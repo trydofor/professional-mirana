@@ -19,14 +19,14 @@ class ThreadNowTest {
         final ZoneId CN = ZoneId.of("Asia/Shanghai");
         final ZoneId JP = ZoneId.of("Asia/Tokyo");
         try {
-            ThreadNow.adjust(Clock.fixed(n, CN));
+            ThreadNow.adaptThread(Clock.fixed(n, CN));
             // 2022-10-10T04:33:39.180Z
             Assertions.assertEquals(n, ThreadNow.instant());
             // 2022-10-10T13:33:39.180+09:00[Asia/Tokyo]
             Assertions.assertEquals(n.atZone(JP), ThreadNow.zonedDateTime(JP));
         }
         finally {
-            ThreadNow.remove();
+            ThreadNow.resetThread();
         }
     }
 }

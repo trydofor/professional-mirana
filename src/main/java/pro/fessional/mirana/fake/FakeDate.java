@@ -2,10 +2,10 @@ package pro.fessional.mirana.fake;
 
 
 import org.jetbrains.annotations.NotNull;
+import pro.fessional.mirana.time.ThreadNow;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 
 /**
@@ -25,7 +25,7 @@ public abstract class FakeDate {
      */
     @NotNull
     public static LocalDateTime dateTime(@NotNull LocalDate min, int hour) {
-        return dateTime(min, hour, LocalDateTime.now());
+        return dateTime(min, hour, ThreadNow.localDateTime());
     }
 
     /**
@@ -38,7 +38,7 @@ public abstract class FakeDate {
      */
     @NotNull
     public static LocalDateTime dateTime(@NotNull LocalDate min, int hour, @NotNull LocalDateTime max) {
-        return dateTime(LocalDateTime.of(min, LocalTime.now()), hour, LocalDateTime.now());
+        return dateTime(LocalDateTime.of(min, ThreadNow.localTime()), hour, ThreadNow.localDateTime());
     }
 
     /**
@@ -50,7 +50,7 @@ public abstract class FakeDate {
      */
     @NotNull
     public static LocalDateTime dateTime(@NotNull LocalDateTime min, int hour) {
-        return dateTime(min, hour, LocalDateTime.now());
+        return dateTime(min, hour, ThreadNow.localDateTime());
     }
 
     /**

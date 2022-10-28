@@ -8,7 +8,7 @@ import pro.fessional.mirana.evil.ThreadLocalProxy;
 import pro.fessional.mirana.i18n.I18nAware;
 import pro.fessional.mirana.i18n.I18nString;
 
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * 可读性和性能优先，可构造无堆栈异常
@@ -19,63 +19,68 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class CodeException extends RuntimeException implements I18nAware {
     private static final long serialVersionUID = 19791023L;
 
-    protected static final AtomicBoolean GlobalWithStack = new AtomicBoolean(false);
+    protected static volatile boolean GlobalStackDefault = false;
+    protected static final AtomicReference<Boolean> GlobalStack = new AtomicReference<>();
+    protected static final ThreadLocalProxy<Boolean> ThreadStack = new ThreadLocalProxy<>();
 
     /**
-     * 设置全局有无Stack，返回前值
+     * 初始全局有无Stack的默认值
      */
-    public static boolean setGlobalStack(boolean stack) {
-        final boolean old = hasGlobalStack();
-        GlobalWithStack.set(stack);
-        return old;
+    public static void initGlobalStack(boolean stack) {
+        GlobalStackDefault = stack;
     }
 
     /**
-     * 全局是否为有Stack
+     * 初始线程有无Stack的默认值，最好无initialValue，采用全局默认值
      */
-    public static boolean hasGlobalStack() {
-        return GlobalWithStack.get();
-    }
-
-    // ////////
-    protected static final ThreadLocalProxy<Boolean> ThreadWithStack = new ThreadLocalProxy<>();
-
-    public static void changeThreadLocal(ThreadLocal<Boolean> threadLocal) throws ThreadLocalAttention {
-        ThreadWithStack.replaceBackend(threadLocal);
+    public static void initThreadStack(ThreadLocal<Boolean> threadLocal) throws ThreadLocalAttention {
+        ThreadStack.replaceBackend(threadLocal);
     }
 
     /**
-     * 设置Thread有无Stack，返回前值，ThreadLocal
+     * 调整全局有无Stack
      */
-    public static boolean setThreadStack(boolean stack) {
-        final boolean old = hasThreadStack();
-        if (stack) {
-            ThreadWithStack.set(true);
+    public static void adaptGlobalStack(Boolean stack) {
+        GlobalStack.set(stack);
+    }
+
+    /**
+     * 重置全局有无Stack到默认值
+     */
+    public static void resetGlobalStack() {
+        GlobalStack.set(null);
+    }
+
+    /**
+     * 调整Thread有无Stack，ThreadLocal
+     */
+    public static void adaptThreadStack(boolean stack) {
+        ThreadStack.set(true);
+    }
+
+    /**
+     * 重置Thread有无Stack
+     */
+    public static void resetThreadStack() {
+        ThreadStack.remove();
+    }
+
+    /**
+     * 当前是否有Stack，Thread → Global → GlobalStackDefault
+     */
+    public static boolean currentStack() {
+        final Boolean t = ThreadStack.get();
+        if (t != null) {
+            return t;
         }
-        else {
-            ThreadWithStack.remove();
+        final Boolean g = GlobalStack.get();
+        if (g != null) {
+            return g;
         }
-        return old;
+        return GlobalStackDefault;
     }
 
-    /**
-     * Thread是否有Stack，ThreadLocal
-     */
-    public static boolean hasThreadStack() {
-        return ThreadWithStack.get() == Boolean.TRUE;
-    }
-
-    /**
-     * 当前是否有Stack，Global或Thread之一有
-     *
-     * @see #hasGlobalStack()
-     * @see #hasThreadStack()
-     */
-    public static boolean isCurrentWithStack() {
-        return hasGlobalStack() || hasThreadStack();
-    }
-
-    //
+    // /// ///
     private final String code;
 
     private String i18nCode;
@@ -84,37 +89,37 @@ public class CodeException extends RuntimeException implements I18nAware {
     /**
      * 根据Global或Thread设置，构造有栈或无栈异常
      *
-     * @see #isCurrentWithStack()
+     * @see #currentStack()
      */
     public CodeException(String code) {
-        this(isCurrentWithStack(), code, null);
+        this(currentStack(), code, null);
     }
 
     /**
      * 根据Global或Thread设置，构造有栈或无栈异常
      *
-     * @see #isCurrentWithStack()
+     * @see #currentStack()
      */
     public CodeException(String code, String message) {
-        this(isCurrentWithStack(), code, message);
+        this(currentStack(), code, message);
     }
 
     /**
      * 根据Global或Thread设置，构造有栈或无栈异常
      *
-     * @see #isCurrentWithStack()
+     * @see #currentStack()
      */
     public CodeException(CodeEnum code) {
-        this(isCurrentWithStack(), code, Null.Objects);
+        this(currentStack(), code, Null.Objects);
     }
 
     /**
      * 根据Global或Thread设置，构造有栈或无栈异常
      *
-     * @see #isCurrentWithStack()
+     * @see #currentStack()
      */
     public CodeException(CodeEnum code, Object... args) {
-        this(isCurrentWithStack(), code, args);
+        this(currentStack(), code, args);
     }
 
     /**

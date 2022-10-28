@@ -42,7 +42,7 @@ public class ThreadNowMain {
 
     @Setup
     public void setup() {
-        ThreadNow.adjust(Clock.systemUTC());
+        ThreadNow.adaptThread(Clock.systemUTC());
     }
 
     @Benchmark
