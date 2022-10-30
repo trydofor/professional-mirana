@@ -73,7 +73,7 @@ public class ThreadLocalProxy<T> extends ThreadLocal<T> {
      * 变更内部的ThreadLocal，返回旧值，注意不要多次变更
      */
     @NotNull
-    public ThreadLocal<T> replaceBackend(ThreadLocal<T> threadLocal) throws ThreadLocalAttention {
+    public ThreadLocal<T> replaceBackend(@NotNull ThreadLocal<T> threadLocal) throws ThreadLocalAttention {
         final ThreadLocal<T> old = backend;
         backend = threadLocal;
         // 先替换值，后清理。清理工程不影响新值的使用

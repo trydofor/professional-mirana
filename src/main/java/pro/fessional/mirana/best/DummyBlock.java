@@ -1,6 +1,9 @@
 package pro.fessional.mirana.best;
 
 import org.jetbrains.annotations.Contract;
+import pro.fessional.mirana.evil.TweakingContext;
+
+import java.util.function.Consumer;
 
 /**
  * 关闭一些安全的代码块的IDE警报
@@ -9,11 +12,17 @@ import org.jetbrains.annotations.Contract;
  * @since 2022-10-24
  */
 public class DummyBlock {
+
+    public static final TweakingContext<Consumer<Throwable>> TweakIgnore = new TweakingContext<>();
+
     /**
      * Catch block should not be empty
      */
-    @SuppressWarnings("unused")
     public static void ignore(Throwable t) {
+        final Consumer<Throwable> handler = TweakIgnore.current(false);
+        if (handler != null) {
+            handler.accept(t);
+        }
     }
 
     /**
