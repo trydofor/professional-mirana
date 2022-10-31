@@ -2,7 +2,6 @@ package pro.fessional.mirana.evil;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -83,19 +82,31 @@ public class TweakingContext<T> {
     }
 
     //
-    @Nullable
-    public T globalValue() {
-        return globalValue.get();
+    @Contract("true->!null")
+    public T globalValue(boolean notnull) {
+        final T t = globalValue.get();
+        if (t == null && notnull) {
+            throw new IllegalStateException("global value is null");
+        }
+        return t;
     }
 
-    @Nullable
-    public T threadValue() {
-        return threadValue.get();
+    @Contract("true->!null")
+    public T threadValue(boolean notnull) {
+        final T t = threadValue.get();
+        if (t == null && notnull) {
+            throw new IllegalStateException("thread value is null");
+        }
+        return t;
     }
 
-    @Nullable
-    public T defaultValue() {
-        return defaultValue.get();
+    @Contract("true->!null")
+    public T defaultValue(boolean notnull) {
+        final T t = defaultValue.get();
+        if (t == null && notnull) {
+            throw new IllegalStateException("default value is null");
+        }
+        return t;
     }
 
     /**
