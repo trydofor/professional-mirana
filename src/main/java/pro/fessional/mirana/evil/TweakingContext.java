@@ -44,8 +44,8 @@ public class TweakingContext<T> {
     /**
      * 初始线程默认值，最好无initialValue，采用全局默认值
      */
-    public void initThread(@NotNull ThreadLocal<T> threadLocal) throws ThreadLocalAttention {
-        threadValue.replaceBackend(threadLocal);
+    public void initThread(@NotNull ThreadLocal<T> threadLocal, boolean tryToCleanOld) throws ThreadLocalAttention {
+        threadValue.replaceBackend(threadLocal, tryToCleanOld);
     }
 
     /**

@@ -15,6 +15,7 @@ public class ThreadLocalProxy<T> extends ThreadLocal<T> {
 
     /**
      * 尝试通过反射，清除所有线程中的threadLocal
+     * WARNING: An illegal reflective access operation has occurred
      */
     public static void tryClear(ThreadLocal<?> threadLocal) throws ThreadLocalAttention {
         if (threadLocal == null) return;
@@ -70,14 +71,19 @@ public class ThreadLocalProxy<T> extends ThreadLocal<T> {
     }
 
     /**
-     * 变更内部的ThreadLocal，返回旧值，注意不要多次变更
+     * 变更内部的ThreadLocal，返回旧值，注意不要多次变更,
+     * tryToCleanOld == true,
+     * WARNING: An illegal reflective access operation has occurred
+     * 当提供服务前或少量内存使用时，可以tryToCleanOld=false
      */
     @NotNull
-    public ThreadLocal<T> replaceBackend(@NotNull ThreadLocal<T> threadLocal) throws ThreadLocalAttention {
+    public ThreadLocal<T> replaceBackend(@NotNull ThreadLocal<T> threadLocal, boolean tryToCleanOld) throws ThreadLocalAttention {
         final ThreadLocal<T> old = backend;
         backend = threadLocal;
-        // 先替换值，后清理。清理工程不影响新值的使用
-        tryClear(old);
+        if (tryToCleanOld) {
+            // 先替换值，后清理。清理工程不影响新值的使用
+            tryClear(old);
+        }
         return old;
     }
 

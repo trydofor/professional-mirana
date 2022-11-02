@@ -30,7 +30,7 @@ class ThreadLocalProxyTest {
         }
 
         Thread.sleep(1000);
-        tlp.replaceBackend(new ThreadLocal<>());
+        tlp.replaceBackend(new ThreadLocal<>(), true);
         latch.countDown();
     }
 }
