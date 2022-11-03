@@ -50,12 +50,12 @@ public class AnyTicket implements Ticket.Mutable {
     }
 
     @Override
-    public long getPubExp() {
+    public long getPubDue() {
         return pubExp;
     }
 
     @Override
-    public void setPubExp(long pubExp) {
+    public void setPubDue(long pubExp) {
         this.pubExp = Math.max(0, pubExp);
     }
 

@@ -103,7 +103,9 @@ public class TicketHelp {
         return new Ah1Help(salt);
     }
 
-    // //
+    /**
+     * aes128(biz-data, salt) + md5(sig-data) 无盐Md5
+     */
     public static class Am0Help implements Decoder {
         public final String mod = "am0";
         public final Aes128 aes128;
@@ -143,6 +145,9 @@ public class TicketHelp {
         }
     }
 
+    /**
+     * aes128(biz-data, salt) + md5(sig-data + salt) 加盐Md5
+     */
     public static class Am1Help implements Decoder {
         public final String mod = "am1";
         public final Aes128 aes128;
@@ -183,6 +188,9 @@ public class TicketHelp {
         }
     }
 
+    /**
+     * aes128(biz-data, salt) + HmacSha1(sig-data, salt) Hmac验签
+     */
     public static class Ah1Help implements Decoder {
         public final String mod = "ah1";
         public final Aes128 aes128;
@@ -192,7 +200,7 @@ public class TicketHelp {
 
         public Ah1Help(byte[] salt) {
             aes128 = Aes128.of(salt);
-            sigVerify = sig(HmacHelp.md5(salt));
+            sigVerify = sig(HmacHelp.sha1(salt));
             bizString = aes128::decode64;
             bizBytes = s -> {
                 byte[] bs = Base64.decode(s);
@@ -242,17 +250,17 @@ public class TicketHelp {
         }
 
         public Builder<T> exp(long exp) {
-            ticket.setPubExp(exp);
+            ticket.setPubDue(exp);
             return this;
         }
 
         public Builder<T> expAfterNow(long num, TimeUnit unit) {
-            ticket.setPubExp(unit.toSeconds(num) + System.currentTimeMillis() / 1000);
+            ticket.setPubDue(unit.toSeconds(num) + System.currentTimeMillis() / 1000);
             return this;
         }
 
         public Builder<T> expAfter(long num, TimeUnit unit) {
-            ticket.setPubExp(unit.toSeconds(num) + ticket.getPubExp());
+            ticket.setPubDue(unit.toSeconds(num) + ticket.getPubDue());
             return this;
         }
 
@@ -380,7 +388,7 @@ public class TicketHelp {
 
                 off = pos[0] + 1;
                 if (pos[1] < off) return null;
-                ticket.setPubExp(Long.parseLong(tk.substring(off, pos[1])));
+                ticket.setPubDue(Long.parseLong(tk.substring(off, pos[1])));
 
                 off = pos[1] + 1;
                 if (pos[2] < off) return null;

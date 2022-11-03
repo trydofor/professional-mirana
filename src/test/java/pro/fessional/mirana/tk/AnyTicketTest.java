@@ -67,7 +67,7 @@ class AnyTicketTest {
         AnyTicket at1 = new AnyTicket(mod, exp, seq, null, sigPart);
 
         assertEquals(mod, at1.getPubMod());
-        assertEquals(exp, at1.getPubExp());
+        assertEquals(exp, at1.getPubDue());
         assertEquals(seq, at1.getPubSeq());
         assertEquals("", at1.getBizPart());
         assertEquals(sigPart, at1.getSigPart());
@@ -83,7 +83,7 @@ class AnyTicketTest {
                                         .sig(md, key);
 
         assertEquals(mod, at2.getPubMod());
-        assertEquals(exp, at2.getPubExp());
+        assertEquals(exp, at2.getPubDue());
         assertEquals(seq, at2.getPubSeq());
         assertEquals("", at2.getBizPart());
         assertEquals(sigPart, at2.getSigPart());
@@ -105,7 +105,7 @@ class AnyTicketTest {
         AnyTicket at1 = new AnyTicket(mod, exp, seq, bizPart, sigPart);
 
         assertEquals(mod, at1.getPubMod());
-        assertEquals(exp, at1.getPubExp());
+        assertEquals(exp, at1.getPubDue());
         assertEquals(seq, at1.getPubSeq());
         assertEquals(bizPart, at1.getBizPart());
         assertEquals(sigPart, at1.getSigPart());
@@ -121,7 +121,7 @@ class AnyTicketTest {
                                         .sig(md, key);
 
         assertEquals(mod, at2.getPubMod());
-        assertEquals(exp, at2.getPubExp());
+        assertEquals(exp, at2.getPubDue());
         assertEquals(seq, at2.getPubSeq());
         assertEquals(bizPart, at2.getBizPart());
         assertEquals(sigPart, at2.getSigPart());
@@ -140,7 +140,7 @@ class AnyTicketTest {
         AnyTicket at1 = new AnyTicket(mod, exp, seq, null, sigPart);
 
         assertEquals(mod, at1.getPubMod());
-        assertEquals(exp, at1.getPubExp());
+        assertEquals(exp, at1.getPubDue());
         assertEquals(seq, at1.getPubSeq());
         assertEquals("", at1.getBizPart());
         assertEquals(sigPart, at1.getSigPart());
@@ -155,7 +155,7 @@ class AnyTicketTest {
                                         .sig(md);
 
         assertEquals(mod, at2.getPubMod());
-        assertEquals(exp, at2.getPubExp());
+        assertEquals(exp, at2.getPubDue());
         assertEquals(seq, at2.getPubSeq());
         assertEquals("", at2.getBizPart());
         assertEquals(sigPart, at2.getSigPart());
@@ -175,7 +175,7 @@ class AnyTicketTest {
         AnyTicket at1 = new AnyTicket(mod, exp, seq, bizPart, sigPart);
 
         assertEquals(mod, at1.getPubMod());
-        assertEquals(exp, at1.getPubExp());
+        assertEquals(exp, at1.getPubDue());
         assertEquals(seq, at1.getPubSeq());
         assertEquals(bizPart, at1.getBizPart());
         assertEquals(sigPart, at1.getSigPart());
@@ -190,7 +190,7 @@ class AnyTicketTest {
                                         .sig(md);
 
         assertEquals(mod, at2.getPubMod());
-        assertEquals(exp, at2.getPubExp());
+        assertEquals(exp, at2.getPubDue());
         assertEquals(seq, at2.getPubSeq());
         assertEquals(bizPart, at2.getBizPart());
         assertEquals(sigPart, at2.getSigPart());
