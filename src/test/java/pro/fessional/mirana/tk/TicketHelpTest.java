@@ -2,8 +2,7 @@ package pro.fessional.mirana.tk;
 
 import org.junit.jupiter.api.Test;
 import pro.fessional.mirana.code.RandCode;
-
-import java.util.concurrent.TimeUnit;
+import pro.fessional.mirana.time.ThreadNow;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -14,74 +13,57 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 class TicketHelpTest {
 
-    private final TicketHelp.Parser<AnyTicket> parser = TicketHelp.parser(AnyTicket::new);
+    private long pubDue() {
+        return ThreadNow.millis() / 1000 + 60L;
+    }
 
     @Test
     void am0() {
         System.out.println("current second=" + (System.currentTimeMillis() / 1000));
         byte[] salt = RandCode.human(20).getBytes();
         String biz = RandCode.human(100);
-        final TicketHelp.Am0Help am0Help = TicketHelp.am0(salt);
-        final AnyTicket at0 = TicketHelp
-                .builder(new AnyTicket())
-                .mod(am0Help.mod)
-                .expAfterNow(10, TimeUnit.MINUTES)
-                .seq(10)
-                .bizAes(biz, salt)
-                .sig(am0Help.sigVerify);
-
+        final TicketHelp.Am0Help am0Help = new TicketHelp.Am0Help(salt);
+        final Ticket at0 = am0Help.encode(10, pubDue(), biz);
         final String tk = at0.serialize();
-        AnyTicket at1 = parser.parse(tk);
+        Ticket at1 = TicketHelp.parse(tk, am0Help::accept);
         System.out.println(tk);
 
-        assertEquals(biz, am0Help.decodeBiz(at0, String.class));
-        assertTrue(am0Help.verifySig(at0));
-        assertEquals(biz, am0Help.decodeBiz(at1, String.class));
-        assertTrue(am0Help.verifySig(at1));
+        assertEquals(biz, am0Help.decode(at0));
+        assertTrue(am0Help.verify(at0));
+        assertEquals(biz, am0Help.decode(at1));
+        assertTrue(am0Help.verify(at1));
     }
 
     @Test
     void am1() {
         byte[] salt = RandCode.human(20).getBytes();
         String biz = RandCode.human(100);
-        final TicketHelp.Am1Help am1Help = TicketHelp.am1(salt);
-        final AnyTicket at0 = TicketHelp
-                .builder(new AnyTicket())
-                .mod(am1Help.mod)
-                .expAfter(10, TimeUnit.MINUTES)
-                .seq(10)
-                .bizAes(biz, salt)
-                .sig(am1Help.sigVerify);
+        final TicketHelp.Am1Help am1Help = new TicketHelp.Am1Help(salt);
+        final Ticket at0 = am1Help.encode(10, pubDue(), biz);
 
         final String tk = at0.serialize();
-        AnyTicket at1 = parser.parse(tk);
+        Ticket at1 = TicketHelp.parse(tk, am1Help::accept);
         System.out.println(tk);
 
-        assertEquals(biz, am1Help.decodeBiz(at0, String.class));
-        assertTrue(am1Help.verifySig(at0));
-        assertEquals(biz, am1Help.decodeBiz(at1, String.class));
-        assertTrue(am1Help.verifySig(at1));
+        assertEquals(biz, am1Help.decode(at0));
+        assertTrue(am1Help.verify(at0));
+        assertEquals(biz, am1Help.decode(at1));
+        assertTrue(am1Help.verify(at1));
     }
 
     @Test
     void ah1() {
         byte[] salt = RandCode.human(20).getBytes();
         String biz = RandCode.human(100);
-        final TicketHelp.Ah1Help ah1Help = TicketHelp.ah1(salt);
-        final AnyTicket at0 = TicketHelp
-                .builder(new AnyTicket())
-                .mod(ah1Help.mod)
-                .expAfterNow(10, TimeUnit.MINUTES)
-                .seq(10)
-                .bizAes(biz, salt)
-                .sig(ah1Help.sigVerify);
+        final TicketHelp.Ah1Help ah1Help = new TicketHelp.Ah1Help(salt);
+        final Ticket at0 = ah1Help.encode(10, pubDue(), biz);
 
         final String tk = at0.serialize();
-        AnyTicket at1 = parser.parse(tk);
+        Ticket at1 = TicketHelp.parse(tk, ah1Help::accept);
 
-        assertEquals(biz, ah1Help.decodeBiz(at0, String.class));
-        assertTrue(ah1Help.verifySig(at0));
-        assertEquals(biz, ah1Help.decodeBiz(at1, String.class));
-        assertTrue(ah1Help.verifySig(at1));
+        assertEquals(biz, ah1Help.decode(at0));
+        assertTrue(ah1Help.verify(at0));
+        assertEquals(biz, ah1Help.decode(at1));
+        assertTrue(ah1Help.verify(at1));
     }
 }

@@ -7,8 +7,9 @@ import pro.fessional.mirana.bits.HmacHelp;
 import pro.fessional.mirana.bits.MdHelp;
 import pro.fessional.mirana.code.RandCode;
 
+import java.util.function.BiFunction;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author trydofor
@@ -16,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 class AnyTicketTest {
 
-    private final TicketHelp.Parser<AnyTicket> parser = TicketHelp.parser(AnyTicket::new);
+    private final BiFunction<String, String, Ticket.Mutable> acceptAny = (s, s2) -> new AnyTicket();
 
     @Test
     void builder0() {
@@ -73,14 +74,14 @@ class AnyTicketTest {
         assertEquals(sigPart, at1.getSigPart());
 
         printTicket(at1);
-        assertEquals(at1, parser.parse(at1.serialize()));
+        assertEquals(at1, TicketHelp.parse(at1.serialize(), acceptAny));
 
-        final AnyTicket at2 = TicketHelp.builder(new AnyTicket())
-                                        .mod(mod)
-                                        .exp(exp)
-                                        .seq(seq)
-                                        .bizEmpty()
-                                        .sig(md, key);
+        final AnyTicket at2 = new TicketHelp.Builder<>(new AnyTicket())
+                .mod(mod)
+                .exp(exp)
+                .seq(seq)
+                .bizEmpty()
+                .sig(md, key);
 
         assertEquals(mod, at2.getPubMod());
         assertEquals(exp, at2.getPubDue());
@@ -89,9 +90,10 @@ class AnyTicketTest {
         assertEquals(sigPart, at2.getSigPart());
 
         assertEquals(at1, at2);
-        assertEquals(at2, parser.parse(at2.serialize()));
-        assertTrue(at1.verifySig(TicketHelp.sig(md, key)));
-        assertTrue(at2.verifySig(TicketHelp.sig(md, key)));
+        assertEquals(at2, TicketHelp.parse(at2.serialize(), acceptAny));
+        final TicketHelp.SigFun sigFun = TicketHelp.sig(md, key);
+        assertEquals(at1.getSigPart(), sigFun.apply(at1.getSigData()));
+        assertEquals(at2.getSigPart(), sigFun.apply(at2.getSigData()));
     }
 
     private void builderMd1(int seq, MdHelp md, String salt) {
@@ -111,14 +113,14 @@ class AnyTicketTest {
         assertEquals(sigPart, at1.getSigPart());
 
         printTicket(at1);
-        assertEquals(at1, parser.parse(at1.serialize()));
+        assertEquals(at1, TicketHelp.parse(at1.serialize(), acceptAny));
 
-        final AnyTicket at2 = TicketHelp.builder(new AnyTicket())
-                                        .mod(mod)
-                                        .exp(exp)
-                                        .seq(seq)
-                                        .bizAes(biz0, key)
-                                        .sig(md, key);
+        final AnyTicket at2 = new TicketHelp.Builder<>(new AnyTicket())
+                .mod(mod)
+                .exp(exp)
+                .seq(seq)
+                .bizAes(biz0, key)
+                .sig(md, key);
 
         assertEquals(mod, at2.getPubMod());
         assertEquals(exp, at2.getPubDue());
@@ -127,9 +129,10 @@ class AnyTicketTest {
         assertEquals(sigPart, at2.getSigPart());
 
         assertEquals(at1, at2);
-        assertEquals(at2, parser.parse(at2.serialize()));
-        assertTrue(at1.verifySig(TicketHelp.sig(md, key)));
-        assertTrue(at2.verifySig(TicketHelp.sig(md, key)));
+        assertEquals(at2, TicketHelp.parse(at2.serialize(), acceptAny));
+        final TicketHelp.SigFun sigFun = TicketHelp.sig(md, key);
+        assertEquals(at1.getSigPart(), sigFun.apply(at1.getSigData()));
+        assertEquals(at2.getSigPart(), sigFun.apply(at2.getSigData()));
     }
 
     private void builderHm0(int seq, HmacHelp md) {
@@ -146,13 +149,13 @@ class AnyTicketTest {
         assertEquals(sigPart, at1.getSigPart());
 
         printTicket(at1);
-        assertEquals(at1, parser.parse(at1.serialize()));
-        final AnyTicket at2 = TicketHelp.builder(new AnyTicket())
-                                        .mod(mod)
-                                        .exp(exp)
-                                        .seq(seq)
-                                        .bizEmpty()
-                                        .sig(md);
+        assertEquals(at1, TicketHelp.parse(at1.serialize(), acceptAny));
+        final AnyTicket at2 = new TicketHelp.Builder<>(new AnyTicket())
+                .mod(mod)
+                .exp(exp)
+                .seq(seq)
+                .bizEmpty()
+                .sig(md);
 
         assertEquals(mod, at2.getPubMod());
         assertEquals(exp, at2.getPubDue());
@@ -160,8 +163,9 @@ class AnyTicketTest {
         assertEquals("", at2.getBizPart());
         assertEquals(sigPart, at2.getSigPart());
         assertEquals(at1, at2);
-        assertTrue(at1.verifySig(TicketHelp.sig(md)));
-        assertTrue(at2.verifySig(TicketHelp.sig(md)));
+        final TicketHelp.SigHmac sigFun = TicketHelp.sig(md);
+        assertEquals(at1.getSigPart(), sigFun.apply(at1.getSigData()));
+        assertEquals(at2.getSigPart(), sigFun.apply(at2.getSigData()));
     }
 
     private void builderHm1(int seq, HmacHelp md, byte[] key) {
@@ -181,13 +185,13 @@ class AnyTicketTest {
         assertEquals(sigPart, at1.getSigPart());
 
         printTicket(at1);
-        assertEquals(at1, parser.parse(at1.serialize()));
-        final AnyTicket at2 = TicketHelp.builder(new AnyTicket())
-                                        .mod(mod)
-                                        .exp(exp)
-                                        .seq(seq)
-                                        .bizAes(biz0, aes128)
-                                        .sig(md);
+        assertEquals(at1, TicketHelp.parse(at1.serialize(), acceptAny));
+        final AnyTicket at2 = new TicketHelp.Builder<>(new AnyTicket())
+                .mod(mod)
+                .exp(exp)
+                .seq(seq)
+                .bizAes(biz0, aes128)
+                .sig(md);
 
         assertEquals(mod, at2.getPubMod());
         assertEquals(exp, at2.getPubDue());
@@ -195,7 +199,9 @@ class AnyTicketTest {
         assertEquals(bizPart, at2.getBizPart());
         assertEquals(sigPart, at2.getSigPart());
         assertEquals(at1, at2);
-        assertTrue(at1.verifySig(TicketHelp.sig(md)));
-        assertTrue(at2.verifySig(TicketHelp.sig(md)));
+        final TicketHelp.SigHmac sigFun = TicketHelp.sig(md);
+        assertEquals(at1.getSigPart(), sigFun.apply(at1.getSigData()));
+        assertEquals(at2.getSigPart(), sigFun.apply(at2.getSigData()));
+
     }
 }

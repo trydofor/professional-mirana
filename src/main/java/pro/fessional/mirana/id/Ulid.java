@@ -1,6 +1,7 @@
 package pro.fessional.mirana.id;
 
 import org.jetbrains.annotations.NotNull;
+import pro.fessional.mirana.time.ThreadNow;
 
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
@@ -16,12 +17,12 @@ public class Ulid {
 
     @NotNull
     public static String next() {
-        return next(System.currentTimeMillis(), ThreadLocalRandom.current());
+        return next(ThreadNow.millis(), ThreadLocalRandom.current());
     }
 
     @NotNull
     public static String next(Random random) {
-        return next(System.currentTimeMillis(), random);
+        return next(ThreadNow.millis(), random);
     }
 
     @NotNull
@@ -38,12 +39,12 @@ public class Ulid {
 
     //
     public static void next(@NotNull StringBuilder buff) {
-        next(buff, System.currentTimeMillis(), ThreadLocalRandom.current());
+        next(buff, ThreadNow.millis(), ThreadLocalRandom.current());
     }
 
 
     public static void next(@NotNull StringBuilder buff, Random random) {
-        next(buff, System.currentTimeMillis(), random);
+        next(buff, ThreadNow.millis(), random);
     }
 
     public static void next(@NotNull StringBuilder buff, long time) {

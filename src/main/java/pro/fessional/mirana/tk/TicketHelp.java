@@ -1,15 +1,20 @@
 package pro.fessional.mirana.tk;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import pro.fessional.mirana.bits.Aes128;
 import pro.fessional.mirana.bits.Base64;
 import pro.fessional.mirana.bits.HmacHelp;
 import pro.fessional.mirana.bits.MdHelp;
 import pro.fessional.mirana.data.Null;
+import pro.fessional.mirana.time.ThreadNow;
 
 import javax.crypto.Mac;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -19,29 +24,29 @@ import java.util.function.Supplier;
  */
 public class TicketHelp {
 
-    public static SigMds sig(MdHelp help) {
-        return new SigMds(help, null);
+    public static SigFun sig(MdHelp help) {
+        return new SigFun(help, null);
     }
 
-    public static SigMds sig(MdHelp help, byte[] salt) {
-        return new SigMds(help, salt);
+    public static SigFun sig(MdHelp help, byte[] salt) {
+        return new SigFun(help, salt);
     }
 
     public static SigHmac sig(HmacHelp help) {
         return new SigHmac(help);
     }
 
-    public static class SigMds implements Function<String, String> {
+    public static class SigFun implements Function<String, String> {
 
         private final Supplier<MessageDigest> supplier;
         private final byte[] salt;
 
-        public SigMds(Supplier<MessageDigest> help, byte[] salt) {
+        public SigFun(Supplier<MessageDigest> help, byte[] salt) {
             this.supplier = help;
             this.salt = Null.notNull(salt);
         }
 
-        public SigMds(MdHelp help, byte[] salt) {
+        public SigFun(MdHelp help, byte[] salt) {
             this.supplier = help::newOne;
             this.salt = Null.notNull(salt);
         }
@@ -79,162 +84,173 @@ public class TicketHelp {
         }
     }
 
-    public static Am0Help am0(byte[] salt) {
-        return new Am0Help(salt);
-    }
 
-    public static Am0Help am0(String salt) {
-        return new Am0Help(salt);
-    }
+    /**
+     * 解析任意Ticket
+     *
+     * @param tk     凭证字符串
+     * @param accept 验证成功并返回Ticket，否则返回null
+     * @return 解析后的Ticket或null
+     */
+    @SafeVarargs
+    @Nullable
+    public static Ticket parse(String tk, BiFunction<String, String, Ticket.Mutable>... accept) {
+        if (tk == null) return null;
 
-    public static Am1Help am1(byte[] salt) {
-        return new Am1Help(salt);
-    }
+        final int[] pos = {-1, -1, -1, -1};
+        final char[] tkn = {'-', '-', '.', '.'};
+        int off = 0;
+        for (int i = 0, x = tkn.length - 1; i <= x; i++) {
+            final int j = tk.indexOf(tkn[i], off);
+            if (j > off) {
+                pos[i] = j;
+                off = j + 1;
+                continue;
+            }
 
-    public static Am1Help am1(String salt) {
-        return new Am1Help(salt);
-    }
+            if (i < x) {
+                return null;
+            }
+        }
 
-    public static Ah1Help ah1(byte[] salt) {
-        return new Ah1Help(salt);
-    }
+        //
+        if (pos[0] < 0 || pos[1] < pos[0] || pos[2] < pos[1]
+            || (pos[3] < pos[2] && pos[3] > 0)) {
+            return null;
+        }
+        final int pl = pos[3] > 0 ? pos[3] : pos[2];
+        final String sigData = tk.substring(0, pl);
+        final String sigPart = tk.substring(pl + 1);
 
-    public static Ah1Help ah1(String salt) {
-        return new Ah1Help(salt);
+        Ticket.Mutable ticket = null;
+        for (BiFunction<String, String, Ticket.Mutable> vf : accept) {
+            ticket = vf.apply(sigData, sigPart);
+            if (ticket != null) break;
+        }
+        if (ticket == null) return null;
+
+        try {
+            ticket.setPubMod(tk.substring(0, pos[0]));
+            ticket.setPubDue(Long.parseLong(tk.substring(pos[0] + 1, pos[1])));
+            ticket.setPubSeq(Integer.parseInt(tk.substring(pos[1] + 1, pos[2])));
+            if (pos[3] > 0) {
+                ticket.setBizPart(tk.substring(pos[2] + 1, pos[3]));
+            }
+            ticket.setSigPart(sigPart);
+            return ticket;
+        }
+        catch (NumberFormatException e) {
+            return null;
+        }
     }
 
     /**
      * aes128(biz-data, salt) + md5(sig-data) 无盐Md5
      */
-    public static class Am0Help implements Decoder {
-        public final String mod = "am0";
-        public final Aes128 aes128;
-        public final SigMds sigVerify = sig(MdHelp.md5);
-        public final Function<String, String> bizString;
-        public final Function<String, byte[]> bizBytes;
+    public static class Am0Help extends AnyHelp {
+
+        public Am0Help(String mod, byte[] salt) {
+            super(mod, Aes128.of(salt), sig(MdHelp.md5));
+        }
+
+        public Am0Help(String mod, String salt) {
+            this(mod, salt.getBytes(StandardCharsets.UTF_8));
+        }
 
         public Am0Help(byte[] salt) {
-            aes128 = Aes128.of(salt);
-            bizString = aes128::decode64;
-            bizBytes = s -> {
-                byte[] bs = Base64.decode(s);
-                return aes128.decode(bs);
-            };
+            this("am0", salt);
         }
 
         public Am0Help(String salt) {
             this(salt.getBytes(StandardCharsets.UTF_8));
-        }
-
-        @Override
-        @SuppressWarnings("unchecked")
-        public <T> T decodeBiz(Ticket tk, Class<T> clz) {
-            if (String.class.equals(clz)) {
-                return (T) tk.decodeBiz(bizString);
-            }
-            else if (byte[].class.equals(clz)) {
-                return (T) tk.decodeBiz(bizBytes);
-            }
-            return null;
-        }
-
-        @Override
-        public boolean verifySig(Ticket tk) {
-            if (tk == null) return false;
-            return tk.verifySig(sigVerify);
         }
     }
 
     /**
      * aes128(biz-data, salt) + md5(sig-data + salt) 加盐Md5
      */
-    public static class Am1Help implements Decoder {
-        public final String mod = "am1";
-        public final Aes128 aes128;
-        public final SigMds sigVerify;
-        public final Function<String, String> bizString;
-        public final Function<String, byte[]> bizBytes;
+    public static class Am1Help extends AnyHelp {
+
+        public Am1Help(String mod, byte[] salt) {
+            super(mod, Aes128.of(salt), sig(MdHelp.md5, salt));
+        }
+
+        public Am1Help(String mod, String salt) {
+            this(mod, salt.getBytes(StandardCharsets.UTF_8));
+        }
 
         public Am1Help(byte[] salt) {
-            aes128 = Aes128.of(salt);
-            sigVerify = sig(MdHelp.md5, salt);
-            bizString = aes128::decode64;
-            bizBytes = s -> {
-                byte[] bs = Base64.decode(s);
-                return aes128.decode(bs);
-            };
+            this("am1", salt);
         }
 
         public Am1Help(String salt) {
             this(salt.getBytes(StandardCharsets.UTF_8));
-        }
-
-        @Override
-        @SuppressWarnings("unchecked")
-        public <T> T decodeBiz(Ticket tk, Class<T> clz) {
-            if (String.class.equals(clz)) {
-                return (T) tk.decodeBiz(bizString);
-            }
-            else if (byte[].class.equals(clz)) {
-                return (T) tk.decodeBiz(bizBytes);
-            }
-            return null;
-        }
-
-        @Override
-        public boolean verifySig(Ticket tk) {
-            if (tk == null) return false;
-            return tk.verifySig(sigVerify);
         }
     }
 
     /**
      * aes128(biz-data, salt) + HmacSha1(sig-data, salt) Hmac验签
      */
-    public static class Ah1Help implements Decoder {
-        public final String mod = "ah1";
-        public final Aes128 aes128;
-        public final SigHmac sigVerify;
-        public final Function<String, String> bizString;
-        public final Function<String, byte[]> bizBytes;
+    public static class Ah1Help extends AnyHelp {
+
+        public Ah1Help(String mod, byte[] salt) {
+            super(mod, Aes128.of(salt), sig(HmacHelp.sha1(salt)));
+        }
+
+        public Ah1Help(String mod, String salt) {
+            this(mod, salt.getBytes(StandardCharsets.UTF_8));
+        }
 
         public Ah1Help(byte[] salt) {
-            aes128 = Aes128.of(salt);
-            sigVerify = sig(HmacHelp.sha1(salt));
-            bizString = aes128::decode64;
-            bizBytes = s -> {
-                byte[] bs = Base64.decode(s);
-                return aes128.decode(bs);
-            };
+            this("ah1", salt);
         }
 
         public Ah1Help(String salt) {
             this(salt.getBytes(StandardCharsets.UTF_8));
         }
-
-        @Override
-        @SuppressWarnings("unchecked")
-        public <T> T decodeBiz(Ticket tk, Class<T> clz) {
-            if (String.class.equals(clz)) {
-                return (T) tk.decodeBiz(bizString);
-            }
-            else if (byte[].class.equals(clz)) {
-                return (T) tk.decodeBiz(bizBytes);
-            }
-            return null;
-        }
-
-        @Override
-        public boolean verifySig(Ticket tk) {
-            if (tk == null) return false;
-            return tk.verifySig(sigVerify);
-        }
     }
 
-    // ////
+    public static class AnyHelp implements Helper<String> {
+        public final String pubMod;
+        public final Aes128 aes128;
+        public final Function<String, String> sigFun;
 
-    public static <T extends Ticket.Mutable> Builder<T> builder(T tk) {
-        return new Builder<>(tk);
+        public AnyHelp(String mod, Aes128 aes, Function<String, String> sig) {
+            pubMod = mod;
+            aes128 = aes;
+            sigFun = sig;
+        }
+
+        @Override
+        @NotNull
+        public Ticket encode(int pubSeq, long pubDue, String bizData) {
+            final AnyTicket tk = new AnyTicket();
+            tk.setPubMod(pubMod);
+            tk.setPubSeq(pubSeq);
+            tk.setPubDue(pubDue);
+            tk.setBizPart(aes128.encode64(bizData));
+            tk.setSigPart(sigFun.apply(tk.getSigData()));
+            return tk;
+        }
+
+        @Override
+        public String decode(Ticket tk) {
+            return tk == null ? null : aes128.decode64(tk.getBizPart());
+        }
+
+        @Override
+        public boolean verify(Ticket tk) {
+            if (tk == null) return false;
+            final String sig = sigFun.apply(tk.getSigData());
+            return Objects.equals(tk.getSigPart(), sig);
+        }
+
+        @Override
+        public Ticket.Mutable accept(@NotNull String sigData, @NotNull String sigPart) {
+            if (!sigData.startsWith(pubMod)) return null;
+            final String sig = sigFun.apply(sigData);
+            return sig.equals(sigPart) ? new AnyTicket() : null;
+        }
     }
 
     public static class Builder<T extends Ticket.Mutable> {
@@ -255,7 +271,7 @@ public class TicketHelp {
         }
 
         public Builder<T> expAfterNow(long num, TimeUnit unit) {
-            ticket.setPubDue(unit.toSeconds(num) + System.currentTimeMillis() / 1000);
+            ticket.setPubDue(unit.toSeconds(num) + ThreadNow.millis() / 1000);
             return this;
         }
 
@@ -320,7 +336,7 @@ public class TicketHelp {
             }
 
             if (ticket.getSigPart().isEmpty() && sig != null) {
-                ticket.setSigPart(sig.apply(ticket.getSigData(true)));
+                ticket.setSigPart(sig.apply(ticket.getSigData()));
             }
 
             if (ticket.getSigPart().isEmpty()) {
@@ -343,85 +359,28 @@ public class TicketHelp {
         }
     }
 
-    public static <T extends Ticket.Mutable> Parser<T> parser(Function<String, T> factory) {
-        return new Parser<>(factory);
-    }
 
-    public static class Parser<T extends Ticket.Mutable> {
+    public interface Helper<T> {
 
-        private final Function<String, T> factory;
-        private int order = Integer.MAX_VALUE;
+        /**
+         * 生成一个Ticket
+         */
+        @NotNull
+        Ticket encode(int pubSeq, long pubDue, T bizData);
 
-        public Parser(Function<String, T> factory) {
-            this.factory = factory;
-        }
+        /**
+         * 解析出一个业务对象，null为不能解析
+         */
+        T decode(Ticket tk);
 
-        public int getOrder() {
-            return order;
-        }
+        /**
+         * 能否解析一个字符串Ticket
+         */
+        Ticket.Mutable accept(@NotNull String sigData, @NotNull String sigPart);
 
-        public void setOrder(int order) {
-            this.order = order;
-        }
-
-        public T parse(String tk) {
-            if (tk == null) return null;
-            final T ticket = factory.apply(tk);
-            if (ticket == null) return null;
-
-            int[] pos = {-1, -1, -1, -1};
-            int idx = 0;
-            for (int i = 0, len = tk.length(); i < len && idx < pos.length; i++) {
-                char c = tk.charAt(i);
-                if (c == '-' && idx < 2) {
-                    pos[idx++] = i;
-                }
-                else if (c == '.') {
-                    pos[idx++] = i;
-                }
-            }
-
-            try {
-                int off = 0;
-                if (pos[0] < off) return null;
-                ticket.setPubMod(tk.substring(off, pos[0]));
-
-                off = pos[0] + 1;
-                if (pos[1] < off) return null;
-                ticket.setPubDue(Long.parseLong(tk.substring(off, pos[1])));
-
-                off = pos[1] + 1;
-                if (pos[2] < off) return null;
-                ticket.setPubSeq(Integer.parseInt(tk.substring(off, pos[2])));
-
-                off = pos[2] + 1;
-                if (pos[3] > off) {
-                    ticket.setBizPart(tk.substring(off, pos[3]));
-                    ticket.setSigPart(tk.substring(pos[3] + 1));
-                    ticket.setSigData(tk.substring(0, pos[3]));
-                }
-                else {
-                    if (pos[3] > 0) {
-                        return null;
-                    }
-                    else {
-                        ticket.setBizPart(Null.Str);
-                        ticket.setSigPart(tk.substring(off));
-                        ticket.setSigData(tk.substring(0, off));
-                    }
-                }
-
-                return ticket;
-            }
-            catch (Exception e) {
-                return null;
-            }
-        }
-    }
-
-    public interface Decoder {
-        boolean verifySig(Ticket tk);
-
-        <T> T decodeBiz(Ticket tk, Class<T> clz);
+        /**
+         * 验证签名是否合法
+         */
+        boolean verify(Ticket tk);
     }
 }

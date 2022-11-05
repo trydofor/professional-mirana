@@ -21,8 +21,6 @@ public class AnyTicket implements Ticket.Mutable {
     private String bizPart = Null.Str;
     private String sigPart = Null.Str;
 
-    private String sigData = Null.Str;
-
     public AnyTicket() {
     }
 
@@ -89,21 +87,6 @@ public class AnyTicket implements Ticket.Mutable {
     @Override
     public void setSigPart(String sigPart) {
         this.sigPart = Null.notNull(sigPart);
-    }
-
-    @Override
-    public @NotNull String getSigData(boolean build) {
-        if (build || sigData.isEmpty()) {
-            return Ticket.Mutable.super.getSigData(false);
-        }
-        else {
-            return sigData;
-        }
-    }
-
-    @Override
-    public void setSigData(String sig) {
-        sigData = Null.notNull(sig);
     }
 
     @Override
