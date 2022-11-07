@@ -20,7 +20,7 @@ class TicketHelpTest {
     @Test
     void am0() {
         System.out.println("current second=" + (System.currentTimeMillis() / 1000));
-        byte[] salt = RandCode.human(20).getBytes();
+        String salt = RandCode.human(20);
         String biz = RandCode.human(100);
         final TicketHelp.Am0Help am0Help = new TicketHelp.Am0Help(salt);
         final Ticket at0 = am0Help.encode(10, pubDue(), biz);
@@ -36,7 +36,7 @@ class TicketHelpTest {
 
     @Test
     void am1() {
-        byte[] salt = RandCode.human(20).getBytes();
+        String salt = RandCode.human(20);
         String biz = RandCode.human(100);
         final TicketHelp.Am1Help am1Help = new TicketHelp.Am1Help(salt);
         final Ticket at0 = am1Help.encode(10, pubDue(), biz);
@@ -53,7 +53,7 @@ class TicketHelpTest {
 
     @Test
     void ah1() {
-        byte[] salt = RandCode.human(20).getBytes();
+        String salt = RandCode.human(20);
         String biz = RandCode.human(100);
         final TicketHelp.Ah1Help ah1Help = new TicketHelp.Ah1Help(salt);
         final Ticket at0 = ah1Help.encode(10, pubDue(), biz);
@@ -65,5 +65,21 @@ class TicketHelpTest {
         assertTrue(ah1Help.verify(at0));
         assertEquals(biz, ah1Help.decode(at1));
         assertTrue(ah1Help.verify(at1));
+    }
+
+    @Test
+    void ah2() {
+        String salt = RandCode.human(20);
+        String biz = RandCode.human(100);
+        final TicketHelp.Ah2Help ah2Help = new TicketHelp.Ah2Help(salt);
+        final Ticket at0 = ah2Help.encode(10, pubDue(), biz);
+
+        final String tk = at0.serialize();
+        Ticket at1 = TicketHelp.parse(tk, ah2Help::accept);
+
+        assertEquals(biz, ah2Help.decode(at0));
+        assertTrue(ah2Help.verify(at0));
+        assertEquals(biz, ah2Help.decode(at1));
+        assertTrue(ah2Help.verify(at1));
     }
 }

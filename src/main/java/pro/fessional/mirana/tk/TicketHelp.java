@@ -2,7 +2,8 @@ package pro.fessional.mirana.tk;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import pro.fessional.mirana.bits.Aes128;
+import pro.fessional.mirana.bits.Aes;
+import pro.fessional.mirana.bits.Aes256;
 import pro.fessional.mirana.bits.Base64;
 import pro.fessional.mirana.bits.HmacHelp;
 import pro.fessional.mirana.bits.MdHelp;
@@ -10,7 +11,6 @@ import pro.fessional.mirana.data.Null;
 import pro.fessional.mirana.time.ThreadNow;
 
 import javax.crypto.Mac;
-import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -145,79 +145,71 @@ public class TicketHelp {
     }
 
     /**
-     * aes128(biz-data, salt) + md5(sig-data) 无盐Md5
+     * aes256(biz-data, salt) + md5(sig-data) 无盐Md5
      */
     public static class Am0Help extends AnyHelp {
 
-        public Am0Help(String mod, byte[] salt) {
-            super(mod, Aes128.of(salt), sig(MdHelp.md5));
+        public Am0Help(@NotNull String mod, @NotNull String salt) {
+            super(mod, Aes256.of(salt), sig(MdHelp.md5));
         }
 
-        public Am0Help(String mod, String salt) {
-            this(mod, salt.getBytes(StandardCharsets.UTF_8));
-        }
-
-        public Am0Help(byte[] salt) {
+        public Am0Help(@NotNull String salt) {
             this("am0", salt);
-        }
-
-        public Am0Help(String salt) {
-            this(salt.getBytes(StandardCharsets.UTF_8));
         }
     }
 
     /**
-     * aes128(biz-data, salt) + md5(sig-data + salt) 加盐Md5
+     * aes256(biz-data, salt) + md5(sig-data + salt) 加盐Md5
      */
     public static class Am1Help extends AnyHelp {
 
-        public Am1Help(String mod, byte[] salt) {
-            super(mod, Aes128.of(salt), sig(MdHelp.md5, salt));
+        public Am1Help(@NotNull String mod, @NotNull String salt) {
+            super(mod, Aes256.of(salt), sig(MdHelp.md5, salt.getBytes()));
         }
 
-        public Am1Help(String mod, String salt) {
-            this(mod, salt.getBytes(StandardCharsets.UTF_8));
-        }
 
-        public Am1Help(byte[] salt) {
+        public Am1Help(@NotNull String salt) {
             this("am1", salt);
         }
 
-        public Am1Help(String salt) {
-            this(salt.getBytes(StandardCharsets.UTF_8));
+    }
+
+    /**
+     * aes256(biz-data, salt) + HmacSHA1(sig-data, salt) Hmac验签
+     */
+    public static class Ah1Help extends AnyHelp {
+
+        public Ah1Help(@NotNull String mod, @NotNull String salt) {
+            super(mod, Aes256.of(salt), sig(HmacHelp.sha1(salt.getBytes())));
+        }
+
+        public Ah1Help(@NotNull String salt) {
+            this("ah1", salt);
         }
     }
 
     /**
-     * aes128(biz-data, salt) + HmacSha1(sig-data, salt) Hmac验签
+     * aes256(biz-data, salt) + HmacSHA256(sig-data, salt) Hmac验签
      */
-    public static class Ah1Help extends AnyHelp {
+    public static class Ah2Help extends AnyHelp {
 
-        public Ah1Help(String mod, byte[] salt) {
-            super(mod, Aes128.of(salt), sig(HmacHelp.sha1(salt)));
+        public Ah2Help(@NotNull String mod, @NotNull String salt) {
+            super(mod, Aes256.of(salt), sig(HmacHelp.sha256(salt.getBytes())));
         }
 
-        public Ah1Help(String mod, String salt) {
-            this(mod, salt.getBytes(StandardCharsets.UTF_8));
-        }
-
-        public Ah1Help(byte[] salt) {
-            this("ah1", salt);
-        }
-
-        public Ah1Help(String salt) {
-            this(salt.getBytes(StandardCharsets.UTF_8));
+        public Ah2Help(@NotNull String salt) {
+            this("ah2", salt);
         }
     }
 
     public static class AnyHelp implements Helper<String> {
         public final String pubMod;
-        public final Aes128 aes128;
+        public final Aes aes256;
         public final Function<String, String> sigFun;
 
-        public AnyHelp(String mod, Aes128 aes, Function<String, String> sig) {
+        public AnyHelp(String mod, Aes256 aes, Function<String, String> sig) {
             pubMod = mod;
-            aes128 = aes;
+            aes256 = aes;
             sigFun = sig;
         }
 
@@ -228,14 +220,14 @@ public class TicketHelp {
             tk.setPubMod(pubMod);
             tk.setPubSeq(pubSeq);
             tk.setPubDue(pubDue);
-            tk.setBizPart(aes128.encode64(bizData));
+            tk.setBizPart(aes256.encode64(bizData));
             tk.setSigPart(sigFun.apply(tk.getSigData()));
             return tk;
         }
 
         @Override
         public String decode(Ticket tk) {
-            return tk == null ? null : aes128.decode64(tk.getBizPart());
+            return tk == null ? null : aes256.decode64(tk.getBizPart());
         }
 
         @Override
@@ -316,11 +308,11 @@ public class TicketHelp {
             return this;
         }
 
-        public Builder<T> bizAes(String biz, byte[] key) {
-            return bizAes(biz, Aes128.of(key));
+        public Builder<T> bizAes(String biz, String key) {
+            return bizAes(biz, Aes256.of(key));
         }
 
-        public Builder<T> bizAes(String biz, Aes128 aes) {
+        public Builder<T> bizAes(String biz, Aes aes) {
             ticket.setBizPart(aes.encode64(biz));
             return this;
         }

@@ -1,7 +1,8 @@
 package pro.fessional.mirana.tk;
 
 import org.junit.jupiter.api.Test;
-import pro.fessional.mirana.bits.Aes128;
+import pro.fessional.mirana.bits.Aes;
+import pro.fessional.mirana.bits.Aes256;
 import pro.fessional.mirana.bits.Base64;
 import pro.fessional.mirana.bits.HmacHelp;
 import pro.fessional.mirana.bits.MdHelp;
@@ -44,9 +45,9 @@ class AnyTicketTest {
             builderMd1(i, MdHelp.md5, salt);
             builderMd1(i, MdHelp.sha1, salt);
             builderMd1(i, MdHelp.sha256, salt);
-            builderHm1(i, HmacHelp.md5(key), key);
-            builderHm1(i, HmacHelp.sha1(key), key);
-            builderHm1(i, HmacHelp.sha256(key), key);
+            builderHm1(i, HmacHelp.md5(key), salt);
+            builderHm1(i, HmacHelp.sha1(key), salt);
+            builderHm1(i, HmacHelp.sha256(key), salt);
         }
     }
 
@@ -101,7 +102,7 @@ class AnyTicketTest {
         long exp = System.currentTimeMillis() / 1000 + 3600;
         final byte[] key = salt.getBytes();
         String biz0 = RandCode.human(30);
-        String bizPart = Aes128.of(key).encode64(biz0);
+        String bizPart = Aes256.of(salt).encode64(biz0);
         byte[] sig0 = md.digest((mod + "-" + exp + "-" + seq + "." + bizPart + salt).getBytes());
         final String sigPart = Base64.encode(sig0);
         AnyTicket at1 = new AnyTicket(mod, exp, seq, bizPart, sigPart);
@@ -119,7 +120,7 @@ class AnyTicketTest {
                 .mod(mod)
                 .exp(exp)
                 .seq(seq)
-                .bizAes(biz0, key)
+                .bizAes(biz0, salt)
                 .sig(md, key);
 
         assertEquals(mod, at2.getPubMod());
@@ -168,12 +169,12 @@ class AnyTicketTest {
         assertEquals(at2.getSigPart(), sigFun.apply(at2.getSigData()));
     }
 
-    private void builderHm1(int seq, HmacHelp md, byte[] key) {
+    private void builderHm1(int seq, HmacHelp md, String key) {
         String mod = pubMod(md.algorithm);
         long exp = System.currentTimeMillis() / 1000 + 3600;
         String biz0 = RandCode.human(30);
-        final Aes128 aes128 = Aes128.of(key);
-        String bizPart = aes128.encode64(biz0);
+        final Aes aes = Aes256.of(key);
+        String bizPart = aes.encode64(biz0);
         byte[] sig0 = md.digest((mod + "-" + exp + "-" + seq + "." + bizPart).getBytes());
         final String sigPart = Base64.encode(sig0);
         AnyTicket at1 = new AnyTicket(mod, exp, seq, bizPart, sigPart);
@@ -190,7 +191,7 @@ class AnyTicketTest {
                 .mod(mod)
                 .exp(exp)
                 .seq(seq)
-                .bizAes(biz0, aes128)
+                .bizAes(biz0, aes)
                 .sig(md);
 
         assertEquals(mod, at2.getPubMod());
