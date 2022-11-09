@@ -3,6 +3,7 @@ package pro.fessional.mirana.data;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import pro.fessional.mirana.best.DummyBlock;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 /**
  * 第一个满足条件(如非null)的数据操作
@@ -116,7 +118,7 @@ public interface Z {
                     if (r != null) return r;
                 }
                 catch (Exception e) {
-                    // ignore
+                    DummyBlock.ignore(e);
                 }
             }
         }
@@ -157,7 +159,7 @@ public interface Z {
                         return new BigDecimal(s);
                     }
                     catch (Exception e) {
-                        // ignore
+                        DummyBlock.ignore(e);
                     }
                 }
             }
@@ -199,7 +201,7 @@ public interface Z {
                         return Long.valueOf(s);
                     }
                     catch (Exception e) {
-                        // ignore
+                        DummyBlock.ignore(e);
                     }
                 }
             }
@@ -241,7 +243,7 @@ public interface Z {
                         return Integer.valueOf(s);
                     }
                     catch (Exception e) {
-                        // ignore
+                        DummyBlock.ignore(e);
                     }
                 }
             }
@@ -252,12 +254,12 @@ public interface Z {
     @SafeVarargs
     @Nullable
     static <T> T notNull(T... ts) {
-        return notNullSafe(null, ts);
+        return notNullSafe((T) null, ts);
     }
 
     @Nullable
     static <T> T notNull(Iterable<? extends T> ts) {
-        return notNullSafe(null, ts);
+        return notNullSafe((T) null, ts);
     }
 
     @Contract("!null,_ ->!null")
@@ -278,6 +280,26 @@ public interface Z {
             if (t != null) return t;
         }
         return d;
+    }
+
+    @Contract("!null,_ ->!null")
+    static <T> T notNullSafe(Supplier<T> d, T t) {
+        return t == null ? d.get() : t;
+    }
+
+    @Contract("!null,_ ->!null")
+    @SafeVarargs
+    static <T> T notNullSafe(Supplier<T> d, T... ts) {
+        return notNullSafe(d, Arrays.asList(ts));
+    }
+
+    @Contract("!null,_ ->!null")
+    static <T> T notNullSafe(Supplier<T> d, Iterable<? extends T> ts) {
+        if (ts == null) return d.get();
+        for (T t : ts) {
+            if (t != null) return t;
+        }
+        return d.get();
     }
 
 
