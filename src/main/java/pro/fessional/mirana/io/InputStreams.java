@@ -120,6 +120,9 @@ public class InputStreams {
         }
     }
 
+    /**
+     * 读取全部，并关闭
+     */
     @NotNull
     public static String readText(InputStream is) {
         return readText(is, StandardCharsets.UTF_8);
@@ -166,6 +169,9 @@ public class InputStreams {
         }
     }
 
+    /**
+     * 读取全部，并关闭
+     */
     @NotNull
     public static List<String> readLine(InputStream is) {
         return readLine(is, StandardCharsets.UTF_8);
@@ -215,11 +221,17 @@ public class InputStreams {
         }
     }
 
+    /**
+     * 读取全部，并关闭
+     */
     @NotNull
     public static File saveTemp(InputStream is, String prefix) {
         return saveTemp(is, prefix, false);
     }
 
+    /**
+     * 读取全部，并关闭
+     */
     @NotNull
     public static File saveTemp(InputStream is) {
         return saveTemp(is, "mirana-", false);
