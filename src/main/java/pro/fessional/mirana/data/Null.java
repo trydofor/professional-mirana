@@ -46,6 +46,7 @@ public class Null {
     public static final Float @NotNull [] FloatArr = new Float[0];
     public static final Double @NotNull [] DoubleArr = new Double[0];
     public static final String @NotNull [] StrArr = new String[0];
+    public static final Class<?> @NotNull [] ClzArr = new Class<?>[0];
 
     // /////////////////
     public static boolean asNull(boolean v) {
