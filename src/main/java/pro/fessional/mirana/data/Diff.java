@@ -4,8 +4,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 
@@ -14,6 +17,109 @@ import java.util.function.Function;
  * @since 2016-02-24.
  */
 public class Diff {
+
+    public static class V<E> {
+        private E v1;
+        private E v2;
+
+        public V() {
+        }
+
+        public V(E v1, E v2) {
+            this.v1 = v1;
+            this.v2 = v2;
+        }
+
+        public E getV1() {
+            return v1;
+        }
+
+        public void setV1(E v1) {
+            this.v1 = v1;
+        }
+
+        public E getV2() {
+            return v2;
+        }
+
+        public void setV2(E v2) {
+            this.v2 = v2;
+        }
+
+        @Override
+        public String toString() {
+            return "v1=" + v1 + ",v2=" + v2;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof V)) return false;
+            V<?> v = (V<?>) o;
+            return Objects.equals(v1, v.v1) && Objects.equals(v2, v.v2);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(v1, v2);
+        }
+
+        public boolean onlyV1() {
+            return v1 != null && v2 == null;
+        }
+
+        public boolean onlyV2() {
+            return v1 == null && v2 != null;
+        }
+
+        public boolean v1EqV2() {
+            return Objects.equals(v1, v2);
+        }
+
+        public static <T> V<T> of(T t1, T t2) {
+            return new V<>(t1, t2);
+        }
+
+        public static <K, T> void diff(Map<K, V<?>> map, K key, T t1, T t2) {
+            if (!Objects.equals(t1, t2)) {
+                map.put(key, new V<>(t1, t2));
+            }
+        }
+    }
+
+    /**
+     * 以map1为主，对map2做diff，获取key下的V数据
+     */
+    public static <K> LinkedHashMap<K, V<Object>> of(@Nullable Map<? extends K, ?> map1, @Nullable Map<? extends K, ?> map2) {
+        if (map1 == null) map1 = Collections.emptyMap();
+        if (map2 == null) map2 = Collections.emptyMap();
+
+        final LinkedHashMap<K, V<Object>> result = new LinkedHashMap<>();
+
+        for (Map.Entry<? extends K, ?> en : map1.entrySet()) {
+            final V<Object> v = new V<>();
+            v.v1 = en.getValue();
+            result.put(en.getKey(), v);
+        }
+
+        for (Map.Entry<? extends K, ?> en : map2.entrySet()) {
+            final K k = en.getKey();
+            final V<Object> vs = result.get(k);
+            if (vs == null) {
+                final V<Object> v = new V<>();
+                v.v2 = en.getValue();
+                result.put(k, v);
+            }
+            else {
+                final Object v2 = en.getValue();
+                if (!Objects.equals(vs.v1, v2)) {
+                    vs.v2 = v2;
+                }
+            }
+        }
+
+        return result;
+    }
 
     public static class S<E> {
         public final LinkedHashSet<E> aNotB = new LinkedHashSet<>();
@@ -72,16 +178,21 @@ public class Diff {
 
 
     /**
-     * 通过B判定A集合内数据的，增，删，改，未变化
+     * 通过B判定A集合内数据的，增，删，改，未变化，默认使用equals比较
      *
      * @param setNew 新集合
      * @param setOld 旧集合
      * @param getPk  元素主键
-     * @param same   元素是否变化
      * @param <E>    元素
      * @param <K>    主键
      * @return 增，删，改，未变化
      */
+    @NotNull
+    public static <E, K> D<E> of(@Nullable Collection<? extends E> setNew, @Nullable Collection<? extends E> setOld,
+                                 @NotNull Function<E, K> getPk) {
+        return of(setNew, setOld, getPk, E::equals);
+    }
+
     @NotNull
     public static <E, K> D<E> of(@Nullable Collection<? extends E> setNew, @Nullable Collection<? extends E> setOld,
                                  @NotNull Function<E, K> getPk, @NotNull BiPredicate<E, E> same) {
