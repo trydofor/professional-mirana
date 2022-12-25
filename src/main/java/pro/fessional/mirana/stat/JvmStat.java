@@ -21,6 +21,29 @@ import java.lang.management.ThreadMXBean;
  */
 public class JvmStat {
 
+    private static int pid = -1;
+    private static String name = null;
+
+    public static String jvmName() {
+        if (name == null) {
+            Stat st = new Stat();
+            buildRuntime(st);
+            pid = st.pid;
+            name = st.name;
+        }
+        return name;
+    }
+
+    public static int jvmPid() {
+        if (pid < 0) {
+            Stat st = new Stat();
+            buildRuntime(st);
+            pid = st.pid;
+            name = st.name;
+        }
+        return pid;
+    }
+
     public static class Stat {
         private int pid = -1;
         private String name = null;
