@@ -242,13 +242,14 @@ public class R<T> implements DataResult<T>, I18nAware {
                '}';
     }
 
-    @Override
-    public boolean equals(Object o) {
+    @Override public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof R)) return false;
         R<?> r = (R<?>) o;
-        return success == r.success && message.equals(r.message)
-               && code.equals(r.code) && data.equals(r.data);
+        return success == r.success
+               && Objects.equals(message, r.message)
+               && Objects.equals(code, r.code)
+               && Objects.equals(data, r.data);
     }
 
     @Override

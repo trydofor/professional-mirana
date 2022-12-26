@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 
 /**
  * 不建议构造之后，修改页内数据，因此应最后构造。
@@ -221,7 +222,23 @@ public class PageResult<E> extends R<Collection<E>> implements Iterable<E> {
         return meta == null ? null : (T) meta.get(key);
     }
 
-    @Override public String toString() {
+    public <T> PageResult<T> into(Function<E, T> fun) {
+        final List<E> es = toList();
+        final ArrayList<T> dd = new ArrayList<>(es.size());
+        for (E e : es) {
+            dd.add(fun.apply(e));
+        }
+
+        return new PageResult<T>()
+                .setPage(page)
+                .setTotalInfo(totalData, size)
+                .setData(dd)
+                .setSuccess(success)
+                .castType();
+    }
+
+    @Override
+    public String toString() {
         return "PageResult{" +
                "success=" + success +
                ", message='" + message + '\'' +
@@ -236,7 +253,8 @@ public class PageResult<E> extends R<Collection<E>> implements Iterable<E> {
                '}';
     }
 
-    @Override public boolean equals(Object o) {
+    @Override
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof PageResult)) return false;
         if (!super.equals(o)) return false;
@@ -247,7 +265,8 @@ public class PageResult<E> extends R<Collection<E>> implements Iterable<E> {
                && Objects.equals(meta, that.meta);
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         return Objects.hash(super.hashCode(), empty, page, size, sort, totalPage, totalData, meta);
     }
 

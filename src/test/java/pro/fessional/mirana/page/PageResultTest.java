@@ -1,8 +1,10 @@
 package pro.fessional.mirana.page;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import pro.fessional.mirana.data.R;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -48,5 +50,16 @@ public class PageResultTest {
         PageResult<String> rs = o3.castData(sls);
 
         final R<String> s3 = o3.castData("");
+    }
+
+    @Test
+    public void testInto() {
+        List<Integer> ls = Arrays.asList(1, 2, 3);
+        final PageResult<Integer> p1 = PageResult.ok(10, ls, 1, 4);
+        final PageResult<String> p2 = p1.into(String::valueOf);
+        final PageResult<Integer> p3 = p2.into(Integer::parseInt);
+        System.out.println(p1);
+        System.out.println(p2);
+        Assertions.assertEquals(p1, p3);
     }
 }
