@@ -3,7 +3,7 @@ package pro.fessional.mirana.data;
 import java.util.Objects;
 
 /**
- * single papam query
+ * single param query
  *
  * @author trydofor
  * @since 2022-04-19
@@ -41,5 +41,39 @@ public class Q<T> {
 
     public static <X> Q<X> of(X q) {
         return new Q<>(q);
+    }
+
+    /**
+     * id
+     */
+    public static class Id {
+        private long id;
+
+        public long getId() {
+            return id;
+        }
+
+        public void setId(long id) {
+            this.id = id;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof Id)) return false;
+            Id id1 = (Id) o;
+            return id == id1.id;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(id);
+        }
+
+        @Override public String toString() {
+            return "Id{" +
+                   "id=" + id +
+                   '}';
+        }
     }
 }
