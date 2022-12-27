@@ -309,4 +309,15 @@ public class PageResult<E> extends R<Collection<E>> implements Iterable<E> {
                 .setSuccess(true)
                 .castType();
     }
+
+    /**
+     * 构造 total为0，size为1的空页
+     */
+    public static <T> PageResult<T> empty() {
+        return new PageResult<T>()
+                .setPage(1)
+                .setTotalInfo(0, 1)
+                .setSuccess(true)
+                .castType();
+    }
 }
