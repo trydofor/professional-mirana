@@ -247,7 +247,7 @@ public class DateParser {
     private static ZonedDateTime concatZoned(LocalDateTime ldt, ZoneId may, ZoneId zid) {
         if (may == null) {
             if (zid == null) {
-                return ZonedDateTime.of(ldt, ZoneId.systemDefault());
+                return ZonedDateTime.of(ldt, ThreadNow.sysZoneId());
             }
             else {
                 return ZonedDateTime.of(ldt, zid);

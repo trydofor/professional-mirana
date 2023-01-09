@@ -32,8 +32,6 @@ public class DateFormatter {
     protected DateFormatter() {
     }
 
-    private static final ZoneId SYS_ZONE_ID = ZoneId.systemDefault();
-
     public static final String PTN_DATE_10 = "yyyy-MM-dd";
     public static final String PTN_TIME_08 = "HH:mm:ss";
     public static final String PTN_TIME_12 = "HH:mm:ss.SSS";
@@ -654,7 +652,7 @@ public class DateFormatter {
     @NotNull
     public static ZonedDateTime zoned(@NotNull Date date, @Nullable ZoneId zoneId) {
         if (zoneId == null) {
-            return date.toInstant().atZone(SYS_ZONE_ID);
+            return date.toInstant().atZone(ThreadNow.sysZoneId());
         }
         else {
             return date.toInstant().atZone(zoneId);

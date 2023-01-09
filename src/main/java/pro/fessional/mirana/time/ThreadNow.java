@@ -12,6 +12,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * <pre>
@@ -23,8 +24,10 @@ import java.util.Date;
  * ②子类替换，需要在线程使用使用前，如spring的容器配置后，业务前。
  *
  * Benchmark               Mode  Cnt      Score      Error   Units
- * Now.localDateTime(CN)  thrpt    6  11554.389 ± 1750.603  ops/ms
- * LocalDateTime.now(CN)  thrpt    6  13434.876 ±  686.115  ops/ms
+ * Now.localDateTime(CN)   thrpt  6   11554.389 ±  1750.603  ops/ms
+ * LocalDateTime.now(CN)   thrpt  6   13434.876 ±   686.115  ops/ms
+ * ThreadNow.sysZone()     thrpt  6   19666.947 ±  4895.100  ops/ms
+ * ZoneId.systemDefault()  thrpt  6  263911.747 ± 13128.798  ops/ms
  * </pre>
  *
  * @author trydofor
@@ -32,7 +35,43 @@ import java.util.Date;
  */
 public class ThreadNow {
 
+    public final static TimeZone UtcTimeZone = TimeZone.getTimeZone("UTC");
+    public final static ZoneId UtcZoneId = UtcTimeZone.toZoneId();
+
+    public static final TweakingContext<TimeZone> TweakZone = new TweakingContext<>(TimeZone.getDefault());
     public static final TweakingContext<Clock> TweakClock = new TweakingContext<>(Clock.systemDefaultZone());
+
+    /**
+     * 获取系统时区
+     */
+    public static TimeZone sysTimeZone() {
+        return TweakZone.current(true);
+    }
+
+    /**
+     * 获取系统时区，Java11有优化
+     */
+    public static ZoneId sysZoneId() {
+        return TweakZone.current(true).toZoneId();
+    }
+
+    /**
+     * 获取UTC时区
+     *
+     * @see #UtcTimeZone
+     */
+    public static TimeZone utcTimeZone() {
+        return UtcTimeZone;
+    }
+
+    /**
+     * 获取UTC时区
+     *
+     * @see #UtcZoneId
+     */
+    public static ZoneId utcZoneId() {
+        return UtcZoneId;
+    }
 
     /**
      * 获取当前时钟

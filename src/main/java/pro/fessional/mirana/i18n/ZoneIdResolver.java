@@ -1,6 +1,7 @@
 package pro.fessional.mirana.i18n;
 
 import org.jetbrains.annotations.NotNull;
+import pro.fessional.mirana.time.ThreadNow;
 
 import java.time.ZoneId;
 import java.util.HashMap;
@@ -31,7 +32,7 @@ public class ZoneIdResolver {
             return ZoneId.of(standard(tag));
         }
         catch (Exception e) {
-            return ZoneId.systemDefault();
+            return ThreadNow.sysZoneId();
         }
     }
 
@@ -42,7 +43,7 @@ public class ZoneIdResolver {
             return TimeZone.getTimeZone(standard(tag));
         }
         catch (Exception e) {
-            return TimeZone.getDefault();
+            return TimeZone.getTimeZone(ThreadNow.sysZoneId());
         }
     }
 

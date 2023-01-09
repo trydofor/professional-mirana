@@ -22,9 +22,11 @@ import java.time.ZoneId;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Benchmark     Mode  Cnt      Score     Error   Units
- * NowMain.now  thrpt    6  11942.923 ± 368.430  ops/ms
- * NowMain.sys  thrpt    6  12910.824 ± 226.997  ops/ms
+ * Benchmark           Mode  Cnt       Score       Error   Units
+ * ThreadNowMain.now  thrpt    6   11593.136 ±  1335.002  ops/ms
+ * ThreadNowMain.sys  thrpt    6   13812.816 ±   210.230  ops/ms
+ * ThreadNowMain.zdf  thrpt    6   19666.947 ±  4895.100  ops/ms
+ * ThreadNowMain.zid  thrpt    6  263911.747 ± 13128.798  ops/ms
  *
  * @author trydofor
  * @since 2022-10-10
@@ -53,6 +55,16 @@ public class ThreadNowMain {
     @Benchmark
     public void sys() {
         LocalDateTime.now(CN);
+    }
+
+    @Benchmark
+    public void zid() {
+        ThreadNow.sysZoneId();
+    }
+
+    @Benchmark
+    public void zdf() {
+        ZoneId.systemDefault();
     }
 
     public static void main(String[] args) {

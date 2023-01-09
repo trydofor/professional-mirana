@@ -1,6 +1,7 @@
 package pro.fessional.mirana.time;
 
 import java.time.DayOfWeek;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -14,6 +15,49 @@ import java.time.ZonedDateTime;
  * @since 2019-10-16
  */
 public class DateLocaling {
+
+    /**
+     * 以Utc时区转换epoch millis
+     */
+    public static LocalDateTime utcLdt(long epochMilli) {
+        return useLdt(epochMilli, ThreadNow.utcZoneId());
+    }
+
+    /**
+     * 以Sys时区转换epoch millis
+     */
+    public static LocalDateTime sysLdt(long epochMilli) {
+        return useLdt(epochMilli, ThreadNow.sysZoneId());
+    }
+
+    /**
+     * 以指定时区转换epoch millis
+     */
+    public static LocalDateTime useLdt(long epochMilli, ZoneId zone) {
+        final Instant ins = Instant.ofEpochMilli(epochMilli);
+        return LocalDateTime.ofInstant(ins, zone);
+    }
+
+    /**
+     * 以Utc时区获取epoch millis
+     */
+    public static long utcEpoch(LocalDateTime ldt) {
+        return useEpoch(ldt, ThreadNow.utcZoneId());
+    }
+
+    /**
+     * 以Sys时区获取epoch millis
+     */
+    public static long sysEpoch(LocalDateTime ldt) {
+        return useEpoch(ldt, ThreadNow.utcZoneId());
+    }
+
+    /**
+     * 指定时区获取epoch millis
+     */
+    public static long useEpoch(LocalDateTime ldt, ZoneId zone) {
+        return ZonedDateTime.of(ldt, zone).toInstant().toEpochMilli();
+    }
 
     /**
      * 当前的日时
@@ -117,7 +161,7 @@ public class DateLocaling {
      */
     public static ZonedDateTime sysZdt(LocalDateTime ldt) {
         if (ldt == null) return null;
-        return ldt.atZone(ZoneId.systemDefault());
+        return ldt.atZone(ThreadNow.sysZoneId());
     }
 
     /**
@@ -127,7 +171,7 @@ public class DateLocaling {
      * @return System日时
      */
     public static LocalDateTime sysLdt(ZonedDateTime zdt) {
-        return local(zdt, ZoneId.systemDefault());
+        return local(zdt, ThreadNow.sysZoneId());
     }
 
     /**
@@ -137,7 +181,7 @@ public class DateLocaling {
      * @return System日时
      */
     public static ZonedDateTime sysZdt(ZonedDateTime zdt) {
-        return zoned(zdt, ZoneId.systemDefault());
+        return zoned(zdt, ThreadNow.sysZoneId());
     }
 
     /**
@@ -148,7 +192,7 @@ public class DateLocaling {
      * @return System日时
      */
     public static LocalDateTime sysLdt(ZoneId viewer, LocalDateTime ldt) {
-        return local(viewer, ldt, ZoneId.systemDefault());
+        return local(viewer, ldt, ThreadNow.sysZoneId());
     }
 
     /**
@@ -159,7 +203,7 @@ public class DateLocaling {
      * @return System日时
      */
     public static ZonedDateTime sysZdt(ZoneId viewer, LocalDateTime ldt) {
-        return zoned(viewer, ldt, ZoneId.systemDefault());
+        return zoned(viewer, ldt, ThreadNow.sysZoneId());
     }
 
     // ////////// viewer //////////
@@ -194,7 +238,7 @@ public class DateLocaling {
      * @return Viewer日时
      */
     public static LocalDateTime useLdt(LocalDateTime ldt, ZoneId viewer) {
-        return local(ZoneId.systemDefault(), ldt, viewer);
+        return local(ThreadNow.sysZoneId(), ldt, viewer);
     }
 
     /**
@@ -205,7 +249,7 @@ public class DateLocaling {
      * @return Viewer日时
      */
     public static ZonedDateTime useZdt(LocalDateTime ldt, ZoneId viewer) {
-        return zoned(ZoneId.systemDefault(), ldt, viewer);
+        return zoned(ThreadNow.sysZoneId(), ldt, viewer);
     }
 
 
