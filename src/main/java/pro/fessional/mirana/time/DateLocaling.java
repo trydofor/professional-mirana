@@ -49,7 +49,7 @@ public class DateLocaling {
      * 以Sys时区获取epoch millis
      */
     public static long sysEpoch(LocalDateTime ldt) {
-        return useEpoch(ldt, ThreadNow.utcZoneId());
+        return useEpoch(ldt, ThreadNow.sysZoneId());
     }
 
     /**

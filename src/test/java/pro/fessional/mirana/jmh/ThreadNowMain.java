@@ -23,10 +23,10 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Benchmark           Mode  Cnt       Score       Error   Units
- * ThreadNowMain.now  thrpt    6   11593.136 ±  1335.002  ops/ms
- * ThreadNowMain.sys  thrpt    6   13812.816 ±   210.230  ops/ms
- * ThreadNowMain.zdf  thrpt    6   19666.947 ±  4895.100  ops/ms
- * ThreadNowMain.zid  thrpt    6  263911.747 ± 13128.798  ops/ms
+ * ThreadNowMain.now  thrpt    6  12241.553 ±  885.238  ops/ms
+ * ThreadNowMain.sys  thrpt    6  13329.944 ± 2696.883  ops/ms
+ * ThreadNowMain.zdf  thrpt    6  18903.595 ± 2247.927  ops/ms
+ * ThreadNowMain.zid  thrpt    6  20615.717 ±  613.679  ops/ms
  *
  * @author trydofor
  * @since 2022-10-10
