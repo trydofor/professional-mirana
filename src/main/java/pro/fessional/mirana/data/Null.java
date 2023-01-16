@@ -1,8 +1,11 @@
 package pro.fessional.mirana.data;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * @author trydofor
@@ -323,5 +326,14 @@ public class Null {
 
     public static <T> @NotNull Class<T> notNull(Class<T> v, Class<T> e) {
         return v == null ? e : v;
+    }
+
+    public static <T> void notNull(@Nullable T obj, @NotNull Consumer<T> con) {
+        if (obj != null) con.accept(obj);
+    }
+
+    @NotNull
+    public static <T> T notNull(@Nullable T obj, @NotNull Supplier<T> sup) {
+        return obj != null ? obj : sup.get();
     }
 }
