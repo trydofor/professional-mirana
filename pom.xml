@@ -71,6 +71,8 @@
         <nonull.version>23.0.0</nonull.version>
         <jcip-anno.version>1.0</jcip-anno.version>
         <xml-bind.version>2.3.3</xml-bind.version>
+        <!-- docs -->
+        <therapi.version>0.15.0</therapi.version>
         <!-- test -->
         <junit.version>5.9.0</junit.version>
         <jmh.version>1.35</jmh.version>
@@ -154,6 +156,13 @@
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
                     <encoding>${project.build.sourceEncoding}</encoding>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>com.github.therapi</groupId>
+                            <artifactId>therapi-runtime-javadoc-scribe</artifactId>
+                            <version>${therapi.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
             <plugin>
