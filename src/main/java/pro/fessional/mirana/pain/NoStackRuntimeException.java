@@ -9,4 +9,9 @@ public class NoStackRuntimeException extends RuntimeException {
     public NoStackRuntimeException(String message) {
         super(message, null, false, false);
     }
+
+    @Override
+    public Throwable fillInStackTrace() {
+        return this;
+    }
 }
