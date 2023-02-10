@@ -1,21 +1,21 @@
-# pro.fessional.mirana
+# pro.fessional.mirana 
 
 ![Maven Central](https://img.shields.io/maven-central/v/pro.fessional/mirana?color=00DD00)
 ![Sonatype Snapshots](https://img.shields.io/nexus/s/pro.fessional/mirana?server=https%3A%2F%2Foss.sonatype.org)
 [![Coverage Status](https://coveralls.io/repos/github/trydofor/pro.fessional.mirana/badge.svg)](https://coveralls.io/github/trydofor/pro.fessional.mirana)
 
-> 中文 🇨🇳 | [English 🇺🇸](readme.en.md)
+> English 🇺🇸 | [中文 🇨🇳](readme.md)
 
-`POM(.xml)`, 月女，她有一只神箭，她有一只大猫。  
-java8, 0依赖，是guava, `commons-*`的补充。
+`POM(.xml)`, the moon princess, she has a sacred arrow and a big cat.  
+java8, 0-dependency, is an addition to guava, `commons-*`.
 
 ![mirana](./mirana_full.png)
 
-## 如何使用
+## How to use
 
-① 自己`clone`和`install`最豪横。
+① DIY `clone` and `install` is powerful.
 
-② 使用 maven central 比较稳妥。
+② Using Maven Central is stable.
 
 ``` xml
 <dependency>
@@ -25,7 +25,7 @@ java8, 0依赖，是guava, `commons-*`的补充。
 </dependency>
 ```
 
-③ 使用 SNAPSHOT 与时俱进。
+③ Using SNAPSHOT is the latest.
 
 ``` xml
 <repository>
@@ -38,18 +38,18 @@ java8, 0依赖，是guava, `commons-*`的补充。
 </repository>
 ```
 
-## 命名约定
+## Naming convention
 
-* Null - 等效于`null`的默认值。
-* None - 等效于empty的默认值。
-* Sugar - 表示静态线程安全的工具类，可做kotlin语法糖
-* Help - 表示和业务关联的或有生命周期的辅助类
-* Util - 表示静态线程安全的工具类
+* Null - The default value to replace null `null`
+* None - the default value of empty
+* Sugar - static thread-safe tool can be used as kotlin Syntax-Sugar
+* Help - business-related or lifecycle helper class
+* Util - static thread-safe tool class
 
-## 开个根号
+## Square Root (sqrt)
 
-版本号为开根号+三段法，如√2对应的`1.4.0`, `1.4.1`, `1.4.14`，
-若版本不够且不想跳版本，则无限的写下去`1.4.14213562373095`
+The version number is `sqrt` + `3-part version` pattern, e.g. √2 are `1.4.0`, `1.4.1`, `1.4.14`.
+If the version is not enough, then write infinitely `1.4.14213562373095`
 
 * √1 = `1.0.0`
 * √2 = `1.4.0`, `1.4.1`, `1.4.14`
@@ -61,7 +61,7 @@ java8, 0依赖，是guava, `commons-*`的补充。
 * √8 = `2.8.0`, `2.8.2`, `2.8.3`
 * √9 = `3.0.0`
 
-## 详细文档
+## Detailed Documents
 
 * <https://wings.fessional.pro/a-mirana/>
 * <https://github.com/fessionalpro/wings-doc/tree/main/docs/a-mirana/>

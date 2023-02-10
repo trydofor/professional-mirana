@@ -31,7 +31,7 @@
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
         </license>
     </licenses>
 
@@ -40,7 +40,7 @@
             <name>Trydofor</name>
             <email>trydofor@gmail.com</email>
             <organization>moilioncircle</organization>
-            <organizationUrl>http://www.moilioncircle.com/</organizationUrl>
+            <organizationUrl>https://www.moilioncircle.com/</organizationUrl>
             <roles>
                 <role>Developer</role>
             </roles>
