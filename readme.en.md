@@ -63,6 +63,6 @@ If the version is not enough, then write infinitely `1.4.14213562373095`
 
 ## Detailed Documents
 
-* <https://wings.fessional.pro/a-mirana/>
-* <https://github.com/fessionalpro/wings-doc/tree/main/docs/a-mirana/>
-* <https://gitee.com/fessionalpro/wings-doc/tree/main/docs/a-mirana/>
+* <https://wings.fessional.pro/en/a-mirana/>
+* <https://github.com/fessionalpro/wings-doc/tree/main/docs/en/a-mirana/>
+* <https://gitee.com/fessionalpro/wings-doc/tree/main/docs/en/a-mirana/>
