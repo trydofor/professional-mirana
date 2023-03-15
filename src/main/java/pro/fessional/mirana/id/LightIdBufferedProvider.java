@@ -44,6 +44,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class LightIdBufferedProvider implements LightIdProvider {
 
     private static final int MAX_COUNT = 10000;
+    private static final int MIN_COUNT = 100;
     private static final int MAX_ERROR = 5;
     private static final long ERR_ALIVE = 120000; // 2分钟
     private static final long TIME_OUT = 1000; // 1秒
@@ -55,6 +56,8 @@ public class LightIdBufferedProvider implements LightIdProvider {
     private final AtomicLong loadTimeout = new AtomicLong(TIME_OUT);
     private final AtomicInteger loadMaxError = new AtomicInteger(MAX_ERROR);
     private final AtomicInteger loadMaxCount = new AtomicInteger(MAX_COUNT);
+    private final AtomicInteger loadMinCount = new AtomicInteger(MIN_COUNT);
+    private final AtomicInteger loadFixCount = new AtomicInteger(0);
     private final AtomicLong loadErrAlive = new AtomicLong(ERR_ALIVE);
 
     private final AtomicReference<SequenceHandler> sequenceHandler = new AtomicReference<>();
@@ -101,6 +104,14 @@ public class LightIdBufferedProvider implements LightIdProvider {
 
     public int getMaxCount() {
         return loadMaxCount.get();
+    }
+
+    public int getMinCount() {
+        return loadMinCount.get();
+    }
+
+    public int getFixCount() {
+        return loadFixCount.get();
     }
 
     public SequenceHandler getSequenceHandler() {
@@ -163,6 +174,33 @@ public class LightIdBufferedProvider implements LightIdProvider {
         else {
             return false;
         }
+    }
+
+    /**
+     * 设置加载序号时的最小加载数量，默认100。
+     *
+     * @param n 数字
+     * @return 大于等于零成功，否则失败
+     */
+    public boolean setMinCount(int n) {
+        if (n >= 0) {
+            loadMinCount.set(n);
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    /**
+     * 是否预加载固定数量的id，大于零时为固定数量，否则为动态数量
+     *
+     * @param n 数字，大于0时为固定数量
+     * @return 成功
+     */
+    public boolean setFixCount(int n) {
+        loadFixCount.set(n);
+        return true;
     }
 
     /**
@@ -246,6 +284,9 @@ public class LightIdBufferedProvider implements LightIdProvider {
         }
 
         public int count60s(int mul) {
+            int fix = loadFixCount.get();
+            if (fix > 0) return fix;
+
             long ms = (System.currentTimeMillis() - startMs);
             long count = footSeq - headSeq + 1;
             if (ms > 0) {
@@ -257,11 +298,12 @@ public class LightIdBufferedProvider implements LightIdProvider {
             }
 
             int max = loadMaxCount.get();
+            int min = loadMinCount.get();
             if (count < 0 || count > max) { // overflow
                 return max;
             }
-            else if (count < 100) {
-                return 100;
+            else if (count < min) {
+                return min;
             }
             else {
                 return (int) count;

@@ -1,6 +1,7 @@
 package pro.fessional.mirana.id;
 
 import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -59,9 +60,6 @@ public class LightIdBufferedProviderTest {
                     e.printStackTrace();
                 }
             }
-            if (count < 100) {
-                count = 100;
-            }
 
             long next = sequence.addAndGet(count);
             long start = next - count;
@@ -111,6 +109,17 @@ public class LightIdBufferedProviderTest {
         for (Exception key : err.keySet()) {
             System.out.println("============ print for 403 ===================");
             key.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testFix() {
+        LightIdBufferedProvider provider = bufferedProvider();
+        provider.setFixCount(1);
+        for (int i = 0; i < 10; i++) {
+            final long id = provider.next("200", 0);
+            final long seq = LightIdUtil.sequenceInt(id);
+            Assertions.assertEquals(seq + 1, sequence.get());
         }
     }
 
