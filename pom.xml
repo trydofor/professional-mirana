@@ -20,7 +20,7 @@
 
     <groupId>pro.fessional</groupId>
     <artifactId>mirana</artifactId>
-    <version>2.4.4-SNAPSHOT</version>
+    <version>2.4.5-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>mirana moon girl</name>
@@ -52,7 +52,6 @@
         <connection>scm:git:git@github.com:trydofor/pro.fessional.mirana.git</connection>
         <url>scm:git:git@github.com:trydofor/pro.fessional.mirana.git</url>
         <developerConnection>scm:git:git@github.com:trydofor/pro.fessional.mirana.git</developerConnection>
-        <tag>1.x</tag>
     </scm>
 
     <issueManagement>
@@ -73,10 +72,9 @@
         <!-- test -->
         <junit.version>5.9.2</junit.version>
         <jmh.version>1.36</jmh.version>
-        <mysql.version>8.0.32</mysql.version>
-        <fastjson2.version>2.0.25</fastjson2.version>
+        <mysql.version>8.0.33</mysql.version>
+        <fastjson2.version>2.0.32</fastjson2.version>
         <sulky-ulid.version>8.3.0</sulky-ulid.version>
-        <xml-bind-api.version>3.0.1</xml-bind-api.version>
     </properties>
 
     <dependencies>
@@ -91,13 +89,6 @@
             <version>${nonull.version}</version>
         </dependency>
         <!-- test -->
-        <dependency>
-            <!-- java 11 removed -->
-            <groupId>jakarta.xml.bind</groupId>
-            <artifactId>jakarta.xml.bind-api</artifactId>
-            <scope>test</scope>
-            <version>${xml-bind-api.version}</version>
-        </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
