@@ -28,6 +28,9 @@ import java.util.function.Function;
  * @param <T> Data的类型
  */
 public class R<T> implements DataResult<T>, I18nAware {
+    public static final R<Void> OK = new R<>(true, null, null, null);
+    public static final R<Void> NG = new R<>(false, null, null, null);
+
     private static final long serialVersionUID = 19791023L;
 
     protected boolean success;
