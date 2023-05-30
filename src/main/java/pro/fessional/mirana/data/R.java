@@ -45,26 +45,22 @@ public class R<T> implements DataResult<T>, I18nAware {
 
     public R() {
         this.success = false;
+        this.data = null;
         this.message = null;
         this.code = null;
-        this.data = null;
     }
 
     protected R(boolean success, String message, String code, T data) {
         this.success = success;
+        this.data = data;
         this.message = message;
         this.code = code;
-        this.data = data;
     }
 
     protected R(boolean success, CodeEnum code, T data) {
         this.success = success;
         this.data = data;
-        if (code != null) {
-            this.code = code.getCode();
-            this.message = code.getHint();
-            this.i18nCode = code.getI18nCode();
-        }
+        setCode(code);
     }
 
     @Override
@@ -156,6 +152,15 @@ public class R<T> implements DataResult<T>, I18nAware {
         return this;
     }
 
+    public R<T> setCode(CodeEnum code) {
+        if (code != null) {
+            this.code = code.getCode();
+            this.message = code.getHint();
+            this.i18nCode = code.getI18nCode();
+        }
+        return this;
+    }
+
     @Transient
     @Nullable
     public Object getCause() {
@@ -191,18 +196,6 @@ public class R<T> implements DataResult<T>, I18nAware {
     @Nullable
     public Object[] getI18nArgs() {
         return i18nArgs;
-    }
-
-    /**
-     * 根据返回值，强转子类型，供编译器编译
-     *
-     * @param <S> 子类型
-     * @return 子类型
-     * @throws ClassCastException 如果类型不匹配
-     */
-    @SuppressWarnings("unchecked")
-    public <S extends R<T>> S castType() {
-        return (S) this;
     }
 
     /**
@@ -402,13 +395,13 @@ public class R<T> implements DataResult<T>, I18nAware {
     public static <T> R<T> ng(Throwable t, String code, String message) {
         if (message == null) message = t.getMessage();
         R<T> tr = new R<>(false, message, code, null);
+        tr.cause = t;
         if (t instanceof CodeException) {
             CodeException ce = (CodeException) t;
             if (code == null) tr.code = ce.getCode();
             tr.i18nCode = ce.getI18nCode();
             tr.i18nArgs = ce.getI18nArgs();
         }
-        tr.cause = t;
         return tr;
     }
 
@@ -416,5 +409,121 @@ public class R<T> implements DataResult<T>, I18nAware {
         R<T> tr = new R<>(false, code, null);
         tr.cause = t;
         return tr;
+    }
+
+    // /////////////////
+
+    public static <T, S extends R<T>> S ng(S sr) {
+        sr.setSuccess(false);
+        return sr;
+    }
+
+    public static <T, S extends R<T>> S ng(S sr, String message) {
+        sr.setSuccess(false);
+        sr.setMessage(message);
+        return sr;
+    }
+
+    public static <T, S extends R<T>> S ng(S sr, CodeEnum code) {
+        sr.setSuccess(false);
+        sr.setCode(code);
+        return sr;
+    }
+
+    public static <T, S extends R<T>> S ng(S sr, String message, String code) {
+        sr.setSuccess(false);
+        sr.setMessage(message);
+        sr.setCode(code);
+        return sr;
+    }
+
+    public static <T, S extends R<T>> S ng(S sr, String message, String code, T data) {
+        sr.setSuccess(false);
+        sr.setMessage(message);
+        sr.setCode(code);
+        sr.setData(data);
+        return sr;
+    }
+
+    public static <T, S extends R<T>> S ng(S sr, CodeEnum code, T data) {
+        sr.setSuccess(false);
+        sr.setCode(code);
+        sr.setData(data);
+        return sr;
+    }
+
+    public static <T, S extends R<T>> S ngCode(S sr, String code) {
+        sr.setSuccess(false);
+        sr.setCode(code);
+        return sr;
+    }
+
+    public static <T, S extends R<T>> S ngCode(S sr, String code, String message) {
+        sr.setSuccess(false);
+        sr.setMessage(message);
+        sr.setCode(code);
+        return sr;
+    }
+
+    public static <T, S extends R<T>> S ngCode(S sr, CodeEnum code, String message) {
+        sr.setSuccess(false);
+        sr.setCode(code);
+        sr.setMessage(message);
+        return sr;
+    }
+
+    public static <T, S extends R<T>> S ngData(S sr, T data) {
+        sr.setSuccess(false);
+        sr.setData(data);
+        return sr;
+    }
+
+    public static <T, S extends R<T>> S ngData(S sr, T data, String code) {
+        sr.setSuccess(false);
+        sr.setCode(code);
+        sr.setData(data);
+        return sr;
+    }
+
+    public static <T, S extends R<T>> S ngData(S sr, T data, Throwable t) {
+        ng(sr, t, null, null);
+        sr.setData(data);
+        return sr;
+    }
+
+    public static <T, S extends R<T>> S ngData(S sr, T data, CodeEnum code) {
+        sr.setSuccess(false);
+        sr.setCode(code);
+        sr.setData(data);
+        return sr;
+    }
+
+    public static <T, S extends R<T>> S ng(S sr, Throwable t) {
+        return ng(sr, t, null, null);
+    }
+
+    public static <T, S extends R<T>> S ng(S sr, Throwable t, String code) {
+        return ng(sr, t, code, null);
+    }
+
+    public static <T, S extends R<T>> S ng(S sr, Throwable t, String code, String message) {
+        if (message == null) message = t.getMessage();
+        sr.setMessage(message);
+        sr.setCode(code);
+        sr.setCause(t);
+
+        if (t instanceof CodeException) {
+            CodeException ce = (CodeException) t;
+            if (code == null) sr.setCode(ce.getCode());
+            sr.setI18nMessage(ce.getI18nCode(), ce.getI18nArgs());
+        }
+        return sr;
+    }
+
+    public static <T, S extends R<T>> S ng(S sr, Throwable t, CodeEnum code) {
+        sr.setSuccess(false);
+        sr.setCause(t);
+        sr.setCode(code);
+        return sr;
     }
 }

@@ -2,8 +2,10 @@ package pro.fessional.mirana.page;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import pro.fessional.mirana.data.CodeEnum;
 import pro.fessional.mirana.data.Null;
 import pro.fessional.mirana.data.R;
+import pro.fessional.mirana.i18n.I18nAware;
 
 import java.beans.Transient;
 import java.util.ArrayList;
@@ -165,6 +167,54 @@ public class PageResult<E> extends R<Collection<E>> implements Iterable<E> {
         return this;
     }
 
+    @Override
+    public PageResult<E> setSuccess(boolean success) {
+        super.setSuccess(success);
+        return this;
+    }
+
+    @Override
+    public PageResult<E> setMessage(String message) {
+        super.setMessage(message);
+        return this;
+    }
+
+    @Override
+    public PageResult<E> setI18nMessage(CodeEnum ce, Object... arg) {
+        super.setI18nMessage(ce, arg);
+        return this;
+    }
+
+    @Override
+    public PageResult<E> setI18nMessage(I18nAware message) {
+        super.setI18nMessage(message);
+        return this;
+    }
+
+    @Override
+    public PageResult<E> setI18nMessage(String i18nCode, Object... args) {
+        super.setI18nMessage(i18nCode, args);
+        return this;
+    }
+
+    @Override
+    public PageResult<E> setCode(String code) {
+        super.setCode(code);
+        return this;
+    }
+
+    @Override
+    public R<Collection<E>> setCode(CodeEnum code) {
+        super.setCode(code);
+        return this;
+    }
+
+    @Override
+    public PageResult<E> setCause(Object cause) {
+        super.setCause(cause);
+        return this;
+    }
+
     public PageResult<E> addData(E e) {
         if (e != null) {
             Collection<E> data = getData();
@@ -187,6 +237,7 @@ public class PageResult<E> extends R<Collection<E>> implements Iterable<E> {
         return this;
     }
 
+    @Override
     public boolean hasData() {
         final Collection<E> data = getData();
         return data != null && data.size() > 0;
@@ -233,8 +284,7 @@ public class PageResult<E> extends R<Collection<E>> implements Iterable<E> {
                 .setPage(page)
                 .setTotalInfo(totalData, size)
                 .setData(dd)
-                .setSuccess(success)
-                .castType();
+                .setSuccess(success);
     }
 
     @Override
@@ -287,8 +337,7 @@ public class PageResult<E> extends R<Collection<E>> implements Iterable<E> {
                 .setTotalInfo(total, pg.getSize())
                 .setSort(pg.getSort())
                 .setData(data)
-                .setSuccess(true)
-                .castType();
+                .setSuccess(true);
     }
 
     /**
@@ -306,8 +355,7 @@ public class PageResult<E> extends R<Collection<E>> implements Iterable<E> {
                 .setPage(page)
                 .setTotalInfo(total, size)
                 .setData(data)
-                .setSuccess(true)
-                .castType();
+                .setSuccess(true);
     }
 
     /**
@@ -317,7 +365,6 @@ public class PageResult<E> extends R<Collection<E>> implements Iterable<E> {
         return new PageResult<T>()
                 .setPage(1)
                 .setTotalInfo(0, 1)
-                .setSuccess(true)
-                .castType();
+                .setSuccess(true);
     }
 }
