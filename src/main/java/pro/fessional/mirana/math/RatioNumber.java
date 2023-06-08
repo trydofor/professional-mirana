@@ -1,6 +1,6 @@
 package pro.fessional.mirana.math;
 
-import pro.fessional.mirana.best.ArgsAssert;
+import pro.fessional.mirana.best.AssertArgs;
 
 import java.util.Objects;
 
@@ -193,8 +193,8 @@ public class RatioNumber {
         private final int useRate;
 
         public Ratio(int oneRate, int useRate) {
-            ArgsAssert.isTrue(oneRate > 0, "oneRate must > 0");
-            ArgsAssert.isTrue(useRate > 0, "useRate must > 0");
+            AssertArgs.isTrue(oneRate > 0, "oneRate must > 0");
+            AssertArgs.isTrue(useRate > 0, "useRate must > 0");
             this.oneRate = oneRate;
             this.useRate = useRate;
         }

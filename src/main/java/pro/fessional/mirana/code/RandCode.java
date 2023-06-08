@@ -1,7 +1,7 @@
 package pro.fessional.mirana.code;
 
 import net.jcip.annotations.ThreadSafe;
-import pro.fessional.mirana.best.ArgsAssert;
+import pro.fessional.mirana.best.AssertArgs;
 import pro.fessional.mirana.cast.BoxedCastUtil;
 import pro.fessional.mirana.data.Null;
 
@@ -265,12 +265,12 @@ public abstract class RandCode {
             if (chars == null) chars = Null.Chars;
 
             int rlen = range.length;
-            ArgsAssert.isTrue(rlen % 2 == 0, "range must be [min,max]*");
+            AssertArgs.isTrue(rlen % 2 == 0, "range must be [min,max]*");
             LinkedHashMap<String, char[]> rangeUniq = new LinkedHashMap<>(rlen);
             for (int i = 0; i < rlen; i += 2) {
                 char max = range[i + 1];
                 char min = range[i];
-                ArgsAssert.aGeb(max, min, "need max >= min in range");
+                AssertArgs.aGeb(max, min, "need max >= min in range");
                 rangeUniq.put(min + ":" + max, new char[]{min, max});
             }
 

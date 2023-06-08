@@ -11,12 +11,12 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * 后置检查，条件不满足时，抛出 IllegalStateException或无堆栈BadStateException
+ * post-check. throw IllegalStateException or BadStateException(without stack) if not match.
  *
  * @author trydofor
  * @since 2019-10-05
  */
-public class StateAssert {
+public class AssertState {
 
     @Contract("false, _ -> fail")
     public static void isTrue(boolean b, @NotNull String msg) {
