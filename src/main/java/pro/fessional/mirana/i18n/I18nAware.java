@@ -12,23 +12,37 @@ import java.io.Serializable;
 public interface I18nAware extends Serializable {
 
     /**
-     * 获得i18nCode，默认code
+     * get i18n code
      *
      * @return i18nCode
      */
     @Nullable
-    String getI18nCode();
+    default String getI18nCode() {
+        return null;
+    }
 
     /**
-     * 获得 i18n 参数
+     * default message or template
+     *
+     * @return hint
+     */
+    @Nullable
+    default String getI18nHint() {
+        return null;
+    }
+
+    /**
+     * get i18n args for template
      *
      * @return 参数
      */
     @Nullable
-    Object[] getI18nArgs();
+    default Object[] getI18nArgs() {
+        return null;
+    }
 
     @NotNull
-    default I18nString toI18nString(String hint) {
-        return new I18nString(getI18nCode(), hint, getI18nArgs());
+    default I18nString toI18nString() {
+        return new I18nString(getI18nCode(), getI18nHint(), getI18nArgs());
     }
 }

@@ -107,7 +107,6 @@ public class I18nString implements I18nAware {
         return code;
     }
 
-    @Override
     @NotNull
     public I18nString toI18nString(String hint) {
         setHint(hint);

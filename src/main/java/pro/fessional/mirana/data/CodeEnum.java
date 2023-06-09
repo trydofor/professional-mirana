@@ -1,6 +1,7 @@
 package pro.fessional.mirana.data;
 
 import org.jetbrains.annotations.NotNull;
+import pro.fessional.mirana.i18n.I18nAware;
 import pro.fessional.mirana.i18n.I18nString;
 
 import java.io.Serializable;
@@ -11,51 +12,32 @@ import java.io.Serializable;
  * @author trydofor
  * @since 2019-09-17
  */
-public interface CodeEnum extends Serializable {
+public interface CodeEnum extends I18nAware {
     /**
-     * 业务code
+     * business code
      *
-     * @return 业务code
+     * @return code
      */
     @NotNull
     String getCode();
 
     /**
-     * 默认消息或模板
+     * default message or template
      *
-     * @return 消息
+     * @return hint
      */
     @NotNull
     String getHint();
 
-    /**
-     * 获得多国语有关的code，默认使用getCode
-     *
-     * @return i18nCode
-     */
     @NotNull
+    @Override
     default String getI18nCode() {
         return getCode();
     }
 
-    /**
-     * 用i18nCode和message生成默认的i18nString
-     *
-     * @return I18nString
-     */
     @NotNull
-    default I18nString toI18nString() {
-        return new I18nString(getI18nCode(), getHint());
-    }
-
-    /**
-     * 用i18nCode和message生成默认的i18nString
-     *
-     * @param args 参数
-     * @return I18nString
-     */
-    @NotNull
-    default I18nString toI18nString(Object... args) {
-        return new I18nString(getI18nCode(), getHint(), args);
+    @Override
+    default String getI18nHint() {
+        return getHint();
     }
 }
