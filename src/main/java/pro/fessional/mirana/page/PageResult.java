@@ -138,7 +138,7 @@ public class PageResult<E> extends R<Collection<E>> implements Iterable<E> {
             return (List<E>) data;
         }
         else {
-            return data == null ? empty : new ArrayList<>(data);
+            return new ArrayList<>(data);
         }
     }
 
@@ -165,6 +165,13 @@ public class PageResult<E> extends R<Collection<E>> implements Iterable<E> {
             super.setData(ds);
         }
         return this;
+    }
+
+    @Override
+    @NotNull
+    public Collection<E> getData() {
+        final Collection<E> data = super.getData();
+        return data == null ? empty : data;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package pro.fessional.mirana.cast;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pro.fessional.mirana.data.Null;
@@ -22,9 +23,9 @@ public class StringCastUtil {
     public static boolean asTrue(@Nullable String str) {
         if (str == null) return false;
         return "true".equalsIgnoreCase(str) ||
-               "t".equalsIgnoreCase(str) ||
-               "yes".equalsIgnoreCase(str) ||
-               "y".equalsIgnoreCase(str);
+                "t".equalsIgnoreCase(str) ||
+                "yes".equalsIgnoreCase(str) ||
+                "y".equalsIgnoreCase(str);
     }
 
     /**
@@ -37,11 +38,11 @@ public class StringCastUtil {
     public static boolean asFalse(@Nullable String str) {
         if (str == null) return true;
         return "false".equalsIgnoreCase(str) ||
-               "f".equalsIgnoreCase(str) ||
-               "no".equalsIgnoreCase(str) ||
-               "n".equalsIgnoreCase(str) ||
-               str.isEmpty() ||
-               str.trim().isEmpty();
+                "f".equalsIgnoreCase(str) ||
+                "no".equalsIgnoreCase(str) ||
+                "n".equalsIgnoreCase(str) ||
+                str.isEmpty() ||
+                str.trim().isEmpty();
     }
 
     /**
@@ -55,8 +56,7 @@ public class StringCastUtil {
         if (str == null) return elz;
         try {
             return Long.parseLong(str);
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             return elz;
         }
     }
@@ -72,8 +72,7 @@ public class StringCastUtil {
         if (str == null) return elz;
         try {
             return Integer.parseInt(str);
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             return elz;
         }
     }
@@ -89,8 +88,7 @@ public class StringCastUtil {
         if (str == null) return elz;
         try {
             return Float.parseFloat(str);
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             return elz;
         }
     }
@@ -106,8 +104,7 @@ public class StringCastUtil {
         if (str == null) return elz;
         try {
             return Double.parseDouble(str);
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             return elz;
         }
     }
@@ -124,39 +121,28 @@ public class StringCastUtil {
         if (str == null) return elz;
         try {
             return new BigDecimal(str);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return elz;
         }
     }
 
     @NotNull
-    public static String string(Character v) {
-        return v == null ? Null.Str : String.valueOf(v);
-    }
-
-    @NotNull
-    public static String string(Integer v) {
-        return v == null ? Null.Str : String.valueOf(v);
-    }
-
-    @NotNull
-    public static String string(Long v) {
-        return v == null ? Null.Str : String.valueOf(v);
-    }
-
-    @NotNull
-    public static String string(Float v) {
-        return v == null ? Null.Str : String.valueOf(v);
-    }
-
-    @NotNull
-    public static String string(Double v) {
-        return v == null ? Null.Str : String.valueOf(v);
-    }
-
-    @NotNull
     public static String string(BigDecimal v) {
+        return v == null ? Null.Str : v.toPlainString();
+    }
+
+    @NotNull
+    public static String string(Object v) {
         return v == null ? Null.Str : String.valueOf(v);
+    }
+
+    @Contract("_,!null -> !null")
+    public static String string(BigDecimal v, String elz) {
+        return v == null ? elz : v.toPlainString();
+    }
+
+    @Contract("_,!null -> !null")
+    public static String string(Object v, String elz) {
+        return v == null ? elz : String.valueOf(v);
     }
 }
