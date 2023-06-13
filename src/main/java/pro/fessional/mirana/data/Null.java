@@ -4,6 +4,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -335,5 +339,20 @@ public class Null {
     @NotNull
     public static <T> T notNull(@Nullable T obj, @NotNull Supplier<T> sup) {
         return obj != null ? obj : sup.get();
+    }
+
+    @NotNull
+    public static <K, V> Map<K, V> notNull(@Nullable Map<K, V> obj) {
+        return obj != null ? obj : Collections.emptyMap();
+    }
+
+    @NotNull
+    public static <V> Set<V> notNull(@Nullable Set<V> obj) {
+        return obj != null ? obj : Collections.emptySet();
+    }
+
+    @NotNull
+    public static <V> List<V> notNull(@Nullable List<V> obj) {
+        return obj != null ? obj : Collections.emptyList();
     }
 }
