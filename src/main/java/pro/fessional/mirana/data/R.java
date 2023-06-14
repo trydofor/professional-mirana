@@ -199,6 +199,19 @@ public class R<T> implements DataResult<T>, I18nAware {
     }
 
     /**
+     * 强制类型转换
+     *
+     * @param <S>  子类型
+     * @param <X>  数据类型
+     * @return 子类型
+     * @throws ClassCastException 如果类型不匹配
+     */
+    @SuppressWarnings("unchecked")
+    public <S extends R<X>, X> S castType() {
+        return (S) this;
+    }
+
+    /**
      * 替换data，并强转子类型
      *
      * @param <S>  子类型
