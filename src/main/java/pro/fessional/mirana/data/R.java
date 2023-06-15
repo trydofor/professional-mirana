@@ -185,17 +185,24 @@ public class R<T> implements DataResult<T>, I18nAware {
     }
 
     @Transient
-    @Override
     @Nullable
+    @Override
     public String getI18nCode() {
         return i18nCode;
     }
 
     @Transient
-    @Override
     @Nullable
+    @Override
     public Object[] getI18nArgs() {
         return i18nArgs;
+    }
+
+    @Transient
+    @Nullable
+    @Override
+    public String getI18nHint() {
+        return message;
     }
 
     /**

@@ -45,4 +45,23 @@ public interface I18nAware extends Serializable {
     default I18nString toI18nString() {
         return new I18nString(getI18nCode(), getI18nHint(), getI18nArgs());
     }
+
+    @NotNull
+    default I18nString toI18nString(@Nullable String hint) {
+        hint = hint == null ? getI18nHint() : hint;
+        return new I18nString(getI18nCode(), hint, getI18nArgs());
+    }
+
+    @NotNull
+    default I18nString toI18nString(@Nullable String hint, @Nullable Object... args) {
+        hint = hint == null ? getI18nHint() : hint;
+        args = args == null ? getI18nArgs() : args;
+        return new I18nString(getI18nCode(), hint, args);
+    }
+
+    @NotNull
+    default I18nString toI18nStringArgs(@Nullable Object... args) {
+        args = args == null ? getI18nArgs() : args;
+        return new I18nString(getI18nCode(), getI18nHint(), args);
+    }
 }

@@ -4,6 +4,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.beans.Transient;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Locale;
@@ -25,7 +26,7 @@ public class I18nString implements I18nAware {
 
     private final String code;
     private final Object[] args;
-    private String hint = "";
+    private final String hint;
     private transient String i18n = null;
 
     public I18nString(String code) {
@@ -39,7 +40,7 @@ public class I18nString implements I18nAware {
     public I18nString(String code, String hint, Object... args) {
         this.code = code == null ? "" : code;
         this.args = args == null ? EMPTY_ARGS : args;
-        if (hint != null) this.hint = hint;
+        this.hint = hint == null ? "" : hint;
     }
 
     @NotNull
@@ -55,12 +56,6 @@ public class I18nString implements I18nAware {
     @NotNull
     public String getHint() {
         return hint;
-    }
-
-    @Contract("_ -> this")
-    public I18nString setHint(String hint) {
-        if (hint != null) this.hint = hint;
-        return this;
     }
 
     @Nullable
@@ -90,14 +85,23 @@ public class I18nString implements I18nAware {
 
     @NotNull
     @Override
+    @Transient
     public String getI18nCode() {
         return code;
     }
 
     @NotNull
     @Override
+    @Transient
     public Object[] getI18nArgs() {
         return args;
+    }
+
+    @NotNull
+    @Override
+    @Transient
+    public String getI18nHint() {
+        return hint;
     }
 
     @Override
@@ -105,12 +109,6 @@ public class I18nString implements I18nAware {
         if (i18n != null && i18n.length() > 0) return i18n;
         if (hint != null && hint.length() > 0) return hint;
         return code;
-    }
-
-    @NotNull
-    public I18nString toI18nString(String hint) {
-        setHint(hint);
-        return this;
     }
 
     @Override

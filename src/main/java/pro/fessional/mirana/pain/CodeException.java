@@ -136,6 +136,7 @@ public class CodeException extends RuntimeException implements I18nAware {
     }
 
     @NotNull
+    @Override
     public I18nString toI18nString(String hint) {
         if (hint == null || hint.isEmpty()) {
             return new I18nString(i18nCode, getMessage(), i18nArgs);

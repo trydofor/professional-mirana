@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import pro.fessional.mirana.i18n.I18nAware;
 import pro.fessional.mirana.i18n.I18nString;
 
+import java.beans.Transient;
 import java.io.Serializable;
 
 /**
@@ -29,12 +30,14 @@ public interface CodeEnum extends I18nAware {
     @NotNull
     String getHint();
 
+    @Transient
     @NotNull
     @Override
     default String getI18nCode() {
         return getCode();
     }
 
+    @Transient
     @NotNull
     @Override
     default String getI18nHint() {
