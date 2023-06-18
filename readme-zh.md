@@ -1,21 +1,21 @@
-# pro.fessional.mirana 
+# pro.fessional.mirana
 
 ![Maven Central](https://img.shields.io/maven-central/v/pro.fessional/mirana?color=00DD00)
 ![Sonatype Snapshots](https://img.shields.io/nexus/s/pro.fessional/mirana?server=https%3A%2F%2Foss.sonatype.org)
 [![Coverage Status](https://coveralls.io/repos/github/trydofor/pro.fessional.mirana/badge.svg)](https://coveralls.io/github/trydofor/pro.fessional.mirana)
 
-> English 🇺🇸 | [中文 🇨🇳](readme.md)
+> 中文 🇨🇳 | [English 🇺🇸](readme.md)
 
-`POM(.xml)`, the moon princess, she has a sacred arrow and a big cat.  
-java8, 0-dependency, is an addition to guava, `commons-*`.
+`POM(.xml)`, 月女，她有一只神箭，她有一只大猫。  
+java8, 0依赖，是guava, `commons-*`的补充。
 
 ![mirana](./mirana_full.png)
 
-## How to use
+## 如何使用
 
-① DIY `clone` and `install` is powerful.
+① 自己`clone`和`install`最豪横。
 
-② Using Maven Central is stable.
+② 使用 maven central 比较稳妥。
 
 ``` xml
 <dependency>
@@ -25,7 +25,7 @@ java8, 0-dependency, is an addition to guava, `commons-*`.
 </dependency>
 ```
 
-③ Using SNAPSHOT is the latest.
+③ 使用 SNAPSHOT 与时俱进。
 
 ``` xml
 <repository>
@@ -38,18 +38,18 @@ java8, 0-dependency, is an addition to guava, `commons-*`.
 </repository>
 ```
 
-## Naming convention
+## 命名约定
 
-* Null - The default value to replace null `null`
-* None - the default value of empty
-* Sugar - static thread-safe tool can be used as kotlin Syntax-Sugar
-* Help - business-related or lifecycle helper class
-* Util - static thread-safe tool class
+* Null - 等效于`null`的默认值。
+* None - 等效于empty的默认值。
+* Sugar - 表示静态线程安全的工具类，可做kotlin语法糖
+* Help - 表示和业务关联的或有生命周期的辅助类
+* Util - 表示静态线程安全的工具类
 
-## Square Root (sqrt)
+## 开个根号
 
-The version number is `sqrt` + `3-part version` pattern, e.g. √2 are `1.4.0`, `1.4.1`, `1.4.14`.
-If the version is not enough, then write infinitely `1.4.14213562373095`
+版本号为开根号+三段法，如√2对应的`1.4.0`, `1.4.1`, `1.4.14`，
+若版本不够且不想跳版本，则无限的写下去`1.4.14213562373095`
 
 * √1 = `1.0.0`
 * √2 = `1.4.0`, `1.4.1`, `1.4.14`
@@ -61,8 +61,8 @@ If the version is not enough, then write infinitely `1.4.14213562373095`
 * √8 = `2.8.0`, `2.8.2`, `2.8.3`
 * √9 = `3.0.0`
 
-## Detailed Documents
+## 详细文档
 
-* <https://wings.fessional.pro/en/a-mirana/>
-* <https://github.com/fessionalpro/wings-doc/tree/main/docs/en/a-mirana/>
-* <https://gitee.com/fessionalpro/wings-doc/tree/main/docs/en/a-mirana/>
+* <https://wings.fessional.pro/zh/a-mirana/>
+* <https://github.com/fessionalpro/wings-doc/tree/main/src/zh/a-mirana/>
+* <https://gitee.com/fessionalpro/wings-doc/tree/main/src/zh/a-mirana/>
