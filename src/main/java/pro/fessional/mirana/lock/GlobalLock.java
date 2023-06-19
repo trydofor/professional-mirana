@@ -5,22 +5,36 @@ import org.jetbrains.annotations.NotNull;
 import java.util.concurrent.locks.Lock;
 
 /**
- * 全局锁，可基于JVM，数据库，分布式等实现。
- * 因为锁的实现不同，不建议大范围保持Lock引用，
- * 应该每次使用，每次getLock，符合以下模式。
+ * Global locks, which can be implemented based on JVM, database, distributed, etc.
+ * Because of the different lock implementations, it is not recommended to keep Lock references on a large scale.
+ * It should getLock every time , in the following pattern.
  *
  * <p>A typical usage idiom for this method would be:
  * <pre> {@code
+ * // ① pattern try-resource
+ * try(xxx.lock("...")){
+ *   // biz code
+ * }
+ * // ② pattern lock-finally
+ * final Lock lock = xxx.getLock("...");
+ * lock.lock()
+ * try {
+ *   // biz code
+ * } finally {
+ *   lock.unlock();
+ * }
+ * // ③ pattern tryLock-finally
  * final Lock lock = xxx.getLock("...");
  * if (lock.tryLock()) {
  *   try {
- *     // manipulate protected state
+ *     // biz code
  *   } finally {
  *     lock.unlock();
  *   }
  * } else {
  *   // perform alternative actions
- * }}</pre>
+ * }
+ * }</pre>
  *
  * @author trydofor
  * @since 2021-03-08
@@ -28,11 +42,49 @@ import java.util.concurrent.locks.Lock;
 public interface GlobalLock {
 
     /**
-     * 创建以锁实例，锁实例中必须实现 tryLock和unlock方法
+     * Create a lock instance by its name. and tryLock and unlock methods must be implemented in the lock instance
      *
-     * @param name 锁名
-     * @return 锁
+     * @param name name of lock
+     * @return lock
      */
     @NotNull
     Lock getLock(@NotNull String name);
+
+    /**
+     * syntax sugar for lock
+     * <pre> {@code
+     * final Lock lock = xxx.getLock("...");
+     * lock.lock();
+     * try {
+     *     // biz code
+     * } finally {
+     *   lock.unlock();
+     * }
+     * }</pre>
+     *
+     * @param name name of lock
+     * @return AutoCloseable lock
+     */
+    @NotNull
+    default AutoLock lock(@NotNull String name) {
+        return new AutoLock(getLock(name));
+    }
+
+    class AutoLock implements AutoCloseable {
+        private final Lock locker;
+
+        public AutoLock(@NotNull Lock lock) {
+            // lock first
+            lock.lock();
+            // assign later. notnull or throw
+            this.locker = lock;
+        }
+
+        @Override
+        public void close() {
+            if (locker != null) {
+                locker.unlock();
+            }
+        }
+    }
 }

@@ -9,8 +9,8 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * 以WeakHashMap包装ReentrantLock作为底层实现。
- * WeakReference用以控制内存使用和正确的锁。
+ * Wrapping ReentrantLock with WeakHashMap as the underlying implementation.
+ * WeakReference is used to control memory usage and correct locking.
  *
  * @author trydofor
  * @since 2021-03-08
@@ -25,11 +25,11 @@ public class JvmStaticGlobalLock implements GlobalLock {
     }
 
     /**
-     * 所以key必须实现 hashcode和equals方法，以便匹配正确锁。
-     * 如果只有一个参数，且是ArrayKey，则直接使用
+     * All keys must implement hashcode and equals methods in order to match the correct lock.
+     * If there is only one parameter and it is an ArrayKey, then use it directly.
      *
-     * @param key 锁的key
-     * @return 锁
+     * @param key keys to get lock
+     * @return lock
      */
     public static @NotNull Lock get(@NotNull Object... key) {
         final Hd hd;
@@ -50,9 +50,20 @@ public class JvmStaticGlobalLock implements GlobalLock {
     }
 
     /**
-     * 同步方法，当前仅用在测试时使用。
+     * try-resource pattern lock
      *
-     * @return 保持的锁量
+     * @param key keys to get lock
+     * @return AutoLock
+     * @see #lock(String)
+     */
+    public static @NotNull AutoLock lock(@NotNull Object... key) {
+        return new AutoLock(get(key));
+    }
+
+    /**
+     * sync method to count currently locks. used only for testing purposes.
+     *
+     * @return count of locks
      */
     public static int countLocks() {
         synchronized (locks) {
