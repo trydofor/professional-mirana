@@ -28,6 +28,7 @@ class JsonTemplateTest {
         final String j1 = JsonTemplate.obj(obj -> {
             obj.putVal("msgtype", "mar\"kd\\own");
             obj.putVal("success", true);
+            obj.putVal("code", null);
         });
         Assertions.assertEquals("{\"msgtype\":\"mar\\\"kd\\\\own\",\"success\":true}", j1);
         final String j2 = JsonTemplate.arr(arr -> {

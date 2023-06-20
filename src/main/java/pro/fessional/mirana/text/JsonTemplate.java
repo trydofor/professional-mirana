@@ -11,8 +11,10 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 /**
- * 快速的构造Json的模板，不适合构造复杂，动态的json。
- * 因为直接写入buff，无法支持覆盖，删除特性。
+ * The tool is designed for quickly generating simple JSON templates.
+ * It may not be suitable for constructing complex or dynamic JSON structures.
+ * Since the data is written directly to the buffer,
+ * it does not support features such as overwriting or deleting.
  *
  * @author trydofor
  * @since 2022-09-29
@@ -25,16 +27,15 @@ public class JsonTemplate {
     static {
         try {
             Buffs = new BuilderHolder();
-        }
-        catch (ThreadLocalAttention e) {
+        } catch (ThreadLocalAttention e) {
             throw new IllegalStateException(e);
         }
     }
 
     /**
-     * 以复用的buff构造，json对象 `{...}`
+     * Constructs a JSON object `{...}` using a reusable buffer and a building function
      *
-     * @param fun 构建方法
+     * @param fun building function
      * @return json string
      */
     public static String obj(Consumer<Obj> fun) {
@@ -42,10 +43,10 @@ public class JsonTemplate {
     }
 
     /**
-     * 初始新buff，json对象 `{...}`
+     * Constructs a JSON object `{...}` using new buffer and a building function
      *
      * @param capacity capacity
-     * @param fun      构建方法
+     * @param fun      building function
      * @return json string
      */
     public static String obj(int capacity, Consumer<Obj> fun) {
@@ -53,10 +54,10 @@ public class JsonTemplate {
     }
 
     /**
-     * 指定buff构造，json对象 `{...}`
+     * Constructs a JSON object `{...}` using the assigned buffer and a building function
      *
-     * @param buff 内容
-     * @param fun  内容
+     * @param buff the assigned buffer
+     * @param fun  building function
      * @return json string
      */
     public static String obj(StringBuilder buff, Consumer<Obj> fun) {
@@ -67,9 +68,9 @@ public class JsonTemplate {
     }
 
     /**
-     * 以复用的buff构造，json数组 `[...]`
+     * Constructs a JSON array `[...]` using the assigned buffer and a building function
      *
-     * @param fun 构建方法
+     * @param fun building function
      * @return json string
      */
     public static String arr(Consumer<Arr> fun) {
@@ -77,10 +78,10 @@ public class JsonTemplate {
     }
 
     /**
-     * 初始新buff，json数组 `[...]`
+     * Constructs a JSON array `[...]` using new buffer and a building function
      *
      * @param capacity capacity
-     * @param fun      构建方法
+     * @param fun      building function
      * @return json string
      */
     public static String arr(int capacity, Consumer<Arr> fun) {
@@ -88,10 +89,10 @@ public class JsonTemplate {
     }
 
     /**
-     * 指定buff构造，json数组 `[...]`
+     * Constructs a JSON array `[...]` using the assigned buffer and a building function
      *
-     * @param buff 内容
-     * @param fun  内容
+     * @param buff the assigned buffer
+     * @param fun  building function
      * @return json string
      */
     public static String arr(StringBuilder buff, Consumer<Arr> fun) {
@@ -119,38 +120,29 @@ public class JsonTemplate {
                     appendChar(c);
                 }
                 buff.append('"');
-            }
-            else if (obj instanceof char[]) {
+            } else if (obj instanceof char[]) {
                 buff.append('"');
                 for (char c : (char[]) obj) {
                     appendChar(c);
                 }
                 buff.append('"');
-            }
-            else if (obj instanceof byte[]) {
+            } else if (obj instanceof byte[]) {
                 buff.append('"');
                 buff.append(Base64.encode((byte[]) obj));
                 buff.append('"');
-            }
-            else if (obj instanceof boolean[]) {
+            } else if (obj instanceof boolean[]) {
                 FormatUtil.toString(buff, (boolean[]) obj);
-            }
-            else if (obj instanceof short[]) {
+            } else if (obj instanceof short[]) {
                 FormatUtil.toString(buff, (short[]) obj);
-            }
-            else if (obj instanceof int[]) {
+            } else if (obj instanceof int[]) {
                 FormatUtil.toString(buff, (int[]) obj);
-            }
-            else if (obj instanceof long[]) {
+            } else if (obj instanceof long[]) {
                 FormatUtil.toString(buff, (long[]) obj);
-            }
-            else if (obj instanceof float[]) {
+            } else if (obj instanceof float[]) {
                 FormatUtil.toString(buff, (float[]) obj);
-            }
-            else if (obj instanceof double[]) {
+            } else if (obj instanceof double[]) {
                 FormatUtil.toString(buff, (double[]) obj);
-            }
-            else {
+            } else {
                 buff.append(obj);
             }
         }
@@ -208,10 +200,10 @@ public class JsonTemplate {
         }
 
         /**
-         * 写入 `"key":{ ... }`
+         * write `"key":{ ... }`
          *
          * @param key key
-         * @param sub 子对象
+         * @param sub sub object
          * @return this
          */
         @Contract("_, _ -> this")
@@ -230,10 +222,10 @@ public class JsonTemplate {
         }
 
         /**
-         * 写入 `"key":[ ... ]`
+         * write `"key":[ ... ]`
          *
          * @param key key
-         * @param sub 子数组
+         * @param sub sub array
          * @return this
          */
         @Contract("_, _ -> this")
@@ -252,9 +244,9 @@ public class JsonTemplate {
         }
 
         /**
-         * 写入全部KV值 `"k1":...,"k2":...`
+         * write key-value `"k1":...,"k2":...`
          *
-         * @param kvs map
+         * @param kvs KV pair
          * @return this
          */
         @Contract("_ -> this")
@@ -273,10 +265,10 @@ public class JsonTemplate {
         }
 
         /**
-         * 写入 `"key":{"k1":...,"k2":...}`
+         * write `"key":{"k1":...,"k2":...}`
          *
          * @param key key
-         * @param kvs 对象
+         * @param kvs KV object
          * @return this
          */
         @Contract("_, _ -> this")
@@ -295,10 +287,10 @@ public class JsonTemplate {
         }
 
         /**
-         * 写入 `"key":[v1,...]`
+         * write `"key":[v1,...]`
          *
          * @param key key
-         * @param vs  数组
+         * @param vs  array
          * @return this
          */
         @Contract("_, _ -> this")
@@ -319,10 +311,10 @@ public class JsonTemplate {
         }
 
         /**
-         * 写入 `"key":[v1,...]`
+         * write `"key":[v1,...]`
          *
          * @param key key
-         * @param vs  数组
+         * @param vs  array
          * @return this
          */
         @Contract("_, _ -> this")
@@ -332,10 +324,10 @@ public class JsonTemplate {
         }
 
         /**
-         * 写入 `"key":...`，支持 ①map=`{...}` ②arr=`[...]` ③原始类型数组=`[...]`
+         * write `"key":...`, support ①map=`{...}` ②arr=`[...]` ③primitive arrays=`[...]`
          *
          * @param key key
-         * @param obj value/kvs/array/primaryArr
+         * @param obj value/kvs/array/primitiveArr
          * @return this
          */
         @Contract("_, _ -> this")
@@ -378,9 +370,9 @@ public class JsonTemplate {
         }
 
         /**
-         * 写入 `{...}`
+         * write `{...}`
          *
-         * @param sub 对象
+         * @param sub object
          * @return this
          */
         @Contract("_ -> this")
@@ -397,9 +389,9 @@ public class JsonTemplate {
         }
 
         /**
-         * 写入 `[...]`
+         * write `[...]`
          *
-         * @param sub 数组
+         * @param sub array
          * @return this
          */
         @Contract("_ -> this")
@@ -416,9 +408,9 @@ public class JsonTemplate {
         }
 
         /**
-         * 写入 `{"k1":...,"k2":...}`
+         * write `{"k1":...,"k2":...}`
          *
-         * @param kvs 对象
+         * @param kvs KV pair
          * @return this
          */
         @Contract("_ -> this")
@@ -440,9 +432,9 @@ public class JsonTemplate {
         }
 
         /**
-         * 写入 `[v1,...]`
+         * write `[v1,...]`
          *
-         * @param vs 数组
+         * @param vs array
          * @return this
          */
         @Contract("_ -> this")
@@ -457,9 +449,9 @@ public class JsonTemplate {
         }
 
         /**
-         * 写入 `v1,...`
+         * write `v1,...`
          *
-         * @param vs 数组
+         * @param vs array
          * @return this
          */
         @Contract("_ -> this")
@@ -473,9 +465,9 @@ public class JsonTemplate {
         }
 
         /**
-         * 写入 `v1,...`
+         * write `v1,...`
          *
-         * @param vs 数组
+         * @param vs array
          * @return this
          */
         @Contract("_ -> this")
@@ -489,9 +481,9 @@ public class JsonTemplate {
         }
 
         /**
-         * 写入 `,...`支持 ①map=`{...}` ②arr=`[...]` ③原始类型数组=`[...]`
+         * write `,...`,support ①map=`{...}` ②arr=`[...]` ③primitive array=`[...]`
          *
-         * @param obj value/kvs/array/primaryArr
+         * @param obj value/kvs/array/primitiveArr
          * @return this
          */
         @Contract("_ -> this")
