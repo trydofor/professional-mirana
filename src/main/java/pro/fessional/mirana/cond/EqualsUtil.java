@@ -5,7 +5,7 @@ import java.math.BigInteger;
 import java.util.Arrays;
 
 /**
- * 大部分情况，可以通过stream构造
+ * In most cases, the stream and lambda can be used
  *
  * @author trydofor
  * @since 2020-04-01
@@ -44,9 +44,14 @@ public class EqualsUtil {
             return a.shortValue() == b.shortValue();
         }
         if (a instanceof BigInteger) {
-            final BigDecimal x = new BigDecimal((BigInteger) a);
-            final BigDecimal y = new BigDecimal(b.toString());
-            return x.compareTo(y) == 0;
+            if (b instanceof BigInteger) {
+                return ((BigInteger) a).compareTo((BigInteger) b) == 0;
+            }
+            else {
+                final BigDecimal x = new BigDecimal((BigInteger) a);
+                final BigDecimal y = new BigDecimal(b.toString());
+                return x.compareTo(y) == 0;
+            }
         }
 
         final BigDecimal x = new BigDecimal(a.toString());
@@ -141,23 +146,23 @@ public class EqualsUtil {
         return false;
     }
 
-    public static boolean eqNoCase(String a, CharSequence b) {
+    public static boolean eqCaseless(String a, CharSequence b) {
         if (a == null || b == null) return false;
         return a.equalsIgnoreCase(b.toString());
     }
 
-    public static boolean inNoCase(String a, CharSequence[] strs) {
+    public static boolean inCaseless(String a, CharSequence[] strs) {
         if (a == null || strs == null) return false;
-        return inNoCase(a, Arrays.asList(strs));
+        return inCaseless(a, Arrays.asList(strs));
     }
 
-    public static boolean inNoCase(String a, CharSequence b, CharSequence... strs) {
+    public static boolean inCaseless(String a, CharSequence b, CharSequence... strs) {
         if (a == null || b == null || strs == null) return false;
-        final boolean e = eqNoCase(a, b);
-        return e ? e : inNoCase(a, Arrays.asList(strs));
+        final boolean e = eqCaseless(a, b);
+        return e ? e : inCaseless(a, Arrays.asList(strs));
     }
 
-    public static boolean inNoCase(String a, Iterable<? extends CharSequence> strs) {
+    public static boolean inCaseless(String a, Iterable<? extends CharSequence> strs) {
         if (a == null || strs == null) return false;
         for (CharSequence s : strs) {
             if (s != null && a.equalsIgnoreCase(s.toString())) {

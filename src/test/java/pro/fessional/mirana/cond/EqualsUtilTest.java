@@ -30,8 +30,8 @@ public class EqualsUtilTest {
     public void testStr() {
         assertTrue(EqualsUtil.inCase("1", "1", "2"));
         assertTrue(EqualsUtil.inCase("1", Arrays.asList("1", "2")));
-        assertTrue(EqualsUtil.inNoCase("a", "A", "2"));
-        assertTrue(EqualsUtil.inNoCase("a", Arrays.asList("A", "2")));
+        assertTrue(EqualsUtil.inCaseless("a", "A", "2"));
+        assertTrue(EqualsUtil.inCaseless("a", Arrays.asList("A", "2")));
     }
 
 }
