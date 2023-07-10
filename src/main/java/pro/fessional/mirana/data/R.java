@@ -143,6 +143,7 @@ public class R<T> implements DataResult<T>, I18nAware {
     }
 
     @Override
+    @Nullable
     public String getCode() {
         return code;
     }

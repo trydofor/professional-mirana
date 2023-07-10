@@ -2,13 +2,11 @@ package pro.fessional.mirana.data;
 
 import org.jetbrains.annotations.NotNull;
 import pro.fessional.mirana.i18n.I18nAware;
-import pro.fessional.mirana.i18n.I18nString;
 
 import java.beans.Transient;
-import java.io.Serializable;
 
 /**
- * code 一般为业务code，也可以作为i18nCode
+ * business code, and can also be used as i18nCode.
  *
  * @author trydofor
  * @since 2019-09-17

@@ -11,42 +11,33 @@ import java.io.Serializable;
 public interface DataResult<T> extends Serializable {
 
     /**
-     * 返回的消息
-     *
-     * @return 消息
+     * the message to the user
      */
     @Nullable
     String getMessage();
 
     /**
-     * 信息编码
-     *
-     * @return 信息编码
+     * the biz code to caller
      */
+    @Nullable
     String getCode();
 
     /**
-     * 返回的数据
-     *
-     * @return 数据
+     * the biz data to caller
      */
     @Nullable
     T getData();
 
 
     /**
-     * 是否成功，默认有data为成功
-     *
-     * @return 是否成功
+     * whether success, default false.
      */
     default boolean isSuccess() {
-        return hasData();
+        return false;
     }
 
     /**
-     * 是否有消息，null或empty为无消息
-     *
-     * @return 是否有消息
+     * whether valid message, null or empty mean false.
      */
     default boolean hasMessage() {
         String msg = getMessage();
@@ -54,9 +45,7 @@ public interface DataResult<T> extends Serializable {
     }
 
     /**
-     * 是否有数据，null认为无数据
-     *
-     * @return 是否有数据
+     * whether valid data, null mean false.
      */
     default boolean hasData() {
         return getData() != null;

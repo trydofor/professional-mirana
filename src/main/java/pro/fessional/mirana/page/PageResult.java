@@ -19,15 +19,15 @@ import java.util.Objects;
 import java.util.function.Function;
 
 /**
- * 不建议构造之后，修改页内数据，因此应最后构造。
+ * It is not recommended to change the page data after construction.
  * <pre>
- * page，从1开始，不小于1。
- * size，从1开始，不小于1。
- * sort，排序字符串
- * totalPage，不小于1，计算所得。
- * totalData 不小于0，超过21亿的数字不可想象。
- * meta，元信息，对data信息的补充
- * </pre>
+ * page - 1-based, not less than 1.
+ * size - 1-based, not less than 1.
+ * sort - sort string
+ * totalPage - 1-based, not less than 1, calculated by data and size
+ * totalData - 0-based, not less than 0, not more than 2.1 billion.
+ * meta - in addition to data information
+ * </pre>.
  *
  * @author trydofor
  * @since 2020-09-29
@@ -50,9 +50,7 @@ public class PageResult<E> extends R<Collection<E>> implements Iterable<E> {
     }
 
     /**
-     * 当前页码，从1开始，不小于1。
-     *
-     * @return 页码
+     * current page, 1-based, not less than 1.
      */
     public int getPage() {
         return page;
@@ -64,9 +62,7 @@ public class PageResult<E> extends R<Collection<E>> implements Iterable<E> {
     }
 
     /**
-     * 每页大小，从1开始，不小于1。
-     *
-     * @return 大小
+     * page size, 1-based, not less than 1.
      */
     public int getSize() {
         return size;
@@ -100,9 +96,7 @@ public class PageResult<E> extends R<Collection<E>> implements Iterable<E> {
     }
 
     /**
-     * 总页码数(计算)，从1开始，不小于1。
-     *
-     * @return 页数
+     * 1-based, not less than 1, calculated by data and size.
      */
     public int getTotalPage() {
         return totalPage;
@@ -113,9 +107,7 @@ public class PageResult<E> extends R<Collection<E>> implements Iterable<E> {
     }
 
     /**
-     * 总数据数，从1开始，不小于0。
-     *
-     * @return 数量
+     * 0-based, not less than 0, not more than 2.1 billion.
      */
     public int getTotalData() {
         return totalData;
@@ -125,11 +117,6 @@ public class PageResult<E> extends R<Collection<E>> implements Iterable<E> {
         this.totalData = totalData;
     }
 
-    /**
-     * 获取数据
-     *
-     * @return 数据
-     */
     @Transient
     @NotNull
     public List<E> toList() {
@@ -143,10 +130,10 @@ public class PageResult<E> extends R<Collection<E>> implements Iterable<E> {
     }
 
     /**
-     * 设置总数据量和页大小，从而计算总页数
+     * Set the total data  and page size, then calculate the total page
      *
-     * @param totalData 总数
-     * @param pageSize  页大小
+     * @param totalData total count
+     * @param pageSize  page size
      * @return this
      */
     public PageResult<E> setTotalInfo(int totalData, int pageSize) {
@@ -225,7 +212,7 @@ public class PageResult<E> extends R<Collection<E>> implements Iterable<E> {
     public PageResult<E> addData(E e) {
         if (e != null) {
             Collection<E> data = getData();
-            if (data == null || data == empty) {
+            if (data == empty) {
                 data = new ArrayList<>(size > 0 ? size : 20);
             }
             data.add(e);
@@ -236,7 +223,7 @@ public class PageResult<E> extends R<Collection<E>> implements Iterable<E> {
     public PageResult<E> addData(Collection<E> ds) {
         if (ds != null && ds.size() > 0) {
             Collection<E> data = getData();
-            if (data == null || data == empty) {
+            if (data == empty) {
                 data = new ArrayList<>(size > 0 ? size : 20);
             }
             data.addAll(ds);
@@ -247,14 +234,14 @@ public class PageResult<E> extends R<Collection<E>> implements Iterable<E> {
     @Override
     public boolean hasData() {
         final Collection<E> data = getData();
-        return data != null && data.size() > 0;
+        return data.size() > 0;
     }
 
     @NotNull
     @Override
     public Iterator<E> iterator() {
         final Collection<E> data = getData();
-        return data == null ? empty.iterator() : data.iterator();
+        return data.iterator();
     }
 
     public Map<String, ?> getMeta() {
@@ -330,13 +317,13 @@ public class PageResult<E> extends R<Collection<E>> implements Iterable<E> {
     // ////////
 
     /**
-     * 构造器
+     * constructor
      *
-     * @param total 总记录数
-     * @param data  当前页数据
-     * @param pg    查询
-     * @param <T>   数据
-     * @return 分页结果
+     * @param total total data count
+     * @param data  current page of data
+     * @param pg    query of page
+     * @param <T>   data type
+     * @return page result
      */
     public static <T> PageResult<T> ok(int total, Collection<T> data, PageQuery pg) {
         return new PageResult<T>()
@@ -348,14 +335,14 @@ public class PageResult<E> extends R<Collection<E>> implements Iterable<E> {
     }
 
     /**
-     * 构造器
+     * constructor
      *
-     * @param total 总记录数
-     * @param data  当前页数据
-     * @param page  当前页码
-     * @param size  页容量
-     * @param <T>   数据
-     * @return 分页结果
+     * @param total total data count
+     * @param data  current page of data
+     * @param page  current page
+     * @param size  page size
+     * @param <T>   data type
+     * @return page result
      */
     public static <T> PageResult<T> ok(int total, Collection<T> data, int page, int size) {
         return new PageResult<T>()
@@ -366,7 +353,7 @@ public class PageResult<E> extends R<Collection<E>> implements Iterable<E> {
     }
 
     /**
-     * 构造 total为0，size为1的空页
+     * constructor an empty page result of total is 0, size is 1.
      */
     public static <T> PageResult<T> empty() {
         return new PageResult<T>()
