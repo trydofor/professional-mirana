@@ -7,8 +7,8 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * 仅简单生成[ULID](https://github.com/ulid/spec)
- * 重度使用，推荐 https://github.com/huxi/sulky/tree/master/sulky-ulid
+ * Generate <a href="https://github.com/ulid/spec">ULID</a> only
+ * heavy use, recommend <a href="https://github.com/huxi/sulky/tree/master/sulky-ulid">sulky-ulid</a>
  *
  * @author trydofor
  * @since 2022-10-12

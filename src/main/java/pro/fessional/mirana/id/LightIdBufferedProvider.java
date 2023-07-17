@@ -20,20 +20,20 @@ import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * <pre>
- * 轻量级锁，高性能，双缓冲 light-id 提供者。
+ * Lightweight lock, high performance, double-buffered light-id provider.
  *
- * 共存在以下3类线程，且读线程会升级为写线程，甚至加载线程。
- * 同一时刻，有多个读线程，但只有唯一写线程，唯一的加载线程。
+ * The following 3 types of threads exist in total, and read threads are promoted to write threads and even load threads.
+ * At the same time, there are multiple read threads, but only unique write threads, and unique load threads.
  *
- * - 读线程，正常的light-id调用者
- * - 写线程，读线程升级或加载线程，为buffer追加片段(segment)
- * - 加载线程，异步线程或读线程升级，通过loader加载segment
+ * - Read thread, normal light-id consumer
+ * - Write thread, upgraded read thread or load thread to append fragment to buffer (segment)
+ * - Load thread, async thread or upgraded read thread to load segment via loader.
  *
- * 双缓冲的运行机制如下，会跟进id的使用量，自动控制预加载量，但不超过maxCount。
+ * Double buffer works as the following mechanism, it will track the id usage and auto control the count of preloading, but not exceed maxCount.
  *
- * - 当Id余量低于20%时，唯一异步预加载`60s内最大使用量`或`maxCount`
- * - 当Id余量用尽时，读线程升级为写线程，其他读线程等待，直到被唤醒或超时
- * - 当读线程升级写线程时，存在loader，此读线程自旋忙等后，切换buffer。
+ * - When the Id balance is less than 20%, the only async preload is `maxUsage in 60s` or `maxCount`.
+ * - When Id balance is exhausted, read threads upgrade to write threads, other read threads wait until woken up or timeout.
+ * - When read thread upgrades to write thread, loader exists, this read thread switches buffer after spinning busy and so on.
  *
  * </pre>
  *
@@ -43,11 +43,11 @@ import java.util.concurrent.atomic.AtomicReference;
 @ThreadSafe
 public class LightIdBufferedProvider implements LightIdProvider {
 
-    private static final int MAX_COUNT = 10000;
+    private static final int MAX_COUNT = 10_000;
     private static final int MIN_COUNT = 100;
     private static final int MAX_ERROR = 5;
-    private static final long ERR_ALIVE = 120000; // 2分钟
-    private static final long TIME_OUT = 1000; // 1秒
+    private static final long ERR_ALIVE = 120_000; // 2 minute
+    private static final long TIME_OUT = 1000; // 1 second
 
     private final ExecutorService executor;
     private final Loader loader;
@@ -63,9 +63,9 @@ public class LightIdBufferedProvider implements LightIdProvider {
     private final AtomicReference<SequenceHandler> sequenceHandler = new AtomicReference<>();
 
     /**
-     * 序号加载器的线程池，默认使用线程模式 core-size=3, max-size=64, keep-alive 60S
+     * default thread pool is core-size=3, max-size=64, keep-alive 60S
      *
-     * @param loader 序号加载器。
+     * @param loader the loader
      */
     public LightIdBufferedProvider(Loader loader) {
         this(loader, new ThreadPoolExecutor(3, 64, 60L, TimeUnit.SECONDS, new SynchronousQueue<>(), new ThreadFactory() {
@@ -79,10 +79,10 @@ public class LightIdBufferedProvider implements LightIdProvider {
     }
 
     /**
-     * 自定义线程模式
+     * Buffered Multiple Thread Provider
      *
-     * @param loader   序号加载器
-     * @param executor 序号加载器的线程池
+     * @param loader   the loader
+     * @param executor the executor
      */
     public LightIdBufferedProvider(Loader loader, ExecutorService executor) {
         this.loader = loader;
@@ -119,20 +119,20 @@ public class LightIdBufferedProvider implements LightIdProvider {
     }
 
     /**
-     * 设置错误状态保留时间，过期会清除，默认2分钟。
-     * 小于0时表示不会清除
+     * set the error status alive time, which will be cleared when it expires, default 2 minutes.
+     * Less than 0 means it will not be cleared
      *
-     * @param t 毫秒数
+     * @param t time in mills
      */
     public void setErrAlive(long t) {
         loadErrAlive.set(t);
     }
 
     /**
-     * 设置请求超时毫秒数，默认1秒。
+     * set request timeout in mills, default 1 second.
      *
-     * @param t 毫秒数
-     * @return 大于零成功，否则失败
+     * @param t time in mills
+     * @return ture if the count is greater than 0
      */
     public boolean setTimeout(long t) {
         if (t > 0) {
@@ -145,10 +145,10 @@ public class LightIdBufferedProvider implements LightIdProvider {
     }
 
     /**
-     * 设置加载序号中，容忍的最大错误数，默认5。
+     * set the max tolerated errors in the loading, default 5.
      *
-     * @param n 数字
-     * @return 大于等于零成功，否则失败
+     * @param n count
+     * @return ture if the count is greater than 0
      */
     public boolean setMaxError(int n) {
         if (n >= 0) {
@@ -161,10 +161,10 @@ public class LightIdBufferedProvider implements LightIdProvider {
     }
 
     /**
-     * 设置加载序号时的最大加载数量，默认10000。
+     * set the max count of preload, default is 10000
      *
-     * @param n 数字
-     * @return 大于等于零成功，否则失败
+     * @param n count
+     * @return ture if the count is greater than 0
      */
     public boolean setMaxCount(int n) {
         if (n >= 0) {
@@ -177,10 +177,10 @@ public class LightIdBufferedProvider implements LightIdProvider {
     }
 
     /**
-     * 设置加载序号时的最小加载数量，默认100。
+     * set the min count of preload, default is 100.
      *
-     * @param n 数字
-     * @return 大于等于零成功，否则失败
+     * @param n count
+     * @return ture if the count is greater than 0
      */
     public boolean setMinCount(int n) {
         if (n >= 0) {
@@ -193,10 +193,11 @@ public class LightIdBufferedProvider implements LightIdProvider {
     }
 
     /**
-     * 是否预加载固定数量的id，大于零时为固定数量，否则为动态数量
+     * Whether to preload a fixed count of ids.
+     * fixed if greater than zero, dynamic otherwise
      *
-     * @param n 数字，大于0时为固定数量
-     * @return 成功
+     * @param n count, Fixed count if greater than 0
+     * @return success or not
      */
     public boolean setFixCount(int n) {
         loadFixCount.set(n);
@@ -204,16 +205,16 @@ public class LightIdBufferedProvider implements LightIdProvider {
     }
 
     /**
-     * 设置Sequence处理器，用于在生成LightId前，修改Sequence
+     * set Sequence Handler to edit the sequence before the LightId
      */
     public void setSequenceHandler(SequenceHandler sequenceHandler) {
         this.sequenceHandler.set(sequenceHandler);
     }
 
     /**
-     * 预先加载分区中所有LightId，建议启动时初始化一次就够了。
+     * Preload all LightId's in the block, doing this once at startup is enough.
      *
-     * @param block 分区
+     * @param block Id's block
      */
     public void preload(int block) {
         List<Segment> segments = loader.preload(block);
@@ -224,10 +225,10 @@ public class LightIdBufferedProvider implements LightIdProvider {
     }
 
     /**
-     * 清除掉异常信息，计数归零
+     * clean the error, and reset the counter.
      *
-     * @param name  名字
-     * @param block 区块
+     * @param name  Id's name
+     * @param block Id's block
      */
     public void cleanError(@NotNull String name, int block) {
         load(block, name).handleError(null);
@@ -246,15 +247,15 @@ public class LightIdBufferedProvider implements LightIdProvider {
 
     public interface SequenceHandler {
         /**
-         * 在Sequence合成LightId之前，对其进行加工
+         * edit the sequence before using it with LightId
          *
-         * @param seq 原始Sequence
-         * @return 新Sequence
+         * @param seq old Sequence
+         * @return new Sequence
          */
         long handle(long seq);
     }
 
-    // 加载或初始化
+    // init or reload
     private SegmentBuffer load(int block, String name) {
         return cache.computeIfAbsent(name + "@" + block, k -> new SegmentBuffer(name, block));
     }
@@ -278,7 +279,7 @@ public class LightIdBufferedProvider implements LightIdProvider {
         private SegmentStatus(Segment seg) {
             headSeq = seg.getHead();
             footSeq = seg.getFoot();
-            kneeSeq = footSeq - (footSeq - headSeq) * 2 / 10; // 剩余20%
+            kneeSeq = footSeq - (footSeq - headSeq) * 2 / 10; // 20% remaining
             startMs = System.currentTimeMillis();
             sequence = new AtomicLong(seg.getHead());
         }
@@ -290,7 +291,7 @@ public class LightIdBufferedProvider implements LightIdProvider {
             long ms = (System.currentTimeMillis() - startMs);
             long count = footSeq - headSeq + 1;
             if (ms > 0) {
-                count = count * 60000 / ms; //预留60秒
+                count = count * 60_000 / ms; // Reserve 60 seconds.
             }
 
             if (mul > 1) {
@@ -322,7 +323,7 @@ public class LightIdBufferedProvider implements LightIdProvider {
         private final AtomicBoolean switchIdle = new AtomicBoolean(true);
         private final AtomicInteger awaitCount = new AtomicInteger(0);
 
-        // 载入时错误信息，不太需要一致性。
+        // Error messages on load, less need for consistency.
         private final AtomicInteger errorCount = new AtomicInteger(0);
         private final AtomicReference<RuntimeException> errorNewer = new AtomicReference<>();
         private final AtomicLong errorEpoch = new AtomicLong(0);
@@ -335,17 +336,17 @@ public class LightIdBufferedProvider implements LightIdProvider {
         public long nextId(final long timeout) {
             checkError();
 
-            // not need sync
+            // no need to sync
             final SegmentStatus slot = segmentSlot.get();
             long seq = slot.sequence.getAndIncrement();
 
-            // 未初始化或序号枯竭，等待重装。
+            // Not init or enough, waiting to be reloaded.
             if (seq > slot.footSeq) {
                 pollSegment(timeout);
-                return nextId(timeout); // 重新获得
+                return nextId(timeout); // require again
             }
 
-            // 预加载
+            // preload
             if (seq > slot.kneeSeq) {
                 loadSegment(slot.count60s(0), true);
             }
@@ -360,7 +361,7 @@ public class LightIdBufferedProvider implements LightIdProvider {
         }
 
 
-        // 向pool末端补充
+        // append to the end of the pool
         public void fillSegment(final Segment seg) {
             if (seg == null) {
                 return;
@@ -374,10 +375,10 @@ public class LightIdBufferedProvider implements LightIdProvider {
                 err = "difference name, name=" + name + ", block=" + block + ",seg.name=" + seg.getName();
             }
             else {
-                // 保证插入顺序，不可分读写
+                // Guaranteed insertion order, non-separable read and write
                 synchronized (segmentPool) {
                     if (!segmentPool.isEmpty() && seg.getHead() <= segmentPool.getLast().getFoot()) {
-                        err = "seg.start must bigger than last.endin, name=" + name + ",block=" + block; // 可覆盖之前的err
+                        err = "seg.start must bigger than last.endin, name=" + name + ",block=" + block; // Can overwrite previous err
                     }
                     else {
                         segmentPool.addLast(seg);
@@ -388,7 +389,7 @@ public class LightIdBufferedProvider implements LightIdProvider {
             handleError(err == null ? null : new IllegalStateException(err));
         }
 
-        // 不需要锁
+        // no need to lock
         public void handleError(RuntimeException e) {
             if (e == null) {
                 errorCount.set(0);
@@ -402,7 +403,7 @@ public class LightIdBufferedProvider implements LightIdProvider {
             }
         }
 
-        // 异步加载，只有一个活动
+        // async load, only one is active at a time
         private void loadSegment(final int count, final boolean async) {
             if (loaderIdle.compareAndSet(true, false)) {
                 if (async) {
@@ -424,22 +425,22 @@ public class LightIdBufferedProvider implements LightIdProvider {
                 handleError(e);
             }
             finally {
-                loaderIdle.set(true); // 不必sync
+                loaderIdle.set(true); // no need to sync
             }
         }
 
-        // 序号用尽，切换或加载+切换
+        // out of sequence, switching or loading + switching
         private void pollSegment(long timeout) {
 
             final long throwMs = System.currentTimeMillis() + timeout;
 
-            // 一个切换线程，其他等待
+            // the only one switching thread, and others are in waiting.
             if (!switchIdle.compareAndSet(true, false)) {
                 try {
-                    // 等待超时或成功切换时被唤醒
+                    // Wait for timeout or wake up on successful switchover
                     synchronized (switchIdle) {
                         if (switchIdle.get()) {
-                            return; // 不用检查超时
+                            return; // no timeout check
                         }
                         else {
                             awaitCount.incrementAndGet();
@@ -460,7 +461,7 @@ public class LightIdBufferedProvider implements LightIdProvider {
                 }
             }
 
-            // 只有一个线程可达，升级①写线程，②load线程+写线程
+            // only one thread can ben here, upgraded ① writing thread, ② loading+writing thread
             try {
                 while (true) {
                     checkError();
@@ -478,10 +479,10 @@ public class LightIdBufferedProvider implements LightIdProvider {
                     }
 
                     if (status == null) {
-                        break; // 切换完毕，不检查超时
+                        break; // switchover, no timeout check
                     }
                     else {
-                        loadSegment(status.count60s(awaitCount.get()), false); // 升级load线程
+                        loadSegment(status.count60s(awaitCount.get()), false); // upgrade the load thread
                     }
 
                     long now = System.currentTimeMillis();
@@ -514,12 +515,12 @@ public class LightIdBufferedProvider implements LightIdProvider {
                 return;
             }
 
-            // 不存在
+            // not exist
             if (err instanceof NoSuchElementException) {
                 throw err;
             }
 
-            // 超过次数
+            // out of count
             if (errorCount.get() > loadMaxError.get()) {
                 throw err;
             }

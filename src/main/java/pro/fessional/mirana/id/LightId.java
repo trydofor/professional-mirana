@@ -40,9 +40,9 @@ public class LightId {
     private final long sequence;
 
     /**
-     * 通过block和sequence构造。
-     * block默认值为从含0到含512，可通过LightIdUtil.forceBlockBit修改。
-     * 其中0表示whole-seq布局，1以上为block-seq布局
+     * Constructed by block and sequence.
+     * The default value of block is from 0 to 512, which can be modified by LightIdUtil.forceBlockBit.
+     * 0 means whole-seq layout, above 1 is block-seq layout.
      */
     public LightId(int block, long sequence) {
         this.block = block;
@@ -50,7 +50,7 @@ public class LightId {
     }
 
     /**
-     * 获取block，0表示whole-seq布局，1以上为block-seq布局
+     * Get block, 0 means whole-seq layout, above 1 is block-seq layout
      */
     public int getBlock() {
         return block;

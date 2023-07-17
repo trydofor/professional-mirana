@@ -15,64 +15,64 @@ import static pro.fessional.mirana.id.LightIdUtil.valid;
 public interface LightIdProvider {
 
     /**
-     * 根据区块和名字获得 LightId，默认5秒超时。
+     * get the next LightId by its block and name, default timeout is 1 second.
      *
-     * @param name  Id名字
-     * @param block 区块编号，生产中心，分库关键
+     * @param name  Id name
+     * @param block block aka. data center in db cluster
      * @return LightId
-     * @throws NoSuchElementException   name不存在。
-     * @throws IllegalArgumentException block超出范围。
-     * @throws IllegalStateException    sequence超出范围，或者内部状态错误。
-     * @throws TimeoutRuntimeException  超时异常,默认1秒
+     * @throws NoSuchElementException   if name not exist.
+     * @throws IllegalArgumentException block is out of range.
+     * @throws IllegalStateException    sequence is out of range, or the bad internal state.
+     * @throws TimeoutRuntimeException  default timeout is 1 second.
      */
     default long next(@NotNull String name, int block) {
         return next(name, block, 1000);
     }
 
     /**
-     * 根据区块和名字获得 LightId
+     * get the next LightId by its block and name ,within the specify timeout(ms)
      *
-     * @param name    Id名字
-     * @param block   区块编号，生产中心，分库关键
-     * @param timeout 超时毫秒数，建议不要设置(0：无限等),尽量符合业务性能要求。
+     * @param name    Id name
+     * @param block   block aka. data center in db cluster
+     * @param timeout timeout in ms, 0(unlimited) is NOT recommended, as much as possible to meet the business performance requirements.
      * @return LightId
-     * @throws NoSuchElementException   name不存在。
-     * @throws IllegalArgumentException block超出范围
-     * @throws IllegalStateException    sequence超出范围，或者内部状态错误。
-     * @throws TimeoutRuntimeException  超时异常
+     * @throws NoSuchElementException   if name not exist.
+     * @throws IllegalArgumentException block is out of range.
+     * @throws IllegalStateException    sequence is out of range, or the bad internal state.
+     * @throws TimeoutRuntimeException  timeout.
      */
     long next(@NotNull String name, int block, long timeout);
 
 
     /**
-     * LightId 加载器，通过Segment实现
+     * the Loader to load LightId via Segment
      */
     interface Loader {
         /**
-         * 返回总数量，不少于请求数量(可以多)的 sequence。
-         * 如果count频繁大于数据库默认值，建议更新默认step。
+         * Returns the count of sequence, not less than the required count (can be more) sequence.
+         * If the count is often greater than the default, it is recommended to update the default.
          *
-         * @param name  名称
-         * @param block 区块编号，生产中心，分库关键
-         * @param count 请求的数量，返回值不少于该数量
-         * @return 可用的序号
-         * @throws NoSuchElementException name不存在。
+         * @param name  Id name
+         * @param block block aka. data center in db cluster
+         * @param count the count to require, should return not less than the count.
+         * @return valid segment
+         * @throws NoSuchElementException if name not exist.
          */
         @NotNull
         Segment require(@NotNull String name, int block, int count);
 
         /**
-         * 预加载当前block下所有LightId，提供id的数量，生产者决定
+         * preload all LightId of current block. and the producer decides how much id to provide.
          *
-         * @param block 区块编号，生产中心，分库关键，不存在时，可以load全部或报错。
-         * @return 所有可用序号
+         * @param block load all or throw errors if not exist.
+         * @return all LightId
          */
         @NotNull
         List<Segment> preload(int block);
     }
 
     /**
-     * LightId 片段
+     * Immutable LightId Segment
      */
     class Segment {
         private final String name;
@@ -81,18 +81,20 @@ public interface LightIdProvider {
         private final long foot;
 
         /**
-         * 不可变的片段
+         * Immutable Fragment
          *
-         * @param name  名字
-         * @param block 区块
-         * @param head  起点（包含）
-         * @param foot  终点（包含）
+         * @param name  name
+         * @param block block id
+         * @param head  start point (include)
+         * @param foot  end point (include)
          */
         public Segment(String name, int block, long head, long foot) {
             if (name == null) throw new NullPointerException("name is null");
             if (head > foot) throw new IllegalArgumentException("head=" + head + " is bigger than foot=" + foot);
-            if (!valid(block, head)) throw new IllegalArgumentException("block=" + block + ", head=" + head + " is out of range");
-            if (!valid(block, foot)) throw new IllegalArgumentException("block=" + block + ", foot=" + foot + " is out of range");
+            if (!valid(block, head))
+                throw new IllegalArgumentException("block=" + block + ", head=" + head + " is out of range");
+            if (!valid(block, foot))
+                throw new IllegalArgumentException("block=" + block + ", foot=" + foot + " is out of range");
 
             this.name = name;
             this.block = block;
@@ -101,36 +103,28 @@ public interface LightIdProvider {
         }
 
         /**
-         * 名字
-         *
-         * @return 名字
+         * Id's name
          */
         public String getName() {
             return name;
         }
 
         /**
-         * 区块
-         *
-         * @return 区别
+         * Id's block
          */
         public int getBlock() {
             return block;
         }
 
         /**
-         * 起点（包含）
-         *
-         * @return 起点（包含）
+         * start point (include)
          */
         public long getHead() {
             return head;
         }
 
         /**
-         * 终点（包含）
-         *
-         * @return 终点（包含）
+         * end point (include)
          */
         public long getFoot() {
             return foot;

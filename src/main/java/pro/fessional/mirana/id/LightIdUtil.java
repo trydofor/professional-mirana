@@ -23,9 +23,10 @@ public class LightIdUtil {
     private static long MAX_SEQUENCE = LightId.MAX_SEQ_BLOCK;
 
     /**
-     * 强制使用不同于LightId的默认BIT_BLOCK布局，以调整Block和Sequence比例
+     * Force to use a different BIT_BLOCK layout than the LightId default
+     * to adjust the Block and Sequence ratio
      *
-     * @param count bit数量，应该在[3-23]之间
+     * @param count bit count, should be in [3-23]
      */
     public static void forceBlockBit(int count) {
         if (count < 3) {
@@ -42,42 +43,42 @@ public class LightIdUtil {
     }
 
     /**
-     * 是采用Block+Sequence布局，还是Sequence+Block布局
+     * Force to use `Block+Sequence` layout or `Sequence+Block` layout
      */
     public static void forceBlockFirst(boolean b) {
         BLOCK_FIRST = b;
     }
 
     /**
-     * 是采用Block+Sequence布局，还是Sequence+Block布局
+     * Whether to use `Block+Sequence` layout or `Sequence+Block` layout
      */
     public static boolean isBlockFirst() {
         return BLOCK_FIRST;
     }
 
     /**
-     * 当前的Block位数
+     * get the bit count of Block
      */
     public static int getBlockBit() {
         return BIT_BLOCK;
     }
 
     /**
-     * 当前的Block最大值
+     * get the max value of Block
      */
     public static int getBlockMax() {
         return MAX_BLOCK;
     }
 
     /**
-     * 当前的Sequence位数
+     * get the bit count of Sequence
      */
     public static int getSequenceBit() {
         return BIT_SEQUENCE;
     }
 
     /**
-     * 当前的Sequence最大值
+     * get the max value of Sequence
      */
     public static long getSequenceMax() {
         return MAX_SEQUENCE;
@@ -166,12 +167,7 @@ public class LightIdUtil {
     public static long sequenceOrElse(@Nullable LightId lightId, long elze) {
         if (lightId == null) return elze;
         final long sequence = lightId.getSequence();
-        if (valid(lightId.getBlock(), sequence)) {
-            return sequence;
-        }
-        else {
-            return elze;
-        }
+        return valid(lightId.getBlock(), sequence) ? sequence : elze;
     }
 
     public static long sequenceLong(long lightId) {
