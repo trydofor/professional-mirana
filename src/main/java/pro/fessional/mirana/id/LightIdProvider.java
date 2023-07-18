@@ -54,12 +54,13 @@ public interface LightIdProvider {
          *
          * @param name  Id name
          * @param block block aka. data center in db cluster
-         * @param count the count to require, should return not less than the count.
+         * @param count the count to require.
+         * @param exact return exact or more than the count.
          * @return valid segment
          * @throws NoSuchElementException if name not exist.
          */
         @NotNull
-        Segment require(@NotNull String name, int block, int count);
+        Segment require(@NotNull String name, int block, int count, boolean exact);
 
         /**
          * preload all LightId of current block. and the producer decides how much id to provide.

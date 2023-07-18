@@ -44,7 +44,7 @@ public class LightIdBufferedProviderTest {
     private final LightIdProvider.Loader loader = new LightIdProvider.Loader() {
         @NotNull
         @Override
-        public LightIdProvider.Segment require(@NotNull String name, int block, int count) {
+        public LightIdProvider.Segment require(@NotNull String name, int block, int count, boolean exact) {
             if (name.equals("404") && s404.get()) throw new NoSuchElementException("404");
             if (name.equals("403")) {
                 System.out.println(Thread.currentThread().getName() + ">>>>403");
@@ -70,7 +70,7 @@ public class LightIdBufferedProviderTest {
         @NotNull
         @Override
         public List<LightIdProvider.Segment> preload(int block) {
-            return Collections.singletonList(require("test", block, 0));
+            return Collections.singletonList(require("test", block, 0, false));
         }
     };
 

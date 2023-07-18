@@ -59,7 +59,7 @@ public class LightIdMain {
     private final LightIdProvider.Loader loader = new LightIdProvider.Loader() {
         @NotNull
         @Override
-        public LightIdProvider.Segment require(@NotNull String name, int block, int count) {
+        public LightIdProvider.Segment require(@NotNull String name, int block, int count, boolean exact) {
             if (count < 100) {
                 count = 100;
             }
@@ -73,7 +73,7 @@ public class LightIdMain {
         @NotNull
         @Override
         public List<LightIdProvider.Segment> preload(int block) {
-            return Collections.singletonList(require("test", block, 0));
+            return Collections.singletonList(require("test", block, 0, false));
         }
     };
 

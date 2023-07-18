@@ -334,7 +334,7 @@ public class LightIdStampedProvider implements LightIdProvider {
 
         private void loadSegment(final int count) {
             try {
-                Segment seg = loader.require(name, block, count);
+                Segment seg = loader.require(name, block, count, false);
                 handleError(null); // before fillSegment
                 fillSegment(seg);
             }
