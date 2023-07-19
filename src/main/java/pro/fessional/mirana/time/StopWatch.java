@@ -7,10 +7,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * <pre>
- * 可追踪调用耗时，线程安全。多线程下，调用关系会交叉。
- *
- * 树状关系，表示为计时的区间的包含关系，
- * 在线性的try-close调用中，同调用栈一致。
+ * Tracking the method invoke cost, thread-safe, but in multi-thread, the invoke relation is crossed over.
+ * Tree-like invoke relations are represented consistent with call stack in linear try-close calls.
  * </pre>
  *
  * @author trydofor
@@ -22,7 +20,7 @@ public class StopWatch {
     private final ConcurrentHashMap<String, AtomicInteger> threads = new ConcurrentHashMap<>();
 
     /**
-     * 开启一个计时
+     * start a time watch
      */
     public Watch start(String name) {
         final Watch task = new Watch(name, this);
@@ -31,7 +29,7 @@ public class StopWatch {
     }
 
     /**
-     * 清空全部计时
+     * clear all time watch
      */
     public void clear() {
         watches.clear();
@@ -39,7 +37,7 @@ public class StopWatch {
     }
 
     /**
-     * 是否在计时中
+     * whether is in any time watch
      */
     public boolean isRunning() {
         for (AtomicInteger cnt : threads.values()) {
@@ -49,14 +47,14 @@ public class StopWatch {
     }
 
     /**
-     * 获取全部的计时
+     * get all time watches
      */
     public ConcurrentLinkedQueue<Watch> getWatches() {
         return watches;
     }
 
     /**
-     * 统计顶级计时 nanos
+     * get the top Elapse in nanos
      */
     public long totalElapse() {
         long ns = 0;
@@ -179,7 +177,7 @@ public class StopWatch {
         }
 
         /**
-         * 关闭计时
+         * close the timer
          */
         @Override
         public void close() {
@@ -188,7 +186,7 @@ public class StopWatch {
         }
 
         /**
-         * 是否在运行
+         * whether is in any timer
          */
         public boolean isRunning() {
             return elapse == 0;
@@ -203,14 +201,14 @@ public class StopWatch {
         }
 
         /**
-         * 获取耗时 nanos
+         * get Elapse in nanos
          */
         public long getElapse() {
             return elapse;
         }
 
         /**
-         * 获取耗时 millis
+         * get Elapse in millis
          */
         public long getElapseMs() {
             return elapse / 1_000_000;

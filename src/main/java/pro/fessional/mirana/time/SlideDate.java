@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 包装了OffsetClock的会计日期工具
+ * Accounting date tool wrapped with OffsetClock
  *
  * @author trydofor
  * @since 2021-01-31

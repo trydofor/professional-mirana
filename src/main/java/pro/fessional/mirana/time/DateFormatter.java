@@ -17,12 +17,16 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 /**
- * 线程安全的，比正常formatter要快
- * <p>https://javarevisited.blogspot.com/2013/01/threadlocal-memory-leak-in-java-web.html
- * <p>https://stackoverflow.com/questions/17968803/threadlocal-memory-leak
- * <p>
- * DateTimeFormatter is immutable and thread-safe.<p>
- * DateFormat is not thread-safe.<p>
+ * <pre>
+ * Thread-safe. Faster than normal formatter.
+ *
+ * - DateTimeFormatter is immutable and thread-safe.
+ * - DateFormat is not thread-safe.
+ *
+ * see <a href="https://javarevisited.blogspot.com/2013/01/threadlocal-memory-leak-in-java-web.html">threadlocal-memory-leak-in-java-web</a>
+ * see <a href="https://stackoverflow.com/questions/17968803/threadlocal-memory-leak">threadlocal-memory-leak</a>
+ *
+ * </pre>
  *
  * @author trydofor
  * @since 2019-07-03
@@ -97,10 +101,7 @@ public class DateFormatter {
     }
 
     /**
-     * 格式化成 yyyy-MM-dd 格式，null时返回空支付串
-     *
-     * @param date 日期
-     * @return 结果
+     * Format to yyyy-MM-dd. empty string if null.
      */
     @NotNull
     public static String date10(@Nullable ZonedDateTime date) {
@@ -108,10 +109,7 @@ public class DateFormatter {
     }
 
     /**
-     * 格式化成 yyyy-MM-dd HH:mm:ss或yyyy-MM-dd HH:mm:ss.SSS 格式，null时返回空支付串
-     *
-     * @param date 日期
-     * @return 结果
+     * Format to yyyy-MM-dd HH:mm:ss or yyyy-MM-dd HH:mm:ss.SSS. empty string if null.
      */
     @NotNull
     public static String full(@Nullable ZonedDateTime date) {
@@ -119,10 +117,7 @@ public class DateFormatter {
     }
 
     /**
-     * 格式化成 yyyy-MM-dd HH:mm:ss 格式，null时返回空支付串
-     *
-     * @param date 日期
-     * @return 结果
+     * Format to yyyy-MM-dd HH:mm:ss. empty string if null.
      */
     @NotNull
     public static String full19(@Nullable ZonedDateTime date) {
@@ -130,10 +125,7 @@ public class DateFormatter {
     }
 
     /**
-     * 格式化成 yyyy-MM-dd HH:mm:ss.SSS 格式，null时返回空支付串
-     *
-     * @param date 日期
-     * @return 结果
+     * Format to yyyy-MM-dd HH:mm:ss.SSS. empty string if null.
      */
     @NotNull
     public static String full23(@Nullable ZonedDateTime date) {
@@ -141,10 +133,7 @@ public class DateFormatter {
     }
 
     /**
-     * 格式化成 HH:mm:ss或HH:mm:ss.SSS 格式，null时返回空支付串
-     *
-     * @param date 日期
-     * @return 结果
+     * Format to HH:mm:ss or HH:mm:ss.SSS. empty string if null.
      */
     @NotNull
     public static String time(@Nullable ZonedDateTime date) {
@@ -157,10 +146,7 @@ public class DateFormatter {
     }
 
     /**
-     * 格式化成 HH:mm:ss 格式，null时返回空支付串
-     *
-     * @param date 日期
-     * @return 结果
+     * Format to HH:mm:ss. empty string if null.
      */
     @NotNull
     public static String time08(@Nullable ZonedDateTime date) {
@@ -168,10 +154,7 @@ public class DateFormatter {
     }
 
     /**
-     * 格式化成 HH:mm:ss.SSS 格式，null时返回空支付串
-     *
-     * @param date 日期
-     * @return 结果
+     * Format to HH:mm:ss.SSS. empty string if null.
      */
     @NotNull
     public static String time12(@Nullable ZonedDateTime date) {
@@ -179,11 +162,7 @@ public class DateFormatter {
     }
 
     /**
-     * 格式化成 yyyy-MM-dd 格式，null时返回空支付串
-     *
-     * @param date   日期
-     * @param zoneId 时区
-     * @return 结果
+     * Format to yyyy-MM-dd at zoneId. empty string if null.
      */
     @NotNull
     public static String date10(@Nullable ZonedDateTime date, @Nullable ZoneId zoneId) {
@@ -195,11 +174,7 @@ public class DateFormatter {
     }
 
     /**
-     * 格式化成 yyyy-MM-dd HH:mm:ss或yyyy-MM-dd HH:mm:ss.SSS 格式，null时返回空支付串
-     *
-     * @param date   日期
-     * @param zoneId 时区
-     * @return 结果
+     * Format to yyyy-MM-dd HH:mm:ss or yyyy-MM-dd HH:mm:ss.SSS at zoneId. empty string if null.
      */
     @NotNull
     public static String full(@Nullable ZonedDateTime date, @Nullable ZoneId zoneId) {
@@ -216,11 +191,7 @@ public class DateFormatter {
     }
 
     /**
-     * 格式化成 yyyy-MM-dd HH:mm:ss 格式，null时返回空支付串
-     *
-     * @param date   日期
-     * @param zoneId 时区
-     * @return 结果
+     * Format to yyyy-MM-dd HH:mm:ss at zoneId. empty string if null.
      */
     @NotNull
     public static String full19(@Nullable ZonedDateTime date, @Nullable ZoneId zoneId) {
@@ -232,11 +203,7 @@ public class DateFormatter {
     }
 
     /**
-     * 格式化成 yyyy-MM-dd HH:mm:ss.SSS 格式，null时返回空支付串
-     *
-     * @param date   日期
-     * @param zoneId 时区
-     * @return 结果
+     * Format to yyyy-MM-dd HH:mm:ss.SSS at zoneId. empty string if null.
      */
     @NotNull
     public static String full23(@Nullable ZonedDateTime date, @Nullable ZoneId zoneId) {
@@ -248,11 +215,7 @@ public class DateFormatter {
     }
 
     /**
-     * 格式化成 HH:mm:ss或HH:mm:ss.SSS 格式，null时返回空支付串
-     *
-     * @param date   日期
-     * @param zoneId 时区
-     * @return 结果
+     * Format to HH:mm:ss or HH:mm:ss.SSS at zoneId. empty string if null.
      */
     @NotNull
     public static String time(@Nullable ZonedDateTime date, @Nullable ZoneId zoneId) {
@@ -269,11 +232,7 @@ public class DateFormatter {
     }
 
     /**
-     * 格式化成 HH:mm:ss 格式，null时返回空支付串
-     *
-     * @param date   日期
-     * @param zoneId 时区
-     * @return 结果
+     * Format to HH:mm:ss at zoneId. empty string if null.
      */
     @NotNull
     public static String time08(@Nullable ZonedDateTime date, @Nullable ZoneId zoneId) {
@@ -285,11 +244,7 @@ public class DateFormatter {
     }
 
     /**
-     * 格式化成 HH:mm:ss.SSS 格式，null时返回空支付串
-     *
-     * @param date   日期
-     * @param zoneId 时区
-     * @return 结果
+     * Format to HH:mm:ss.SSS at zoneId. empty string if null.
      */
     @NotNull
     public static String time12(@Nullable ZonedDateTime date, @Nullable ZoneId zoneId) {
@@ -301,10 +256,7 @@ public class DateFormatter {
     }
 
     /**
-     * 格式化成 yyyy-MM-dd 格式，null时返回空支付串
-     *
-     * @param date 日期
-     * @return 结果
+     * Format to yyyy-MM-dd. empty string if null.
      */
     @NotNull
     public static String date10(@Nullable LocalDateTime date) {
@@ -313,10 +265,7 @@ public class DateFormatter {
     }
 
     /**
-     * 格式化成 yyyy-MM-dd HH:mm:ss或yyyy-MM-dd HH:mm:ss.SSS 格式，null时返回空支付串
-     *
-     * @param date 日期
-     * @return 结果
+     * Format to yyyy-MM-dd HH:mm:ss or yyyy-MM-dd HH:mm:ss.SSS. empty string if null.
      */
     @NotNull
     public static String full(@Nullable LocalDateTime date) {
@@ -330,10 +279,7 @@ public class DateFormatter {
     }
 
     /**
-     * 格式化成 yyyy-MM-dd HH:mm:ss 格式，null时返回空支付串
-     *
-     * @param date 日期
-     * @return 结果
+     * Format to yyyy-MM-dd HH:mm:ss. empty string if null.
      */
     @NotNull
     public static String full19(@Nullable LocalDateTime date) {
@@ -342,10 +288,7 @@ public class DateFormatter {
     }
 
     /**
-     * 格式化成 yyyy-MM-dd HH:mm:ss.SSS 格式，null时返回空支付串
-     *
-     * @param date 日期
-     * @return 结果
+     * Format to yyyy-MM-dd HH:mm:ss.SSS. empty string if null.
      */
     @NotNull
     public static String full23(@Nullable LocalDateTime date) {
@@ -354,10 +297,7 @@ public class DateFormatter {
     }
 
     /**
-     * 格式化成 HH:mm:ss或HH:mm:ss.SSS 格式，null时返回空支付串
-     *
-     * @param date 日期
-     * @return 结果
+     * Format to HH:mm:ss or HH:mm:ss.SSS. empty string if null.
      */
     @NotNull
     public static String time(@Nullable LocalDateTime date) {
@@ -371,10 +311,7 @@ public class DateFormatter {
     }
 
     /**
-     * 格式化成 HH:mm:ss 格式，null时返回空支付串
-     *
-     * @param date 日期
-     * @return 结果
+     * Format to HH:mm:ss. empty string if null.
      */
     @NotNull
     public static String time08(@Nullable LocalDateTime date) {
@@ -383,10 +320,7 @@ public class DateFormatter {
     }
 
     /**
-     * 格式化成 HH:mm:ss.SSS 格式，null时返回空支付串
-     *
-     * @param date 日期
-     * @return 结果
+     * Format to HH:mm:ss.SSS. empty string if null.
      */
     @NotNull
     public static String time12(@Nullable LocalDateTime date) {
@@ -396,10 +330,7 @@ public class DateFormatter {
 
 
     /**
-     * 格式化成 yyyy-MM-dd 格式，null时返回空支付串
-     *
-     * @param date 日期
-     * @return 结果
+     * Format to yyyy-MM-dd. empty string if null.
      */
     @NotNull
     public static String date10(@Nullable LocalDate date) {
@@ -408,10 +339,7 @@ public class DateFormatter {
     }
 
     /**
-     * 格式化成 HH:mm:ss或HH:mm:ss.SSS 格式，null时返回空支付串
-     *
-     * @param time 日期
-     * @return 结果
+     * Format to HH:mm:ss or HH:mm:ss.SSS. empty string if null.
      */
     @NotNull
     public static String time(@Nullable LocalTime time) {
@@ -425,10 +353,7 @@ public class DateFormatter {
     }
 
     /**
-     * 格式化成 HH:mm:ss 格式，null时返回空支付串
-     *
-     * @param time 日期
-     * @return 结果
+     * Format to HH:mm:ss. empty string if null.
      */
     @NotNull
     public static String time08(@Nullable LocalTime time) {
@@ -437,10 +362,7 @@ public class DateFormatter {
     }
 
     /**
-     * 格式化成 HH:mm:ss.SSS 格式，null时返回空支付串
-     *
-     * @param time 日期
-     * @return 结果
+     * Format to HH:mm:ss.SSS. empty string if null.
      */
     @NotNull
     public static String time12(@Nullable LocalTime time) {
@@ -450,10 +372,7 @@ public class DateFormatter {
 
 
     /**
-     * 格式化成 yyyy-MM-dd 格式，null时返回空支付串
-     *
-     * @param date 日期
-     * @return 结果
+     * Format to yyyy-MM-dd. empty string if null.
      */
     @NotNull
     public static String date10(@Nullable Date date) {
@@ -461,10 +380,7 @@ public class DateFormatter {
     }
 
     /**
-     * 格式化成 yyyy-MM-dd HH:mm:ss或yyyy-MM-dd HH:mm:ss.SSS 格式，null时返回空支付串
-     *
-     * @param date 日期
-     * @return 结果
+     * Format to yyyy-MM-dd HH:mm:ss or yyyy-MM-dd HH:mm:ss.SSS. empty string if null.
      */
     @NotNull
     public static String full(@Nullable Date date) {
@@ -478,10 +394,7 @@ public class DateFormatter {
     }
 
     /**
-     * 格式化成 yyyy-MM-dd HH:mm:ss 格式，null时返回空支付串
-     *
-     * @param date 日期
-     * @return 结果
+     * Format to yyyy-MM-dd HH:mm:ss. empty string if null.
      */
     @NotNull
     public static String full19(@Nullable Date date) {
@@ -489,10 +402,7 @@ public class DateFormatter {
     }
 
     /**
-     * 格式化成 yyyy-MM-dd HH:mm:ss.SSS 格式，null时返回空支付串
-     *
-     * @param date 日期
-     * @return 结果
+     * Format to yyyy-MM-dd HH:mm:ss.SSS. empty string if null.
      */
     @NotNull
     public static String full23(@Nullable Date date) {
@@ -500,10 +410,7 @@ public class DateFormatter {
     }
 
     /**
-     * 格式化成 HH:mm:ss或HH:mm:ss.SSS 格式，null时返回空支付串
-     *
-     * @param date 日期
-     * @return 结果
+     * Format to HH:mm:ss or HH:mm:ss.SSS. empty string if null.
      */
     @NotNull
     public static String time(@Nullable Date date) {
@@ -517,10 +424,7 @@ public class DateFormatter {
     }
 
     /**
-     * 格式化成 HH:mm:ss 格式，null时返回空支付串
-     *
-     * @param date 日期
-     * @return 结果
+     * Format to HH:mm:ss. empty string if null.
      */
     @NotNull
     public static String time08(@Nullable Date date) {
@@ -528,10 +432,7 @@ public class DateFormatter {
     }
 
     /**
-     * 格式化成 HH:mm:ss.SSS 格式，null时返回空支付串
-     *
-     * @param date 日期
-     * @return 结果
+     * Format to HH:mm:ss.SSS. empty string if null.
      */
     @NotNull
     public static String time12(@Nullable Date date) {
@@ -540,11 +441,7 @@ public class DateFormatter {
 
 
     /**
-     * 格式化成 yyyy-MM-dd 格式，null时返回空支付串
-     *
-     * @param date   日期
-     * @param zoneId 时区
-     * @return 结果
+     * Format to yyyy-MM-dd at zoneId. empty string if null.
      */
     @NotNull
     public static String date10(@Nullable Date date, @Nullable ZoneId zoneId) {
@@ -554,11 +451,7 @@ public class DateFormatter {
     }
 
     /**
-     * 格式化成 yyyy-MM-dd HH:mm:ss或yyyy-MM-dd HH:mm:ss.SSS 格式，null时返回空支付串
-     *
-     * @param date   日期
-     * @param zoneId 时区
-     * @return 结果
+     * Format to yyyy-MM-dd HH:mm:ss or yyyy-MM-dd HH:mm:ss.SSS at zoneId. empty string if null.
      */
     @NotNull
     public static String full(@Nullable Date date, @Nullable ZoneId zoneId) {
@@ -573,11 +466,7 @@ public class DateFormatter {
     }
 
     /**
-     * 格式化成 yyyy-MM-dd HH:mm:ss 格式，null时返回空支付串
-     *
-     * @param date   日期
-     * @param zoneId 时区
-     * @return 结果
+     * Format to yyyy-MM-dd HH:mm:ss at zoneId. empty string if null.
      */
     @NotNull
     public static String full19(@Nullable Date date, @Nullable ZoneId zoneId) {
@@ -587,11 +476,7 @@ public class DateFormatter {
     }
 
     /**
-     * 格式化成 yyyy-MM-dd HH:mm:ss.SSS 格式，null时返回空支付串
-     *
-     * @param date   日期
-     * @param zoneId 时区
-     * @return 结果
+     * Format to yyyy-MM-dd HH:mm:ss.SSS at zoneId. empty string if null.
      */
     @NotNull
     public static String full23(@Nullable Date date, @Nullable ZoneId zoneId) {
@@ -601,11 +486,7 @@ public class DateFormatter {
     }
 
     /**
-     * 格式化成 HH:mm:ss或HH:mm:ss.SSS 格式，null时返回空支付串
-     *
-     * @param date   日期
-     * @param zoneId 时区
-     * @return 结果
+     * Format to HH:mm:ss or HH:mm:ss.SSS at zoneId. empty string if null.
      */
     @NotNull
     public static String time(@Nullable Date date, @Nullable ZoneId zoneId) {
@@ -615,11 +496,7 @@ public class DateFormatter {
     }
 
     /**
-     * 格式化成 HH:mm:ss 格式，null时返回空支付串
-     *
-     * @param date   日期
-     * @param zoneId 时区
-     * @return 结果
+     * Format to HH:mm:ss at zoneId. empty string if null.
      */
     @NotNull
     public static String time08(@Nullable Date date, @Nullable ZoneId zoneId) {
@@ -629,11 +506,7 @@ public class DateFormatter {
     }
 
     /**
-     * 格式化成 HH:mm:ss.SSS 格式，null时返回空支付串
-     *
-     * @param date   日期
-     * @param zoneId 时区
-     * @return 结果
+     * Format to HH:mm:ss.SSS at zoneId. empty string if null.
      */
     @NotNull
     public static String time12(@Nullable Date date, @Nullable ZoneId zoneId) {
@@ -643,11 +516,7 @@ public class DateFormatter {
     }
 
     /**
-     * 把日期转到相应的时区
-     *
-     * @param date   日期
-     * @param zoneId 时区
-     * @return 结果
+     * convert date at zoneId
      */
     @NotNull
     public static ZonedDateTime zoned(@NotNull Date date, @Nullable ZoneId zoneId) {
@@ -660,13 +529,15 @@ public class DateFormatter {
     }
 
     /**
-     * 保证一致，即相同的字符串，返回结果一致。
-     * 修复日期字符串，yyyy-MM-dd HH:mm:ss
-     * `HH`,`MM`,`ss`根据`yyyy-MM-dd`伪随机生成
-     * `yyyy-MM-dd`，分别默认为`1979-01-01`
+     * <pre>
+     * Guarantee consistency, i.e. the same string, returns consistent results.
+     * Fix date string to yyyy-MM-dd HH:mm:ss
+     * `HH`, `MM`, `ss` are pseudo-randomly generated based on `yyyy-MM-dd`,
+     * which defaults to `1979-01-01`, respectively.
+     * </pre>
      *
-     * @param date 任意包含数字的日期，会自动修复时分秒
-     * @return 修复后的日期, null如果输入为null或数字不足8位
+     * @param date Any date containing numbers, will automatically fix the hours, minutes and seconds.
+     * @return Fixed date.
      */
     @NotNull
     public static String fixFull19(@Nullable String date) {
@@ -711,7 +582,7 @@ public class DateFormatter {
     }
 
     private static void fillDigit(CharSequence str, int max, int[] idx, StringBuilder buf, int nil, char end) {
-        // 获得数字断
+        // get digit
         if (idx[1] >= 0) {
             int cnt = 0;
             int off = idx[1];
@@ -728,7 +599,7 @@ public class DateFormatter {
                 }
                 else {
                     if (cnt > 0) {
-                        cnt = max; // 直接满
+                        cnt = max; // reach the max
                     }
                 }
                 if (cnt >= max) {
@@ -740,7 +611,7 @@ public class DateFormatter {
             }
         }
 
-        //填充
+        // padding
         int len = idx[1] - idx[0];
         if (idx[1] > 0 && len > 0) {
             for (int i = len; i < max; i++) {

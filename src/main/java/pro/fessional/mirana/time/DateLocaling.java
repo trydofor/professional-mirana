@@ -9,7 +9,8 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 /**
- * 对LocalDateTime和ZonedDateTime进行时区的转换，默认立足System时区看Viewer时区
+ * Convert the timezone of LocalDateTime and ZonedDateTime,
+ * based on the System timezone to Viewer timezone by default.
  *
  * @author trydofor
  * @since 2019-10-16
@@ -17,21 +18,21 @@ import java.time.ZonedDateTime;
 public class DateLocaling {
 
     /**
-     * 以Utc时区转换epoch millis
+     * convert epoch millis at UTC
      */
     public static LocalDateTime utcLdt(long epochMilli) {
         return useLdt(epochMilli, ThreadNow.utcZoneId());
     }
 
     /**
-     * 以Sys时区转换epoch millis
+     * convert epoch millis at System timezone
      */
     public static LocalDateTime sysLdt(long epochMilli) {
         return useLdt(epochMilli, ThreadNow.sysZoneId());
     }
 
     /**
-     * 以指定时区转换epoch millis
+     * convert epoch millis at zoneId
      */
     public static LocalDateTime useLdt(long epochMilli, ZoneId zone) {
         final Instant ins = Instant.ofEpochMilli(epochMilli);
@@ -39,102 +40,77 @@ public class DateLocaling {
     }
 
     /**
-     * 以Utc时区获取epoch millis
+     * get epoch millis at UTC
      */
     public static long utcEpoch(LocalDateTime ldt) {
         return useEpoch(ldt, ThreadNow.utcZoneId());
     }
 
     /**
-     * 以Sys时区获取epoch millis
+     * get epoch millis at System timezone
      */
     public static long sysEpoch(LocalDateTime ldt) {
         return useEpoch(ldt, ThreadNow.sysZoneId());
     }
 
     /**
-     * 指定时区获取epoch millis
+     * get epoch millis at zoneId
      */
     public static long useEpoch(LocalDateTime ldt, ZoneId zone) {
         return ZonedDateTime.of(ldt, zone).toInstant().toEpochMilli();
     }
 
     /**
-     * 当前的日时
-     *
-     * @param at 时区
-     * @return now
+     * current local datetime at zoneId
      */
     public static LocalDateTime dateTime(ZoneId at) {
         return ZonedDateTime.now(at).toLocalDateTime();
     }
 
     /**
-     * 当前的日期
-     *
-     * @param at 时区
-     * @return now
+     * current local date at zoneId
      */
     public static LocalDate date(ZoneId at) {
         return ZonedDateTime.now(at).toLocalDate();
     }
 
     /**
-     * 当前的时间
-     *
-     * @param at 时区
-     * @return now
+     * current local time at zoneId
      */
     public static LocalTime time(ZoneId at) {
         return ZonedDateTime.now(at).toLocalTime();
     }
 
     /**
-     * 今天的零时（0:0:0.0）
-     *
-     * @param at 时区
-     * @return 凌晨
+     * current local 0:0:0.0 at zoneId
      */
     public static LocalDateTime today(ZoneId at) {
         return ZonedDateTime.now(at).toLocalDate().atStartOfDay();
     }
 
     /**
-     * 月初（最近的一日）的零时（0:0:0.0）
-     *
-     * @param at 时区
-     * @return 月初的 0:0:0.0
+     * 1st date(0:0:0.0) of current month at zoneId
      */
     public static LocalDateTime month(ZoneId at) {
         return ZonedDateTime.now(at).toLocalDate().withDayOfMonth(1).atStartOfDay();
     }
 
     /**
-     * 最近的周一的零时（0:0:0.0）
-     *
-     * @param at 时区
-     * @return 日时
+     * MONDAY(0:0:0.0) of current week at zoneId
      */
     public static LocalDateTime monday(ZoneId at) {
         return week(at, DayOfWeek.MONDAY);
     }
 
     /**
-     * 最近的周日的零时（0:0:0.0）
-     *
-     * @param at 时区
-     * @return 日时
+     * SUNDAY(0:0:0.0) of current week at zoneId
      */
     public static LocalDateTime sunday(ZoneId at) {
         return week(at, DayOfWeek.SUNDAY);
     }
 
     /**
-     * 最近的周几的零时（0:0:0.0）
-     *
-     * @param at  时区
-     * @param day 星期
-     * @return 日时
+     * Week day(0:0:0.0) of current week at zoneId
      */
     public static LocalDateTime week(ZoneId at, DayOfWeek day) {
         LocalDateTime ldt = ZonedDateTime.now(at).toLocalDate().atStartOfDay();
@@ -154,10 +130,7 @@ public class DateLocaling {
     // ////////// system //////////
 
     /**
-     * 转为System时区
-     *
-     * @param ldt 日时
-     * @return System日时
+     * local datetime at System timezone
      */
     public static ZonedDateTime sysZdt(LocalDateTime ldt) {
         if (ldt == null) return null;
@@ -165,42 +138,28 @@ public class DateLocaling {
     }
 
     /**
-     * 转为System时区
-     *
-     * @param zdt 日时
-     * @return System日时
+     * local datetime at System timezone
      */
     public static LocalDateTime sysLdt(ZonedDateTime zdt) {
         return local(zdt, ThreadNow.sysZoneId());
     }
 
     /**
-     * 转为System时区
-     *
-     * @param zdt 日时
-     * @return System日时
+     * datetime at System timezone
      */
     public static ZonedDateTime sysZdt(ZonedDateTime zdt) {
         return zoned(zdt, ThreadNow.sysZoneId());
     }
 
     /**
-     * 转为System时区
-     *
-     * @param viewer 时区
-     * @param ldt    日时
-     * @return System日时
+     * viewer local datetime at System timezone
      */
     public static LocalDateTime sysLdt(ZoneId viewer, LocalDateTime ldt) {
         return local(viewer, ldt, ThreadNow.sysZoneId());
     }
 
     /**
-     * 转为System时区
-     *
-     * @param viewer 时区
-     * @param ldt    日时
-     * @return System日时
+     * viewer datetime at System timezone
      */
     public static ZonedDateTime sysZdt(ZoneId viewer, LocalDateTime ldt) {
         return zoned(viewer, ldt, ThreadNow.sysZoneId());
@@ -209,44 +168,28 @@ public class DateLocaling {
     // ////////// viewer //////////
 
     /**
-     * 转为Viewer时区
-     *
-     * @param zdt    日时
-     * @param viewer 时区
-     * @return Viewer日时
+     * local datetime at viewer timezone
      */
     public static LocalDateTime useLdt(ZonedDateTime zdt, ZoneId viewer) {
         return local(zdt, viewer);
     }
 
     /**
-     * 转为Viewer时区
-     *
-     * @param zdt    日时
-     * @param viewer 时区
-     * @return Viewer日时
+     * datetime at viewer timezone
      */
     public static ZonedDateTime useZdt(ZonedDateTime zdt, ZoneId viewer) {
         return zoned(zdt, viewer);
     }
 
     /**
-     * 转为Viewer时区
-     *
-     * @param ldt    日时
-     * @param viewer 时区
-     * @return Viewer日时
+     * system local datetime at viewer timezone
      */
     public static LocalDateTime useLdt(LocalDateTime ldt, ZoneId viewer) {
         return local(ThreadNow.sysZoneId(), ldt, viewer);
     }
 
     /**
-     * 转为Viewer时区
-     *
-     * @param ldt    日时
-     * @param viewer 时区
-     * @return Viewer日时
+     * system datetime at viewer timezone
      */
     public static ZonedDateTime useZdt(LocalDateTime ldt, ZoneId viewer) {
         return zoned(ThreadNow.sysZoneId(), ldt, viewer);
@@ -256,12 +199,7 @@ public class DateLocaling {
     // ////////// locate //////////
 
     /**
-     * 从at转为to时区
-     *
-     * @param at  所在
-     * @param ldt 日时
-     * @param to  目标
-     * @return 目标日时
+     * convert local datetime from `at` to `to`
      */
     public static LocalDateTime local(ZoneId at, LocalDateTime ldt, ZoneId to) {
         if (ldt == null) return null;
@@ -270,12 +208,7 @@ public class DateLocaling {
     }
 
     /**
-     * 从at转为to时区
-     *
-     * @param at  所在
-     * @param ldt 日时
-     * @param to  目标
-     * @return 目标日时
+     * convert datetime from `at` to `to`
      */
     public static ZonedDateTime zoned(ZoneId at, LocalDateTime ldt, ZoneId to) {
         if (ldt == null) return null;
@@ -284,11 +217,7 @@ public class DateLocaling {
     }
 
     /**
-     * 转为to时区
-     *
-     * @param zdt 日时
-     * @param to  目标
-     * @return 目标日时
+     * convert datetime to `to`
      */
     public static LocalDateTime local(ZonedDateTime zdt, ZoneId to) {
         if (zdt == null) return null;
@@ -303,11 +232,7 @@ public class DateLocaling {
     }
 
     /**
-     * 转为to时区
-     *
-     * @param zdt 日时
-     * @param to  目标
-     * @return 目标日时
+     * convert datetime to `to`
      */
     public static ZonedDateTime zoned(ZonedDateTime zdt, ZoneId to) {
         if (zdt == null) return null;

@@ -37,16 +37,19 @@ import static java.time.temporal.ChronoField.SECOND_OF_MINUTE;
 import static java.time.temporal.ChronoField.YEAR;
 
 /**
- * 解析固定格式的，包含日期数字的字符串，支持以下格式<p>
- * 可以处理末尾的填充，日期以01填充，时间以00填充。<p>
- * (date8) yyyyMMdd<p>
- * (datetime14) yyyyMMddHHmmss<p>
- * (datetime17) yyyyMMddHHmmssSSS<p>
- * (date8) MMddyyyy<p>
- * (datetime14) MMddyyyyHHmmss<p>
- * (datetime17) MMddyyyyHHmmssSSS<p>
- * (time6) HHmmss<p>
- * (time9) HHmmssSSS<p>
+ * <pre>
+ * Parses fixed-format strings containing date numbers, supporting the following formats
+ * Can handle padding at the end, dates are padded with 01 and times are padded with 00.
+ *
+ * * date8 - yyyyMMdd
+ * * datetime14 - yyyyMMddHHmmss
+ * * datetime17 - yyyyMMddHHmmssSSS
+ * * date8 - MMddyyyyy
+ * * datetime14 - MMddyyyyyHHmmss
+ * * datetime17 - MMddyyyyyHHmmssSSS
+ * * time6 - HHmmss
+ * * time9 - HHmmssSSS
+ * </pre>
  *
  * @author trydofor
  * @see DateNumber
@@ -143,10 +146,7 @@ public class DateParser {
     };
 
     /**
-     * 把任意包含日期信息的数字变成日期
-     *
-     * @param num 数字
-     * @return 日期
+     * parse any digit string with date information to a date
      */
     @NotNull
     public static LocalTime parseTime(@NotNull CharSequence num) {
@@ -154,10 +154,7 @@ public class DateParser {
     }
 
     /**
-     * 把任意包含日期信息的数字变成日期
-     *
-     * @param num 数字
-     * @return 日期
+     * parse any digit string with date information to a date
      */
     @NotNull
     public static LocalDate parseDate(@NotNull CharSequence num) {
@@ -165,10 +162,7 @@ public class DateParser {
     }
 
     /**
-     * 把任意包含日期信息的数字变成日期
-     *
-     * @param num 数字
-     * @return 日期
+     * parse any digit string with date information to a date
      */
     @NotNull
     public static Date parseUtilDate(@NotNull CharSequence num) {
@@ -176,26 +170,32 @@ public class DateParser {
     }
 
     /**
-     * 把任意包含日期信息的数字变成日期
-     *
-     * @param num 数字
-     * @return 日期
+     * parse any digit string with date information to a date
      */
     @NotNull
     public static LocalDateTime parseDateTime(@NotNull CharSequence num) {
         return parseDateTime(num, 0);
     }
 
+    /**
+     * parse any digit string with date information to a date
+     */
     @NotNull
     public static ZonedDateTime parseZoned(@NotNull CharSequence str) {
         return parseZoned(str, null, 0);
     }
 
+    /**
+     * parse any digit string with date information to a date
+     */
     @NotNull
     public static ZonedDateTime parseZoned(@NotNull CharSequence str, ZoneId zid) {
         return parseZoned(str, zid, 0);
     }
 
+    /**
+     * parse any digit string with date format information to a date
+     */
     @NotNull
     public static LocalTime parseTime(@NotNull CharSequence str, Iterable<DateTimeFormatter> dtf) {
         final TemporalAccessor ta = parseTemporal(str, dtf, false);
@@ -206,6 +206,9 @@ public class DateParser {
         return dt;
     }
 
+    /**
+     * parse any digit string with date format information to a date
+     */
     @NotNull
     public static LocalDate parseDate(@NotNull CharSequence str, Iterable<DateTimeFormatter> dtf) {
         final TemporalAccessor ta = parseTemporal(str, dtf, false);
@@ -216,6 +219,9 @@ public class DateParser {
         return dt;
     }
 
+    /**
+     * parse any digit string with date format information to a date
+     */
     @NotNull
     public static LocalDateTime parseDateTime(@NotNull CharSequence str, Iterable<DateTimeFormatter> dtf) {
         final TemporalAccessor ta = parseTemporal(str, dtf, false);
@@ -226,6 +232,9 @@ public class DateParser {
         return dt;
     }
 
+    /**
+     * parse any Temporal at zoneId
+     */
     @NotNull
     public static ZonedDateTime parseZoned(@NotNull TemporalAccessor ta, ZoneId zid) {
         if (ta instanceof ZonedDateTime) {
@@ -263,12 +272,18 @@ public class DateParser {
         }
     }
 
+    /**
+     * parse any digit string with date format information to a date at zoneId
+     */
     @NotNull
     public static ZonedDateTime parseZoned(@NotNull CharSequence str, ZoneId zid, Iterable<DateTimeFormatter> dtf) {
         final TemporalAccessor ta = parseTemporal(str, dtf, false);
         return parseZoned(ta, zid);
     }
 
+    /**
+     * parse any Temporal to a date at zoneId
+     */
     @NotNull
     public static OffsetDateTime parseOffset(@NotNull TemporalAccessor ta, ZoneId zid) {
         if (ta instanceof ZonedDateTime) {
@@ -307,6 +322,9 @@ public class DateParser {
         return concatZoned(ldt, z, zid).toOffsetDateTime();
     }
 
+    /**
+     * parse any digit string with date format information to a date at zoneId
+     */
     @NotNull
     public static OffsetDateTime parseOffset(@NotNull CharSequence str, ZoneId zid, Iterable<DateTimeFormatter> dtf) {
         final TemporalAccessor ta = parseTemporal(str, dtf, false);
@@ -339,13 +357,13 @@ public class DateParser {
     }
 
     /**
-     * 把任意包含日期信息的数字变成日期，解析时只关注数字，忽略非数字字符<p>
-     * (time6) HHmmss<p>
-     * (time9) HHmmssSSS<p>
+     * <pre>
+     * from the offset to parse any digit string with date format information.
+     * focusing only on numbers when parsing, ignoring non-numeric characters.
      *
-     * @param str 任意包括全角或半角数字的字符串
-     * @param off 数字位置偏移量，不考虑非数字
-     * @return 日期
+     * * time6 - HHmmss
+     * * time9 - HHmmssSSS
+     * </pre>
      */
     @NotNull
     public static LocalTime parseTime(@NotNull CharSequence str, int off) {
@@ -358,13 +376,13 @@ public class DateParser {
     }
 
     /**
-     * 把任意包含日期信息的数字变成日期，解析时只关注数字，忽略非数字字符<p>
-     * (date8) yyyyMMdd<p>
-     * (date8) MMddyyyy<p>
+     * <pre>
+     * from the offset to parse any digit string with date format information.
+     * focusing only on numbers when parsing, ignoring non-numeric characters.
      *
-     * @param str 任意包括全角或半角数字的字符串
-     * @param off 数字位置偏移量，不考虑非数字
-     * @return 日期
+     * * date8 - yyyyMMdd
+     * * date8 - MMddyyyy
+     * </pre>
      */
     @NotNull
     public static LocalDate parseDate(@NotNull CharSequence str, int off) {
@@ -378,12 +396,10 @@ public class DateParser {
     }
 
     /**
-     * 把任意包含日期信息的数字变成日期，解析时只关注数字，忽略非数字字符<p>
-     * 支持全类型<p>
-     *
-     * @param str 任意包括全角或半角数字的字符串
-     * @param off 数字位置偏移量，不考虑非数字
-     * @return 日期
+     * <pre>
+     * from the offset to parse any digit string with date format information.
+     * focusing only on numbers when parsing, ignoring non-numeric characters.
+     * </pre>
      */
     @NotNull
     public static Date parseUtilDate(@NotNull CharSequence str, int off) {
@@ -400,15 +416,15 @@ public class DateParser {
     }
 
     /**
-     * 把任意包含日期信息的数字变成日期，解析时只关注数字，忽略非数字字符<p>
-     * (datetime14) yyyyMMddHHmmss<p>
-     * (datetime17) yyyyMMddHHmmssSSS<p>
-     * (datetime14) MMddyyyyHHmmss<p>
-     * (datetime17) MMddyyyyHHmmssSSS<p>
+     * <pre>
+     * from the offset to parse any digit string with date format information.
+     * focusing only on numbers when parsing, ignoring non-numeric characters.
      *
-     * @param str 任意包括全角或半角数字的字符串
-     * @param off 数字位置偏移量，不考虑非数字
-     * @return 日期
+     * * datetime14 - yyyyMMddHHmmss
+     * * datetime17 - yyyyMMddHHmmssSSS
+     * * datetime14 - MMddyyyyHHmmss
+     * * datetime17 - MMddyyyyHHmmssSSS
+     * </pre>
      */
     @NotNull
     public static LocalDateTime parseDateTime(@NotNull CharSequence str, int off) {
@@ -424,23 +440,25 @@ public class DateParser {
     }
 
     /**
-     * 把任意包含日期信息的数字变成日期，解析时只关注数字，忽略非数字字符<p>
-     * (datetime14) yyyyMMddHHmmss<p>
-     * (datetime17) yyyyMMddHHmmssSSS<p>
-     * (datetime14) MMddyyyyHHmmss<p>
-     * (datetime17) MMddyyyyHHmmssSSS<p>
-     * 时区部分位于时间之后由`+- [`分隔，仅支持offset和zid格式，且zid优先于offset<p>
-     * V time-zone ID             zone-id   America/Los_Angeles; Z; -08:30<p>
-     * O localized zone-offset    offset-O  GMT+8; GMT+08:00; UTC-08:00;<p>
-     * X zone-offset 'Z' for zero offset-X  Z; -08; -0830; -08:30; -083015; -08:30:15;<p>
-     * x zone-offset              offset-x  +0000; -08; -0830; -08:30; -083015; -08:30:15;<p>
-     * Z zone-offset              offset-Z  +0000; -0800; -08:00;<p>
-     * ISO_ZONED_DATE_TIME +01:00[Europe/Paris]
+     * <pre>
+     * from the offset to parse any digit string with date format information.
+     * focusing only on numbers when parsing, ignoring non-numeric characters.
      *
-     * @param str 任意包括全角或半角数字的字符串
-     * @param zid 期望的zone
-     * @param off 数字位置偏移量，不考虑非数字
-     * @return 日期
+     * * datetime14 - yyyyMMddHHmmss
+     * * datetime17 - yyyyMMddHHmmssSSS
+     * * datetime14 - MMddyyyyHHmmss
+     * * datetime17 - MMddyyyyHHmmssSSS
+     *
+     * The timezone part comes after the time separated by `+- [ `,
+     * only offset and zid formats are supported, and zid takes precedence over offset.
+     *
+     * V time-zone ID             zone-id   America/Los_Angeles; Z; -08:30
+     * O localized zone-offset    offset-O  GMT+8; GMT+08:00; UTC-08:00;
+     * X zone-offset 'Z' for zero offset-X  Z; -08; -0830; -08:30; -083015; -08:30:15;
+     * x zone-offset              offset-x  +0000; -08; -0830; -08:30; -083015; -08:30:15;
+     * Z zone-offset              offset-Z  +0000; -0800; -08:00;
+     * ISO_ZONED_DATE_TIME +01:00[Europe/Paris]
+     * </pre>
      */
     @NotNull
     public static ZonedDateTime parseZoned(@NotNull CharSequence str, ZoneId zid, int off) {
@@ -466,12 +484,11 @@ public class DateParser {
     }
 
     /**
-     * 无异常解析，返回最优匹配（无异常，正确解析数量最多）
+     * Parse without exceptions, returns the best match (no exceptions, highest number of correct parses)
      *
-     * @param str   任意包括全角或半角数字的字符串
-     * @param dtf   尝试的formatter
-     * @param quiet 返回null而非异常
-     * @return 日期
+     * @param str   Any string containing full or half-width digits.
+     * @param dtf   The formatter to try.
+     * @param quiet return null instead of an exception.
      */
     @Contract("_,_,false->!null")
     public static TemporalAccessor parseTemporal(@NotNull CharSequence str, @NotNull Iterable<DateTimeFormatter> dtf, boolean quiet) {
@@ -522,12 +539,11 @@ public class DateParser {
     }
 
     /**
-     * 全部解析，并按输入顺序返回结果。
+     * Parse them all and returns the results in the order in which they were entered.
      *
-     * @param dtf           格式
-     * @param str           字符串
-     * @param stopOnSuccess 当有完成匹配者时，是否终止后续匹配，性能有关
-     * @return 结果
+     * @param dtf           format
+     * @param str           String
+     * @param stopOnSuccess Whether to stop subsequent matches when there are completed matchers, performance related
      */
     @NotNull
     public static List<QuietPos> parseTemporal(@NotNull Iterable<DateTimeFormatter> dtf, @NotNull CharSequence str, boolean stopOnSuccess) {
@@ -584,7 +600,7 @@ public class DateParser {
             }
         }
 
-        // 处理MMddyyyy
+        // handle MMddyyyy
         if (ptn != Ptn.TIME && idx >= 2 && buff[1].length() <= 2 && isMonth(buff[0]) && !isMonth(buff[2])) {
             StringBuilder tp = buff[2];
             buff[2] = buff[1];
@@ -592,7 +608,7 @@ public class DateParser {
             buff[0] = tp;
         }
 
-        // 处理填充
+        // handle padding
         for (int i = 0; i < ptn.pad.length; i++) {
             if (i <= idx) {
                 int cln = buff[i].length();
@@ -623,18 +639,18 @@ public class DateParser {
             }
         }
 
-        // 拼接
+        // concat
         StringBuilder sb = buff[0];
         for (int i = 1; i <= idx; i++) {
             sb.append(buff[i]);
         }
 
-        // 截断
+        // trim
         if (sb.length() > ptn.len) {
             sb.setLength(ptn.len);
         }
 
-        // 处理时区，只取1段
+        // handle timezone at part 1
         if (ptn == Ptn.ZONE) {
             sb.append('@');
             boolean spc = false;

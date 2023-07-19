@@ -16,12 +16,13 @@ import java.util.TimeZone;
 
 /**
  * <pre>
- * 提供线程级的调准时钟。默认使用ThreadLocal实现，不支持Inheritable。
- * 可通过子类init替换默认的ThreadLocal，例如使用TransmittableThreadLocal。
+ * Provides thread-level customization of the clock.
+ * The default implementation uses ThreadLocal and does not support inheritable.
+ * The default ThreadLocal can be replaced by subclassing `init`, e.g. using TransmittableThreadLocal.
  *
- * 需要注意，
- * ①避免ThreadLocal泄露，建议采用try-finally模式。
- * ②子类替换，需要在线程使用使用前，如spring的容器配置后，业务前。
+ * Note that
+ * ① To avoid ThreadLocal leakage, it is recommended to use try-finally mode.
+ * ② subclass replacement must before any use, such as Spring's container configuration before the business.
  *
  * Benchmark               Mode  Cnt      Score      Error   Units
  * Now.localDateTime(CN)   thrpt  6   11554.389 ±  1750.603  ops/ms
@@ -42,21 +43,21 @@ public class ThreadNow {
     public static final TweakingContext<Clock> TweakClock = new TweakingContext<>(Clock.systemDefaultZone());
 
     /**
-     * 获取系统时区
+     * get system timezone
      */
     public static TimeZone sysTimeZone() {
         return TweakZone.current(true);
     }
 
     /**
-     * 获取系统时区，Java11有优化
+     * get system zoneid, Java11 is optimized
      */
     public static ZoneId sysZoneId() {
         return TweakZone.current(true).toZoneId();
     }
 
     /**
-     * 获取UTC时区
+     * get UTC timezone
      *
      * @see #UtcTimeZone
      */
@@ -65,7 +66,7 @@ public class ThreadNow {
     }
 
     /**
-     * 获取UTC时区
+     * get UTC zoneid
      *
      * @see #UtcZoneId
      */
@@ -74,7 +75,7 @@ public class ThreadNow {
     }
 
     /**
-     * 获取当前时钟
+     * get current clock
      */
     @NotNull
     public static Clock clock() {
@@ -82,7 +83,7 @@ public class ThreadNow {
     }
 
     /**
-     * 当前毫秒数
+     * get current millis
      */
     public static long millis() {
         return clock().millis();

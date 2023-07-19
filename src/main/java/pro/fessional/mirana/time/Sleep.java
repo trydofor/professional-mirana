@@ -13,14 +13,14 @@ import java.time.Duration;
 public class Sleep {
 
     /**
-     * 忽略 InterruptedException，并继续执行
+     * ignore InterruptedException and wake up
      */
     public static void ignoreInterrupt(@NotNull Duration time) {
         ignoreInterrupt(time.toMillis());
     }
 
     /**
-     * 忽略 InterruptedException，并继续执行
+     * ignore InterruptedException and wake up
      */
     public static void ignoreInterrupt(long ms) {
         try {
@@ -32,14 +32,14 @@ public class Sleep {
     }
 
     /**
-     * 忽略 InterruptedException，并继续sleep
+     * ignore InterruptedException and continue to sleep
      */
     public static void snoozeInterrupt(@NotNull Duration time) {
         snoozeInterrupt(time.toMillis());
     }
 
     /**
-     * 忽略 InterruptedException，并继续sleep
+     * ignore InterruptedException and continue to sleep
      */
     public static void snoozeInterrupt(long ms) {
         final long wake = System.currentTimeMillis() + ms;
@@ -61,14 +61,14 @@ public class Sleep {
     }
 
     /**
-     * 以IllegalStateException抛出，并设置是否保持interrupt status
+     * throw IllegalStateException, and set whether to keep interrupt status
      */
     public static void throwsInterrupt(@NotNull Duration time, boolean keep) {
         throwsInterrupt(time.toMillis(), keep);
     }
 
     /**
-     * 以IllegalStateException抛出，并设置是否保持interrupt status
+     * throw IllegalStateException, and set whether to keep interrupt status
      */
     public static void throwsInterrupt(long ms, boolean keep) {
         try {

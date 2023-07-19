@@ -9,14 +9,17 @@ import java.time.ZonedDateTime;
 
 
 /**
- * <p>日期转化成数字的双向转化，支持以下格式
- * <p>(date8) yyyyMMdd</p>
- * <p>(datetime14) yyyyMMddHHmmss</p>
- * <p>(datetime17) yyyyMMddHHmmssSSS</p>
- * <p>(time6) HHmmss</p>
- * <p>(time9) HHmmssSSS</p>
+ * <pre>
+ * Bi-directional conversion of dates to numbers supports the following formats
  *
- * <p>解析时支持以上所有日期格式，进行半角转化。</p>
+ * * date8 - yyyyMMdd
+ * * datetime14 - yyyyMMddHHmmss
+ * * datetime17 - yyyyMMddHHmmssSSS
+ * * time6 - HHmmss
+ * * time9 - HHmmssSSS
+ *
+ * All of the above date formats are supported for half-angle conversion when parsing.
+ * </pre>
  *
  * @author trydofor
  * @see DateParser
@@ -28,10 +31,7 @@ public class DateNumber {
     }
 
     /**
-     * 把日期变成整数 yyyyMMdd
-     *
-     * @param date 日期
-     * @return yyyyMMdd
+     * convert to yyyyMMdd
      */
 
     public static int date8(@NotNull LocalDate date) {
@@ -39,30 +39,21 @@ public class DateNumber {
     }
 
     /**
-     * 把日期变成整数 yyyyMMdd
-     *
-     * @param date 日期
-     * @return yyyyMMdd
+     * convert to yyyyMMdd
      */
     public static int date8(@NotNull LocalDateTime date) {
         return date.getYear() * 1_00_00 + date.getMonthValue() * 1_00 + date.getDayOfMonth();
     }
 
     /**
-     * 把日期变成整数 yyyyMMdd
-     *
-     * @param date 日期
-     * @return yyyyMMdd
+     * convert to yyyyMMdd
      */
     public static int date8(@NotNull ZonedDateTime date) {
         return date.getYear() * 1_00_00 + date.getMonthValue() * 1_00 + date.getDayOfMonth();
     }
 
     /**
-     * 把日期变成整数 yyyyMMddHHmmss
-     *
-     * @param date 日期
-     * @return yyyyMMddHHmmss
+     * convert to yyyyMMddHHmmss
      */
 
     public static long dateTime14(@NotNull LocalDateTime date) {
@@ -71,10 +62,7 @@ public class DateNumber {
     }
 
     /**
-     * 把日期变成整数 yyyyMMddHHmmss
-     *
-     * @param date 日期
-     * @return yyyyMMddHHmmss
+     * convert to yyyyMMddHHmmss
      */
     public static long dateTime14(@NotNull ZonedDateTime date) {
         return date.getYear() * 1_00_00_00_00_00L + date.getMonthValue() * 1_00_00_00_00L + date.getDayOfMonth() * 1_00_00_00L
@@ -82,10 +70,7 @@ public class DateNumber {
     }
 
     /**
-     * 把日期变成整数 yyyyMMddHHmmssSSS
-     *
-     * @param date 日期
-     * @return yyyyMMddHHmmssSSS
+     * convert to yyyyMMddHHmmssSSS
      */
 
     public static long dateTime17(@NotNull LocalDateTime date) {
@@ -95,10 +80,7 @@ public class DateNumber {
     }
 
     /**
-     * 把日期变成整数 yyyyMMddHHmmssSSS
-     *
-     * @param date 日期
-     * @return yyyyMMddHHmmssSSS
+     * convert to yyyyMMddHHmmssSSS
      */
 
     public static long dateTime17(@NotNull ZonedDateTime date) {
@@ -108,70 +90,49 @@ public class DateNumber {
     }
 
     /**
-     * 把日期变成整数 HHmmss
-     *
-     * @param date 日期
-     * @return HHmmss
+     * convert to HHmmss
      */
     public static int time6(@NotNull LocalTime date) {
         return date.getHour() * 1_00_00 + date.getMinute() * 1_00 + date.getSecond();
     }
 
     /**
-     * 把日期变成整数 HHmmss
-     *
-     * @param date 日期
-     * @return HHmmss
+     * convert to HHmmss
      */
     public static int time6(@NotNull LocalDateTime date) {
         return date.getHour() * 1_00_00 + date.getMinute() * 1_00 + date.getSecond();
     }
 
     /**
-     * 把日期变成整数 HHmmss
-     *
-     * @param date 日期
-     * @return HHmmss
+     * convert to HHmmss
      */
     public static int time6(@NotNull ZonedDateTime date) {
         return date.getHour() * 1_00_00 + date.getMinute() * 1_00 + date.getSecond();
     }
 
     /**
-     * 把日期变成整数 HHmmssSSS
-     *
-     * @param date 日期
-     * @return HHmmssSSS
+     * convert to HHmmssSSS
      */
     public static int time9(@NotNull LocalTime date) {
         return date.getHour() * 1_00_00_000 + date.getMinute() * 1_00_000 + date.getSecond() * 1_000 + (date.getNano() / 1_000_000);
     }
 
     /**
-     * 把日期变成整数 HHmmssSSS
-     *
-     * @param date 日期
-     * @return HHmmssSSS
+     * convert to HHmmssSSS
      */
     public static int time9(@NotNull LocalDateTime date) {
         return date.getHour() * 1_00_00_000 + date.getMinute() * 1_00_000 + date.getSecond() * 1_000 + (date.getNano() / 1_000_000);
     }
 
     /**
-     * 把日期变成整数 HHmmssSSS
-     *
-     * @param date 日期
-     * @return HHmmssSSS
+     * convert to HHmmssSSS
      */
     public static int time9(@NotNull ZonedDateTime date) {
         return date.getHour() * 1_00_00_000 + date.getMinute() * 1_00_000 + date.getSecond() * 1_000 + (date.getNano() / 1_000_000);
     }
 
     /**
-     * 把任意包含日期信息的数字变成日期
-     *
-     * @param num 数字
-     * @return 日期
+     * convert any number with date information to a date
      */
     @NotNull
     public static LocalTime parseTime(long num) {
@@ -179,10 +140,7 @@ public class DateNumber {
     }
 
     /**
-     * 把任意包含日期信息的数字变成日期
-     *
-     * @param num 数字
-     * @return 日期
+     * convert any number with date information to a date
      */
     @NotNull
     public static LocalDate parseDate(long num) {
@@ -190,10 +148,7 @@ public class DateNumber {
     }
 
     /**
-     * 把任意包含日期信息的数字变成日期
-     *
-     * @param num 数字
-     * @return 日期
+     * convert any number with date information to a date
      */
     @NotNull
     public static LocalDateTime parseDateTime(long num) {
@@ -201,11 +156,7 @@ public class DateNumber {
     }
 
     /**
-     * 把任意包含日期信息的数字变成日期
-     *
-     * @param num 数字
-     * @param off 数字位置偏移量
-     * @return 日期
+     * from the offset to convert any number with date information to a date
      */
     @NotNull
     public static LocalTime parseTime(long num, int off) {
@@ -213,11 +164,7 @@ public class DateNumber {
     }
 
     /**
-     * 把任意包含日期信息的数字变成日期
-     *
-     * @param num 数字
-     * @param off 数字位置偏移量
-     * @return 日期
+     * from the offset to convert any number with date information to a date
      */
     @NotNull
     public static LocalDate parseDate(long num, int off) {
@@ -225,11 +172,7 @@ public class DateNumber {
     }
 
     /**
-     * 把任意包含日期信息的数字变成日期
-     *
-     * @param num 数字
-     * @param off 数字位置偏移量
-     * @return 日期
+     * from the offset to convert any number with date information to a date
      */
     @NotNull
     public static LocalDateTime parseDateTime(long num, int off) {
