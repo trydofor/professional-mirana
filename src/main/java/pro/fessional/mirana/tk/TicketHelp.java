@@ -86,11 +86,11 @@ public class TicketHelp {
 
 
     /**
-     * 解析任意Ticket
+     * Parse any accepted Ticket
      *
-     * @param tk     凭证字符串
-     * @param accept 验证成功并返回Ticket，否则返回null
-     * @return 解析后的Ticket或null
+     * @param tk     ticket string
+     * @param accept validate and return Ticket, otherwise return null
+     * @return parsed Ticket or null
      */
     @SafeVarargs
     @Nullable
@@ -145,7 +145,7 @@ public class TicketHelp {
     }
 
     /**
-     * aes256(biz-data, salt) + md5(sig-data) 无盐Md5
+     * aes256(biz-data, salt) + md5(sig-data) plain Md5
      */
     public static class Am0Help extends AnyHelp {
 
@@ -159,7 +159,7 @@ public class TicketHelp {
     }
 
     /**
-     * aes256(biz-data, salt) + md5(sig-data + salt) 加盐Md5
+     * aes256(biz-data, salt) + md5(sig-data + salt) salt Md5
      */
     public static class Am1Help extends AnyHelp {
 
@@ -175,7 +175,7 @@ public class TicketHelp {
     }
 
     /**
-     * aes256(biz-data, salt) + HmacSHA1(sig-data, salt) Hmac验签
+     * aes256(biz-data, salt) + HmacSHA1(sig-data, salt) Hmac signature
      */
     public static class Ah1Help extends AnyHelp {
 
@@ -189,7 +189,7 @@ public class TicketHelp {
     }
 
     /**
-     * aes256(biz-data, salt) + HmacSHA256(sig-data, salt) Hmac验签
+     * aes256(biz-data, salt) + HmacSHA256(sig-data, salt) Hmac signature
      */
     public static class Ah2Help extends AnyHelp {
 
@@ -355,23 +355,23 @@ public class TicketHelp {
     public interface Helper<T> {
 
         /**
-         * 生成一个Ticket
+         * encode the Ticket
          */
         @NotNull
         Ticket encode(int pubSeq, long pubDue, T bizData);
 
         /**
-         * 解析出一个业务对象，null为不能解析
+         * decode the biz object, null if can not decode
          */
         T decode(Ticket tk);
 
         /**
-         * 能否解析一个字符串Ticket
+         * whether a string can be parsed as a Ticket
          */
         Ticket.Mutable accept(@NotNull String sigData, @NotNull String sigPart);
 
         /**
-         * 验证签名是否合法
+         * verify the signature
          */
         boolean verify(Ticket tk);
     }

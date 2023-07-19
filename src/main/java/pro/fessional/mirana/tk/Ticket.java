@@ -6,28 +6,30 @@ import java.io.Serializable;
 
 /**
  * <pre>
- * 特点是短小，可过期，可踢人，可验签，有一定业务意义，代替无意义的随机token。
- * 其中，Data后缀为业务语义，Part后缀为传输语义，不同视角的布局为，
- * 业务布局：SigData + `.` + SigPart
+ * A short, expireable, kickable, verifiable, with some business meaning, instead of meaningless random token.
+ * Where `Data` suffix is business semantics, `Part` suffix is transfer semantics, and the layout of different perspectives is.
+ *
+ * Business layout: SigData + `.` + SigPart
  * - SigData = PubPart + (`.` + BizData)?
  * - PubPart = `mod` + `-` + `due` + `-` + `seq`
- * - BizData: 业务数据，如明文的Json
+ * - BizData: business data, e.g. plaintext Json
  *
- * 传输布局：PubPart + `.` + SecPart
+ * Transfer layout: PubPart + `.` + SecPart
  * - SecPart = (BizPart + `.`)? + SigPart
- * - BizPart: 加密后的BizData
- * - SigPart: 签名数据，对SigData数据签名
+ * - BizPart: encrypted BizData
+ * - SigPart: Signature data, sign the SigData data.
  *
- * `mod`: 约定模式，加密及签名，BizPart类型等，用于反序列化。英数
- * `due`: 有效期，从1970-01-01起的秒数，用于判断时间过期。正整数
- * `seq`: 签发序号，用于判定新旧，业务过期，正整数
- * `salt` - 加密或签名秘钥，如`加盐`，对称秘钥，非对称私钥。
+ * `mod`: convention mode, encryption and signature, BizPart type, etc. for deserialization. English and number
+ * `due`: expiration date, number of seconds since 1970-01-01, used to determine time expiration. Positive integers
+ * `seq`: serial number, used to determine old or new, business expiration, positive integer
+ * `salt`: encryption or signing secret key, such as symmetric secret key, asymmetric private key.
  *
- * 解析时，比较容易理解的步骤为
- * ①把Ticket以第1个'.'分割成2段：PubData和SecData
- * ②把第1段以2个'-'分割为3段：PubMod, PubDue, PubSeq
- * ③把第2段以1个'.'分割为2段 BizPart, SigPart
- * ④以PubMod约定，解密BizPart，验证SigData签名
+ * When parsing, the easier to understand steps are,
+ * ① Split the Ticket with the 1st `.` into 2 segments: PubData and SecData.
+ * ② Split the 1st segment into 3 parts with 2 `-`: PubMod, PubDue, PubSeq.
+ * ③ Split the 2nd segment into 2 parts with 1 `.`: BizPart, SigPart
+ * ④ Decrypt BizPart and verify SigData signature with PubMod convention.
+ *
  * </pre>
  *
  * @author trydofor
@@ -35,40 +37,42 @@ import java.io.Serializable;
  */
 public interface Ticket extends Serializable {
     /**
-     * 约定模式，包括加密算法，签名方式，是BizPart结构的约定，支持[az09]
+     * The convention schema, including encryption algorithm, signature method,
+     * is a convention of the BizPart structure, supported [az09].
      */
     @NotNull
     String getPubMod();
 
     /**
-     * 有效期，从1970-01-01起的秒数，不可为负数
+     * Expiration, in seconds from 1970-01-01, not negative
      */
     long getPubDue();
 
     /**
-     * 签发序号，递增不连续，一般小于10有特别定义，不可为负数
+     * Serial number, non-negative, incremental and non-consecutive.
+     * generally less than 10 with special definitions.
      */
     int getPubSeq();
 
     /**
-     * 业务数据，可选（空为不存在），不超过1k，
-     * 格式由PubMod定义。base64为url-safe，NoPad格式，支持[az09-_]
+     * Biz-data part, optional(empty means no biz-data), less than 1k.
+     * Format defined by PubMod. base64 is url-safe, NoPad format, supports [az09-_]
      */
     @NotNull
     String getBizPart();
 
     /**
-     * 签名部分 ，一般50字符内，保证Ticket不被篡改，
-     * 格式由PubMod定义。base64为url-safe，NoPad格式，支持[az09-_]
+     * Signature part, usually within 50 characters, to ensure that the Ticket has not been tampered with.
+     * Schema defined by PubMod. base64 is url-safe, NoPad format, supports [az09-_]
      */
     @NotNull
     String getSigPart();
 
     /**
-     * 获得参与签名的数据，即ticket中`pub-part` + (`.` + `biz-part`)?。
-     * 当parse ticket string时，缓存原始ticket的biz-data部分。
+     * Get the signature data, i.e. `pub-part` + (`. ` + `biz-part`)?
+     * When parsing the ticket string, cache the biz-data of the original ticket.
      *
-     * @return 签名部分
+     * @return the signature part
      */
     @NotNull
     default String getSigData() {
@@ -82,7 +86,7 @@ public interface Ticket extends Serializable {
     }
 
     /**
-     * 序列化Ticket
+     * serialize the Ticket
      *
      * @return Ticket
      */
@@ -117,9 +121,9 @@ public interface Ticket extends Serializable {
         void setSigPart(String sig);
 
         /**
-         * 复制tk中part的内容，不包括sigData。
+         * Copy the contents of part in tk, excluding sigData.
          *
-         * @param tk 来源ticket
+         * @param tk source ticket
          */
         default void copyPart(Ticket tk) {
             if (tk == null) return;

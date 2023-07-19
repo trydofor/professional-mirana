@@ -6,7 +6,7 @@ import pro.fessional.mirana.data.Null;
 import java.util.Objects;
 
 /**
- * 仅对字符串做对应的解析
+ * String parser only
  *
  * @author trydofor
  * @since 2021-01-25
