@@ -5,11 +5,11 @@ import pro.fessional.mirana.data.Null;
 
 /**
  * <pre>
- * 用来转换命名的工具。
- * - 连续的大写会当做一个词，如ID，视为id
- * - `_.-`为强分词
- * - `单独的大写字母`为弱分词
- * - 当有强分词时，弱分词无效
+ * A naming conversion tool.
+ * - Consecutive capitalization is treated as a word, such as ID, which is treated as id
+ * - `_.-` is strong delimiter char
+ * - `Single capitals` are weak delimiter char
+ * - When there is a strong delimiter, the weak delimiter is invalid
  * </pre>
  *
  * @author trydofor
@@ -37,7 +37,7 @@ public class CaseSwitcher {
         if (cas == null) return Null.notNull(str);
         int len = str.length();
 
-        // 定性
+        // weak or strong delimiter
         boolean isWeak = true;
         for (int i = 0; i < len; i++) {
             char c = str.charAt(i);
@@ -47,7 +47,7 @@ public class CaseSwitcher {
             }
         }
 
-        // 分词
+        // split words
         StringBuilder sb = new StringBuilder(len + 10);
         if (isWeak) {
             int up = 0;
@@ -127,10 +127,7 @@ public class CaseSwitcher {
     }
 
     /**
-     * snake-case
-     *
-     * @param str 源
-     * @return snake_case
+     * kebab-case
      */
     @NotNull
     public static String kebab(CharSequence str) {
@@ -139,9 +136,6 @@ public class CaseSwitcher {
 
     /**
      * snake_case
-     *
-     * @param str 源
-     * @return snake_case
      */
     @NotNull
     public static String snake(CharSequence str) {
@@ -150,9 +144,6 @@ public class CaseSwitcher {
 
     /**
      * camelCase
-     *
-     * @param str 源
-     * @return camelCase
      */
     @NotNull
     public static String camel(CharSequence str) {
@@ -161,9 +152,6 @@ public class CaseSwitcher {
 
     /**
      * PascalCase
-     *
-     * @param str 源
-     * @return PascalCase
      */
     @NotNull
     public static String pascal(CharSequence str) {
@@ -172,9 +160,6 @@ public class CaseSwitcher {
 
     /**
      * dot.case
-     *
-     * @param str 源
-     * @return dot.case
      */
     @NotNull
     public static String dot(CharSequence str) {
@@ -183,9 +168,6 @@ public class CaseSwitcher {
 
     /**
      * SCREAMING_SNAKE
-     *
-     * @param str 源
-     * @return SCREAMING_SNAKE
      */
     @NotNull
     public static String scream(CharSequence str) {

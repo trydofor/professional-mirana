@@ -7,8 +7,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 更多的白字符Whitespace处理
- * https://en.wikipedia.org/wiki/Whitespace_character
+ * More Handling of <a href="https://en.wikipedia.org/wiki/Whitespace_character">Whitespace chars</a> than Java builtin.
  *
  * @author trydofor
  * @since 2016-12-14
@@ -66,10 +65,7 @@ public class WhiteUtil {
     }
 
     /**
-     * 把头部和尾部的白字符，全部删除
-     *
-     * @param str 输入
-     * @return 处理后的字符
+     * Remove all white chars from the header and footer.
      */
     @NotNull
     public static String trim(CharSequence str) {
@@ -100,10 +96,8 @@ public class WhiteUtil {
     }
 
     /**
-     * 把中间所有白字符(连续的视为一个)替换成一个空格（0x20），并去掉头和尾的空格
-     *
-     * @param str 输入
-     * @return 处理后的字符
+     * Remove all white chars from the header and footer.
+     * And replace the middle white chars (continuous ones are treated as one) with a single space (0x20)
      */
     @NotNull
     public static String space(CharSequence str) {
@@ -133,10 +127,7 @@ public class WhiteUtil {
     }
 
     /**
-     * 把所有白字符删除
-     *
-     * @param str 输入
-     * @return 处理后的字符
+     * Delete all white chars
      */
     @NotNull
     public static String delete(CharSequence str) {
@@ -154,10 +145,7 @@ public class WhiteUtil {
     }
 
     /**
-     * 是否全部为空白字符
-     *
-     * @param str 输入
-     * @return true 如果全空白。
+     * Whether all white chars
      */
     public static boolean isAllWhite(CharSequence str) {
         if (str == null) return true;

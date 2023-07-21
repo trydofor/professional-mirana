@@ -8,9 +8,9 @@ import java.lang.ref.SoftReference;
 
 /**
  * <pre>
- * 内部使用 ThreadLocal，有leak隐患，必须使用以下模式之一。
- * ① static，JVM内唯一Ref，避免多次创建临时Ref
- * ② 使用 try-finally-close 模式，remove掉Ref
+ * Using ThreadLocal internally, there are leak pitfalls, you must use one of the following modes.
+ * ① static, the only Ref in JVM, to avoid creating temporary Ref multiple times.
+ * ② use try-finally-close mode to remove the Ref.
  * </pre>
  *
  * @author trydofor
@@ -26,10 +26,10 @@ public class BuilderHolder extends ThreadLocalSoft<StringBuilder> {
     }
 
     /**
-     * 初始 holder，只缓存max size内的builder
+     * init holder, cache the builder only if its less than the max size
      *
-     * @param min 初始size
-     * @param max 最大size
+     * @param min init size
+     * @param max max size
      */
     public BuilderHolder(int min, int max) throws ThreadLocalAttention {
         this(min, max, new ThreadLocal<>());

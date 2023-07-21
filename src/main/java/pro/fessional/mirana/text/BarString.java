@@ -9,8 +9,9 @@ import java.util.LinkedList;
 
 /**
  * <pre>
- * 构造Bar分隔的字符串，首尾一定有Bar，Bar由以下字符自动调整。
- * https://en.wikipedia.org/wiki/Vertical_bar
+ * Constructs `Bar` delimited strings, which must have `Bar` at the beginning and end,
+ * and `Bar` is automatically selected in the following characters.
+ *
  * U+007C | VERTICAL LINE (&verbar;, &vert;, &VerticalLine;) (single vertical line)
  * U+00A6 ¦ BROKEN BAR (&brvbar;) (single broken line)
  * U+2016 ‖ DOUBLE VERTICAL LINE (&Verbar;, &Vert;) (double vertical line ( {\displaystyle \|}\| ): used in pairs to indicate norm)
@@ -22,6 +23,8 @@ import java.util.LinkedList;
  * U+2502 │ BOX DRAWINGS LIGHT VERTICAL (&boxv;) (and various other box drawing characters in the range U+2500 to U+257F)
  * U+0964 । DEVANAGARI DANDA
  * U+0965 ॥ DEVANAGARI DOUBLE DANDA
+ *
+ * see <a href="https://en.wikipedia.org/wiki/Vertical_bar">Vertical_bar</a>
  * </pre>
  *
  * @author trydofor
@@ -145,7 +148,7 @@ public class BarString {
 
 
     /**
-     * 字符串中是否包含了指定的Bar
+     * whether the string contains `Bar`
      */
     public boolean isValid() {
         return valid;
@@ -193,11 +196,11 @@ public class BarString {
     }
 
     /**
-     * 解析一个BarString，数组内元素非null
+     * parse the BarString, item in list is not null.
      *
      * @param str     BarString
-     * @param max     最大数量, 小于0表示无限制
-     * @param exactly 是否必须为max
+     * @param max     max size, 0 means auto
+     * @param exactly return empty if the size is not equal the max.
      */
     @NotNull
     public static ArrayList<String> split(String str, int max, boolean exactly) {

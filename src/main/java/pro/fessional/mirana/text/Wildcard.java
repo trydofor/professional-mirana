@@ -8,14 +8,14 @@ import java.util.ArrayList;
 
 /**
  * <pre>
- * 高性能，低碎片的通配符Wildcard贪婪匹配。
- * 提供从左到右的wildcard的匹配模式，其中
- *  - `?` 表示任意一个字符
- *  - `*` 表示任意多个字符
- *  - `?*` 等于至少一个字符
- *  - `**` 按`*`处理
- *  - `*?` 按`?*`处理
- * 注意，按字符而非字节匹配
+ * High-performance, low-fragmentation wildcard matching.
+ * Provides a left-to-right wildcard matching pattern, where
+ *  - `?` means any one char
+ *  - `*` means any number of char
+ *  - `?*` means at least one char
+ *  - `**` is treated as `*`
+ *  - `*?` is treated as `?*`.
+ * Note that matching is by char, not by byte
  * </pre>
  *
  * @author trydofor
@@ -25,16 +25,13 @@ public class Wildcard {
 
     /**
      * <pre>
-     * 按`*`分割成数组，`**` 按`*`处理，`*?` 按`?*`处理
+     * Split into arrays by `*`. `**` treated as `*`, `*?` treated as `?*`
      * `*.doc` = [`*`,`.doc`]
      * `abc?.doc` = [`abc?.doc`]
      * `**.doc` = [`*`,`.doc`]
      * `??*.doc` = [`??`,`*`,`.doc`]
      * `**?**.doc` = [`?`,`*`,`.doc`]
      * </pre>
-     *
-     * @param str 模式
-     * @return 分解后pattern
      */
     @NotNull
     public static String[] compile(CharSequence str) {
@@ -54,12 +51,12 @@ public class Wildcard {
                     ptn.add("*");
                 }
                 // skip else
-                // `**` 按`*`处理
+                // handle `**` as `*`
                 lastChr = ch;
             }
             else if (ch == '?') {
                 if (lastChr == '*') {
-                    // `*?` 按`?*`处理
+                    // handle `*?` as `?*`
                     int ps = ptn.size();
                     if (ps == 1) {
                         ptn.add(0, "?");
@@ -67,7 +64,6 @@ public class Wildcard {
                     else {
                         ptn.set(ps - 1, ptn.get(ps - 1) + "?");
                     }
-                    lastChr = '*';
                 }
                 else {
                     buf.append(ch);
@@ -88,28 +84,17 @@ public class Wildcard {
     }
 
     /**
-     * <pre>
-     * 高性能，低碎片的通配符Wildcard贪婪匹配。
-     * 提供从左到右的wildcard的匹配模式，其中
-     *  - `?` 表示任意一个字符
-     *  - `*` 表示任意多个字符
-     *  - `?*` 等于至少一个字符
-     *  - `**` 按`*`处理
-     *  - `*?` 按`?*`处理
-     * 注意，按字符而非字节匹配
-     * 进行wildcard匹配，null不匹配任何字符，但全null时匹配。
-     * </pre>
+     * null does not match any character, but matches if all null are present.
      *
-     * @param igc 忽略大小写
-     * @param str 匹配字符，null不匹配
-     * @param ptn 规整的模式（compile更合规），null或empty不匹配
-     * @return 是否匹配
+     * @param igc whether ignore case (case-insensitive)
+     * @param str string to match, skip null
+     * @param ptn patterns (should from `compile`), null or empty don't match
      */
     public static boolean match(boolean igc, CharSequence str, String... ptn) {
         if (str == null && ptn == null) return true;
         if (str == null || ptn == null || ptn.length == 0) return false;
 
-        // 借用 FilenameUtils.wildcardMatch
+        // see FilenameUtils.wildcardMatch
         boolean any = false;
         int strIdx = 0;
         int ptnIdx = 0;
@@ -124,7 +109,7 @@ public class Wildcard {
             }
 
             while (ptnIdx < ptn.length) {
-                if (ptn[ptnIdx].equals("*")) {
+                if ("*".equals(ptn[ptnIdx])) {
                     any = true;
                     if (ptnIdx == ptn.length - 1) {
                         strIdx = sln;
@@ -164,11 +149,8 @@ public class Wildcard {
     }
 
     /**
-     * 不区分大小写，从头匹配
+     * Case-insensitive match the index from the beginning, -1 means not found.
      *
-     * @param str 字符
-     * @param ptn 模式
-     * @return 查找结果，-1表示没有找到
      * @see #index(boolean, CharSequence, int, String)
      */
     public static int index(@NotNull CharSequence str, @NotNull String ptn) {
@@ -176,12 +158,8 @@ public class Wildcard {
     }
 
     /**
-     * 从头匹配
+     * match the index from the beginning, -1 means not found.
      *
-     * @param igc 忽略大小写
-     * @param str 字符
-     * @param ptn 模式
-     * @return 查找结果，-1表示没有找到
      * @see #index(boolean, CharSequence, int, String)
      */
     public static int index(boolean igc, @NotNull CharSequence str, @NotNull String ptn) {
@@ -189,13 +167,13 @@ public class Wildcard {
     }
 
     /**
-     * 支持`?`和不区分大小写的字符串查找，等同于 String.indexOf
+     * match the index from offset at the beginning, -1 means not found.
+     * support `?` and case-insensitive match, equal to String.indexOf
      *
-     * @param igc 忽略大小写
-     * @param str 字符
-     * @param off 开始查找的位置
-     * @param ptn 模式
-     * @return 查找结果，-1表示没有找到
+     * @param igc whether ignore case (case-insensitive)
+     * @param str string to match
+     * @param off the offset to match from
+     * @param ptn the pattern to match
      */
     public static int index(boolean igc, @NotNull CharSequence str, int off, @NotNull String ptn) {
         final int pln = ptn.length();

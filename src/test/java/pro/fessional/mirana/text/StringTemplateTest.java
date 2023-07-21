@@ -69,10 +69,10 @@ public class StringTemplateTest {
     public void crx() {
         String url = StringTemplate.dyn("https://api.weixin.qq.com/cgi-bin/user/info?access_token=ACCESS_TOKEN&openid=OPENID&lang=en")
                                    .bindStr("ACCESS_TOKEN", "abc123")
-                                   .bindStr("CCESS_TOKEN&", "bc1234") // 交叉
-                                   .bindStr("ACCESS", "abc1") // 包含
+                                   .bindStr("CCESS_TOKEN&", "bc1234") // cross over
+                                   .bindStr("ACCESS", "abc1") // include
                                    .bindStr("OPENID", "bcd456")
-                                   .bindReg("OPEN", "bcd4") // 包含
+                                   .bindReg("OPEN", "bcd4") // include
                                    .toString();
 
         String url2 = StringTemplate.dyn("https://api.weixin.qq.com/cgi-bin/user/info?access_token=ACCESS_TOKEN&openid=OPENID&lang=en")

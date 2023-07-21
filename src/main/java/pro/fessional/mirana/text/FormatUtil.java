@@ -14,8 +14,12 @@ import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 安全且内存碎片少的formatter，能够处理
- * slf4j的`{}`；printf的`%`；Message的`{0}`
+ * <pre>
+ * a thread-safe and low memory-fragmentation formatter, can handle
+ * - `{}` in slf4j
+ * - `%` in printf
+ * - `{0}` in Message
+ * </pre>
  *
  * @author trydofor
  * @author Baoyi Chen
@@ -36,24 +40,18 @@ public class FormatUtil {
     }
 
     /**
-     * @param skipNull 是否忽略null
-     * @param join     连接符
-     * @param objs     对象组
-     * @return 返回
      * @see BuilderHelper#join(StringBuilder, boolean, String, Iterable)
      */
     @NotNull
-    public static String join(boolean skipNull, String join, Iterable<?> objs) {
+    public static String join(boolean skipNull, String joiner, Iterable<?> objs) {
         StringBuilder builder = Holder.use();
-        BuilderHelper.join(builder, skipNull, join, objs);
+        BuilderHelper.join(builder, skipNull, joiner, objs);
         return builder.toString();
     }
 
     /**
-     * 默认使用`&amp;`和`=`符链接
+     * <pre>use `&` and `=` sort and join the string as http query string, sort by ascii asc</pre>
      *
-     * @param params 参数
-     * @return 拼接后字符串
      * @see #sortParam(Map, String, String)
      */
     @NotNull
@@ -62,13 +60,10 @@ public class FormatUtil {
     }
 
     /**
-     * 对于按key进行ascii顺序排序的参数进行拼接，默认使用TreeMap。
-     * 如果param值为null，则忽略该key
-     *
-     * @param param 参数
-     * @param join1 参数间链接符
-     * @param join2 Kv链接符
-     * @return 拼接后字符串
+     * <pre>
+     * use `join1` and `join2` sort and join the string as http query string.
+     * sort by ascii asc by default, ignore param is its key is null.
+     * </pre>
      */
     @NotNull
     public static String sortParam(@NotNull Map<?, ?> param, @NotNull String join1, @NotNull String join2) {
@@ -93,8 +88,9 @@ public class FormatUtil {
     }
 
     /**
-     * 处理slf4j的 `{}`占位符
      * <pre>
+     * handle `{}` slf4j's placeholder, eg.
+     *
      * format(null, new Object[]{"a"}) return ""
      * format("{} {} {a}", null) return "{null} {null} {a}"
      * format("{} {} {a}", new Object[]{"b"}) return "{b} {null} {a}"
@@ -106,10 +102,6 @@ public class FormatUtil {
      * format("\\\\", new Object[]{"a"}) return "\"
      * format("{c", new Object[]{"a"}) return "{c"
      * </pre>
-     *
-     * @param fmt  格式
-     * @param args 参数
-     * @return 格式化后的字符
      */
     @NotNull
     public static String logback(CharSequence fmt, Object... args) {
@@ -172,11 +164,8 @@ public class FormatUtil {
     private static final ConcurrentHashMap<String, FormatHolder> Formats = new ConcurrentHashMap<>();
 
     /**
-     * 包装了 MessageFormat的{0}，自动以empty string补全参数。
+     * handle `{0}` in MessageFormat, auto completes the parameter with empty string.
      *
-     * @param fmt  格式
-     * @param args 参数
-     * @return 格式化后的字符
      * @see java.text.MessageFormat
      */
     public static String message(CharSequence fmt, Object... args) {
@@ -197,13 +186,12 @@ public class FormatUtil {
     private static final ConcurrentHashMap<String, Integer> Printf = new ConcurrentHashMap<>();
 
     /**
-     * 处理 printf的`%`占位符，涉及复制数组，有一点的性能损失。
-     * 安全的，自动补全的 String#format。
-     * 更优雅的format建议使用 java.text.MessageFormat.
+     * <pre>
+     * handle `%` in printf,Involves copying arrays, with a small performance loss.
+     * Thread-safe, auto-complete String#format.
+     * A more elegant format suggests using java.text.MessageFormat.
+     * </pre>
      *
-     * @param fmt  格式
-     * @param args 参数
-     * @return 格式化后的字符
      * @see java.util.Formatter
      * @see String#format(String, Object...)
      */
@@ -222,11 +210,7 @@ public class FormatUtil {
 
 
     /**
-     * 使用 EmptyString补全和填充null参加
-     *
-     * @param size 参数期望长度
-     * @param args 参数
-     * @return 非null参数
+     * Completing and padding null parameters with empty string
      */
     @NotNull
     public static Object[] fixArgs(int size, Object... args) {
@@ -256,12 +240,11 @@ public class FormatUtil {
     }
 
     /**
-     * 左填充或左截断，保证固定位数
+     * Left padding or left truncation to ensure fixed length
      *
-     * @param obj 对象
-     * @param fix 固定位数
-     * @param pad 填充字符
-     * @return 处理后字符串
+     * @param obj the object
+     * @param fix the fixed length
+     * @param pad padding char
      */
     @NotNull
     public static String leftFix(@Nullable Object obj, int fix, char pad) {
@@ -284,12 +267,11 @@ public class FormatUtil {
     }
 
     /**
-     * 右填充或右截断，保证固定位数
+     * Right padding or right truncation to ensure fixed length
      *
-     * @param obj 对象
-     * @param fix 固定位数
-     * @param pad 填充字符
-     * @return 处理后字符串
+     * @param obj the object
+     * @param fix the fixed length
+     * @param pad padding char
      */
     @NotNull
     public static String rightFix(@Nullable Object obj, int fix, char pad) {
@@ -321,12 +303,12 @@ public class FormatUtil {
     }
 
     /**
-     * 统计字符窜出现次数
+     * Count string occurrences
      *
-     * @param viz 回调
-     * @param src 源
-     * @param sub 目标
-     * @return 次数数组
+     * @param viz callback
+     * @param src source
+     * @param sub substring to count
+     * @return subject count
      */
     public static int[] count(V viz, CharSequence src, String... sub) {
         if (sub == null) return Null.Ints;
@@ -480,11 +462,11 @@ public class FormatUtil {
     //
     public interface V {
         /**
-         * @param src 查找源
-         * @param idx 在src中的index
-         * @param str 找到的str
-         * @param sub str在sub中的位置
-         * @return false时，终止sub后续查找
+         * @param src the source to count on
+         * @param idx the index of substring in the source
+         * @param str the substring to count
+         * @param sub the substring index
+         * @return false stops the continuous search of this substring
          */
         boolean visit(CharSequence src, int idx, String str, int sub);
     }

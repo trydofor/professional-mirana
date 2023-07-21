@@ -5,16 +5,16 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * 只考虑汉字截断
- * 一个非ascii字符宽度为2,ascii为1
+ * Only Chinese truncation is supported. A non-ascii character has a width of 2, an ascii character has a width of 1.
+ *
+ * @author trydofor
  */
 public class FullCharUtil {
+
     /**
-     * 从左侧截取N个汉字长度的字符（英文算1,汉字算2）
+     * From the left side, cut N width characters as new string (ascii counts as 1, non-ascii counts as 2).
      *
-     * @param str   文字
-     * @param count 汉字长度
-     * @return 截取后，非null
+     * @see #leftCut(CharSequence, int, int)
      */
     @NotNull
     public static String leftCut(@Nullable CharSequence str, int count) {
@@ -22,12 +22,12 @@ public class FullCharUtil {
     }
 
     /**
-     * 从左侧截取N个汉字长度的字符（英文算1,汉字算2）
+     * From the offset on the left side, cut N width characters as new string (ascii counts as 1, non-ascii counts as 2).
      *
-     * @param str   文字
-     * @param count 汉字长度
-     * @param off   左侧字符偏移量（不管汉字还是半角）
-     * @return 截取后，非null
+     * @param str   the string
+     * @param count count of width
+     * @param off   offset on the left
+     * @return left N width chars
      */
     @NotNull
     public static String leftCut(@Nullable CharSequence str, int count, int off) {
@@ -55,11 +55,7 @@ public class FullCharUtil {
     }
 
     /**
-     * 从右侧截取N个汉字长度的字符（英文算1,汉字算2）
-     *
-     * @param str   文字
-     * @param count 汉字长度
-     * @return 截取后，非null
+     * From the right side, cut N width characters as new string (ascii counts as 1, non-ascii counts as 2).
      */
     @NotNull
     public static String rightCut(@Nullable CharSequence str, int count) {
@@ -68,12 +64,12 @@ public class FullCharUtil {
     }
 
     /**
-     * 从右侧截取N个汉字长度的字符（英文算1,汉字算2）
+     * From the offset on the right side, cut N width characters as new string (ascii counts as 1, non-ascii counts as 2).
      *
-     * @param str   文字
-     * @param count 汉字长度
-     * @param off   右侧字符偏移量（不管汉字还是半角）
-     * @return 截取后，非null
+     * @param str   the string
+     * @param count count of width
+     * @param off   offset on the right.
+     * @return left N width chars
      */
     @NotNull
     public static String rightCut(@Nullable CharSequence str, int count, int off) {

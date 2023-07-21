@@ -12,19 +12,22 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * 增加字符串拼接的可读性，同时可避免replace值中存在被替换字符串的尴尬
  * <pre>
- * StringTemplate.fix("https://api.weixin.qq.com/cgi-bin/user/info?access_token=ACCESS_TOKEN&amp;openid=OPENID&amp;lang=en")
+ * Improve the readability of string concat and avoid the awkwardness of having the replaced string in the replace value.
+ *
+ * StringTemplate.fix("access_token=ACCESS_TOKEN&amp;openid=OPENID&amp;lang=en")
  *     .bindStr("ACCESS_TOKEN", token)
  *     .bindStr("OPENID", openid)
  *     .toString();
- * 的执行效率和效果等同于
- * "https://api.weixin.qq.com/cgi-bin/user/info?access_token="+token+"&amp;openid="+openid+"&amp;lang=en"
- * 比String.format, replace，或其他动态替换的性能好。
  *
- * 需要注意的，
- * ① bindStr和bindReg字符串相同时会覆盖
- * ② 必须以toString()结束，避免ThreadLocal泄露
+ * The efficiency and effect equal to
+ * "access_token="+token+"&amp;openid="+openid+"&amp;lang=en"
+ *
+ * and faster than String.format, replace, and other dynamic replace.
+ *
+ * Note that
+ * ① bindStr and bindReg will be overwritten if they are the same string.
+ * ② must end with toString() to avoid ThreadLocal leakage.
  * </pre>
  *
  * @author trydofor
@@ -33,10 +36,7 @@ import java.util.regex.Pattern;
 public class StringTemplate {
 
     /**
-     * 静态字符串，首次替换，后续直接取得缓存
-     *
-     * @param str 字符串
-     * @return 构造器
+     * Static fixed strings, replace first and cache for later.
      */
     @NotNull
     public static B fix(@NotNull String str) {
@@ -44,10 +44,7 @@ public class StringTemplate {
     }
 
     /**
-     * 动态字符串，首次编译bindKey，后续拼接bindObj
-     *
-     * @param str 字符串
-     * @return 构造器
+     * Dynamic string, first compile bindKey, then merge it with bindObj.
      */
     @NotNull
     public static B dyn(@NotNull String str) {
@@ -55,10 +52,7 @@ public class StringTemplate {
     }
 
     /**
-     * 构造一次性字符串，不缓存编译结果
-     *
-     * @param str 字符串
-     * @return 构造器
+     * Construct one-time strings without caching compiling results
      */
     @NotNull
     public static B one(@NotNull String str) {
@@ -119,6 +113,7 @@ public class StringTemplate {
         private static final ConcurrentHashMap<B, C> Cac = new ConcurrentHashMap<>();
 
         @NotNull
+        @Override
         public String toString() {
             final C c;
             if (cache) {

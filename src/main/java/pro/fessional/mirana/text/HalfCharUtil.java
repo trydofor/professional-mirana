@@ -1,7 +1,7 @@
 package pro.fessional.mirana.text;
 
 /**
- * 半角字符转化
+ * convert full char to its half char
  *
  * @author trydofor
  * @since 2017-10-15

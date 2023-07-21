@@ -37,9 +37,7 @@ public class FormatHolder extends ThreadLocalSoft<MessageFormat> {
     }
 
     /**
-     * 参数数组的长度
-     *
-     * @return 长度
+     * get the length of the parameter array
      */
     public int argumentLength() {
         if (size == -1) {

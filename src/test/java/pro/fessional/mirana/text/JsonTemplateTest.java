@@ -48,7 +48,7 @@ class JsonTemplateTest {
                      + "        \"isAtAll\": false\n"
                      + "    },\n"
                      + "    \"text\": {\n"
-                     + "        \"content\":\"我就是我，@XXX是不一样的烟火\"\n"
+                     + "        \"content\":\"Look how the prey scatters before us.\"\n"
                      + "    },\n"
                      + "    \"msgtype\":\"text\"\n"
                      + "}"
@@ -60,7 +60,7 @@ class JsonTemplateTest {
                                 .addVal("180xxxxxx"))
                         .putVal("isAtAll", false))
                 .putObj("text", ob -> ob
-                        .putVal("content", "我就是我，@XXX是不一样的烟火"))
+                        .putVal("content", "Look how the prey scatters before us."))
                 .putVal("msgtype", "text"));
         Assertions.assertEquals(r1, j1);
 
@@ -70,7 +70,7 @@ class JsonTemplateTest {
                                 .fluentAdd("180xxxxxx"))
                         .fluentPut("isAtAll", false))
                 .fluentPut("text", new JSONObject()
-                        .fluentPut("content", "我就是我，@XXX是不一样的烟火"))
+                        .fluentPut("content", "Look how the prey scatters before us."))
                 .fluentPut("msgtype", "text")
                 .toString();
         Assertions.assertEquals(r1, f1);

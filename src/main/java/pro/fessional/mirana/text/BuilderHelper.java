@@ -1,5 +1,6 @@
 package pro.fessional.mirana.text;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import pro.fessional.mirana.evil.ThreadLocalAttention;
 
@@ -7,7 +8,7 @@ import java.util.function.Function;
 import java.util.stream.IntStream;
 
 /**
- * 对null友好的StringBuilder，内存碎片少的builder
+ * A null-friendly, low memory-fragmentation StringBuilder.
  *
  * @author trydofor
  * @since 2017-02-05.
@@ -15,13 +16,9 @@ import java.util.stream.IntStream;
 public class BuilderHelper {
 
     /**
-     * append非null
-     *
-     * @param sb  builder
-     * @param obj 对象
-     * @return 当前builder
+     * append non-null
      */
-    @NotNull
+    @Contract("_,_->param1")
     public static StringBuilder append(@NotNull StringBuilder sb, Object obj) {
         if (obj == null) return sb;
 
@@ -35,25 +32,18 @@ public class BuilderHelper {
     }
 
     /**
-     * 清空
-     *
-     * @param sb builder
-     * @return 当前builder
+     * clear the builder
      */
-    @NotNull
+    @Contract("_->param1")
     public static StringBuilder delete(@NotNull StringBuilder sb) {
         sb.setLength(0);
         return sb;
     }
 
     /**
-     * 删除最后几个字符，能处理边界
-     *
-     * @param sb    builder
-     * @param count 数量
-     * @return 当前builder
+     * delete the last count chars
      */
-    @NotNull
+    @Contract("_,_->param1")
     public static StringBuilder delete(@NotNull StringBuilder sb, int count) {
         if (count <= 0) return sb;
         int len = sb.length() - count;
@@ -62,38 +52,31 @@ public class BuilderHelper {
     }
 
     /**
-     * skipNull=false, null as empty
+     * join string with joiner, and skipNull=false, null as empty
      *
-     * @param sb  builder
-     * @param jn  joiner
-     * @param arr 数组
-     * @return 当前builder
      * @see #join(StringBuilder, boolean, String, Object...)
      */
-    @NotNull
-    public static StringBuilder join(@NotNull StringBuilder sb, String jn, Object... arr) {
-        return join(sb, false, jn, arr);
+    @Contract("_,_,_->param1")
+    public static StringBuilder join(@NotNull StringBuilder sb, String joiner, Object... arr) {
+        return join(sb, false, joiner, arr);
     }
 
     /**
-     * 使用jn链接，如 [1,null,3] -&gt; "1,,3", [1,null,3] -&gt; "1,3"。
-     * null当空字符串处理，还是跳过
-     *
-     * @param sb       builder
-     * @param skipNull null是跳过，还是当空
-     * @param jn       joiner
-     * @param arr      数组
-     * @return 当前builder
+     * <pre>
+     * join string with joiner. eg. [1,null,3] will be
+     * * "1,3" if skip null
+     * * "1,,3" if not skip null
+     * </pre>
      */
-    @NotNull
-    public static StringBuilder join(@NotNull StringBuilder sb, boolean skipNull, String jn, Object... arr) {
+    @Contract("_,_,_,_->param1")
+    public static StringBuilder join(@NotNull StringBuilder sb, boolean skipNull, String joiner, Object... arr) {
         if (arr == null || arr.length == 0) return sb;
         if (arr[0] != null) {
             sb.append(arr[0]);
         }
         for (int i = 1; i < arr.length; i++) {
             if (arr[i] != null || !skipNull) {
-                sb.append(jn);
+                sb.append(joiner);
             }
             if (arr[i] != null) {
                 sb.append(arr[i]);
@@ -103,30 +86,23 @@ public class BuilderHelper {
     }
 
     /**
-     * skipNull=false, null as empty
+     * join string with joiner, and skipNull=false, null as empty
      *
-     * @param sb  builder
-     * @param jn  joiner
-     * @param arr 数组
-     * @return 当前builder
      * @see #join(StringBuilder, boolean, String, Iterable)
      */
-    @NotNull
+    @Contract("_,_,_->param1")
     public static StringBuilder join(@NotNull StringBuilder sb, String jn, Iterable<?> arr) {
         return join(sb, false, jn, arr);
     }
 
     /**
-     * 使用jn链接，如 [1,null,3] -&gt; "1,,3", [1,null,3] -&gt; "1,3"。
-     * null当空字符串处理，还是跳过
-     *
-     * @param sb       builder
-     * @param skipNull 跳过空
-     * @param jn       joiner
-     * @param arr      数组
-     * @return 当前builder
+     * <pre>
+     * join string with joiner. eg. [1,null,3] will be
+     * * "1,3" if skip null
+     * * "1,,3" if not skip null
+     * </pre>
      */
-    @NotNull
+    @Contract("_,_,_,_->param1")
     public static StringBuilder join(@NotNull StringBuilder sb, boolean skipNull, String jn, Iterable<?> arr) {
         if (arr == null) return sb;
 
@@ -146,36 +122,37 @@ public class BuilderHelper {
     }
 
     /**
-     * skipNull=false, null as empty
+     * join string with joiner, and skipNull=false, null as empty
      *
      * @param sb  builder
      * @param jn  joiner
-     * @param arr 数组
-     * @param fn  T-&gt;R
-     * @param <T> fun输入类型
-     * @param <R> fun返回类型
-     * @return 当前builder
+     * @param arr items
+     * @param fn  trans item from T to R
+     * @param <T> fun T
+     * @param <R> fun R
      * @see #join(StringBuilder, boolean, String, Iterable, Function)
      */
-    @NotNull
+    @Contract("_,_,_,_->param1")
     public static <T, R> StringBuilder join(@NotNull StringBuilder sb, String jn, Iterable<T> arr, Function<T, R> fn) {
         return join(sb, false, jn, arr, fn);
     }
 
     /**
-     * 使用jn链接，如 [1,null,3] -&gt; "1,,3", [1,null,3] -&gt; "1,3"。
-     * null当空字符串处理，还是跳过
+     * <pre>
+     * join string with joiner. eg. [1,null,3] will be
+     * * "1,3" if skip null
+     * * "1,,3" if not skip null
+     * </pre>
      *
-     * @param sb       builder
-     * @param skipNull null是跳过，还是当空
-     * @param jn       joiner
-     * @param arr      数组
-     * @param fn       T-&gt;R
-     * @param <T>      fun输入类型
-     * @param <R>      fun返回类型
-     * @return 当前builder
+     * @param sb  builder
+     * @param jn  joiner
+     * @param arr items
+     * @param fn  trans item from T to R
+     * @param <T> fun T
+     * @param <R> fun R
+     * @see #join(StringBuilder, boolean, String, Iterable, Function)
      */
-    @NotNull
+    @Contract("_,_,_,_,_->param1")
     public static <T, R> StringBuilder join(@NotNull StringBuilder sb, boolean skipNull, String jn, Iterable<T> arr, Function<T, R> fn) {
         if (arr == null) return sb;
 
