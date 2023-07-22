@@ -24,7 +24,7 @@ import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 /**
- * 统计项目中词频，解决命名难问题
+ * Statistics of word frequency in the project to solve the problem of code naming problem.
  *
  * @author trydofor
  * @since 2022-09-27
@@ -81,13 +81,13 @@ public class WordStat {
     }
 
     /**
-     * 递归统计，包含2-20字符以上的英文单词
+     * Recursive statistics including English words within 2-20 characters
      *
-     * @param path     路径启动
-     * @param encoding 字符集 StandardCharsets.UTF_8
-     * @param regexp   匹配的文件
-     * @param counter  统计方法
-     * @return 统计词频
+     * @param path     starting path
+     * @param encoding StandardCharsets.UTF_8
+     * @param regexp   matched files
+     * @param counter  counter method
+     * @return word frequency
      */
     public Map<String, Integer> statPath(@NotNull Path path, Charset encoding, @NotNull Pattern regexp, @NotNull Function<BufferedReader, Map<String, Integer>> counter) {
         final Map<String, Integer> map = new HashMap<>();

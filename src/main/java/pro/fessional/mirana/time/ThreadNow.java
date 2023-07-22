@@ -21,8 +21,8 @@ import java.util.TimeZone;
  * The default ThreadLocal can be replaced by subclassing `init`, e.g. using TransmittableThreadLocal.
  *
  * Note that
- * ① To avoid ThreadLocal leakage, it is recommended to use try-finally mode.
- * ② subclass replacement must before any use, such as Spring's container configuration before the business.
+ * (1) To avoid ThreadLocal leakage, it is recommended to use try-finally mode.
+ * (2) subclass replacement must before any use, such as Spring's container configuration before the business.
  *
  * Benchmark               Mode  Cnt      Score      Error   Units
  * Now.localDateTime(CN)   thrpt  6   11554.389 ±  1750.603  ops/ms

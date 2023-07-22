@@ -14,7 +14,7 @@ import java.lang.management.RuntimeMXBean;
 import java.lang.management.ThreadMXBean;
 
 /**
- * 输出jvm内的cpu，mem，thread的信息
+ * Output cpu, mem, thread information in jvm
  *
  * @author trydofor
  * @since 2021-07-12
@@ -59,146 +59,112 @@ public class JvmStat {
         private int memoryLoad = -1;
 
         /**
-         * 完成时的毫秒时间戳
-         *
-         * @return 时间戳
+         * Millisecond timestamp at completion
          */
         public long getTimeDone() {
             return timeDone;
         }
 
         /**
-         * 完成时的毫秒耗时
-         *
-         * @return 毫秒
+         * Millisecond elapsed time at completion
          */
-
         public long getTimeCost() {
             return timeCost;
         }
 
         /**
-         * 当前进程的pid
-         *
-         * @return pid
+         * Current process pid
          */
         public int getPid() {
             return pid;
         }
 
         /**
-         * 当前进程name
-         *
-         * @return name
+         * Current process name
          */
         public String getName() {
             return name;
         }
 
         /**
-         * AvailableProcessors
-         *
-         * @return 可用核数
+         * the Count of Available Processors
          */
         public int getProcessor() {
             return processor;
         }
 
         /**
-         * 范围是[0-100x核数]，-1表示不支持。
-         *
-         * @return load avg.
+         * the system load avg, range is [0-100x processor], -1 means not supported.
          */
         public int getSystemLoad() {
             return systemLoad;
         }
 
         /**
-         * 范围是[0-100x核数]，-1表示不支持。
-         *
-         * @return load avg.
+         * the process load avg, range is [0-100x processor], -1 means not supported.
          */
         public int getProcessLoad() {
             return processLoad;
         }
 
         /**
-         * 全部thread数，包括daemon，-1为不支持
-         *
-         * @return thread
+         * the count of all thread including daemon, -1 means not supported.
          */
         public int getThreadCount() {
             return threadCount;
         }
 
         /**
-         * 全部daemon数，-1为不支持
-         *
-         * @return daemon
+         * the count of all daemon, -1 means not supported.
          */
         public int getDaemonCount() {
             return daemonCount;
         }
 
         /**
-         * HeapMemory.max，单位byte，-1为不支持
-         *
-         * @return HeapMemory.max
+         * HeapMemory.max in byte, -1 means not supported.
          */
         public long getMemorySize() {
             return memorySize;
         }
 
         /**
-         * HeapMemory.Committed，单位byte，-1为不支持
-         *
-         * @return HeapMemory.Committed
+         * HeapMemory.Committed in byte, -1 means not supported.
          */
         public long getMemoryFree() {
             return memoryFree;
         }
 
         /**
-         * 范围是[0-100]，-1表示不支持。
-         * 为 Committed / memorySize
-         *
-         * @return 内存占用率
+         * Committed / memorySize, range is [0-100], -1 means not supported.
          */
         public int getMemoryLoad() {
             return memoryLoad;
         }
 
         /**
-         * 等同于getMemoryLoad
-         *
-         * @return 内存占用率
+         * percent of MemoryLoad
          */
         public int getMemoryCent() {
             return memoryLoad;
         }
 
         /**
-         * 获取进程的%CPU，范围[0-100]
-         *
-         * @return 占比
+         * percent of process %CPU, range is [0-100]
          */
         public int getProcessCent() {
             return processLoad < 0 ? -1 : (processLoad / processor);
         }
 
         /**
-         * 获取进程的%CPU，范围[0-100]
-         *
-         * @return 占比
+         * percent of system %CPU, range is [0-100]
          */
         public int getSystemCent() {
             return systemLoad < 0 ? -1 : (systemLoad / processor);
         }
 
         /**
-         * 获得平均每processor的线程数
-         *
-         * @return 每核平均线程数
+         * Get the average number of threads per processor
          */
         public int getThreadLoad() {
             return threadCount * 100 / processor;
@@ -223,9 +189,7 @@ public class JvmStat {
     }
 
     /**
-     * 直接获取 stat
-     *
-     * @return stat
+     * get the default stat
      */
     @NotNull
     public static Stat stat() {
@@ -267,7 +231,7 @@ public class JvmStat {
         }
 
         try {
-            // Sun Jvm 比getSystemLoadAverage更实时的Load
+            // Sun Jvm More Real-Time Load Than getSystemLoadAverage
             MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
             ObjectName name = ObjectName.getInstance("java.lang:type=OperatingSystem");
             AttributeList pcl = mbs.getAttributes(name, new String[]{"ProcessCpuLoad"});

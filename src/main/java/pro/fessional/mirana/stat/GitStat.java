@@ -184,12 +184,12 @@ public class GitStat {
 
     /**
      * <pre>
-     * Tst\344\270\255\346\226\207\344\271\237\345\210\206\350\241\250Record.java
-     * Tst中文也分表Record.java
+     * convert the escaped utf8 name `Tst\344\270\255`
+     * to unicode `Tst中`
      * </pre>
      *
-     * @param str 文件名
-     * @return unicode
+     * @param str file name
+     * @return unicode name
      */
     public static String trimFile(String... str) {
         StringBuilder out = new StringBuilder();
@@ -263,15 +263,15 @@ public class GitStat {
             if (not) {
                 stm.execute("CREATE TABLE `" + table + "` (\n" +
                             "  `id` int(11) NOT NULL AUTO_INCREMENT,\n" +
-                            "  `origin_repo` varchar(100) NOT NULL DEFAULT '' COMMENT '仓库名称',\n" +
-                            "  `commit_hash` varchar(40) NOT NULL DEFAULT '' COMMENT '提交hash',\n" +
-                            "  `author_name` varchar(50) NOT NULL DEFAULT '' COMMENT '提交者名',\n" +
-                            "  `author_date` datetime NOT NULL DEFAULT '1000-01-01' COMMENT '提交日期',\n" +
-                            "  `commit_info` varchar(200) NOT NULL DEFAULT '' COMMENT '提交信息',\n" +
-                            "  `linenum_add` int(11) NOT NULL DEFAULT 0 COMMENT '增加行数',\n" +
-                            "  `linenum_del` int(11) NOT NULL DEFAULT 0 COMMENT '删除行数',\n" +
-                            "  `commit_file` varchar(200) NOT NULL DEFAULT '' COMMENT '提交文件',\n" +
-                            "  `rename_file` varchar(200) NOT NULL DEFAULT '' COMMENT '更名文件',\n" +
+                            "  `origin_repo` varchar(100) NOT NULL DEFAULT '' COMMENT 'repo name',\n" +
+                            "  `commit_hash` varchar(40) NOT NULL DEFAULT '' COMMENT 'commit hash',\n" +
+                            "  `author_name` varchar(50) NOT NULL DEFAULT '' COMMENT 'commiter',\n" +
+                            "  `author_date` datetime NOT NULL DEFAULT '1000-01-01' COMMENT 'commit date',\n" +
+                            "  `commit_info` varchar(200) NOT NULL DEFAULT '' COMMENT 'commit message',\n" +
+                            "  `linenum_add` int(11) NOT NULL DEFAULT 0 COMMENT 'lines of add',\n" +
+                            "  `linenum_del` int(11) NOT NULL DEFAULT 0 COMMENT 'lines of del',\n" +
+                            "  `commit_file` varchar(200) NOT NULL DEFAULT '' COMMENT 'commit file',\n" +
+                            "  `rename_file` varchar(200) NOT NULL DEFAULT '' COMMENT 'rename file',\n" +
                             "  PRIMARY KEY (`id`),\n" +
                             "  UNIQUE KEY `uq_repo_hash_file` (`origin_repo`,`commit_hash`,`commit_file`)\n" +
                             ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
@@ -279,10 +279,11 @@ public class GitStat {
                 stm.close();
             }
 
-            PreparedStatement pstm = conn.prepareStatement("INSERT IGNORE INTO " + table +
-                                                           "(origin_repo,commit_hash,author_name,author_date,commit_info,linenum_add,linenum_del,commit_file,rename_file) VALUES" +
-                                                           "(?,?,?,?,?,?,?,?,?)");
-            // 按author date正序排列
+            PreparedStatement pstm = conn.prepareStatement(
+                    "INSERT IGNORE INTO " + table +
+                    "(origin_repo,commit_hash,author_name,author_date,commit_info,linenum_add,linenum_del,commit_file,rename_file) VALUES" +
+                    "(?,?,?,?,?,?,?,?,?)");
+            // order by author date asc
             infos.sort(Comparator.comparing(o -> o.authorDate));
 
             int count = 1;
@@ -316,12 +317,12 @@ public class GitStat {
     }
 
     /**
-     * 按时间和author统计，提交数，提交文件数，增加行数，删除行数。
-     * 尽量不要使用中文名，存在控制台字符对齐问题。
+     * Statistics by time and author, including number of commits, number of files committed, number of lines added, number of lines deleted.
+     * Try not to use Chinese names, there are console character alignment issues.
      *
-     * @param infos   统计信息
-     * @param pattern 日期格式
-     * @param alias   别名，alias:author，alias不区分大小写，视为同一author
+     * @param infos   information
+     * @param pattern date format
+     * @param alias   alias:author, alias is case-insensitive.
      */
     public static void stat(List<S> infos, String pattern, Map<String, String> alias) {
         stat(infos, pattern, alias, false);
@@ -337,13 +338,13 @@ public class GitStat {
     public static final String STAT_HOUR = "HH";
 
     /**
-     * 按时间和author统计，提交数，提交文件数，增加行数，删除行数。
-     * 尽量不要使用中文名，存在控制台字符对齐问题。
+     * Statistics by time and author, including number of commits, number of files committed, number of lines added, number of lines deleted.
+     * Try not to use Chinese names, there are console character alignment issues.
      *
-     * @param infos   统计信息
-     * @param pattern 日期格式，输出排序为ascii顺序
-     * @param alias   别名，alias:author，alias不区分大小写，视为同一author
-     * @param han2    汉字是否严格等于2个英文字符
+     * @param infos   information
+     * @param pattern date format
+     * @param alias   alias:author, alias is case-insensitive.
+     * @param han2    whether a Chinese char equal to 2 English char
      */
     public static void stat(List<S> infos, String pattern, Map<String, String> alias, boolean han2) {
         if (infos == null || pattern == null) return;
@@ -359,7 +360,7 @@ public class GitStat {
             }
             alias = tmp;
         }
-        // 按author date正序排列
+        // order by author date asc
         infos.sort(Comparator.comparing(o -> o.authorDate));
 
         TreeMap<String, LinkedHashMap<String, C>> rows = new TreeMap<>();
@@ -411,7 +412,7 @@ public class GitStat {
 
             int tl = ln[0] + ln[1] + ln[2] + ln[3];
             int nl = name.length();
-            // 名字长于提交量
+            // name length is bigger than commit
             if (tl < nl) {
                 int off = 0;
                 for (int i = tl; i < nl; i++) {
@@ -421,7 +422,8 @@ public class GitStat {
             }
             e.setValue(ln);
 
-            // 名字中有汉字，需要计算宽度，按宋体，1汉字=2英文
+            // Name with Chinese characters, need to calculate the width,
+            // according to the Song font, 1 Chinese character = 2 English
             int pad = ln[0] + ln[1] + ln[2] + ln[3] + 3;
             int han = 0;
             for (int i = 0; i < nl; i++) {

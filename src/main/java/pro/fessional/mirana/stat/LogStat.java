@@ -15,8 +15,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 读取，不超过 Integer.Max 行数的小日志文件。单行长度不要超过10k。
- * 以access.log为例，71301287 = 17G。
+ * Reads small log files that do not exceed the number of Integer.Max lines.
+ * Do not exceed 10k for a single line. access.log for example, 71301287 = 17G.
  *
  * @author trydofor
  * @since 2021-07-12
@@ -33,73 +33,57 @@ public class LogStat {
         private String pathOut = null;
 
         /**
-         * 完成时的毫秒时间戳
-         *
-         * @return 时间戳
+         * Millisecond timestamp at completion
          */
         public long getTimeDone() {
             return timeDone;
         }
 
         /**
-         * 完成时的毫秒耗时
-         *
-         * @return 毫秒
+         * Millisecond elapsed time at completion
          */
-
         public long getTimeCost() {
             return timeCost;
         }
 
         /**
-         * 日志文件的last modify
-         *
-         * @return -1:不可知，0:文件不存在或异常
+         * the last modify time of the log. -1 means unknown; 0 means notfound or exception
          */
         public long getLogMtime() {
             return logMtime;
         }
 
         /**
-         * 读取起始字节
-         *
-         * @return 字节，从0开始
+         * the start byte of reading, starting from 0
          */
         public long getByteFrom() {
             return byteFrom;
         }
 
         /**
-         * 读取起始字节
-         *
-         * @return 字节，从0开始
+         * the end byte of reading, starting from 0
          */
         public long getByteDone() {
             return byteDone;
         }
 
         /**
-         * 输入日志路径
-         *
-         * @return 路径
+         * the path of log
          */
         public String getPathLog() {
             return pathLog;
         }
 
         /**
-         * 输出文件路径
-         *
-         * @return 路径
+         * the path of output
          */
         public String getPathOut() {
             return pathOut;
         }
 
         /**
-         * 文件是否增长，每次byteDone 多于 byteFrom视为增长;
-         *
-         * @return 增长
+         * Whether the file is growing.
+         * in each read time byteDone is more than byteFrom is considered growing.
          */
         public long getByteGrow() {
             return byteDone - byteFrom;
@@ -128,11 +112,12 @@ public class LogStat {
     public static final String Suffix = ".scanned.tmp";
 
     /**
-     * 直接获取 stat，同日志同毫秒内同时输出日志时有可能会覆盖。
+     * Directly obtain statistics, which may be overwritten when logs are output
+     * at the same time within the same millisecond of the same log.
      *
-     * @param log  输入文件
-     * @param from 起始字节，负数表示从末端开始
-     * @param keys 关键词，按UTF8读入
+     * @param log  the log file
+     * @param from Start byte, negative means start at the end
+     * @param keys keyword in utf8
      * @return stat
      */
     @NotNull
@@ -147,11 +132,12 @@ public class LogStat {
     }
 
     /**
-     * 直接获取 stat。log按byte读入，同日志同毫秒内同时输出日志时有可能会覆盖。
+     * Directly obtain statistics, which may be overwritten when logs are output
+     * at the same time within the same millisecond of the same log.
      *
-     * @param log  输入文件
-     * @param from 起始字节，负数表示从末端开始
-     * @param keys 关键词
+     * @param log  the log file
+     * @param from Start byte, negative means start at the end
+     * @param keys keyword in bytes
      * @return stat
      */
     @NotNull
@@ -166,11 +152,12 @@ public class LogStat {
     }
 
     /**
-     * 直接获取 stat。log按byte读入，同日志同毫秒内同时输出日志时有可能会覆盖。
+     * Directly obtain statistics, which may be overwritten when logs are output
+     * at the same time within the same millisecond of the same log.
      *
-     * @param log  输入文件
-     * @param from 起始字节，负数表示从末端开始
-     * @param keys 关键词
+     * @param log  the log file
+     * @param from Start byte, negative means start at the end
+     * @param keys keyword
      * @return stat
      */
     @NotNull
@@ -179,11 +166,12 @@ public class LogStat {
     }
 
     /**
-     * 直接获取 stat。log按byte读入，同日志同毫秒内同时输出日志时有可能会覆盖。
+     * Directly obtain statistics, which may be overwritten when logs are output
+     * at the same time within the same millisecond of the same log.
      *
-     * @param log  输入文件
-     * @param from 起始字节，负数表示从末端开始
-     * @param keys 关键词
+     * @param log  the log file
+     * @param from Start byte, negative means start at the end
+     * @param keys keyword
      * @return stat
      */
     @NotNull
@@ -199,11 +187,11 @@ public class LogStat {
     }
 
     /**
-     * 清除 N days 以前的扫描文件
+     * Clear N days old scanned files
      *
-     * @param log  输入文件
-     * @param days 天数，小于等于零，按零处理
-     * @return 被清理的文件路径
+     * @param log  the log file
+     * @param days Days, less than zero, treated as zero
+     * @return Paths of cleaned files
      */
     public static List<String> clean(String log, int days) {
         return clean(log, days, Suffix);
@@ -232,13 +220,13 @@ public class LogStat {
     }
 
     /**
-     * 直接获取 stat，同日志同毫秒内同时输出日志时有可能会覆盖。
+     * Directly obtain statistics, which may be overwritten when logs are output
+     * at the same time within the same millisecond of the same log.
      *
-     * @param log  输入文件
-     * @param from 起始字节，负数表示从末端开始
-     * @param keys 关键词
+     * @param log  the log file
+     * @param from Start byte, negative means start at the end
+     * @param keys keyword
      * @return stat
-     * @throws IOException 文件错误
      */
     public static Stat buildStat(String log, long from, List<Word> keys) throws IOException {
         return buildStat(log, from, keys, Suffix);
@@ -325,7 +313,7 @@ public class LogStat {
                         }
                     }
 
-                    // 处理末端
+                    // handle the end
                     final int left = readEnd - lineEnd;
                     if (left == 0) {
                         readOff = 0;
@@ -389,7 +377,7 @@ public class LogStat {
     }
 
     public static void main(String[] args) {
-        if (args.length == 1 && args[0].equalsIgnoreCase("clean")) {
+        if (args.length == 1 && "clean".equalsIgnoreCase(args[0])) {
             clean("/Users/trydofor/Downloads/tmp/admin.log", -1);
             System.exit(0);
         }

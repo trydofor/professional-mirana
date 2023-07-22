@@ -26,8 +26,8 @@ import java.util.regex.Pattern;
  * and faster than String.format, replace, and other dynamic replace.
  *
  * Note that
- * ① bindStr and bindReg will be overwritten if they are the same string.
- * ② must end with toString() to avoid ThreadLocal leakage.
+ * (1) bindStr and bindReg will be overwritten if they are the same string.
+ * (2) must end with toString() to avoid ThreadLocal leakage.
  * </pre>
  *
  * @author trydofor

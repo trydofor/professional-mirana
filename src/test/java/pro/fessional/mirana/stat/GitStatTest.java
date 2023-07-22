@@ -17,7 +17,7 @@ import static pro.fessional.mirana.stat.GitStat.STAT_WEEK_YEAR;
  * @author trydofor
  * @since 2020-09-16
  */
-@Disabled("手动执行")
+@Disabled("Manual")
 public class GitStatTest {
 
     @Test
@@ -36,18 +36,11 @@ public class GitStatTest {
 
     @Test
     public void stat() {
-        File workDir = new File("/Users/trydofor/Workspace/捷特/jetplus-src/jetplus-backend");
+        File workDir = new File("/Users/trydofor/Workspace/wings-backend");
         List<GitStat.S> infos = GitStat.logAll(workDir, null);
         Map<String, String> alias = new HashMap<>();
-        alias.put("KangKang", "小李飞刀");
-        alias.put("小T", "胡一刀");
-        alias.put("叫我胖虎", "胡一刀");
-        alias.put("牧冬", "王老五");
-        alias.put("mortal", "王老五");
-        alias.put("morph", "程咬金");
-        alias.put("chengxiaojun", "程咬金");
-        alias.put("xuyongjie", "徐州重工业");
-        // 中文会出现汉字对齐问题，需要调整字体，保证1中文=2英文
+        alias.put("trydofor@gmail.com", "trydofor");
+        alias.put("trydofor@github.com", "trydofor");
         GitStat.stat(infos, STAT_WEEK_YEAR, alias, false);
     }
 

@@ -27,7 +27,8 @@ public class JsonTemplate {
     static {
         try {
             Buffs = new BuilderHolder();
-        } catch (ThreadLocalAttention e) {
+        }
+        catch (ThreadLocalAttention e) {
             throw new IllegalStateException(e);
         }
     }
@@ -120,29 +121,38 @@ public class JsonTemplate {
                     appendChar(c);
                 }
                 buff.append('"');
-            } else if (obj instanceof char[]) {
+            }
+            else if (obj instanceof char[]) {
                 buff.append('"');
                 for (char c : (char[]) obj) {
                     appendChar(c);
                 }
                 buff.append('"');
-            } else if (obj instanceof byte[]) {
+            }
+            else if (obj instanceof byte[]) {
                 buff.append('"');
                 buff.append(Base64.encode((byte[]) obj));
                 buff.append('"');
-            } else if (obj instanceof boolean[]) {
+            }
+            else if (obj instanceof boolean[]) {
                 FormatUtil.toString(buff, (boolean[]) obj);
-            } else if (obj instanceof short[]) {
+            }
+            else if (obj instanceof short[]) {
                 FormatUtil.toString(buff, (short[]) obj);
-            } else if (obj instanceof int[]) {
+            }
+            else if (obj instanceof int[]) {
                 FormatUtil.toString(buff, (int[]) obj);
-            } else if (obj instanceof long[]) {
+            }
+            else if (obj instanceof long[]) {
                 FormatUtil.toString(buff, (long[]) obj);
-            } else if (obj instanceof float[]) {
+            }
+            else if (obj instanceof float[]) {
                 FormatUtil.toString(buff, (float[]) obj);
-            } else if (obj instanceof double[]) {
+            }
+            else if (obj instanceof double[]) {
                 FormatUtil.toString(buff, (double[]) obj);
-            } else {
+            }
+            else {
                 buff.append(obj);
             }
         }
@@ -324,7 +334,12 @@ public class JsonTemplate {
         }
 
         /**
-         * write `"key":...`, support ①map=`{...}` ②arr=`[...]` ③primitive arrays=`[...]`
+         * <pre>
+         * write `"key":...`, support
+         * (1) map=`{...}`
+         * (2) arr=`[...]`
+         * (3) primitive arrays=`[...]`
+         * </pre>
          *
          * @param key key
          * @param obj value/kvs/array/primitiveArr
@@ -481,7 +496,12 @@ public class JsonTemplate {
         }
 
         /**
-         * write `,...`,support ①map=`{...}` ②arr=`[...]` ③primitive array=`[...]`
+         * <pre>
+         * write `,...`, support
+         * (1) map=`{...}`
+         * (2) arr=`[...]`
+         * (3) primitive array=`[...]`
+         * </pre>
          *
          * @param obj value/kvs/array/primitiveArr
          * @return this

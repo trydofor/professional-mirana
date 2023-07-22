@@ -25,10 +25,10 @@ import java.io.Serializable;
  * `salt`: encryption or signing secret key, such as symmetric secret key, asymmetric private key.
  *
  * When parsing, the easier to understand steps are,
- * ① Split the Ticket with the 1st `.` into 2 segments: PubData and SecData.
- * ② Split the 1st segment into 3 parts with 2 `-`: PubMod, PubDue, PubSeq.
- * ③ Split the 2nd segment into 2 parts with 1 `.`: BizPart, SigPart
- * ④ Decrypt BizPart and verify SigData signature with PubMod convention.
+ * (1) Split the Ticket with the 1st `.` into 2 segments: PubData and SecData.
+ * (2) Split the 1st segment into 3 parts with 2 `-`: PubMod, PubDue, PubSeq.
+ * (3) Split the 2nd segment into 2 parts with 1 `.`: BizPart, SigPart
+ * (4) Decrypt BizPart and verify SigData signature with PubMod convention.
  *
  * </pre>
  *
