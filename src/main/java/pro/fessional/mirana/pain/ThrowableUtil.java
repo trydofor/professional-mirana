@@ -9,10 +9,7 @@ import java.io.StringWriter;
 public class ThrowableUtil {
 
     /**
-     * 把异常堆栈，打成String
-     *
-     * @param t 异常
-     * @return 堆栈
+     * print StackTrace to String
      */
     @NotNull
     public static String toString(Throwable t) {
@@ -25,10 +22,7 @@ public class ThrowableUtil {
     }
 
     /**
-     * 把异常root堆栈，打成String
-     *
-     * @param t 异常
-     * @return root堆栈
+     * print root StackTrace to String
      */
     @NotNull
     public static String rootString(Throwable t) {
@@ -37,10 +31,7 @@ public class ThrowableUtil {
     }
 
     /**
-     * 获得最底层异常，触发异常。
-     *
-     * @param t 具体异常
-     * @return rootCause
+     * get the root StackTrace which is the root cause.
      */
     @Contract("!null->!null")
     public static Throwable root(Throwable t) {
@@ -57,11 +48,10 @@ public class ThrowableUtil {
     }
 
     /**
-     * 异常链中，是否保护制定异常。
+     * Whether the specified type exception is included in the exception stack.
      *
-     * @param t 具体异常对象
-     * @param e 需要匹配的异常类型
-     * @return 结果
+     * @param t the exception stack
+     * @param e the specified type
      */
     public static boolean contains(Throwable t, Class<? extends Throwable> e) {
         if (e == null) return false;
@@ -73,12 +63,11 @@ public class ThrowableUtil {
     }
 
     /**
-     * 在cause栈中，从栈底到顶查找，第一个e类型的异常
+     * from bottom to top (old to new) of the stack, find the first (newest) specified type exception
      *
-     * @param t   异常
-     * @param e   类型
-     * @param <T> 类型
-     * @return 栈
+     * @param t   the exception stack
+     * @param e   the specified type
+     * @param <T> Type
      */
     @SuppressWarnings("unchecked")
     public static <T extends Throwable> T firstCause(Throwable t, Class<T> e) {
@@ -94,12 +83,11 @@ public class ThrowableUtil {
     }
 
     /**
-     * 在cause栈中，从栈顶到底查找，第一个e类型的异常
+     * from bottom to top of the stack (old to new), find the last (oldest) specified type exception
      *
-     * @param t   异常
-     * @param e   类型
-     * @param <T> 类型
-     * @return 栈
+     * @param t   the exception stack
+     * @param e   the specified type
+     * @param <T> Type
      */
     @SuppressWarnings("unchecked")
     public static <T extends Throwable> T lastCause(Throwable t, Class<T> e) {

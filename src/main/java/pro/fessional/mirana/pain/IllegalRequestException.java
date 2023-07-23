@@ -1,7 +1,7 @@
 package pro.fessional.mirana.pain;
 
 /**
- * 不合法的请求
+ * Illegal Request
  *
  * @author trydofor
  * @since 2021-02-18

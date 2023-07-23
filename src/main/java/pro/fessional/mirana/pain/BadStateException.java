@@ -3,7 +3,7 @@ package pro.fessional.mirana.pain;
 import pro.fessional.mirana.data.CodeEnum;
 
 /**
- * 用来做后置检查
+ * Used for post-check of state
  *
  * @author trydofor
  * @since 2019-10-05

@@ -1,6 +1,8 @@
 package pro.fessional.mirana.pain;
 
 /**
+ * the runtime TimeoutException
+ *
  * @author trydofor
  * @since 2019-05-29
  */

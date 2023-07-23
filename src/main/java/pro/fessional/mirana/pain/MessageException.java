@@ -3,7 +3,7 @@ package pro.fessional.mirana.pain;
 import pro.fessional.mirana.data.CodeEnum;
 
 /**
- * 仅用来输出业务消息的无堆栈异常
+ * Stackless exceptions used only to output business messages.
  *
  * @author trydofor
  * @since 2022-09-05

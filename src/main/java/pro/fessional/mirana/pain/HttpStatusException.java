@@ -3,7 +3,7 @@ package pro.fessional.mirana.pain;
 import pro.fessional.mirana.data.CodeEnum;
 
 /**
- * 提供HttpStatus的无堆栈异常
+ * stackless exceptions with HttpStatus
  *
  * @author trydofor
  * @since 2022-10-14

@@ -1,7 +1,7 @@
 package pro.fessional.mirana.pain;
 
 /**
- * 因状态问题无法正常响应
+ * Unable to respond properly due to state.
  *
  * @author trydofor
  * @since 2021-02-18

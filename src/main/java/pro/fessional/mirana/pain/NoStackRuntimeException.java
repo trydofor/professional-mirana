@@ -1,6 +1,8 @@
 package pro.fessional.mirana.pain;
 
 /**
+ * Stackless RuntimeException.
+ *
  * @author trydofor
  * @since 2021-01-29
  */

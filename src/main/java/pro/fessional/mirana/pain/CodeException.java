@@ -8,7 +8,7 @@ import pro.fessional.mirana.i18n.I18nAware;
 import pro.fessional.mirana.i18n.I18nString;
 
 /**
- * 可读性和性能优先，可构造无堆栈异常
+ * Readability and performance first, with support for stackless exceptions.
  *
  * @author trydofor
  * @since 2019-05-29
@@ -23,42 +23,42 @@ public class CodeException extends RuntimeException implements I18nAware {
     private Object[] i18nArgs;
 
     /**
-     * 根据Global或Thread设置，构造有栈或无栈异常
+     * Constructs a stacked or unstacked exception depending on the Global or Thread setting.
      */
     public CodeException(String code) {
         this(TweakStack.current(true), code, null);
     }
 
     /**
-     * 根据Global或Thread设置，构造有栈或无栈异常
+     * Constructs a stacked or unstacked exception depending on the Global or Thread setting.
      */
     public CodeException(String code, String message) {
         this(TweakStack.current(true), code, message);
     }
 
     /**
-     * 根据Global或Thread设置，构造有栈或无栈异常
+     * Constructs a stacked or unstacked exception depending on the Global or Thread setting.
      */
     public CodeException(CodeEnum code) {
         this(TweakStack.current(true), code, Null.Objects);
     }
 
     /**
-     * 根据Global或Thread设置，构造有栈或无栈异常
+     * Constructs a stacked or unstacked exception depending on the Global or Thread setting.
      */
     public CodeException(CodeEnum code, Object... args) {
         this(TweakStack.current(true), code, args);
     }
 
     /**
-     * 强制构造有栈或无栈异常
+     * Constructs a stacked or unstacked exception directly.
      */
     public CodeException(boolean stack, String code) {
         this(stack, code, null);
     }
 
     /**
-     * 强制构造有栈或无栈异常
+     * Constructs a stacked or unstacked exception directly.
      */
     public CodeException(boolean stack, String code, String message) {
         super(message == null ? Null.notNull(code) : message, null, stack, stack);
@@ -73,14 +73,14 @@ public class CodeException extends RuntimeException implements I18nAware {
     }
 
     /**
-     * 强制构造有栈或无栈异常
+     * Constructs a stacked or unstacked exception directly.
      */
     public CodeException(boolean stack, CodeEnum code) {
         this(stack, code, Null.Objects);
     }
 
     /**
-     * 强制构造有栈或无栈异常
+     * Constructs a stacked or unstacked exception directly.
      */
     public CodeException(boolean stack, CodeEnum code, Object... args) {
         this(stack, code == null ? "" : code.getCode(), code == null ? "" : code.getHint());

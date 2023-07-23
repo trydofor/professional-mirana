@@ -3,7 +3,7 @@ package pro.fessional.mirana.pain;
 import pro.fessional.mirana.data.CodeEnum;
 
 /**
- * 用来做前置检查
+ * Used for pre-check of arguments
  *
  * @author trydofor
  * @since 2019-10-05
