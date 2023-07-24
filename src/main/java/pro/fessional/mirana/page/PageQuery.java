@@ -8,10 +8,10 @@ import java.util.Objects;
 
 /**
  * <pre>
- * org.springframework.data.domain.Page很强大，不过依赖较重
- * page，从1开始，不小于1。
- * size，从1开始，不小于1。
- * sort ""表示null，`,`分隔，'key1,-key2' means key asc, key2 desc.
+ * org.springframework.data.domain.Page is powerful, but with heavy deps.
+ * - page, 1-based, not less than 1.
+ * - size, 1-based, not less than 1.
+ * - sort empty means null, `,` delimited, eg. 'key1,-key2' means `key1 asc, key2 desc`.
  * </pre>
  *
  * @author trydofor
@@ -39,9 +39,7 @@ public class PageQuery implements Serializable {
     }
 
     /**
-     * 当前页码，从1开始，不小于1。
-     *
-     * @return 页码
+     * The current page number, 1-based, not less than 1.
      */
     public int getPage() {
         return page;
@@ -53,9 +51,7 @@ public class PageQuery implements Serializable {
     }
 
     /**
-     * 每页大小，从1开始，不小于1。
-     *
-     * @return 大小
+     * The size of each page, 1-based, not less than 1.
      */
     public int getSize() {
         return size;
@@ -67,9 +63,8 @@ public class PageQuery implements Serializable {
     }
 
     /**
-     * 固定格式的排序条件。
+     * Fixed-format sorting clause.
      *
-     * @return 排序条件
      * @see PageUtil#sort(String)
      */
 
@@ -84,9 +79,7 @@ public class PageQuery implements Serializable {
     }
 
     /**
-     * 获取当前页的数据偏移量，从0开始
-     *
-     * @return 偏移量
+     * Get the data offset of the current page, 0-based.
      */
     public int toOffset() {
         return PageUtil.dataIndex(page, size);

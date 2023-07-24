@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * 在wings warlock中有序列化测试
+ * serialization testcase in wings warlock
  *
  * @author trydofor
  * @since 2020-09-29

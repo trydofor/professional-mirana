@@ -19,8 +19,9 @@ import java.util.Objects;
 import java.util.function.Function;
 
 /**
- * It is not recommended to change the page data after construction.
  * <pre>
+ * It is not recommended to change the page data after construction.
+ *
  * page - 1-based, not less than 1.
  * size - 1-based, not less than 1.
  * sort - sort string

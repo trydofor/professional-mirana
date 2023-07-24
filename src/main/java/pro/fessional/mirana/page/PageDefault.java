@@ -7,8 +7,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 兼容 spring pageable，用来webmvc参数获取。
- * 可通过HandlerMethodArgumentResolver配置。
+ * Compatible with spring `Pageable` for webmvc parameter.
+ * Configurable via HandlerMethodArgumentResolver.
  *
  * @author trydofor
  * @since 2020-12-28

@@ -16,11 +16,11 @@ import java.util.function.BiConsumer;
 public class PageUtil {
 
     /**
-     * 计算当前页对应记录的偏移量，pageNumber从1开始， pageSize 不小于1。
+     * Calc the index of the data by current pageNumber and pageSize.
      *
-     * @param pageNumber 从1开始
-     * @param pageSize   不小于1
-     * @return 从0开始的偏移量
+     * @param pageNumber 1-based, not less than 1.
+     * @param pageSize   1-based, not less than 1.
+     * @return the 0-based index
      */
     public static int dataIndex(int pageNumber, int pageSize) {
         if (pageNumber <= 1) return 0;
@@ -29,11 +29,11 @@ public class PageUtil {
     }
 
     /**
-     * 把总记录数分页，totalData，pageSize不小于1。
+     * Calc the total page by totalData and pageSize.
      *
-     * @param totalData 总记录数量，超过21亿的数字不可想象
-     * @param pageSize  每页显示记录数量
-     * @return 从1开始的总分页数，当数据为零是返回0
+     * @param totalData The total number of data, over 2.1 billion is unthinkable
+     * @param pageSize  pageSize, 1-based, not less than 1.
+     * @return Calc the total page, 1-based. 0 if totalData is le 0
      */
 
     public static int totalPage(int totalData, int pageSize) {
@@ -52,13 +52,16 @@ public class PageUtil {
     }
 
     /**
-     * 构造order-by的约定字符串。`,`分隔，`key`表示asc升序，`-key`表示desc降序。
-     * 自动移除所有空白字符，WitheUtil
+     * <pre>
+     * Constructs the order-by convention string.
+     * `,` - delimited
+     * `key` - means asc
+     * `-key` - means desc
+     * Automatically remove all whitespace characters via WitheUtil
+     * </pre>
      *
-     * @param sort 格式
-     * @return order by
-     * @see #SORT_DELI 分隔符
-     * @see #SORT_DESC 降序
+     * @see #SORT_DELI
+     * @see #SORT_DESC
      */
     @NotNull
     public static List<By> sort(String sort) {
@@ -181,13 +184,13 @@ public class PageUtil {
     }
 
     /**
-     * 分页处理一个list
+     * paginate a list of data
      *
-     * @param data     数据集
-     * @param pageSize 页大小
-     * @param consumer 接受器，接受页数和当页数据
-     * @param <E>      类型
-     * @return 页数，0表示没有数据
+     * @param data     list of data
+     * @param pageSize page size
+     * @param consumer Acceptor of pageNumber and current page data
+     * @param <E>      data Type
+     * @return Number of pages, 0 means no data
      */
     public static <E> int paginate(List<E> data, int pageSize, BiConsumer<Integer, List<E>> consumer) {
         if (data == null || data.isEmpty()) return 0;
@@ -206,13 +209,14 @@ public class PageUtil {
     }
 
     /**
-     * 分页处理一个list
+     * paginate a list of data
      *
-     * @param data     数据集
-     * @param pageSize 页大小
-     * @param <E>      类型
-     * @return 分页后的list
+     * @param data     list of data
+     * @param pageSize page size
+     * @param <E>      data Type
+     * @return Paginated list
      */
+    @NotNull
     public static <E> List<List<E>> paginate(List<E> data, int pageSize) {
         if (data == null || data.isEmpty()) return Collections.emptyList();
         if (pageSize < 1) pageSize = 1;
