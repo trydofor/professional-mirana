@@ -1,9 +1,11 @@
 package pro.fessional.mirana.netx;
 
 /**
+ * <pre>
  * javax.net.ssl.SSLException: Received fatal alert: protocol_version
  * at sun.security.ssl.Alerts.getSSLException(Alerts.java:208)
- * https://blogs.oracle.com/java-platform-group/jdk-8-will-use-tls-12-as-default
+ * see <a href="https://blogs.oracle.com/java-platform-group/jdk-8-will-use-tls-12-as-default">jdk-8-will-use-tls-12-as-default</a>
+ * </pre>
  *
  * @author trydofor
  * @since 2018-09-26

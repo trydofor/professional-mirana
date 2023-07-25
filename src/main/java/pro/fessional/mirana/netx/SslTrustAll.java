@@ -64,30 +64,30 @@ public class SslTrustAll {
     }
 
     /**
-     * 重置 HttpsURLConnection.setDefaultSSLSocketFactory 为系统初始值
+     * reset HttpsURLConnection.setDefaultSSLSocketFactory to system default
      */
     public static void resetSocketFactory() {
         HttpsURLConnection.setDefaultSSLSocketFactory(DEFAULT_SOCKET_FACTORY);
     }
 
     /**
-     * 设置 HttpsURLConnection.setDefaultSSLSocketFactory SSL_SOCKET_FACTORY
+     * set HttpsURLConnection.setDefaultSSLSocketFactory to SSL_SOCKET_FACTORY
      */
     public static void trustSocketFactory() {
         HttpsURLConnection.setDefaultSSLSocketFactory(SSL_SOCKET_FACTORY);
     }
 
     /**
-     * 重置 HttpsURLConnection.setDefaultHostnameVerifier 为系统初始值
+     * reset HttpsURLConnection.setDefaultHostnameVerifier to system default
      */
     public static void resetHostnameVerifier() {
         HttpsURLConnection.setDefaultHostnameVerifier(DEFAULT_HOSTNAME_VERIFIER);
     }
 
     /**
-     * 设置 HttpsURLConnection.setDefaultHostnameVerifier HOSTNAME_VERIFIER
+     * set HttpsURLConnection.setDefaultHostnameVerifier to HOSTNAME_VERIFIER
      *
-     * @param hostname 信任的hostname如, www.moilioncircle.com
+     * @param hostname trusted hostname, eg. www.moilioncircle.com
      */
     public static void trustHostnameVerifier(String... hostname) {
         HOSTNAME_TRUSTED.addAll(Arrays.asList(hostname));
