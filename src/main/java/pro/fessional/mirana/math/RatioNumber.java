@@ -1,32 +1,37 @@
 package pro.fessional.mirana.math;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import pro.fessional.mirana.best.AssertArgs;
 
 import java.util.Objects;
 
 /**
  * <pre>
- * 比例数，一种大小包装物品消耗的换算表示法。
- * 既表示了两种单位比例关系，又表示了大小物品的个数的进退位。
+ * Proportional number, express the two units of proportionality,
+ * and the number of large and small items carried and borrowed ratio.
  *
- * 举例A：2【罐】二氧化碳，能打3【杯】气泡水
- * oneUnit, 计数单位，【罐】
- * useUnit, 使用单位，【杯】
- * oneRate, 计数比例，【2】，2个One等于3个Use
- * useRate, 使用比例，【3】，3个Use等于2个One
- * dosage, 使用用量,【1】(杯)
+ * Example A: 2 cans of CO2 make 3 cups of soda
+ * * `oneUnit` - stock unit `can`
+ * * `useUnit` - usage unit `cup`
+ * * `oneRate` - `2` stock equals 3 usage
+ * * `useRate` - `3` usage equals 2 stock
+ * * `dosage` - 1 `cup` per use
  *
+ * Derived examples, looking at the values of
+ * `oneUnit`, `useUnit`, `oneRate`, `useRate`, `dosage` respectively
  *
- * 衍生例子，分别看 oneUnit,useUnit,oneRate,useRate,dosage的值
- * ①1【袋】饼 5【张】，每次用 1【张】 → 袋，张，1，5，1
- * ②1【袋】盐 500【克】，每次用30【克】→ 袋，克，1，500，30
- * ③2【罐】二氧化碳，能打3【杯】气泡水，一次买一【杯】→ 罐，杯，2，3，1
- * ④1【瓶】奶500g，每【勺】5g（能挖100勺），一次用2【勺】→ 瓶，勺，1，100，2
- * 注意，此处，也可表示为 → 瓶，克，1，500，10
- * 但不可以表示为  → 瓶，克，5，500，2
- * 因为它把1瓶500g，变成了5瓶500克。
+ * (1) 1 `bag` cake 5 `piece`,  1 `piece` per use -> bag, piece, 1, 5, 1
+ * (2) 1 `bag` salt 500 `gram`,  30 `gram` per use -> bag, gram, 1, 500, 30
+ * (3) 2 `can` CO2 make 3 `cup` soda, one `cup` per use -> can, cup, 2, 3, 1
+ * (4) 1 `bag` salt 500 `gram`,  1 `spoon` 5 `gram`, 2 `spoon` per use -> bag, spoon, 1, 100, 2
  *
+ * Note, it can also be expressed as -> bag, gram, 1, 500, 10
+ * but it cannot be expressed as -> bag, gram, 5, 500, 2
+ * because it turns 1 `bag` of 500g, into 5 `bag` of 500g.
  * </pre>
+ *
+ * @author trydofor
  */
 public class RatioNumber {
 
@@ -58,28 +63,15 @@ public class RatioNumber {
         return useKeep;
     }
 
-    /**
-     * 同数加法
-     *
-     * @param num 其他数字
-     * @param ovu 进位比例
-     * @param grd 进位方式
-     * @return 新的数字
-     */
-    public RatioNumber add(RatioNumber num, Ratio ovu, Grade grd) {
+    @Contract("_,_,_->new")
+    public RatioNumber add(@NotNull RatioNumber num, Ratio ovu, Grade grd) {
         int oneNum = oneKeep + num.oneKeep;
         int useNum = useKeep + num.useKeep;
         return grade(oneNum, useNum, ovu, grd);
     }
 
-    /**
-     * 同数减法
-     *
-     * @param num 其他数字
-     * @param ovu 进位比例
-     * @param grd 进位方式
-     * @return 新的数字
-     */
+
+    @Contract("_,_,_->new")
     public RatioNumber sub(RatioNumber num, Ratio ovu, Grade grd) {
         int oneNum = oneKeep - num.oneKeep;
         int useNum = useKeep - num.useKeep;
@@ -87,59 +79,46 @@ public class RatioNumber {
     }
 
     /**
-     * 用量减法
-     *
-     * @param dosage 用量
-     * @param ovu    进位比例
-     * @param grd    进位方式
-     * @return 新的数字
+     * dosage add
      */
+    @Contract("_,_,_->new")
     public RatioNumber add(int dosage, Ratio ovu, Grade grd) {
         return grade(oneKeep, useKeep + dosage, ovu, grd);
     }
 
     /**
-     * 用量减法
-     *
-     * @param dosage 用量
-     * @param ovu    进位比例
-     * @param grd    进位方式
-     * @return 新的数字
+     * dosage sub
      */
+    @Contract("_,_,_->new")
     public RatioNumber sub(int dosage, Ratio ovu, Grade grd) {
         return add(-dosage, ovu, grd);
     }
 
     /**
-     * 整理数字的进退位，以 Upgraded 方式
-     *
-     * @param ovu 进位比例
-     * @return 新的数字
+     * Organize the digits up or down by Grade.Upgraded.
      */
+    @Contract("_->new")
     public RatioNumber grade(Ratio ovu) {
         return grade(ovu, Grade.Upgraded);
     }
 
     /**
-     * 整理数字的进退位
-     *
-     * @param ovu 进位比例
-     * @param grd 进位方式
-     * @return 新的数字
+     * Organize the digits up or down by Grade.
      */
+    @Contract("_,_->new")
     public RatioNumber grade(Ratio ovu, Grade grd) {
         return grade(oneKeep, useKeep, ovu, grd);
     }
 
     /**
-     * 整理数字的进退位
+     * Organize the digits up or down by Grade.
      *
-     * @param oneNum one部分
-     * @param useNum use部分
-     * @param ovu    进位比例
-     * @param grd    进位方式
-     * @return 新的数字
+     * @param oneNum one part
+     * @param useNum use part
+     * @param ovu    ratio
+     * @param grd    grade type
      */
+    @Contract("_,_,_,_->new")
     public static RatioNumber grade(int oneNum, int useNum, Ratio ovu, Grade grd) {
         if (grd == null || grd == Grade.Isolated) return number(oneNum, useNum);
 
@@ -150,13 +129,13 @@ public class RatioNumber {
         int oneRate = ovu.oneRate;
         int useRate = ovu.useRate;
 
-        // 处理退位，确保 useNum 大于 0
+        // handle down, make sure useNum > 0
         while (useNum <= 0) {
             oneNum -= oneRate;
             useNum += useRate;
         }
 
-        // 处理进位
+        // handle up
         if (grd == Grade.Upgraded && useNum > useRate) {
             int d = (useNum - 1) / useRate;
             oneNum += d * oneRate;
@@ -186,7 +165,7 @@ public class RatioNumber {
     }
 
     /**
-     * one与use的比例关系, few时可以抹掉
+     * ration of `one` and `use`, How many `one` equals how many `use`
      */
     public static class Ratio {
         private final int oneRate;
@@ -228,21 +207,21 @@ public class RatioNumber {
     }
 
     /**
-     * one与use的进位关系
+     * up/down relationship between `one` and `use`
      */
     public enum Grade {
         /**
-         * 分别计算，不进位，不退位
+         * Isolated calc, No Carry, No Borrow
          */
         Isolated,
 
         /**
-         * 保持use和one都正数(0,)，use优先，只借位，不进位
+         * Keep `use` and `one` positive (0), `use` takes precedence, only borrow, not carry
          */
         Positive,
 
         /**
-         * 保持use和one都正数(0,)，尽量把use进位到one
+         * Keep `use` and `one` positive (0), try to carry the `use` to `one`
          */
         Upgraded,
     }

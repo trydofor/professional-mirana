@@ -1,7 +1,7 @@
 package pro.fessional.mirana.math;
 
 /**
- * 自动处理 [-+]?[-_0-9,]+的字符串变成整数
+ * Auto convert string in `[-+]?[-_0-9,]+` to number
  *
  * @author trydofor
  * @since 2015-12-12.
@@ -138,10 +138,7 @@ public class AnyIntegerUtil {
     }
 
     /**
-     * 自动处理 [-+]?[-_0-9,]+的字符串变成整数
-     *
-     * @param str 字符串
-     * @return -?[0-9]+
+     * Auto convert string to number string in `[-+]?[-_0-9,]+`
      */
     public static String trimToInteger(CharSequence str) {
         int len = str.length();
@@ -172,11 +169,7 @@ public class AnyIntegerUtil {
     }
 
     /**
-     * 向下一个unit取整。如unit=10时，num=1，next=10；num=10，next=20
-     *
-     * @param num  数
-     * @param unit 单位
-     * @return 下一个
+     * Round up to the next UNIT. eg. if unit=10, num=1, next=10; num=10, next=20
      */
     public static int next32(int num, int unit) {
         if (unit == 0) return num;
@@ -194,11 +187,7 @@ public class AnyIntegerUtil {
     }
 
     /**
-     * 向下一个unit取整。如unit=10时，num=1，next=10；num=10，next=20
-     *
-     * @param num  数
-     * @param unit 单位
-     * @return 下一个
+     * Round up to the next UNIT. eg. if unit=10, num=1, next=10; num=10, next=20
      */
     public static long next64(long num, long unit) {
         if (unit == 0) return num;
@@ -216,11 +205,7 @@ public class AnyIntegerUtil {
     }
 
     /**
-     * 向前一个unit取整。如unit=10时，num=10，prev=0；num=11，prev=10
-     *
-     * @param num  数
-     * @param unit 单位
-     * @return 前一个
+     * Round up to the previous unit. eg. if unit=10, num=10, prev=0; num=11, prev=10
      */
     public static int prev32(int num, int unit) {
         if (unit == 0) return num;
@@ -239,11 +224,7 @@ public class AnyIntegerUtil {
     }
 
     /**
-     * 向前一个unit取整。如unit=10时，num=10，prev=0；num=11，prev=10
-     *
-     * @param num  数
-     * @param unit 单位
-     * @return 前一个
+     * Round up to the previous unit. eg. if unit=10, num=10, prev=0; num=11, prev=10
      */
     public static long prev64(long num, long unit) {
         if (unit == 0) return num;

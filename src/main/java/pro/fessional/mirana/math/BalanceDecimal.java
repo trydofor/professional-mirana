@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * 按权重分割数值
+ * average the number with the count
  *
  * @author trydofor
  * @since 2018-09-14
@@ -25,7 +25,7 @@ public class BalanceDecimal implements Iterable<BigDecimal> {
     private final BigDecimal[] resultVal;
 
     /**
-     * balance the mumber with the count, and the scale is 2 (0.01)
+     * balance the number with the count, and the scale is 2 (0.01)
      * 20/6 = [3.33, 3.33, 3.34, 3.33, 3.33, 3.34]
      *
      * @param total the number to be averaged
@@ -37,7 +37,7 @@ public class BalanceDecimal implements Iterable<BigDecimal> {
     }
 
     /**
-     * balance the mumber with the count, and the assigned scale
+     * balance the number with the count, and the assigned scale
      * 20/6 = [3.33, 3.33, 3.34, 3.33, 3.33, 3.34]
      *
      * @param total the number to be averaged

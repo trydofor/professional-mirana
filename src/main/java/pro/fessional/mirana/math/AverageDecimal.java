@@ -21,7 +21,7 @@ public class AverageDecimal implements Iterable<BigDecimal> {
     private final int fixCount;
 
     /**
-     * average the mumber with the count, and the scale is 2 (0.01)
+     * average the number with the count, and the scale is 2 (0.01)
      * 20/6 = [3.33, 3.33, 3.34, 3.33, 3.33, 3.34]
      *
      * @param total the number to be averaged
@@ -33,7 +33,7 @@ public class AverageDecimal implements Iterable<BigDecimal> {
     }
 
     /**
-     * average the mumber with the count, and the assigned scale
+     * average the number with the count, and the assigned scale
      * 20/6 = [3.33, 3.33, 3.34, 3.33, 3.33, 3.34]
      *
      * @param total the number to be averaged

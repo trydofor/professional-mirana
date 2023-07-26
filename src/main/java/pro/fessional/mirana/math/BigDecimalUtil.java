@@ -2,6 +2,7 @@ package pro.fessional.mirana.math;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import pro.fessional.mirana.data.Null;
 
 import java.math.BigDecimal;
@@ -18,7 +19,7 @@ import static java.math.RoundingMode.FLOOR;
 import static java.math.RoundingMode.HALF_UP;
 
 /**
- * null友好的BigDecimal工具类
+ * Null-friendly BigDecimal utility
  *
  * @author trydofor
  * @since 2015-12-11.
@@ -30,10 +31,7 @@ public class BigDecimalUtil {
     // ////// string //////
 
     /**
-     * null时返回空
-     *
-     * @param num 数字
-     * @return 字符串
+     * Return empty if `num` is null
      */
     @NotNull
     public static String string(BigDecimal num) {
@@ -41,11 +39,7 @@ public class BigDecimalUtil {
     }
 
     /**
-     * 舍去scale+1位后，向上取值
-     *
-     * @param num   数字
-     * @param scale 小数点几位
-     * @return 字符串
+     * Remove all digit after `scale` (exclude) then `ceil` the number.
      */
     @NotNull
     public static String string(BigDecimal num, int scale) {
@@ -54,23 +48,15 @@ public class BigDecimalUtil {
     }
 
     /**
-     * 字符串化
-     *
-     * @param num 数字
-     * @param elz null时返回
-     * @return 字符串
+     * Return `elze` if `num` is null
      */
-    public static String string(BigDecimal num, String elz) {
-        if (num == null) return elz;
+    public static String string(BigDecimal num, String elze) {
+        if (num == null) return elze;
         return num.toPlainString();
     }
 
     /**
-     * 舍去末尾多余的0
-     *
-     * @param num   数字
-     * @param strip 舍去末尾的多余的0
-     * @return 字符串
+     * Remove zeros at the end if `strip`.
      */
     @NotNull
     public static String string(BigDecimal num, boolean strip) {
@@ -78,12 +64,10 @@ public class BigDecimalUtil {
     }
 
     /**
-     * 舍去scale+1位后，向上取值，并舍去末尾多余的0
-     *
-     * @param num   数字
-     * @param scale 保留小数点几位
-     * @param strip 舍去末尾的多余的0
-     * @return 字符串
+     * <pre>
+     * Remove all digit after `scale` (exclude), then `ceil` the number
+     * Remove zeros at the end if `strip`.
+     * </pre>
      */
     @NotNull
     public static String string(BigDecimal num, int scale, boolean strip) {
@@ -92,12 +76,11 @@ public class BigDecimalUtil {
     }
 
     /**
-     * 舍去scale+1位后，向上取值，并舍去末尾多余的0
-     *
-     * @param num   数字
-     * @param elze  null时返回
-     * @param strip 舍去末尾的多余的0
-     * @return 字符串
+     * <pre>
+     * Return `elze` if `num` null.
+     * Remove all digit after `scale` (exclude), then `ceil` the number
+     * Remove zeros at the end if `strip`.
+     * </pre>
      */
     public static String string(BigDecimal num, String elze, boolean strip) {
         if (num == null) return elze;
@@ -106,16 +89,26 @@ public class BigDecimalUtil {
 
     // ////// object //////
 
+    /**
+     * convert `num` object to BigDecimal
+     */
     @Contract("!null -> !null")
     public static BigDecimal object(Object num) {
         return object(num, null, false);
     }
 
+    /**
+     * convert `num` object to BigDecimal, return `elze` if `num` is null.
+     */
     @Contract("_, !null -> !null")
     public static BigDecimal object(Object num, BigDecimal elze) {
         return object(num, elze, false);
     }
 
+    /**
+     * convert `num` object to BigDecimal, return `elze` if `num` is null.
+     * throw the exception if there is exception and `fail`
+     */
     @Contract("_, !null, _ -> !null")
     public static BigDecimal object(Object num, BigDecimal elze, boolean fail) {
         BigDecimal r;
@@ -172,10 +165,7 @@ public class BigDecimalUtil {
     // ////// notnull //////
 
     /**
-     * 取得第一个非Null数字
-     *
-     * @param nums 数字
-     * @return 非null
+     * get the first parsed non-null number, NullPointerException if all null.
      */
     @NotNull
     public static BigDecimal notNull(Object... nums) {
@@ -188,12 +178,7 @@ public class BigDecimalUtil {
     }
 
     /**
-     * true时返回A，否则B
-     *
-     * @param cond 条件
-     * @param a    true时返回
-     * @param b    false时返回
-     * @return 非空值
+     * parse `a` if `cond`, else `b`, NullPointerException if all null.
      */
     @NotNull
     public static BigDecimal ifElse(boolean cond, Object a, Object b) {
@@ -204,10 +189,7 @@ public class BigDecimalUtil {
     // ////// avg //////
 
     /**
-     * 平均数，null被忽略
-     *
-     * @param nums 数字
-     * @return 平均数
+     * skip null num and get the average, NullPointerException if get null.
      */
     @NotNull
     public static BigDecimal avg(Object... nums) {
@@ -215,27 +197,41 @@ public class BigDecimalUtil {
         return Objects.requireNonNull(total);
     }
 
+    /**
+     * skip null num and get the average, NullPointerException if get null.
+     */
     @NotNull
-    public static BigDecimal avgMap(Iterable<?> cols) {
-        BigDecimal total = avgMapNull(cols);
+    public static BigDecimal avgMap(Iterable<?> nums) {
+        BigDecimal total = avgMapNull(nums);
         return Objects.requireNonNull(total);
     }
 
+    /**
+     * skip null num and get the average, NullPointerException if get null.
+     */
     @NotNull
-    public static <T> BigDecimal avgMap(Iterable<T> cols, Function<? super T, ?> mapper) {
-        BigDecimal total = avgMapNull(cols, mapper);
+    public static <T> BigDecimal avgMap(Iterable<T> nums, Function<? super T, ?> mapper) {
+        BigDecimal total = avgMapNull(nums, mapper);
         return Objects.requireNonNull(total);
     }
 
+    /**
+     * skip null num and get the average
+     */
+    @Nullable
     public static BigDecimal avgNull(Object... nums) {
         if (nums == null) return null;
         return avgMapNull(Arrays.asList(nums));
     }
 
-    public static BigDecimal avgMapNull(Iterable<?> cols) {
+    /**
+     * skip null num and get the average
+     */
+    @Nullable
+    public static BigDecimal avgMapNull(Iterable<?> nums) {
         BigDecimal total = null;
         int count = 0;
-        for (Object e : cols) {
+        for (Object e : nums) {
             final BigDecimal d = object(e);
             if (d != null) {
                 total = total == null ? d : total.add(d, MC);
@@ -245,10 +241,14 @@ public class BigDecimalUtil {
         return total == null ? null : total.divide(new BigDecimal(count), MC);
     }
 
-    public static <T> BigDecimal avgMapNull(Iterable<T> cols, Function<? super T, ?> mapper) {
+    /**
+     * mapping and skip null num and get the average
+     */
+    @Nullable
+    public static <T> BigDecimal avgMapNull(Iterable<T> nums, Function<? super T, ?> mapper) {
         BigDecimal total = null;
         int count = 0;
-        for (T e : cols) {
+        for (T e : nums) {
             final Object m = mapper.apply(e);
             final BigDecimal d = object(m);
             if (d != null) {
@@ -279,11 +279,13 @@ public class BigDecimalUtil {
         return Objects.requireNonNull(max);
     }
 
+    @Nullable
     public static BigDecimal maxNull(Object... nums) {
         if (nums == null) return null;
         return maxMapNull(Arrays.asList(nums));
     }
 
+    @Nullable
     public static BigDecimal maxMapNull(Iterable<?> cols) {
         if (cols == null) return null;
 
@@ -297,6 +299,7 @@ public class BigDecimalUtil {
         return max;
     }
 
+    @Nullable
     public static <T> BigDecimal maxMapNull(Iterable<T> cols, Function<? super T, ?> mapper) {
         if (cols == null) return null;
 
@@ -329,11 +332,13 @@ public class BigDecimalUtil {
         return Objects.requireNonNull(min);
     }
 
+    @Nullable
     public static BigDecimal minNull(Object... nums) {
         if (nums == null) return null;
         return minMapNull(Arrays.asList(nums));
     }
 
+    @Nullable
     public static BigDecimal minMapNull(Iterable<?> cols) {
         if (cols == null) return null;
 
@@ -347,6 +352,7 @@ public class BigDecimalUtil {
         return min;
     }
 
+    @Nullable
     public static <T> BigDecimal minMapNull(Iterable<T> cols, Function<? super T, ?> mapper) {
         if (cols == null) return null;
 
@@ -364,21 +370,27 @@ public class BigDecimalUtil {
     // ///////// add & sub /////////
 
     /**
-     * 结果为null时，以ZERO返回
+     * sum `a`, `b` and `nums`, return zero if result is null
      */
     @NotNull
     public static BigDecimal sum(Object a, Object b, Object... nums) {
         return addElse(ZERO, a, b, nums);
     }
 
+    /**
+     * sum `nums`, return zero if result is null
+     */
     @NotNull
-    public static BigDecimal sumMap(Iterable<?> cols) {
-        return addMapElse(ZERO, cols);
+    public static BigDecimal sumMap(Iterable<?> nums) {
+        return addMapElse(ZERO, nums);
     }
 
+    /**
+     * mapping and sum `nums`, return zero if get null
+     */
     @NotNull
-    public static <T> BigDecimal sumMap(Iterable<T> cols, Function<? super T, ?> mapper) {
-        return addMapElse(ZERO, cols, mapper);
+    public static <T> BigDecimal sumMap(Iterable<T> nums, Function<? super T, ?> mapper) {
+        return addMapElse(ZERO, nums, mapper);
     }
 
     @NotNull
@@ -394,41 +406,42 @@ public class BigDecimalUtil {
     }
 
     @NotNull
-    public static BigDecimal addMap(Iterable<?> cols) {
-        BigDecimal t = addMapNull(cols);
+    public static BigDecimal addMap(Iterable<?> nums) {
+        BigDecimal t = addMapNull(nums);
         return Objects.requireNonNull(t);
     }
 
     @NotNull
-    public static <T> BigDecimal addMap(Iterable<T> cols, Function<? super T, ?> mapper) {
-        BigDecimal t = addMapNull(cols, mapper);
+    public static <T> BigDecimal addMap(Iterable<T> nums, Function<? super T, ?> mapper) {
+        BigDecimal t = addMapNull(nums, mapper);
         return Objects.requireNonNull(t);
     }
 
     @Contract("!null,_,_ -> !null")
-    public static BigDecimal addElse(BigDecimal e, Object a, Object b) {
+    public static BigDecimal addElse(BigDecimal elze, Object a, Object b) {
         BigDecimal t = addNull(a, b);
-        return t == null ? e : t;
+        return t == null ? elze : t;
     }
 
     @Contract("!null,_,_,_ -> !null")
-    public static BigDecimal addElse(BigDecimal e, Object a, Object b, Object... nums) {
+    public static BigDecimal addElse(BigDecimal elze, Object a, Object b, Object... nums) {
         BigDecimal t = addNull(a, b, nums);
-        return t == null ? e : t;
+        return t == null ? elze : t;
     }
 
     @Contract("!null,_ -> !null")
-    public static BigDecimal addMapElse(BigDecimal e, Iterable<?> cols) {
-        BigDecimal t = addMapNull(cols);
-        return t == null ? e : t;
+    public static BigDecimal addMapElse(BigDecimal elze, Iterable<?> nums) {
+        BigDecimal t = addMapNull(nums);
+        return t == null ? elze : t;
     }
 
     @Contract("!null,_,_ -> !null")
-    public static <T> BigDecimal addMapElse(BigDecimal e, Iterable<T> cols, Function<? super T, ?> mapper) {
-        BigDecimal t = addMapNull(cols, mapper);
-        return t == null ? e : t;
+    public static <T> BigDecimal addMapElse(BigDecimal elze, Iterable<T> nums, Function<? super T, ?> mapper) {
+        BigDecimal t = addMapNull(nums, mapper);
+        return t == null ? elze : t;
     }
 
+    @Nullable
     public static BigDecimal addNull(Object a, Object b) {
         final BigDecimal x = object(a);
         final BigDecimal y = object(b);
@@ -440,6 +453,7 @@ public class BigDecimalUtil {
         }
     }
 
+    @Nullable
     public static BigDecimal addNull(Object a, Object b, Object... nums) {
         BigDecimal t = addNull(a, b);
         if (nums == null) return t;
@@ -453,10 +467,11 @@ public class BigDecimalUtil {
         return t;
     }
 
-    public static BigDecimal addMapNull(Iterable<?> cols) {
-        if (cols == null) return null;
+    @Nullable
+    public static BigDecimal addMapNull(Iterable<?> nums) {
+        if (nums == null) return null;
         BigDecimal t = null;
-        for (Object e : cols) {
+        for (Object e : nums) {
             final BigDecimal d = object(e);
             if (d != null) {
                 t = t == null ? d : t.add(d, MC);
@@ -465,10 +480,11 @@ public class BigDecimalUtil {
         return t;
     }
 
-    public static <T> BigDecimal addMapNull(Iterable<T> cols, Function<? super T, ?> mapper) {
-        if (cols == null) return null;
+    @Nullable
+    public static <T> BigDecimal addMapNull(Iterable<T> nums, Function<? super T, ?> mapper) {
+        if (nums == null) return null;
         BigDecimal t = null;
-        for (T e : cols) {
+        for (T e : nums) {
             final Object m = mapper.apply(e);
             final BigDecimal d = object(m);
             if (d != null) {
@@ -493,11 +509,11 @@ public class BigDecimalUtil {
     }
 
     @NotNull
-    public static BigDecimal subMap(Object a, Iterable<?> cols) {
+    public static BigDecimal subMap(Object a, Iterable<?> nums) {
         BigDecimal t = Objects.requireNonNull(object(a));
-        if (cols == null) return t;
+        if (nums == null) return t;
 
-        for (Object e : cols) {
+        for (Object e : nums) {
             final BigDecimal d = object(e);
             if (d != null) {
                 t = t.subtract(d, MC);
@@ -508,11 +524,11 @@ public class BigDecimalUtil {
     }
 
     @NotNull
-    public static <T> BigDecimal subMap(Object a, Iterable<T> cols, Function<? super T, ?> mapper) {
+    public static <T> BigDecimal subMap(Object a, Iterable<T> nums, Function<? super T, ?> mapper) {
         BigDecimal t = Objects.requireNonNull(object(a));
-        if (cols == null) return t;
+        if (nums == null) return t;
 
-        for (T e : cols) {
+        for (T e : nums) {
             final Object m = mapper.apply(e);
             final BigDecimal d = object(m);
             if (d != null) {
@@ -526,7 +542,7 @@ public class BigDecimalUtil {
     // ///////// mul & div /////////
 
     /**
-     * 结果为null时，以ZERO返回
+     * product `a`, `b` and `sums`
      */
     @NotNull
     public static BigDecimal prd(Object a, Object b, Object... nums) {
@@ -591,6 +607,7 @@ public class BigDecimalUtil {
         return t == null ? e : t;
     }
 
+    @Nullable
     public static BigDecimal mulNull(Object a, Object b) {
         final BigDecimal x = object(a);
         final BigDecimal y = object(b);
@@ -602,6 +619,7 @@ public class BigDecimalUtil {
         }
     }
 
+    @Nullable
     public static BigDecimal mulNull(Object a, Object b, Object... nums) {
         BigDecimal t = mulNull(a, b);
         if (nums == null) return t;
@@ -616,6 +634,7 @@ public class BigDecimalUtil {
         return t;
     }
 
+    @Nullable
     public static BigDecimal mulMapNull(Iterable<?> cols) {
         if (cols == null) return null;
         BigDecimal t = null;
@@ -629,6 +648,7 @@ public class BigDecimalUtil {
         return t;
     }
 
+    @Nullable
     public static <T> BigDecimal mulMapNull(Iterable<T> cols, Function<? super T, ?> mapper) {
         if (cols == null) return null;
         BigDecimal t = null;
@@ -709,6 +729,7 @@ public class BigDecimalUtil {
         return Objects.requireNonNull(d);
     }
 
+    @Nullable
     public static BigDecimal negNull(Object num) {
         final BigDecimal d = object(num);
         return d == null ? null : d.negate(MC);
@@ -717,11 +738,8 @@ public class BigDecimalUtil {
     // ///////// scale /////////
 
     /**
-     * 向上取整
-     *
-     * @param num   null返回 0.xxx
-     * @param scale 小数点位数，如2为0.00
-     * @return 新值
+     * Remove all digit after `scale` (exclude), then
+     * ceil the `num`. return `0.xxx` if null, xxx is `scale`
      */
     @NotNull
     public static BigDecimal ceil(Object num, int scale) {
@@ -729,11 +747,8 @@ public class BigDecimalUtil {
     }
 
     /**
-     * 向下取整
-     *
-     * @param num   null返回 0.xxx
-     * @param scale 小数点位数，如2为0.00
-     * @return 新值
+     * Remove all digit after `scale` (exclude), then
+     * floor the `num`. return `0.xxx` if null, xxx is `scale`
      */
     @NotNull
     public static BigDecimal floor(Object num, int scale) {
@@ -743,11 +758,8 @@ public class BigDecimalUtil {
     // ///////// round /////////
 
     /**
-     * 四舍五入
-     *
-     * @param num   null返回 0.xxx
-     * @param scale 小数点位数，如2为0.00
-     * @return 新值
+     * Remove all digit after `scale` (exclude), then
+     * round the `num`. return `0.xxx` if null, xxx is `scale`
      */
     @NotNull
     public static BigDecimal round(Object num, int scale) {
@@ -755,12 +767,7 @@ public class BigDecimalUtil {
     }
 
     /**
-     * 砍掉`scale+1`位之后的所有数字，对`scale+1`位进行进位操作。
-     *
-     * @param num   null返回 0.xxx
-     * @param scale 小数点位数，如2为0.00
-     * @param mode  舍入类型
-     * @return 新值
+     * Remove all digit after `scale` (exclude), then apply RoundingMode
      */
     @NotNull
     public static BigDecimal scale(Object num, int scale, RoundingMode mode) {
@@ -777,9 +784,6 @@ public class BigDecimalUtil {
     }
 
     /**
-     * @param num  数值
-     * @param unit 单位
-     * @return 处理结果
      * @see #unitUp(Object, BigDecimal, BigDecimal)
      */
     @NotNull
@@ -789,16 +793,15 @@ public class BigDecimalUtil {
 
     /**
      * <pre>
-     * 以单位向上取整, null 当零处理, scale以unit为准。
-     * 以称重计价为例，称的精度0.01，每0.5计价
-     * 当x &gt; 0.1时，按0.5处理，否则按0处理
-     * 当x &gt; 0.6时，按1处理，否则按0.5处理
+     * The `unit` is round up, null treated as zero, and scale is based on unit.
+     * Take weighing and pricing as an example, weighing accuracy 0.01, every 0.5 pricing
+     * When x > 0.1, treated as 0.5, otherwise treated as 0.
+     * When x > 0.6, treated as 1, otherwise treated as 0.5.
      * </pre>
      *
-     * @param num  数值
-     * @param unit 单位
-     * @param down 单位后余数，小于等于该值则舍去
-     * @return 处理结果
+     * @param num  the number
+     * @param unit the unit
+     * @param down less than or equal to the value is rounded off
      */
     @NotNull
     public static BigDecimal unitUp(Object num, BigDecimal unit, BigDecimal down) {
@@ -809,7 +812,7 @@ public class BigDecimalUtil {
         BigDecimal[] dr = d.divideAndRemainder(unit);
         d = dr[0].multiply(unit);
 
-        if (compareTo(dr[1], down, unitScale, FLOOR) > 0) { //向上进位
+        if (compareTo(dr[1], down, unitScale, FLOOR) > 0) { // round up
             d = d.add(unit);
         }
 
@@ -820,9 +823,6 @@ public class BigDecimalUtil {
     }
 
     /**
-     * @param num  数值
-     * @param unit 单位
-     * @return 处理结果
      * @see #unitDown(Object, BigDecimal, BigDecimal)
      */
     @NotNull
@@ -832,16 +832,15 @@ public class BigDecimalUtil {
 
     /**
      * <pre>
-     * 以单位向下取整, null 当零处理, scale以unit为准。
-     * 以称重计价为例，称的精度0.01，每0.5计价
-     * 当x &gt;= 0.4时，按0.5处理，否则按0处理
-     * 当x &gt;= 0.9时，按1处理，否则按0.5处理
+     * The `unit` is round down, null treated as zero, and scale is based on unit.
+     * Take weighing and pricing as an example, weighing accuracy 0.01, every 0.5 pricing
+     * When x > 0.4, treated as 0.5, otherwise treated as 0.
+     * When x > 0.9, treated as 1, otherwise treated as 0.5.
      * </pre>
      *
-     * @param num  数值
-     * @param unit 单位
-     * @param upto 单位后余数，大于等于该值则进位
-     * @return 处理结果
+     * @param num  the number
+     * @param unit the unit
+     * @param upto greater than or equal to the value is rounded up
      */
     @NotNull
     public static BigDecimal unitDown(Object num, BigDecimal unit, BigDecimal upto) {
@@ -852,7 +851,7 @@ public class BigDecimalUtil {
         BigDecimal[] dr = d.divideAndRemainder(unit);
         d = dr[0].multiply(unit);
 
-        if (compareTo(dr[1], upto, unitScale, FLOOR) >= 0) { //向上进位
+        if (compareTo(dr[1], upto, unitScale, FLOOR) >= 0) { // round up
             d = d.add(unit);
         }
 
@@ -863,11 +862,7 @@ public class BigDecimalUtil {
     }
 
     /**
-     * null小于一切
-     *
-     * @param a 数字
-     * @param b 数字
-     * @return 结果
+     * parse and compare the number, null less than any number
      */
     public static int compareTo(Object a, Object b) {
         final BigDecimal x = object(a);
@@ -881,13 +876,7 @@ public class BigDecimalUtil {
     }
 
     /**
-     * null小于一切
-     *
-     * @param a     数字
-     * @param b     数字
-     * @param scale 小数点位数，如2为0.00
-     * @param mode  舍入类型
-     * @return 结果
+     * parse, round and compare the number, null less than any number
      */
     public static int compareTo(Object a, Object b, int scale, RoundingMode mode) {
         BigDecimal x = object(a);
@@ -911,21 +900,14 @@ public class BigDecimalUtil {
     }
 
     /**
-     * null == null, null != notnull
-     *
-     * @param a     数字
-     * @param b     数字
-     * @param scale 小数点位数，如2为0.00
-     * @param mode  舍入类型
-     * @return 结果
-     * @see BigDecimal#compareTo(BigDecimal)
+     * parse, round and compare the number, null == null, null != notnull
      */
     public static boolean equalsValue(Object a, Object b, int scale, RoundingMode mode) {
         return compareTo(a, b, scale, mode) == 0;
     }
 
     /**
-     * null当零处理，非线程安全
+     * null treated as zero, not thread safe.
      */
     public static class W {
         private BigDecimal value;

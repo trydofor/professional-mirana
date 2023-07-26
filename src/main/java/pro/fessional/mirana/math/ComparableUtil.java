@@ -1,7 +1,7 @@
 package pro.fessional.mirana.math;
 
 /**
- * Null 不参与比较的比较器
+ * the comparator without compare null
  *
  * @author trydofor
  * @since 2020-01-04
@@ -19,9 +19,7 @@ public class ComparableUtil {
     @SuppressWarnings({"rawtypes", "unchecked"})
     public static <T extends Comparable> T min(T a, T b, T... c) {
         T r = min(a, b);
-        if (c == null || c.length == 0) {
-            return r;
-        }
+        if (c == null) return r;
 
         for (T t : c) {
             if (t == null) continue;
@@ -43,9 +41,7 @@ public class ComparableUtil {
     @SuppressWarnings({"rawtypes", "unchecked"})
     public static <T extends Comparable> T max(T a, T b, T... c) {
         T r = max(a, b);
-        if (c == null || c.length == 0) {
-            return r;
-        }
+        if (c == null) return r;
 
         for (T t : c) {
             if (t == null) continue;

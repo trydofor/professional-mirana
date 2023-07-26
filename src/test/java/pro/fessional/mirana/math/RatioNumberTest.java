@@ -7,19 +7,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class RatioNumberTest {
 
-    /**
-     * ①1【袋】饼 5【张】，每次用 1【张】 → 袋，张，1，5，1
-     * ②1【袋】盐 500【克】，每次用30【克】→ 袋，克，1，500，30
-     * ③1【瓶】奶500g，每【勺】5g（能挖100勺），一次用2【勺】→ 瓶，勺，5，500，2
-     * ④2【罐】二氧化碳，能打3【杯】气泡水，一次买一【杯】→ 罐，杯，2，3，1
-     */
     @Test
     public void add1() {
-        // ①一【袋】饼 5【张】，每次用 1【张】 → 袋，张，1，5，1
+        // (1) One [bag] cake 5 [piece], 1 [piece] per use -> bag, piece, 1, 5, 1
         RatioNumber.Ratio r1 = RatioNumber.ratio(1, 5);
-        // 库存 10【袋】，1【张】
+        // Stock 10 [bag] and 1 [piece]
         RatioNumber a1 = RatioNumber.number(10, 1);
-        // 卖出 13 个订单
+        // Sold 13 orders
         RatioNumber is1 = a1.sub(13, r1, RatioNumber.Grade.Isolated);
         System.out.println(is1);
         assertEquals(RatioNumber.number(10, -12), is1);
@@ -28,14 +22,14 @@ public class RatioNumberTest {
 
     @Test
     public void add2() {
-        // ②一【袋】盐 500【克】，每次用30【克】→ 袋，克，1，500，30
+        // (2) One [bag] of salt 500 [gram], 30 [gram] per use -> bag, grams, 1, 500, 30
         RatioNumber.Ratio r1 = RatioNumber.ratio(1, 500);
-        // 库存 2【袋】，900【克】
+        // Stock 2 [bag] and 900 [gram]
         RatioNumber a1 = RatioNumber.number(2, 900);
-        // 卖出 10 个订单
+        // Sold 10 orders
         RatioNumber ps1 = a1.sub(30 * 10, r1, RatioNumber.Grade.Positive);
         System.out.println(ps1);
-        // 卖出 40 个订单
+        // Sold 40 orders
         RatioNumber is1 = a1.sub(30 * 40, r1, RatioNumber.Grade.Isolated);
         System.out.println(is1);
 
@@ -48,11 +42,12 @@ public class RatioNumberTest {
 
     @Test
     public void add3() {
-        // ③1【瓶】奶500g，每【勺】5g（能挖100勺），一次用2【勺】→ 瓶，克，1，500，10
+        // (3) 1 [bottle] of milk 500 [gram], 5 [gram] per [spoon] (can scoop 100 spoons),
+        // 2 [spoon] per use -> bottle, gram, 1, 500, 10
         RatioNumber.Ratio r1 = RatioNumber.ratio(1, 500);
-        // 库存 2【瓶】，900【克】
+        // Stock 2 [bottle] and 900 [gram]
         RatioNumber a1 = RatioNumber.number(2, 900);
-        // 卖出 100 个订单
+        // Sold 100 orders
         RatioNumber is1 = a1.sub(10 * 100, r1, RatioNumber.Grade.Isolated);
         RatioNumber ps1 = a1.sub(10 * 100, r1, RatioNumber.Grade.Positive);
         System.out.println(is1);
@@ -66,9 +61,10 @@ public class RatioNumberTest {
 
     @Test
     public void add4() {
-        // ④2【罐】二氧化碳，能打3【杯】气泡水，一次买一【杯】→ 罐，杯，2，3，1
+        // (4) 2 [can] of CO2, can make 3 [cup] of soda,
+        // 1 [cup] per use -> can, cup, 2, 3, 1
         RatioNumber.Ratio r1 = RatioNumber.ratio(2, 3);
-        // 库存 10【罐】，1【杯】（约2/3罐）
+        // Stock 10 [can] and 1 [cup] (about 2/3 can)
         RatioNumber a1 = RatioNumber.number(10, 1);
         RatioNumber ps1 = a1.sub(1, r1, RatioNumber.Grade.Positive);
         RatioNumber ps2 = a1.sub(2, r1, RatioNumber.Grade.Positive);
