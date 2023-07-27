@@ -5,17 +5,19 @@ import org.jetbrains.annotations.NotNull;
 import java.util.concurrent.locks.Lock;
 
 /**
+ * <pre>
  * Global locks, which can be implemented based on JVM, database, distributed, etc.
  * Because of the different lock implementations, it is not recommended to keep Lock references on a large scale.
  * It should getLock every time , in the following pattern.
  *
- * <p>A typical usage idiom for this method would be:
- * <pre> {@code
- * // ① pattern try-resource
+ * A typical usage idiom for this method would be:
+ *
+ * {@code
+ * // (1) pattern try-resource
  * try(xxx.lock("...")){
  *   // biz code
  * }
- * // ② pattern lock-finally
+ * // (2) pattern lock-finally
  * final Lock lock = xxx.getLock("...");
  * lock.lock()
  * try {
@@ -23,7 +25,7 @@ import java.util.concurrent.locks.Lock;
  * } finally {
  *   lock.unlock();
  * }
- * // ③ pattern tryLock-finally
+ * // (3) pattern tryLock-finally
  * final Lock lock = xxx.getLock("...");
  * if (lock.tryLock()) {
  *   try {

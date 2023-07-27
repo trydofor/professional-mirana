@@ -17,7 +17,7 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class JvmStaticGlobalLock implements GlobalLock {
 
-    private static final Map<Hd, WeakReference<Hd>> locks = new WeakHashMap<>();
+    private static final Map<Hd, WeakReference<Hd>> WeakLocks = new WeakHashMap<>();
 
     @Override
     public @NotNull Lock getLock(@NotNull String name) {
@@ -39,11 +39,11 @@ public class JvmStaticGlobalLock implements GlobalLock {
         else {
             hd = new Hd(key);
         }
-        synchronized (locks) {
-            final WeakReference<Hd> rf = locks.computeIfAbsent(hd, WeakReference::new);
+        synchronized (WeakLocks) {
+            final WeakReference<Hd> rf = WeakLocks.computeIfAbsent(hd, WeakReference::new);
             final Hd lk = rf.get();
             if (lk == null) {
-                throw new IllegalStateException("should not gc if key exist， report bug.");
+                throw new IllegalStateException("should not gc if key exist, please report a bug to https://github.com/trydofor/pro.fessional.mirana/issues/new");
             }
             return lk;
         }
@@ -66,8 +66,8 @@ public class JvmStaticGlobalLock implements GlobalLock {
      * @return count of locks
      */
     public static int countLocks() {
-        synchronized (locks) {
-            return locks.size();
+        synchronized (WeakLocks) {
+            return WeakLocks.size();
         }
     }
 

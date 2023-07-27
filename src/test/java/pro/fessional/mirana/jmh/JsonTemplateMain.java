@@ -47,7 +47,7 @@ public class JsonTemplateMain {
                 ob.putVal("isAtAll", false);
             });
             top.putObj("text", ob -> {
-                ob.putVal("content", "我就是我，@XXX是不一样的烟火");
+                ob.putVal("content", "Look how the prey scatters before us.");
             });
             top.putVal("msgtype", "text");
         });
@@ -63,7 +63,7 @@ public class JsonTemplateMain {
                 ob.putVal("isAtAll", false);
             });
             top.putObj("text", ob -> {
-                ob.putVal("content", "我就是我，@XXX是不一样的烟火");
+                ob.putVal("content", "Look how the prey scatters before us.");
             });
             top.putVal("msgtype", "text");
         });
@@ -76,7 +76,7 @@ public class JsonTemplateMain {
                         .fluentPut("atMobiles", new JSONArray()
                                 .fluentAdd("180xxxxxx"))
                         .fluentPut("isAtAll", false))
-                .fluentPut("text", new JSONObject().fluentPut("content", "我就是我，@XXX是不一样的烟火"))
+                .fluentPut("text", new JSONObject().fluentPut("content", "Look how the prey scatters before us."))
                 .fluentPut("msgtype", "text")
                 .toString();
     }
