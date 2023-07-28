@@ -14,13 +14,13 @@ import java.lang.reflect.Field;
 
 /**
  * <pre>
- * 采用byte[]缓存读过的流，当读完stream，即-1时，
- * 再次read时，自动从头读起，重新available。
- * 特殊需要，非线程安全，谨慎使用，尤其要正确使用mark, reset功能。
+ * For special needs, not thread-safe, use with care, especially use mark, reset properly.
  *
- * 仅对ByteArrayInputStream和由文件构造的FileInputStream进行了优化。
- * 其他Stream，会缓存全部读取内容，需要注意内存占用。
- * 若原 InputStream 支持重复读，从性能考虑，应该使用 NonCloseStream 代替
+ * Uses byte[] to cache the read stream, and if read again after the stream is read out, i.e. -1,
+ * the read will auto start from the beginning of the cache (re-available)
+ *
+ * Optimized only for ByteArrayInputStream and FileInputStream constructed from files.
+ * Other Streams, will cache all read content, need to pay attention to memory consumption.
  * </pre>
  *
  * @author trydofor
@@ -102,9 +102,7 @@ public class CircleInputStream extends InputStream {
     }
 
     /**
-     * 是否本次以读完流(-1)
-     *
-     * @return 是否已读完
+     * Whether read out the stream (-1) at this time.
      */
     public boolean isFinished() {
         return finished;
@@ -162,12 +160,12 @@ public class CircleInputStream extends InputStream {
 
     @Override
     public int read() throws IOException {
-        // 已读完或缓存
+        // finish or cache
         if (finished) {
             renewBackend();
         }
 
-        // 源流读
+        // read the origin
         int c = backend.read();
         if (c < 0) {
             finished = true;
@@ -188,12 +186,12 @@ public class CircleInputStream extends InputStream {
 
     @Override
     public int read(byte @NotNull [] b, int off, int len) throws IOException {
-        // 已读完或缓存
+        // finish or cache
         if (finished) {
             renewBackend();
         }
 
-        // 源流读
+        // read the origin
         int c = backend.read(b, off, len);
         if (c < 0) {
             finished = true;
@@ -209,7 +207,7 @@ public class CircleInputStream extends InputStream {
 
     @Override
     public long skip(long n) throws IOException {
-        // 源流读
+        // read the origin
         if (caching != null) {
             long r = n;
             for (; r > 0; r--) {

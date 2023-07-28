@@ -20,8 +20,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 更多参考 apache IOUtils 和
- * guava CharStreams
+ * For more, see apache IOUtils and guava CharStreams
  *
  * @author trydofor
  * @since 2020-06-02
@@ -32,10 +31,7 @@ public class InputStreams {
     private static final int DEFAULT_BUF_SIZE = 0x800;
 
     /**
-     * 读取全部Byte，并关闭
-     *
-     * @param is 输入流
-     * @return byte内容
+     * read all to bytes and close, return empty if stream is null
      */
     public static byte @NotNull [] readBytes(InputStream is) {
         if (is == null) return Null.Bytes;
@@ -50,10 +46,7 @@ public class InputStreams {
     }
 
     /**
-     * 读取全部Byte，并关闭
-     *
-     * @param os 输出流
-     * @param is 输入流
+     * read all to output stream and close
      */
     public static void readBytes(OutputStream os, InputStream is) {
         if (is == null) return;
@@ -81,11 +74,7 @@ public class InputStreams {
 
 
     /**
-     * 读取全部文本，并关闭
-     *
-     * @param is 输入流
-     * @param cs 字符集
-     * @return 文本内容
+     * read all to string and close
      */
     @NotNull
     public static String readText(InputStream is, Charset cs) {
@@ -98,11 +87,7 @@ public class InputStreams {
     }
 
     /**
-     * 读取全部文本，并关闭
-     *
-     * @param sb 缓冲
-     * @param is 输入流
-     * @param cs 字符集
+     *  read all to builder and close
      */
     public static void readText(StringBuilder sb, InputStream is, Charset cs) {
         if (is == null) return;
@@ -121,7 +106,7 @@ public class InputStreams {
     }
 
     /**
-     * 读取全部，并关闭
+     * read all to string and close
      */
     @NotNull
     public static String readText(InputStream is) {
@@ -130,11 +115,7 @@ public class InputStreams {
 
 
     /**
-     * 读取全部文本行，并关闭
-     *
-     * @param is 输入流
-     * @param cs 字符集
-     * @return 文本行
+     * read all as lines and close
      */
     @NotNull
     public static List<String> readLine(InputStream is, Charset cs) {
@@ -147,11 +128,7 @@ public class InputStreams {
     }
 
     /**
-     * 读取全部文本行，并关闭
-     *
-     * @param out 行接收器
-     * @param is  输入流
-     * @param cs  字符集
+     * read all as lines to list and close
      */
     public static void readLine(List<String> out, InputStream is, Charset cs) {
         if (is == null) return;
@@ -170,7 +147,7 @@ public class InputStreams {
     }
 
     /**
-     * 读取全部，并关闭
+     * read all as lines to list and close
      */
     @NotNull
     public static List<String> readLine(InputStream is) {
@@ -178,10 +155,7 @@ public class InputStreams {
     }
 
     /**
-     * 写入文件，并关闭
-     *
-     * @param is   输入流
-     * @param file 文件
+     * write to file and close
      */
     public static void saveFile(InputStream is, File file) {
         if (is == null || file == null) return;
@@ -199,12 +173,7 @@ public class InputStreams {
     }
 
     /**
-     * 写入临时文件，并关闭
-     *
-     * @param is        输入流
-     * @param prefix    文件前缀
-     * @param delOnExit deleteOnExit
-     * @return 文本行
+     * write to temp file with prefix and close, whether delete it on jvm exit
      */
     @NotNull
     public static File saveTemp(InputStream is, String prefix, boolean delOnExit) {
@@ -222,7 +191,7 @@ public class InputStreams {
     }
 
     /**
-     * 读取全部，并关闭
+     * write to temp file with prefix and close
      */
     @NotNull
     public static File saveTemp(InputStream is, String prefix) {
@@ -230,7 +199,7 @@ public class InputStreams {
     }
 
     /**
-     * 读取全部，并关闭
+     * write to temp file with prefix `mirana-` and close
      */
     @NotNull
     public static File saveTemp(InputStream is) {

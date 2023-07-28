@@ -3,11 +3,12 @@ package pro.fessional.mirana.io;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -49,7 +50,7 @@ public class Zipper {
             //noinspection ResultOfMethodCallIgnored
             dir.mkdirs();
         }
-        zip(new FileOutputStream(zipFile), files);
+        zip(Files.newOutputStream(zipFile.toPath()), files);
     }
 
 
@@ -63,7 +64,7 @@ public class Zipper {
     public static void zip(OutputStream out, List<File> files) throws IOException {
         Map<String, InputStream> map = new HashMap<>(files.size());
         for (File file : files) {
-            map.put(file.getName(), new FileInputStream(file));
+            map.put(file.getName(), Files.newInputStream(file.toPath()));
         }
         zip(out, map);
     }
@@ -95,7 +96,7 @@ public class Zipper {
             //noinspection ResultOfMethodCallIgnored
             dir.mkdirs();
         }
-        zip(new FileOutputStream(zipFile), files);
+        zip(Files.newOutputStream(zipFile.toPath()), files);
     }
 
     /**
@@ -132,7 +133,7 @@ public class Zipper {
      * @throws IOException exception
      */
     public static void unzip(String zip, String path) throws IOException {
-        unzip(new FileInputStream(zip), path);
+        unzip(Files.newInputStream(Paths.get(zip)), path);
     }
 
     /**
@@ -268,7 +269,7 @@ public class Zipper {
 
         public Z add(String name, File file) throws IOException {
             if (name == null || file == null) return this;
-            return add(file.getName(), new FileInputStream(file));
+            return add(file.getName(), Files.newInputStream(file.toPath()));
         }
 
         public Z add(String name, InputStream inputStream) {

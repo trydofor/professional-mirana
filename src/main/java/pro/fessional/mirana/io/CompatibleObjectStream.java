@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- * 当serialVersionUID不兼容时，采用本地Class反序列化
+ * Native Class deserialization when serialVersionUID is not compatible
  *
  * @author trydofor
  * @since 2022-02-23

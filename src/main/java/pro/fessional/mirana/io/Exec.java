@@ -12,8 +12,8 @@ import java.util.function.BiConsumer;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
- * 单线程简单的执行 exec (Runtime, ProcessBuilder);
- * 高级操作，请使用`Apache Commons Exec`
+ * Single-thread simple execution (Runtime, ProcessBuilder).
+ * For advanced operations, use `Apache Commons Exec`.
  *
  * @author trydofor
  * @since 2020-09-14
@@ -26,11 +26,11 @@ public class Exec {
     }
 
     /**
-     * 同步执行一个命令
+     * sync execute a command
      *
-     * @param workDir 工作目录
-     * @param out     out输出
-     * @param cmd     命令
+     * @param workDir work dir
+     * @param out     output
+     * @param cmd     command
      * @return return code
      */
     public static int run(File workDir, StringBuilder out, List<String> cmd) {
@@ -44,11 +44,11 @@ public class Exec {
     }
 
     /**
-     * 同步执行一个命令
+     * sync execute a command
      *
-     * @param workDir 工作目录
-     * @param out     out输出
-     * @param cmd     命令
+     * @param workDir work dir
+     * @param out     output
+     * @param cmd     command
      * @return return code
      */
     public static int run(File workDir, StringBuilder out, String... cmd) {
@@ -62,11 +62,11 @@ public class Exec {
     }
 
     /**
-     * 同步执行一个命令
+     * sync execute some commands
      *
-     * @param workDir 工作目录
-     * @param out     out输出
-     * @param cmd     命令
+     * @param workDir work dir
+     * @param out     output
+     * @param cmd     command
      * @return return code
      */
     public static int run(File workDir, List<String> out, List<String> cmd) {
@@ -79,11 +79,11 @@ public class Exec {
     }
 
     /**
-     * 同步执行一个命令
+     * sync execute some commands
      *
-     * @param workDir 工作目录
-     * @param out     out输出
-     * @param cmd     命令
+     * @param workDir work dir
+     * @param out     output
+     * @param cmd     command
      * @return return code
      */
     public static int run(File workDir, List<String> out, String... cmd) {
@@ -96,11 +96,11 @@ public class Exec {
     }
 
     /**
-     * 同步执行一个命令
+     * sync execute some commands
      *
-     * @param workDir 工作目录
-     * @param handler out或err输出
-     * @param cmd     命令
+     * @param workDir work dir
+     * @param cmd     command
+     * @param handler out and err handler
      * @return return code
      */
     public static int run(File workDir, BiConsumer<Std, String> handler, List<String> cmd) {
@@ -109,11 +109,11 @@ public class Exec {
     }
 
     /**
-     * 同步执行一个命令
+     * sync execute some commands
      *
-     * @param workDir 工作目录
-     * @param handler out或err输出
-     * @param cmd     命令
+     * @param workDir work dir
+     * @param cmd     command
+     * @param handler out and err handler
      * @return return code
      */
     public static int run(File workDir, BiConsumer<Std, String> handler, String... cmd) {
@@ -122,10 +122,10 @@ public class Exec {
     }
 
     /**
-     * 同步执行一个命令
+     * sync execute some commands
      *
      * @param builder ProcessBuilder
-     * @param handler out或err输出
+     * @param handler out and err handler
      * @return return code
      */
     public static int run(ProcessBuilder builder, BiConsumer<Std, String> handler) {
@@ -169,10 +169,10 @@ public class Exec {
     }
 
     /**
-     * 按空白解析命令行，支持引号块和转义 "one\" arg"
+     * Parse command line by whitespace, supports quote and escaping `"one\" arg"`
      *
-     * @param line 参数行
-     * @return 解析后命令行
+     * @param line command line
+     * @return parsed command
      */
     public static List<String> arg(String line) {
         if (line == null || line.isEmpty()) return Collections.emptyList();

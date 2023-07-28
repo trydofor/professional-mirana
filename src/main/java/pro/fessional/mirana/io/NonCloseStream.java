@@ -12,7 +12,7 @@ import java.io.Reader;
 import java.io.Writer;
 
 /**
- * 屏蔽了close 的流。
+ * ignore close() on this stream
  *
  * @author trydofor
  * @since 2022-06-05
