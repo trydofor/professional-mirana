@@ -6,7 +6,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * http://fengyuanchen.github.io/cropper/#overview
+ * see <a href="http://fengyuanchen.github.io/cropper/#overview">jquery cropper</a>
+ * or <a href="https://github.com/trydofor/cropper">backup repo</a>
  *
  * @author trydofor
  * @since 2016-11-01
@@ -14,24 +15,17 @@ import java.io.InputStream;
 public class ZoomRotateCrop {
 
     /**
-     * 对图片进行，翻转，旋转，截取，缩放
-     *
-     * @param photo 图片
-     * @param para  参数
-     * @return 处理后的图片
-     * @throws IOException if io exception
+     * Flip, rotate, capture, and zoom images.
      */
     public static BufferedImage exec(InputStream photo, Para para) throws IOException {
 
-        if (photo == null)
-            throw new NullPointerException("photo is null");
-        if (para == null)
-            throw new NullPointerException("para is null");
+        if (photo == null) throw new NullPointerException("photo is null");
+        if (para == null) throw new NullPointerException("para is null");
 
-        // 获得原始图片及尺寸
+        // get the original size
         BufferedImage photoImg = ImageIoFix.read(photo);
 
-        // 翻转处理
+        // handle flip
         if (para.flipX && !para.flipY) {
             photoImg = flip(photoImg, true);
         }
@@ -39,23 +33,19 @@ public class ZoomRotateCrop {
             photoImg = flip(photoImg, false);
         }
 
-        // 左旋转处理
+        // handle rotate
         if (para.rotate % 360 != 0) {
             photoImg = rotate(photoImg, para.rotate);
         }
 
-        // 截取和缩放
+        // handle crop and zoom
         photoImg = cropZoom(photoImg, para);
 
         return photoImg;
     }
 
     /**
-     * 对图片截取和缩放
-     *
-     * @param image 图片
-     * @param para  参数
-     * @return 处理后的图片
+     * crop and zoom
      */
     public static BufferedImage cropZoom(BufferedImage image, Para para) {
         BufferedImage result = new BufferedImage(para.viewW, para.viewH, image.getType());
@@ -71,11 +61,7 @@ public class ZoomRotateCrop {
     }
 
     /**
-     * 翻转，要么X轴（上下），要么Y轴（左右）
-     *
-     * @param image   图片
-     * @param isFlipX 要么X轴（上下）
-     * @return 处理后的图片
+     * Flip, either X-axis (up and down) or Y-axis (left and right)
      */
     public static BufferedImage flip(BufferedImage image, boolean isFlipX) {
 
@@ -96,15 +82,11 @@ public class ZoomRotateCrop {
     }
 
     /**
-     * 顺时针旋转一个角度（360）
-     *
-     * @param image  图片
-     * @param degree 角度
-     * @return 处理后的图片
+     * Rotate one angle clockwise (360)
      */
     public static BufferedImage rotate(BufferedImage image, int degree) {
 
-        // 角度转换
+        // convert to degree
         degree = degree % 360;
         if (degree < 0) {
             degree = 360 + degree;
@@ -114,13 +96,13 @@ public class ZoomRotateCrop {
         double sin = Math.abs(Math.sin(angle));
         double cos = Math.abs(Math.cos(angle));
 
-        // 计算新区域
+        // calc new range
         int oldW = image.getWidth();
         int oldH = image.getHeight();
         int newW = (int) Math.floor(oldW * cos + oldH * sin);
         int newH = (int) Math.floor(oldH * cos + oldW * sin);
 
-        // 设定定点，旋转
+        // set the point and rotate
         BufferedImage result = new BufferedImage(newW, newH, image.getType());
         Graphics2D g = result.createGraphics();
         g.translate((newW - oldW) / 2, (newH - oldH) / 2);
@@ -132,54 +114,56 @@ public class ZoomRotateCrop {
     }
 
     /**
-     * （1）原图先翻转，旋转 (flipX,flipY,rotate)
-     * （2）截取crop区域 (cropX,cropY,cropW,cropH)
-     * （3）适配到view(viewW * viewH)
+     * <pre>
+     * (1) flip first, then rotate (flipX,flipY,rotate)
+     * (2) crop range (cropX,cropY,cropW,cropH)
+     * (3) adapt to the view (viewW * viewH)
+     * </pre>
      */
     public static class Para {
 
         /**
-         * 原图是否（沿X轴）上下翻转
+         * flip X-axis (up and down)
          */
         public boolean flipX;
 
         /**
-         * 原图是否（沿Y轴）左右翻转
+         * flip Y-axis (left and right)
          */
         public boolean flipY;
 
         /**
-         * 原图顺时针旋转角度（deg 360）
+         * Rotate one angle clockwise (deg 360)
          */
         public int rotate;
 
         /**
-         * 截取左上角X坐标（左0，右+）
+         * crop from the left-top X axis (left:0, right:+)
          */
         public int cropX;
 
         /**
-         * 截取左上角Y坐标（上0，下+）
+         * crop from the left-top Y axis (top:0, down:+)
          */
         public int cropY;
 
         /**
-         * 截取的宽度（X轴，小于等于0表示不处理）
+         * crop width, X-axis, less than or equal to 0 means not processed.
          */
         public int cropW;
 
         /**
-         * 截取的高度（Y轴，小于等于0表示不处理）
+         * crop height, Y-axis, less than or equal to 0 means not processed.
          */
         public int cropH;
 
         /**
-         * 视窗的宽度（X轴）
+         * view width X-axis
          */
         public int viewW;
 
         /**
-         * 视窗的高度（Y轴）
+         * view height, Y-axis
          */
         public int viewH;
     }

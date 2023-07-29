@@ -14,6 +14,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.Iterator;
 
 /**
@@ -26,23 +27,14 @@ public class StreamJpg {
     public static final float QUALITY = 0.85f;
 
     /**
-     * 按85%压缩jpg
-     *
-     * @param jpg   输出图片 jpg
-     * @param image 输入图片
-     * @throws IOException if io exception
+     * write jpg at 85% quality
      */
     public static void writeJpg(OutputStream jpg, BufferedImage image) throws IOException {
         writeJpg(jpg, image, QUALITY);
     }
 
     /**
-     * 压缩jpg
-     *
-     * @param jpg     输出图片 jpg
-     * @param image   输入图片
-     * @param quality 压缩质量
-     * @throws IOException if io exception
+     * write jpg at quality
      */
     public static void writeJpg(OutputStream jpg, BufferedImage image, float quality) throws IOException {
         Iterator<ImageWriter> iter = ImageIO.getImageWritersByFormatName("jpeg");
@@ -62,11 +54,7 @@ public class StreamJpg {
     }
 
     /**
-     * 转换成Jpg数组
-     *
-     * @param image 图形
-     * @return 字节数组
-     * @throws IOException if io exception
+     * image to byte array
      */
     public static byte[] bytes(BufferedImage image) throws IOException {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
@@ -77,11 +65,7 @@ public class StreamJpg {
     }
 
     /**
-     * 保持到Jpg文件
-     *
-     * @param image  图片
-     * @param outjpg 输出文件
-     * @throws IOException if io exception
+     * save image to file
      */
     public static void file(BufferedImage image, File outjpg) throws IOException {
 
@@ -96,29 +80,19 @@ public class StreamJpg {
     }
 
     /**
-     * 双向输出，文件和InputStream
-     *
-     * @param image  图片
-     * @param outjpg jpg文件
-     * @return inputStream
-     * @throws IOException if io exception
+     * Bidirectional output to file and InputStream
      */
-    public static InputStream tee(BufferedImage image, File outjpg) throws IOException {
-        File dir = outjpg.getParentFile();
+    public static InputStream tee(BufferedImage image, File jpgFile) throws IOException {
+        File dir = jpgFile.getParentFile();
         if (!dir.exists())
             //noinspection ResultOfMethodCallIgnored
             dir.mkdirs();
 
-        return tee(image, new FileOutputStream(outjpg));
+        return tee(image, Files.newOutputStream(jpgFile.toPath()));
     }
 
     /**
-     * 双向输出，文件和InputStream
-     *
-     * @param image 图片
-     * @param out   jpg流
-     * @return inputStream
-     * @throws IOException if io exception
+     * Bidirectional output to OutputStream and InputStream
      */
     public static InputStream tee(BufferedImage image, OutputStream out) throws IOException {
         byte[] bytes = bytes(image);
