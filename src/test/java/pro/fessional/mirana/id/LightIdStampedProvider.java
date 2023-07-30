@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.StampedLock;
 
 /**
- * 读写锁+busy wait
+ * read-write lock and busy wait
  *
  * @author trydofor
  * @since 2019-05-26
@@ -30,8 +30,8 @@ public class LightIdStampedProvider implements LightIdProvider {
 
     private static final int MAX_COUNT = 10000;
     private static final int MAX_ERROR = 5;
-    private static final long ERR_ALIVE = 120000; // 2分钟
-    private static final long TIME_OUT = 1000; // 1秒
+    private static final long ERR_ALIVE = 120_000; // 2 minute
+    private static final long TIME_OUT = 1000; // 1 second
 
     private final ExecutorService executor;
     private final Loader loader;
@@ -43,9 +43,7 @@ public class LightIdStampedProvider implements LightIdProvider {
     private final AtomicLong loadErrAlive = new AtomicLong(ERR_ALIVE);
 
     /**
-     * 序号加载器的线程池，默认使用线程模式 core-size=3, max-size=64, keep-alive 60S
-     *
-     * @param loader 序号加载器。
+     * core-size=3, max-size=64, keep-alive 60S
      */
     public LightIdStampedProvider(Loader loader) {
         this(loader, new ThreadPoolExecutor(3, 64, 60L, TimeUnit.SECONDS, new SynchronousQueue<>(), new ThreadFactory() {
@@ -58,12 +56,6 @@ public class LightIdStampedProvider implements LightIdProvider {
         }));
     }
 
-    /**
-     * 自定义线程模式
-     *
-     * @param loader   序号加载器
-     * @param executor 序号加载器的线程池
-     */
     public LightIdStampedProvider(Loader loader, ExecutorService executor) {
         this.loader = loader;
         this.executor = executor;
@@ -86,22 +78,10 @@ public class LightIdStampedProvider implements LightIdProvider {
         return loadMaxCount.get();
     }
 
-    /**
-     * 设置错误状态保留时间，过期会清除，默认2分钟。
-     * 小于0时表示不会清除
-     *
-     * @param t 毫秒数
-     */
     public void setErrAlive(long t) {
         loadErrAlive.set(t);
     }
 
-    /**
-     * 设置请求超时毫秒数，默认1秒。
-     *
-     * @param t 毫秒数
-     * @return 大于零成功，否则失败
-     */
     public boolean setTimeout(long t) {
         if (t > 0) {
             loadTimeout.set(t);
@@ -112,12 +92,6 @@ public class LightIdStampedProvider implements LightIdProvider {
         }
     }
 
-    /**
-     * 设置加载序号中，容忍的最大错误数，默认5。
-     *
-     * @param n 数字
-     * @return 大于等于零成功，否则失败
-     */
     public boolean setMaxError(int n) {
         if (n >= 0) {
             loadMaxError.set(n);
@@ -128,12 +102,6 @@ public class LightIdStampedProvider implements LightIdProvider {
         }
     }
 
-    /**
-     * 设置加载序号时的最大加载数量，默认10000。
-     *
-     * @param n 数字
-     * @return 大于等于零成功，否则失败
-     */
     public boolean setMaxCount(int n) {
         if (n >= 0) {
             loadMaxCount.set(n);
@@ -144,11 +112,6 @@ public class LightIdStampedProvider implements LightIdProvider {
         }
     }
 
-    /**
-     * 预先加载分区中所有LightId，建议启动时初始化一次就够了。
-     *
-     * @param block 分区
-     */
     public void preload(int block) {
         List<Segment> segments = loader.preload(block);
         for (Segment seg : segments) {
@@ -157,12 +120,6 @@ public class LightIdStampedProvider implements LightIdProvider {
         }
     }
 
-    /**
-     * 清除掉异常信息，计数归零
-     *
-     * @param name  名字
-     * @param block 区块
-     */
     public void cleanError(@NotNull String name, int block) {
         load(block, name).handleError(null);
     }
@@ -178,7 +135,6 @@ public class LightIdStampedProvider implements LightIdProvider {
         return load(block, name).nextId(timeout);
     }
 
-    // 加载或初始化
     private SegmentBuffer load(int block, String name) {
         return cache.computeIfAbsent(name + "@" + block, k -> new SegmentBuffer(name, block));
     }
@@ -202,7 +158,7 @@ public class LightIdStampedProvider implements LightIdProvider {
         private SegmentStatus(Segment seg) {
             headSeq = seg.getHead();
             footSeq = seg.getFoot();
-            kneeSeq = footSeq - (footSeq - headSeq) * 2 / 10; // 剩余20%
+            kneeSeq = footSeq - (footSeq - headSeq) * 2 / 10; // 20% left
             startMs = System.currentTimeMillis();
             sequence = new AtomicLong(seg.getHead());
         }
@@ -211,7 +167,7 @@ public class LightIdStampedProvider implements LightIdProvider {
             long ms = (System.currentTimeMillis() - startMs);
             long count = footSeq - headSeq + 1;
             if (ms > 0) {
-                count = count * 60000 / ms; //预留60秒
+                count = count * 60000 / ms; // 60s
             }
             int max = loadMaxCount.get();
             if (count > max) {
@@ -237,7 +193,6 @@ public class LightIdStampedProvider implements LightIdProvider {
         private final AtomicBoolean switchIdle = new AtomicBoolean(true);
         private final StampedLock segmentLock = new StampedLock();
 
-        // 载入时错误信息，不太需要一致性。
         private final AtomicInteger errorCount = new AtomicInteger(0);
         private final AtomicReference<RuntimeException> errorNewer = new AtomicReference<>();
         private final AtomicLong errorEpoch = new AtomicLong(0);
@@ -261,13 +216,11 @@ public class LightIdStampedProvider implements LightIdProvider {
             }
             final long seq = slot.sequence.getAndIncrement();
 
-            // 未初始化或序号枯竭，等待重装。
             if (seq > slot.footSeq) {
                 pollSegment(timeout);
-                return nextId(timeout); // 重新获得
+                return nextId(timeout);
             }
 
-            // 预加载
             if (seq > slot.kneeSeq) {
                 loadSegment(slot.count60s(), true);
             }
@@ -275,7 +228,6 @@ public class LightIdStampedProvider implements LightIdProvider {
             return LightIdUtil.toId(block, seq);
         }
 
-        // 向pool末端补充
         public void fillSegment(final Segment seg) {
             if (seg == null) {
                 return;
@@ -289,11 +241,10 @@ public class LightIdStampedProvider implements LightIdProvider {
                 err = "difference name, name=" + name + ", block=" + block + ",seg.name=" + seg.getName();
             }
             else {
-                // 保证插入顺序，不可分读写
                 final long swl = segmentLock.writeLock();
                 try {
                     if (!segmentPool.isEmpty() && seg.getHead() <= segmentPool.getLast().getFoot()) {
-                        err = "seg.start must bigger than last.endin, name=" + name + ",block=" + block; // 可覆盖之前的err
+                        err = "seg.start must bigger than last.endin, name=" + name + ",block=" + block;
                     }
                     else {
                         segmentPool.add(seg);
@@ -306,7 +257,6 @@ public class LightIdStampedProvider implements LightIdProvider {
             handleError(err == null ? null : new IllegalStateException(err));
         }
 
-        // 不需要锁
         public void handleError(RuntimeException e) {
             if (e == null) {
                 errorCount.set(0);
@@ -320,7 +270,6 @@ public class LightIdStampedProvider implements LightIdProvider {
             }
         }
 
-        // 异步加载，只有一个活动
         private void loadSegment(final int count, final boolean async) {
             if (loaderIdle.compareAndSet(true, false)) {
                 if (async) {
@@ -342,16 +291,14 @@ public class LightIdStampedProvider implements LightIdProvider {
                 handleError(e);
             }
             finally {
-                loaderIdle.set(true); // 不必sync
+                loaderIdle.set(true);
             }
         }
 
-        // 序号用尽，切换
         private void pollSegment(long timeout) {
 
             final long throwMs = System.currentTimeMillis() + timeout;
 
-            // 一个切换线程，其他等待，必须在同步块内，否则wait死等
             if (!switchIdle.compareAndSet(true, false)) {
                 try {
                     while (!switchIdle.get()) {
@@ -371,8 +318,6 @@ public class LightIdStampedProvider implements LightIdProvider {
                     return;
                 }
             }
-
-            // 只有一个线程可达，升级①写线程，②load线程+写线程
 
             try {
                 while (true) {
@@ -395,10 +340,10 @@ public class LightIdStampedProvider implements LightIdProvider {
                     }
 
                     if (status == null) {
-                        break; // 切换完毕，不检查超时
+                        break;
                     }
                     else {
-                        loadSegment(status.count60s(), false); // 升级load线程
+                        loadSegment(status.count60s(), false);
                     }
 
                     long now = System.currentTimeMillis();
@@ -427,12 +372,10 @@ public class LightIdStampedProvider implements LightIdProvider {
                 return;
             }
 
-            // 不存在
             if (err instanceof NoSuchElementException) {
                 throw err;
             }
 
-            // 超过次数
             if (errorCount.get() > loadMaxError.get()) {
                 throw err;
             }

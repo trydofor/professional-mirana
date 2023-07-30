@@ -461,7 +461,7 @@ public class LightIdBufferedProvider implements LightIdProvider {
                 }
             }
 
-            // only one thread can ben here, upgraded ① writing thread, ② loading+writing thread
+            // only one thread can ben here, upgraded (1) writing thread, (2) loading+writing thread
             try {
                 while (true) {
                     checkError();

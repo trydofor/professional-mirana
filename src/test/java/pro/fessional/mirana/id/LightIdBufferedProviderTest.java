@@ -175,12 +175,12 @@ public class LightIdBufferedProviderTest {
     }
 
     @Test
-    @Disabled("手动执行，时间长")
+    @Disabled("Manual. Long time to run")
     public void testNext() {
         sleep.set(0);
 
         for (int i = 0; i < 10; i++) {
-            // 单线程
+            // single thread
             int capacity = 500_0000;
             int threads = 1;
             System.out.printf("\n[capacity=%9d, threads=%3d] speed(ms)", capacity, threads);
@@ -190,7 +190,7 @@ public class LightIdBufferedProviderTest {
             run(true, stampedProvider(), capacity, threads);
         }
         for (int i = 0; i < 10; i++) {
-            // 多线程
+            // multiple thread
             int capacity = 10_0000;
             int threads = 500;
             System.out.printf("\n[capacity=%9d, threads=%3d] speed(ms)", capacity, threads);
@@ -214,7 +214,7 @@ public class LightIdBufferedProviderTest {
     [4089, sleep= 9, step= 45000] speed(ms), BufferedTest=35971, Buffered=24271, Stamped= 7012
      */
     @Test
-    @Disabled("手动执行，简单的速度对比测试，基准测试在jmh")
+    @Disabled("Manual. simple speed test, more benchmark at jmh")
     public void testSpeed() {
         int capacity = 500_0000;
         int threads = 500;
