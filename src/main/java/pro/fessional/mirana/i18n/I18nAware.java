@@ -13,8 +13,6 @@ public interface I18nAware extends Serializable {
 
     /**
      * get i18n code
-     *
-     * @return i18nCode
      */
     @Nullable
     default String getI18nCode() {
@@ -23,8 +21,6 @@ public interface I18nAware extends Serializable {
 
     /**
      * default message or template
-     *
-     * @return hint
      */
     @Nullable
     default String getI18nHint() {
@@ -33,8 +29,6 @@ public interface I18nAware extends Serializable {
 
     /**
      * get i18n args for template
-     *
-     * @return 参数
      */
     @Nullable
     default Object[] getI18nArgs() {

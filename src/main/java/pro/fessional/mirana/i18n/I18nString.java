@@ -11,11 +11,13 @@ import java.util.Locale;
 import java.util.Objects;
 
 /**
- * 可以被i18n的String
- * 模板代码（code），
- * 模板参数（args），
- * 默认文字或模板（hint）,
- * 已i18n化的文字（i18n）
+ * <pre>
+ * String can be used as i18n template,
+ * * code - template id
+ * * args - template arguments
+ * * hint - default text or template
+ * * i18n - i18n text
+ * </pre>
  *
  * @author trydofor
  * @since 2019-09-19

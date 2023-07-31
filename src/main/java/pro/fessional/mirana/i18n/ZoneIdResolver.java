@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.TimeZone;
 
 /**
- * 不区分大小写，支持部分命名
+ * Supports case-insensitive and partial naming
  *
  * @author trydofor
  * @since 2019-07-01

@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Locale;
 
 /**
- * 支持下划线命名。
+ * Supports the underscore(en_US) and the kebab(en-US) naming
  *
  * @author trydofor
  * @since 2019-07-01

@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import pro.fessional.mirana.data.CodeEnum;
 
 /**
- * 为普通enum的提供便利的i18n能力
+ * Empower i18n capability to common enums
  *
  * @author trydofor
  * @since 2022-09-19
