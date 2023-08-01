@@ -6,11 +6,12 @@ import java.lang.reflect.Method;
 
 /**
  * <pre>
- * 必须使用对象引用，捕捉对象本身及其方法。
+ * Object references must be used to capture the object itself and its methods.
  * Lam.ref(object::method)
  * Lam.<String>ref(p1::split);
  * </pre>
  *
+ * @see SerializedLambda
  * @author trydofor
  * @since 2022-12-13
  */

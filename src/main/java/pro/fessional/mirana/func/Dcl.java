@@ -3,8 +3,9 @@ package pro.fessional.mirana.func;
 import java.util.function.Supplier;
 
 /**
- * Double Checked Locking of Runnable.
- * 适用于准备期多次写，运行时只处理一次的多次读场景。
+ * Double-checked Locking of Runnable.
+ * For a once-write, many read scenario,
+ * multiple writes can be done during the preparation.
  *
  * @author trydofor
  * @since 2021-02-19
