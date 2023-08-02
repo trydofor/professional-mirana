@@ -1,5 +1,7 @@
 package pro.fessional.mirana.pain;
 
+import org.jetbrains.annotations.Contract;
+
 /**
  * Stackless RuntimeException.
  *
@@ -13,6 +15,7 @@ public class NoStackRuntimeException extends RuntimeException {
     }
 
     @Override
+    @Contract("->this")
     public Throwable fillInStackTrace() {
         return this;
     }

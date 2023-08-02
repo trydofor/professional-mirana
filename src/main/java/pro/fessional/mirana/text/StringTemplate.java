@@ -1,5 +1,6 @@
 package pro.fessional.mirana.text;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -76,6 +77,7 @@ public class StringTemplate {
         }
 
         @NotNull
+        @Contract("_,_->this")
         public B bindStr(String str, Object obj) {
             if (str != null && str.length() > 0) {
                 final K k = new K(false, str, keys.size());
@@ -86,6 +88,7 @@ public class StringTemplate {
         }
 
         @NotNull
+        @Contract("_,_->this")
         public B bindReg(String reg, Object obj) {
             if (reg != null && reg.length() > 0) {
                 final K k = new K(true, reg, keys.size());

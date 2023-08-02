@@ -203,109 +203,130 @@ public class BuilderHelper {
             return builder;
         }
 
+        @Contract("->this")
         public W delete() {
             BuilderHelper.delete(builder);
             return this;
         }
 
+        @Contract("_->this")
         public W delete(int count) {
             BuilderHelper.delete(builder, count);
             return this;
         }
 
+        @Contract("_,_->this")
         public W delete(int s, int e) {
             builder.delete(s, e);
             return this;
         }
 
+        @Contract("_,_->this")
         public W join(String jn, Object... arr) {
             BuilderHelper.join(builder, jn, arr);
             return this;
         }
 
+        @Contract("_,_->this")
         public W join(String jn, Iterable<?> arr) {
             BuilderHelper.join(builder, jn, arr);
             return this;
         }
 
+        @Contract("_,_,_->this")
         public <T, R> W join(String jn, Iterable<T> arr, Function<T, R> fun) {
             BuilderHelper.join(builder, jn, arr, fun);
             return this;
         }
 
+        @Contract("_,_,_->this")
         public W join(boolean skipNull, String jn, Object... arr) {
             BuilderHelper.join(builder, skipNull, jn, arr);
             return this;
         }
 
+        @Contract("_,_,_->this")
         public W join(boolean skipNull, String jn, Iterable<?> arr) {
             BuilderHelper.join(builder, skipNull, jn, arr);
             return this;
         }
 
+        @Contract("_,_,_,_->this")
         public <T, R> W join(boolean skipNull, String jn, Iterable<T> arr, Function<T, R> fun) {
             BuilderHelper.join(builder, skipNull, jn, arr, fun);
             return this;
         }
 
+        @Contract("_->this")
         public W append(boolean v) {
             builder.append(v);
             return this;
         }
 
+        @Contract("_->this")
         public W append(int v) {
             builder.append(v);
             return this;
         }
 
+        @Contract("_->this")
         public W append(long v) {
             builder.append(v);
             return this;
         }
 
+        @Contract("_->this")
         public W append(float v) {
             builder.append(v);
             return this;
         }
 
+        @Contract("_->this")
         public W append(double v) {
             builder.append(v);
             return this;
         }
 
+        @Contract("_->this")
         public W append(char[] v) {
             builder.append(v);
             return this;
         }
 
+        @Contract("_->this")
         public W append(StringBuffer v) {
             builder.append(v);
             return this;
         }
 
+        @Contract("_,_,_->this")
         public W append(char[] v, int s, int e) {
             builder.append(v, s, e);
             return this;
         }
 
+        @Contract("_->this")
         public W append(Object v) {
             if (v != null) builder.append(v);
             return this;
         }
 
         @Override
+        @Contract("_->this")
         public W append(CharSequence v) {
             if (v != null) builder.append(v);
             return this;
         }
 
         @Override
+        @Contract("_,_,_->this")
         public W append(CharSequence csq, int start, int end) {
             if (csq != null) builder.append(csq, start, end);
             return this;
         }
 
         @Override
+        @Contract("_->this")
         public W append(char c) {
             builder.append(c);
             return this;

@@ -1,5 +1,6 @@
 package pro.fessional.mirana.page;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import pro.fessional.mirana.data.Null;
 
@@ -45,6 +46,7 @@ public class PageQuery implements Serializable {
         return page;
     }
 
+    @Contract("_->this")
     public PageQuery setPage(int page) {
         this.page = Math.max(page, 1);
         return this;
@@ -57,6 +59,7 @@ public class PageQuery implements Serializable {
         return size;
     }
 
+    @Contract("_->this")
     public PageQuery setSize(int size) {
         this.size = Math.max(size, 1);
         return this;
@@ -73,6 +76,7 @@ public class PageQuery implements Serializable {
         return sort;
     }
 
+    @Contract("_->this")
     public PageQuery setSort(String sort) {
         this.sort = sort == null ? Null.Str : sort;
         return this;

@@ -61,11 +61,11 @@ public class LightId {
     }
 
     public final int component1() {
-        return this.block;
+        return block;
     }
 
     public final long component2() {
-        return this.sequence;
+        return sequence;
     }
 
     public long toLong() {
@@ -75,7 +75,7 @@ public class LightId {
     @NotNull
     @Override
     public String toString() {
-        return "LightId(block=" + this.block + ", sequence=" + this.sequence + ")";
+        return "LightId(block=" + block + ", sequence=" + sequence + ")";
     }
 
     @Override

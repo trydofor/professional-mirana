@@ -1,5 +1,6 @@
 package pro.fessional.mirana.pain;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import pro.fessional.mirana.data.CodeEnum;
 import pro.fessional.mirana.data.Null;
@@ -129,6 +130,7 @@ public class CodeException extends RuntimeException implements I18nAware {
     }
 
     // i18n
+    @Contract("_,_->this")
     public CodeException withI18n(String code, Object... args) {
         if (code != null) i18nCode = code;
         if (args != null && args.length > 0) i18nArgs = args;

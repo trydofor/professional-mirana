@@ -1,5 +1,6 @@
 package pro.fessional.mirana.page;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import pro.fessional.mirana.text.WhiteUtil;
 
@@ -96,7 +97,7 @@ public class PageUtil {
             this.buf = sb == null ? new StringBuilder() : sb;
         }
 
-        @NotNull
+        @Contract("_,_->this")
         public Sb by(String key, boolean asc) {
             if (key != null && key.length() > 0) {
                 buf.append(SORT_DELI);
@@ -106,7 +107,7 @@ public class PageUtil {
             return this;
         }
 
-        @NotNull
+        @Contract("_->this")
         public Sb by(By by) {
             if (by != null) {
                 by(by.key, by.asc);
@@ -114,7 +115,7 @@ public class PageUtil {
             return this;
         }
 
-        @NotNull
+        @Contract("_->this")
         public Sb by(Iterable<By> sort) {
             if (sort != null) {
                 for (By st : sort) {

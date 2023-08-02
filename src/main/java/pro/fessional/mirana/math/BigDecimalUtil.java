@@ -979,110 +979,110 @@ public class BigDecimalUtil {
             return BigDecimalUtil.floor(value, scale);
         }
 
-        @NotNull
+        @Contract("_->this")
         public W setScale(int scale) {
             this.scale = scale;
             return this;
         }
 
-        @NotNull
+        @Contract("_->this")
         public W setValue(Object... value) {
             this.value = notNull(value);
             return this;
         }
 
         // ////
-        @NotNull
+        @Contract("_->this")
         public W add(Object a) {
             value = BigDecimalUtil.add(value, a);
             return this;
         }
 
-        @NotNull
+        @Contract("_,_->this")
         public W add(Object a, Object... num) {
             value = BigDecimalUtil.add(value, a, num);
             return this;
         }
 
-        @NotNull
+        @Contract("_,_,_->this")
         public W addIf(boolean c, Object a, Object b) {
             final BigDecimal num = c ? object(a) : object(b);
             value = BigDecimalUtil.add(value, num);
             return this;
         }
 
-        @NotNull
+        @Contract("_->this")
         public W addMap(Iterable<?> cols) {
             final BigDecimal x = BigDecimalUtil.addMapNull(cols);
             value = BigDecimalUtil.add(value, x);
             return this;
         }
 
-        @NotNull
+        @Contract("_,_->this")
         public <T> W addMap(Iterable<T> cols, Function<? super T, ?> mapper) {
             final BigDecimal x = BigDecimalUtil.addMapNull(cols, mapper);
             value = BigDecimalUtil.add(value, x);
             return this;
         }
 
-        @NotNull
+        @Contract("_->this")
         public W sub(Object a) {
             value = BigDecimalUtil.sub(value, a);
             return this;
         }
 
-        @NotNull
+        @Contract("_,_->this")
         public W sub(Object a, Object... num) {
             value = BigDecimalUtil.sub(value, a, num);
             return this;
         }
 
-        @NotNull
+        @Contract("_,_,_->this")
         public W subIf(boolean c, Object a, Object b) {
             final BigDecimal num = c ? object(a) : object(b);
             value = BigDecimalUtil.sub(value, num);
             return this;
         }
 
-        @NotNull
+        @Contract("_->this")
         public W subMap(Iterable<?> cols) {
             value = BigDecimalUtil.subMap(value, cols);
             return this;
         }
 
-        @NotNull
+        @Contract("_,_->this")
         public <T> W subMap(Iterable<T> cols, Function<? super T, ?> mapper) {
             value = BigDecimalUtil.subMap(value, cols, mapper);
             return this;
         }
 
-        @NotNull
+        @Contract("_->this")
         public W mul(Object a) {
             value = BigDecimalUtil.mul(value, a);
             return this;
         }
 
-        @NotNull
+        @Contract("_,_->this")
         public W mul(Object a, Object... num) {
             value = BigDecimalUtil.mul(value, a, num);
             return this;
         }
 
-        @NotNull
+        @Contract("_,_,_->this")
         public W mulIf(boolean c, Object a, Object b) {
             final BigDecimal num = c ? object(a) : object(b);
             value = BigDecimalUtil.mul(value, num);
             return this;
         }
 
-        @NotNull
+        @Contract("_->this")
         public W mulMap(Iterable<?> cols) {
             final BigDecimal x = BigDecimalUtil.mulMapNull(cols);
             value = BigDecimalUtil.mul(value, x);
             return this;
         }
 
-        @NotNull
+        @Contract("_,_->this")
         public <T> W mulMap(Iterable<T> cols, Function<? super T, ?> mapper) {
             final BigDecimal x = BigDecimalUtil.mulMapNull(cols, mapper);
             value = BigDecimalUtil.mul(value, x);
@@ -1090,63 +1090,62 @@ public class BigDecimalUtil {
         }
 
 
-        @NotNull
+        @Contract("_->this")
         public W div(Object a) {
             value = BigDecimalUtil.div(value, a);
             return this;
         }
 
-        @NotNull
+        @Contract("_,_->this")
         public W div(Object a, Object... num) {
             value = BigDecimalUtil.div(value, a, num);
             return this;
         }
 
-        @NotNull
+        @Contract("_,_,_->this")
         public W divIf(boolean c, Object a, Object b) {
             final BigDecimal num = c ? object(a) : object(b);
             value = BigDecimalUtil.div(value, num);
             return this;
         }
 
-
-        @NotNull
+        @Contract("_->this")
         public W divMap(Iterable<?> cols) {
             value = BigDecimalUtil.divMap(value, cols);
             return this;
         }
 
-        @NotNull
+        @Contract("_,_->this")
         public <T> W divMap(Iterable<T> cols, Function<? super T, ?> mapper) {
             value = BigDecimalUtil.divMap(value, cols, mapper);
             return this;
         }
 
-        @NotNull
+        @Contract("->this")
         public W neg() {
             value = value.negate(MC);
             return this;
         }
 
-        @NotNull
+        @Contract("_->this")
         public W pow(int n) {
             value = value.pow(n, MC);
             return this;
         }
 
-        @NotNull
+        @Contract("_->this")
         public W ceil(int scale) {
             value = BigDecimalUtil.ceil(value, scale);
             return this;
         }
 
-        @NotNull
+        @Contract("_->this")
         public W round(int scale) {
             value = BigDecimalUtil.round(value, scale);
             return this;
         }
 
-        @NotNull
+        @Contract("_->this")
         public W floor(int scale) {
             value = BigDecimalUtil.floor(value, scale);
             return this;

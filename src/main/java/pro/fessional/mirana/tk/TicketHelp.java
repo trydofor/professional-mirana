@@ -1,5 +1,6 @@
 package pro.fessional.mirana.tk;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pro.fessional.mirana.bits.Aes;
@@ -252,57 +253,67 @@ public class TicketHelp {
             this.ticket = ticket;
         }
 
+        @Contract("_->this")
         public Builder<T> mod(String mod) {
             ticket.setPubMod(mod);
             return this;
         }
 
+        @Contract("_->this")
         public Builder<T> exp(long exp) {
             ticket.setPubDue(exp);
             return this;
         }
 
+        @Contract("_,_->this")
         public Builder<T> expAfterNow(long num, TimeUnit unit) {
             ticket.setPubDue(unit.toSeconds(num) + ThreadNow.millis() / 1000);
             return this;
         }
 
+        @Contract("_,_->this")
         public Builder<T> expAfter(long num, TimeUnit unit) {
             ticket.setPubDue(unit.toSeconds(num) + ticket.getPubDue());
             return this;
         }
 
+        @Contract("_->this")
         public Builder<T> seq(int seq) {
             ticket.setPubSeq(seq);
             return this;
         }
 
+        @Contract("->this")
         public Builder<T> seqIncrease() {
             ticket.setPubSeq(ticket.getPubSeq() + 1);
             return this;
         }
 
+        @Contract("_->this")
         public Builder<T> seqAdd(int step) {
             ticket.setPubSeq(ticket.getPubSeq() + step);
             return this;
         }
 
-
+        @Contract("_->this")
         public Builder<T> biz(String biz) {
             ticket.setBizPart(biz);
             return this;
         }
 
+        @Contract("->this")
         public Builder<T> bizEmpty() {
             ticket.setBizPart(Null.Str);
             return this;
         }
 
+        @Contract("_->this")
         public Builder<T> bizB64(byte[] biz) {
             ticket.setBizPart(Base64.encode(biz));
             return this;
         }
 
+        @Contract("_->this")
         public Builder<T> bizB64(String biz) {
             ticket.setBizPart(Base64.encode(biz));
             return this;
@@ -312,6 +323,7 @@ public class TicketHelp {
             return bizAes(biz, Aes256.of(key));
         }
 
+        @Contract("_,_->this")
         public Builder<T> bizAes(String biz, Aes aes) {
             ticket.setBizPart(aes.encode64(biz));
             return this;

@@ -1,5 +1,6 @@
 package pro.fessional.mirana.page;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pro.fessional.mirana.data.CodeEnum;
@@ -57,6 +58,7 @@ public class PageResult<E> extends R<Collection<E>> implements Iterable<E> {
         return page;
     }
 
+    @Contract("_->this")
     public PageResult<E> setPage(int page) {
         this.page = Math.max(page, 1);
         return this;
@@ -91,6 +93,7 @@ public class PageResult<E> extends R<Collection<E>> implements Iterable<E> {
      * @return this
      * @see PageUtil#sort(String)
      */
+    @Contract("_->this")
     public PageResult<E> setSort(String sort) {
         this.sort = sort;
         return this;
@@ -137,6 +140,7 @@ public class PageResult<E> extends R<Collection<E>> implements Iterable<E> {
      * @param pageSize  page size
      * @return this
      */
+    @Contract("_,_->this")
     public PageResult<E> setTotalInfo(int totalData, int pageSize) {
         this.size = Math.max(pageSize, 1);
         this.totalData = Math.max(totalData, 0);
@@ -145,6 +149,7 @@ public class PageResult<E> extends R<Collection<E>> implements Iterable<E> {
     }
 
     @Override
+    @Contract("_->this")
     public PageResult<E> setData(Collection<E> ds) {
         if (ds == null || ds.isEmpty()) {
             super.setData(empty);
@@ -163,53 +168,62 @@ public class PageResult<E> extends R<Collection<E>> implements Iterable<E> {
     }
 
     @Override
+    @Contract("_->this")
     public PageResult<E> setSuccess(boolean success) {
         super.setSuccess(success);
         return this;
     }
 
     @Override
+    @Contract("_->this")
     public PageResult<E> setMessage(String message) {
         super.setMessage(message);
         return this;
     }
 
     @Override
+    @Contract("_,_->this")
     public PageResult<E> setI18nMessage(CodeEnum ce, Object... arg) {
         super.setI18nMessage(ce, arg);
         return this;
     }
 
     @Override
+    @Contract("_->this")
     public PageResult<E> setI18nMessage(I18nAware message) {
         super.setI18nMessage(message);
         return this;
     }
 
     @Override
+    @Contract("_,_->this")
     public PageResult<E> setI18nMessage(String i18nCode, Object... args) {
         super.setI18nMessage(i18nCode, args);
         return this;
     }
 
     @Override
+    @Contract("_->this")
     public PageResult<E> setCode(String code) {
         super.setCode(code);
         return this;
     }
 
     @Override
+    @Contract("_->this")
     public R<Collection<E>> setCode(CodeEnum code) {
         super.setCode(code);
         return this;
     }
 
     @Override
+    @Contract("_->this")
     public PageResult<E> setCause(Object cause) {
         super.setCause(cause);
         return this;
     }
 
+    @Contract("_->this")
     public PageResult<E> addData(E e) {
         if (e != null) {
             Collection<E> data = getData();
@@ -221,6 +235,7 @@ public class PageResult<E> extends R<Collection<E>> implements Iterable<E> {
         return this;
     }
 
+    @Contract("_->this")
     public PageResult<E> addData(Collection<E> ds) {
         if (ds != null && ds.size() > 0) {
             Collection<E> data = getData();
@@ -249,11 +264,13 @@ public class PageResult<E> extends R<Collection<E>> implements Iterable<E> {
         return meta;
     }
 
+    @Contract("_->this")
     public PageResult<E> setMeta(Map<String, Object> meta) {
         this.meta = meta;
         return this;
     }
 
+    @Contract("_,_->this")
     public PageResult<E> addMeta(String key, Object value) {
         if (meta == null) {
             meta = new HashMap<>();
