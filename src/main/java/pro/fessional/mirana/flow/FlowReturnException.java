@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * return
+ * Return data by exception
  *
  * @author trydofor
  * @since 2021-02-13
@@ -36,33 +36,31 @@ public class FlowReturnException extends FlowBreakException {
     }
 
     /**
-     * null则返回 other
+     * return elze if null
      *
-     * @param other else
-     * @param <T>   类型
+     * @param elze else
+     * @param <T>  type
      * @return value
      */
-    @Nullable
     @Contract("!null -> !null")
     @SuppressWarnings("unchecked")
-    public <T> T getOrElse(@Nullable T other) {
-        return value == null ? other : (T) value;
+    public <T> T getOrElse(@Nullable T elze) {
+        return value == null ? elze : (T) value;
     }
 
     /**
-     * 不是type类型时，返回other
+     * return elze if type not match
      *
-     * @param other else
-     * @param type  类型
-     * @param <T>   类型
-     * @param <S>   子类型
+     * @param elze else
+     * @param type type to match
+     * @param <T>  type of return value
+     * @param <S>  subclass type of T
      * @return value
      */
-    @Nullable
     @Contract("!null,_ -> !null")
     @SuppressWarnings("unchecked")
-    public <T, S extends T> T getOrElse(@Nullable S other, @NotNull Class<T> type) {
-        return type.isInstance(value) ? (T) value : other;
+    public <T, S extends T> T getOrElse(@Nullable S elze, @NotNull Class<T> type) {
+        return type.isInstance(value) ? (T) value : elze;
     }
 
     @Override

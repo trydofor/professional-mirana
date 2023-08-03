@@ -3,10 +3,12 @@ package pro.fessional.mirana.flow;
 import pro.fessional.mirana.pain.NoStackRuntimeException;
 
 /**
- * 用于流程控制的轻量级，无stacktrace的异常
+ * <pre>
+ * Lightweight, stacktrace-free exceptions for process control
  * NoStackTraceRuntimeException
  * RuntimeException took 5955 ms
  * FlowControlException took 26 ms
+ * </pre>
  *
  * @author trydofor
  * @since 2021-01-29

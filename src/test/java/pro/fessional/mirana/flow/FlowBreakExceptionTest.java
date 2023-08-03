@@ -29,7 +29,7 @@ class FlowBreakExceptionTest {
     }
 
     @Test
-    @Disabled("手动执行，观察时间")
+    @Disabled("Manual. see the running time")
     void getControlEnum() {
         int a = 1_00_0000;
         int i;

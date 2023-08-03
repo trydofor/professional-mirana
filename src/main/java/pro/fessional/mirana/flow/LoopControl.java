@@ -6,15 +6,15 @@ package pro.fessional.mirana.flow;
  */
 public enum LoopControl {
     /**
-     * 继续循环
+     * Continue to loop
      */
     Continue,
     /**
-     * 停止循环
+     * Break the loop
      */
     Break,
     /**
-     * 终止循环并可结束方法
+     * break the loop and return form the method
      */
     Return
 }
