@@ -6,10 +6,11 @@ import pro.fessional.mirana.time.ThreadNow;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 
 /**
- * 生成指定偏移量附近的伪随机日期，保证结果等幂。
+ * Generate a pseudo random dates around a given offset, with guaranteed idempotent results.
  *
  * @author trydofor
  * @since 2017-02-06.
@@ -17,36 +18,35 @@ import java.time.LocalDateTime;
 public abstract class FakeDate {
 
     /**
-     * 生成min和当前日期之间，偏移off的附近的随机日期
+     * Generate a pseudo random date between min and current date, near the offset hour.
      *
-     * @param min  种子日期
-     * @param hour 小时偏移量
-     * @return 日期
+     * @param min  min date
+     * @param hour offset of hour
      */
     @NotNull
     public static LocalDateTime dateTime(@NotNull LocalDate min, int hour) {
-        return dateTime(min, hour, ThreadNow.localDateTime());
+        final LocalDateTime now = ThreadNow.localDateTime();
+        return dateTime(LocalDateTime.of(min, now.toLocalTime()), hour, now);
     }
 
     /**
-     * 生成min和max之间，偏移off的附近的随机日期
+     * Generate a pseudo random date between min and max date, near the offset hour.
      *
-     * @param min  最小值
-     * @param hour 小时偏移量
-     * @param max  最大值
-     * @return 日期
+     * @param min  min date
+     * @param hour offset of hour
+     * @param max  max date
      */
     @NotNull
-    public static LocalDateTime dateTime(@NotNull LocalDate min, int hour, @NotNull LocalDateTime max) {
-        return dateTime(LocalDateTime.of(min, ThreadNow.localTime()), hour, ThreadNow.localDateTime());
+    public static LocalDateTime dateTime(@NotNull LocalDate min, int hour, @NotNull LocalDate max) {
+        final LocalTime time = ThreadNow.localTime();
+        return dateTime(LocalDateTime.of(min, time), hour, LocalDateTime.of(max, time));
     }
 
     /**
-     * 生成min和当前日期之间，偏移off的附近的随机日期
+     * Generate a pseudo random date between min and max date, near the offset hour.
      *
-     * @param min  种子日期
-     * @param hour 小时偏移量
-     * @return 日期
+     * @param min  min date
+     * @param hour offset of hour
      */
     @NotNull
     public static LocalDateTime dateTime(@NotNull LocalDateTime min, int hour) {
@@ -54,12 +54,11 @@ public abstract class FakeDate {
     }
 
     /**
-     * 生成min和max之间，偏移off的附近的随机日期
+     * Generate a pseudo random date between min and max date, near the offset hour.
      *
-     * @param min  最小值
-     * @param hour 小时偏移量
-     * @param max  最大值
-     * @return 日期
+     * @param min  min date
+     * @param hour offset of hour
+     * @param max  max date
      */
     @NotNull
     public static LocalDateTime dateTime(@NotNull LocalDateTime min, int hour, @NotNull LocalDateTime max) {

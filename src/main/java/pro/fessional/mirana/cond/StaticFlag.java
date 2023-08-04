@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 静态全局Enum标记的Flag
+ * global static Flag of Enum
  *
  * @author trydofor
  * @since 2022-01-26

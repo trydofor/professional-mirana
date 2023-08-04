@@ -38,7 +38,7 @@ public class Java {
     }
 
     /**
-     * 动态编译java code
+     * dynamic compile java code
      *
      * @param javaFile pack.age.path.ClassName
      * @param javaCode source code
