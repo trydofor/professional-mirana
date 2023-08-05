@@ -1,9 +1,11 @@
 package pro.fessional.mirana.evil;
 
 /**
- * 内部使用 ThreadLocal，有leak隐患，必须使用以下模式之一。
- * ① static，JVM内唯一Ref，避免多次创建临时Ref
- * ② 使用 try-finally-close 模式，remove掉Ref
+ * <pre>
+ * Using ThreadLocal internally, there are leak pitfalls, you must use one of the following modes.
+ * (1) static, the only Ref in JVM, to avoid creating temporary Ref multiple times.
+ * (2) use try-finally-close mode to remove the Ref.
+ * </pre>
  *
  * @author trydofor
  * @since 2022-10-27

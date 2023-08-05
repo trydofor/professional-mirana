@@ -8,9 +8,9 @@ import java.util.function.Supplier;
 
 /**
  * <pre>
- * init方法，应该在服务前初始化，并且最好一次。
- * global方法，全局生效，应该在系统级层面使用
- * thread方法，线程内生效，应该使用try {tweak} finally{reset} 模式
+ * init - should init before the service and called once.
+ * global - global scope, should be used at the system level.
+ * thread - thread scope, should use try {tweak} finally{reset} pattern.
  * </pre>
  *
  * @author trydofor
@@ -23,69 +23,69 @@ public class TweakingContext<T> {
     private final ThreadLocalProxy<Supplier<T>> threadValue = new ThreadLocalProxy<>();
 
     /**
-     * 无默认值
+     * without default value
      */
     public TweakingContext() {
     }
 
     /**
-     * 有默认值
+     * init with default value
      */
     public TweakingContext(T initDefault) {
         initDefault(initDefault);
     }
 
     /**
-     * 有默认值
+     * init with default value
      */
     public TweakingContext(Supplier<T> initDefault) {
         initDefault(initDefault);
     }
 
     /**
-     * 初始默认值
+     * init the default value
      */
     public void initDefault(T value) {
         defaultValue.set(() -> value);
     }
 
     /**
-     * 初始默认值
+     * init the default value
      */
     public void initDefault(Supplier<T> value) {
         defaultValue.set(value);
     }
 
     /**
-     * 初始线程默认值，最好无initialValue，采用全局默认值
+     * init thread value
      */
     public void initThread(@NotNull ThreadLocal<Supplier<T>> threadLocal, boolean tryToCleanOld) throws ThreadLocalAttention {
         threadValue.replaceBackend(threadLocal, tryToCleanOld);
     }
 
     /**
-     * 调整全局设定值
+     * tweak global value
      */
     public void tweakGlobal(T stack) {
         globalValue.set(() -> stack);
     }
 
     /**
-     * 调整全局设定值
+     * tweak global value
      */
     public void tweakGlobal(Supplier<T> stack) {
         globalValue.set(stack);
     }
 
     /**
-     * 重置全局设定值
+     * reset global value
      */
     public void resetGlobal() {
         globalValue.set(null);
     }
 
     /**
-     * 调整Thread设定值。内含ThreadLocal，建议使用try {tweak} finally{reset} 模式。
+     * tweak thread value. should use try {tweak} finally{reset} pattern
      */
     public void tweakThread(T stack) {
         if (stack == null) {
@@ -97,7 +97,7 @@ public class TweakingContext<T> {
     }
 
     /**
-     * 调整Thread设定值。内含ThreadLocal，建议使用try {tweak} finally{reset} 模式。
+     * tweak thread value. should use try {tweak} finally{reset} pattern
      */
     public void tweakThread(Supplier<T> stack) {
         if (stack == null) {
@@ -109,7 +109,7 @@ public class TweakingContext<T> {
     }
 
     /**
-     * 重置Thread设定值。内含ThreadLocal，建议使用try {tweak} finally{reset} 模式。
+     * reset thread value. should use try {tweak} finally{reset} pattern
      */
     public void resetThread() {
         threadValue.remove();
@@ -147,7 +147,7 @@ public class TweakingContext<T> {
     }
 
     /**
-     * 当前是设定值，顺序为线程设定值，全局设定值，全局默认值
+     * get current value, in the order of thread, global, default value
      */
     @Contract("true->!null")
     public T current(boolean notnull) {

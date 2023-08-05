@@ -1,7 +1,7 @@
 package pro.fessional.mirana.evil;
 
 /**
- * 引起注意的标记异常，使用被标记的方法应该遵循固定模式，避免误用。
+ * Pay attention to the use of method, should follow some pattern to avoid misuse.
  *
  * @author trydofor
  * @since 2022-10-27

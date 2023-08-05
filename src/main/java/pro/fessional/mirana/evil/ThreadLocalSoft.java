@@ -7,9 +7,9 @@ import java.lang.ref.SoftReference;
 
 /**
  * <pre>
- * 可能被回收的ThreadLocal，有leak隐患，必须使用以下模式之一。
- * ① static，JVM内唯一Ref，避免多次创建临时Ref
- * ② 使用 try-finally-close 模式，remove掉Ref
+ * Using ThreadLocal internally, there are leak pitfalls, you must use one of the following modes.
+ * (1) static, the only Ref in JVM, to avoid creating temporary Ref multiple times.
+ * (2) use try-finally-close mode to remove the Ref.
  * </pre>
  *
  * @author trydofor
@@ -26,18 +26,16 @@ public abstract class ThreadLocalSoft<T> implements Closeable {
     }
 
     /**
-     * 在单线程中初始化，首次或anewValue()调用
-     *
-     * @return 初始值
+     * Init in a single thread, first time or anewValue() call
      */
     @NotNull
     public abstract T initValue();
 
     /**
-     * 在单线程中重置现值，并决定是否可用
+     * Reset to current value in a single thread and decide whether it is available
      *
-     * @param t 现值
-     * @return 是否需要重新init
+     * @param t current value
+     * @return whether to initValue again.
      */
     public boolean anewValue(@NotNull T t) {
         return false;
@@ -45,10 +43,10 @@ public abstract class ThreadLocalSoft<T> implements Closeable {
 
 
     /**
-     * ① static，JVM内唯一Ref，避免多次创建临时Ref
-     * ② 使用 try-finally-close 模式，remove掉Ref
-     *
-     * @return T 值
+     * <pre>
+     * (1) static, the only Ref in JVM, to avoid creating temporary Ref multiple times.
+     * (2) use try-finally-close mode to remove the Ref.
+     * </pre>
      */
     @NotNull
     public T use() {

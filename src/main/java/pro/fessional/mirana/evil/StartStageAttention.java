@@ -1,7 +1,7 @@
 package pro.fessional.mirana.evil;
 
 /**
- * 启动阶段调用的方法，不要在服务进行中调用
+ * Methods called during the startup phase, not in the service.
  *
  * @author trydofor
  * @since 2022-10-27
