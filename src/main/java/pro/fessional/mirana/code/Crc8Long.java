@@ -4,8 +4,8 @@ import net.jcip.annotations.ThreadSafe;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * 对 55(63-8) bit长的long型数字，进行伪随机混淆，输入输出都为非负数。
- * 根据pseudoSeed 插入crc8 校验位，提供encode，decode等方法
+ * Perform pseudo-random obfuscation on 55(63-8) bit long numbers with non-negative inputs and outputs.
+ * Inserts crc8 checksums according to pseudoSeed, provides encode, decode, etc.
  *
  * @author trydofor
  * @see <a href="https://github.com/optimasc/java-digests/blob/master/src/com/optimasc/digest/CRC8Digest.java">CRC8Digest.java</a>
@@ -58,25 +58,27 @@ public class Crc8Long {
     // @formatter:on
 
     /**
-     * crc8后8个bit在 63bit中的从右侧起第几位，取值范围[1,60]。
+     * The 8 bits of crc8 should be inserted where to the right side of 63bit, in the range [1,60].
      */
     private final int[] pseudoSeed = new int[]{51, 43, 37, 31, 23, 17, 11, 2};
 
     /**
-     * 使用默认伪随机seed
+     * Use the default pseudo-random seed
      */
     public Crc8Long() {
     }
 
     /**
-     * 指定伪随机seed，产生用混淆值(crc8)的插入位置。
-     * 相当于在seed指定的位置(1-base)，用8个bit把55bit的number分成9段。
-     * <p>
-     * seed要求，每个元素取值范围是[1,60]，元素间数字递减，相差大于2。
-     * 元素个数超过8个时，只取前8个，不足8个时，报异常。
+     * <pre>
+     * Specifies pseudo-random seed to generate insert positions of obfuscated values (crc8).
+     * It is equivalent to dividing the 55bit number into 9 parts with 8 bits at the position (1-base) specified by seed.
      *
-     * @param seed 伪随机seed
-     * @throws IllegalArgumentException 去重后不足8个元素。
+     * SEED requires that each element take a value in the range of [1,60], with decrementing no less than 1 between elements.
+     * If the number of elements exceeds 8, only the first 8 are taken, and if there are less than 8, an exception is thrown.
+     * </pre>
+     *
+     * @param seed pseudo-random seed
+     * @throws IllegalArgumentException After the distinct there are less than 8 elements.
      */
     public Crc8Long(int @NotNull [] seed) {
         if (seed.length < 8) {
@@ -99,11 +101,8 @@ public class Crc8Long {
 
 
     /**
-     * 编码，生成伪随机数字。
-     * 注意：通过比较{@link Long#MIN_VALUE}检测失败情况
-     *
-     * @param number 编码前数字。
-     * @return 成功时，返回编码后数字，失败时返回{@link Long#MIN_VALUE}。
+     * encode a number to the pseudo-random
+     * fail if return {@link Long#MIN_VALUE}
      */
     public long encode(final long number) {
         if (number < MIN_NUMBER || number > MAX_NUMBER) {
@@ -135,11 +134,8 @@ public class Crc8Long {
     }
 
     /**
-     * 解码，从伪随机数字中找到编码前数字
-     * <P>注意：通过比较{@link Long#MIN_VALUE}检测失败情况
-     *
-     * @param value 伪随机数字
-     * @return 成功时，返回原始数字，解码或校验失败时返回 {@link Long#MIN_VALUE}。
+     * decode a pseudo-random to the number
+     * fail if return {@link Long#MIN_VALUE}
      */
     public long decode(final long value) {
         long crc = 0L;

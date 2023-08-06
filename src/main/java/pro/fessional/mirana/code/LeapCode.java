@@ -10,12 +10,11 @@ import java.util.function.Supplier;
 
 /**
  * <pre>
- * 提供26字符(A-Z)和32字符（0-9A-Z，去掉UOIL，简称去油U/OIL）编码。
- * 支持补齐填充，被编码数字取值范围是：[0,{@link Long#MIN_VALUE}]
+ * Provides 26 chars (A-Z) and 32 chars (0-9A-Z, without UOIL. also called de-oiled U/OIL) encoding.
+ * Supports padding, the encoded number in the range: [0,{@link Long#MAX_VALUE}]
+ * log(16;2^63) = 63/4 = 15.75, positive long, up to 16 characters.
  *
- * log(16;2^63) = 63/4 = 15.75，正数long，最多16个字符。
- *
- * 去油法 参考 https://www.crockford.com/base32.html
+ * see <a href="https://www.crockford.com/base32.html">base32</a>
  * </pre>
  *
  * @author trydofor
@@ -38,7 +37,7 @@ public class LeapCode {
 
 
     /**
-     * 使用系统字符字典
+     * default seed dict
      */
     public LeapCode() {
         this("BY2AH0IC9SX4UTV7GP5LNR6FK1WOE8ZQD3JM");
@@ -53,11 +52,15 @@ public class LeapCode {
     }
 
     /**
-     * 自定义字典编码，要求字典不重复字符不少于编码字符数。
+     * <pre>
+     * Customize the seed dict, require that the dict
+     * do not have repeat char
+     * not less than the number of encode length.
+     * </pre>
      *
-     * @param rand 随机数
-     * @param seed 混乱的26字母和10数字组合
-     * @throws IllegalArgumentException 字典内唯一字符数量位数不足26+10。
+     * @param rand random
+     * @param seed 26 letters and 10 numbers randomly in dict
+     * @throws IllegalArgumentException The count of unique chars in the dict is less than 26+10.
      */
     public LeapCode(@NotNull String seed, Supplier<Random> rand) {
 
@@ -83,7 +86,7 @@ public class LeapCode {
             }
             if (c >= 'A' && c <= 'Z') {
                 dict26[idx26++] = c;
-                // 去油
+                // remove UOIL
                 if (c != 'U' && c != 'O' && c != 'I' && c != 'L') {
                     dict32[idx32++] = c;
                     dict22[idx24++] = c;
@@ -98,10 +101,7 @@ public class LeapCode {
     }
 
     /**
-     * 以 26 字符编码
-     *
-     * @param number 要编码的数字
-     * @return 编码后字符串
+     * encode in 26 letters (A-Z)
      */
     @NotNull
     public String encode26(long number) {
@@ -109,10 +109,7 @@ public class LeapCode {
     }
 
     /**
-     * 以 32 字符编码
-     *
-     * @param number 要编码的数字
-     * @return 编码后字符串
+     * encode in 32 de-oiled (A-Z without UOIL)
      */
     @NotNull
     public String encode32(long number) {
@@ -120,11 +117,7 @@ public class LeapCode {
     }
 
     /**
-     * 以 26 字符编码，编码后字符串不少于len
-     *
-     * @param number 要编码的数字
-     * @param len    要编码的数字
-     * @return 编码后字符串
+     * encode in 26 letters (A-Z), and length no less than `len`
      */
     @NotNull
     public String encode26(long number, int len) {
@@ -132,11 +125,7 @@ public class LeapCode {
     }
 
     /**
-     * 以 32 字符编码，编码后字符串不少于len
-     *
-     * @param number 要编码的数字
-     * @param len    要编码的数字
-     * @return 编码后字符串
+     * encode in 32 de-oiled (A-Z without UOIL), and length no less than `len`
      */
     @NotNull
     public String encode32(long number, int len) {
@@ -144,13 +133,9 @@ public class LeapCode {
     }
 
     /**
-     * 以 26/32 字符编码，编码后字符串不少于len
+     * encode in 26 or 32, and length no less than `len`
      *
-     * @param base   编码的方式，26或32固定
-     * @param number 要编码的数字
-     * @param len    要编码的长度
-     * @return 编码后字符串
-     * @throws IllegalArgumentException 如果base不是26或32
+     * @throws IllegalArgumentException if `base` not 26 or 32
      */
     @NotNull
     public String encode(final int base, long number, final int len) {
@@ -189,7 +174,7 @@ public class LeapCode {
             return buff.toString();
         }
 
-        final int off2 = off1 + 16; // 第二段分界，排除 16 char
+        final int off2 = off1 + 16; // 2nd part without 16 char
         final int ln = dict.length - 16;
         final int[] uq = new int[ln / 2];
         final Random rand = random.get();
@@ -236,10 +221,7 @@ public class LeapCode {
 
 
     /**
-     * 解码出数值, {@link Long#MIN_VALUE}解码失败
-     *
-     * @param value 编码后字符串
-     * @return 原始数字。
+     * decode the number, return {@link Long#MIN_VALUE} if fail
      */
     public long decode(@Nullable String value) {
         if (value == null) return Long.MIN_VALUE;
@@ -247,12 +229,11 @@ public class LeapCode {
     }
 
     /**
-     * 解码出数值, {@link Long#MIN_VALUE}解码失败
+     * decode the number from offset, return {@link Long#MIN_VALUE} if fail
      *
-     * @param value 编码后字符串，不区分大小写
-     * @param off   开始位置
-     * @param len   长度
-     * @return 原始数字。
+     * @param value Encoded string, case-insensitive
+     * @param off   offset to start
+     * @param len   length ot decode
      */
     public long decode(@Nullable CharSequence value, int off, int len) {
         if (value == null || len <= 1 || off < 0 || value.length() < len) return Long.MIN_VALUE;

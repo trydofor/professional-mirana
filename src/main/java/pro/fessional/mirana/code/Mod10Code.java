@@ -6,7 +6,7 @@ package pro.fessional.mirana.code;
  * 1 being the most significant position in the matrix (i.e., the right-most position).
  * Starting from the least significant position of the matrix (position 22 up to 26),
  * copy each digit of the PIC all the way to position 2 (excluding the position of the check digit
- * shown in the example below by a “?”).
+ * shown in the example below by a "?").
  * Pos 22 21 20 19 18 17 16 15 14 13 12 11 10 09 08 07 06 05 04 03 02 01
  * PIC  9  2  1  2  3  9  1  2  3  4  5  6  7  8  1  2  3  4  5  6  7  ?
  *
@@ -53,7 +53,7 @@ public class Mod10Code {
         // odd-numbered boxes
         int odd = 0;
 
-        // 倒序，第一个有效位就是box的第2位
+        // In reverse order, the 1 valid position is the 2 position of the box
         for (int i = len - 1, s, p = 2; i >= off; i--) {
             char c = str.charAt(i);
             if (c >= '0' && c <= '9') {

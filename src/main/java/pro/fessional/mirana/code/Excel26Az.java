@@ -2,11 +2,13 @@ package pro.fessional.mirana.code;
 
 import net.jcip.annotations.ThreadSafe;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import pro.fessional.mirana.best.Param;
 
 import java.util.Map;
 
 /**
- * 用来转换Excel列坐标的工具栏，坐标从1开始，索引从0开始。
+ * Convert Excel column coordinates, coordinates start from 1, index starts from 0.
  *
  * @author trydofor
  * @since 2019-05-22
@@ -18,11 +20,8 @@ public class Excel26Az {
     }
 
     /**
-     * 把列标记[A...Z]变成数字(1-base)
+     * convert Excel coordinates [A..Z] to number (1-base), eg. A=1,Y=25,AA=26
      * ABZ = 1*26² + 2 * 26¹ + 26*26°= 676 + 52 + 26 = 754
-     *
-     * @param col excel的坐标
-     * @return A=1,Y=25,AA=26,....
      */
     public static int number(@NotNull String col) {
         int n = 0;
@@ -39,10 +38,7 @@ public class Excel26Az {
     }
 
     /**
-     * 把数字(1-base)变成 AZ坐标
-     *
-     * @param num 自然数，从1开始
-     * @return AZ坐标
+     * convert number (1-base) to Excel coordinates [A..Z]
      */
     @NotNull
     public static String number(int num) {
@@ -58,20 +54,14 @@ public class Excel26Az {
     }
 
     /**
-     * 把列标记[A...Z]变成索引(0-base)
-     *
-     * @param col excel的坐标
-     * @return A=0,Y=24,AA=25,....
+     * convert Excel coordinates [A..Z] to index (0-base), eg. A=0,Y=24,AA=25
      */
     public static int index(@NotNull String col) {
         return number(col) - 1;
     }
 
     /**
-     * 把索引(0-base)变成 AZ坐标
-     *
-     * @param idx 索引，从0开始
-     * @return AZ坐标
+     * convert index (0-base) to Excel coordinates [A..Z]
      */
     @NotNull
     public static String index(int idx) {
@@ -79,14 +69,14 @@ public class Excel26Az {
     }
 
     /**
-     * 使用一列变成title和index的对应关系
+     * map header row to the header-index map
      *
-     * @param head   保持header和index关系的map
-     * @param rows   head值
-     * @param prefix 前缀
-     * @return 新增head数量，与rows.size()相等为无重复
+     * @param head   map of header and its index(0-base)
+     * @param rows   head rows
+     * @param prefix header prefix
+     * @return count of new header, equal to rows.size() for no duplicates
      */
-    public static int title(Map<String, Integer> head, Iterable<String> rows, String prefix) {
+    public static int title(@NotNull @Param.Out Map<String, Integer> head, @NotNull Iterable<String> rows, @Nullable String prefix) {
         int cnt = 0;
         int idx = 0;
 

@@ -7,9 +7,11 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Supplier;
 
 /**
- * 生成一个固定容量的随机数槽，
- * 每次获得伪随机数（消耗一个空槽）
- * 当没有空槽时，重置当前槽。
+ * <pre>
+ * Generate a fixed-capacity slot of random numbers.
+ * Consume an empty slot each time a pseudo-random number is generated.
+ * Reset the current slot if there are no empty slots.
+ * </pre>
  *
  * @author trydofor
  * @since 2019-11-14
@@ -31,9 +33,7 @@ public class SlotCode {
     private final Random rand;
 
     /**
-     * 初始化一个固定容量[1,size]的随机槽
-     *
-     * @param size 设置code的最大值(包括)。
+     * Init a fixed capacity [1,size] random slot
      */
     public SlotCode(int size) {
         this(size, ThreadLocalRandom::current);
@@ -44,10 +44,7 @@ public class SlotCode {
     }
 
     /**
-     * 初始化一个固定容量[1,size]的随机槽
-     *
-     * @param size 设置code的最大值(包括)。
-     * @param rand 随机数发生器。
+     * Init a fixed capacity [1,size] random slot whit given random
      */
     public SlotCode(int size, Random rand) {
         final int page = (size - 1) / bits + 1;

@@ -1,6 +1,7 @@
 package pro.fessional.mirana.code;
 
 import net.jcip.annotations.ThreadSafe;
+import org.jetbrains.annotations.NotNull;
 import pro.fessional.mirana.best.AssertArgs;
 import pro.fessional.mirana.cast.BoxedCastUtil;
 import pro.fessional.mirana.data.Null;
@@ -26,7 +27,7 @@ public abstract class RandCode {
     public static final Seed Hex = Seed.chars("0123456789ABCDEF".toCharArray()); // HEX
 
     /**
-     * 中日韩通用800汉字
+     * 800 Chinese Chars Commonly Used in China, Japan and Korea
      */
     public static final Seed Cjk = Seed.chars((
             // @formatter:off
@@ -51,7 +52,7 @@ public abstract class RandCode {
     ).toCharArray());
 
     /**
-     * 中国百家姓
+     * Family Names of chinese
      */
     public static final Seed Sur = Seed.chars((
             // @formatter:off
@@ -65,7 +66,7 @@ public abstract class RandCode {
     ).toCharArray());
 
     /**
-     * 去掉了 0oO,1il,cC,j,kK,mM,nN,pP,sS,uU,vV,wW,xX,y,zZ
+     * remove 0oO,1il,cC,j,kK,mM,nN,pP,sS,uU,vV,wW,xX,y,zZ
      */
     private static final Seed[] Man = new Seed[]{
             Seed.chars("23456789".toCharArray()),
@@ -81,121 +82,96 @@ public abstract class RandCode {
     };
 
     /**
-     * 生成len长度的0-9A-F密码
-     *
-     * @param len 长度
-     * @return 密码
+     * Generate `len` length code of hex (0-9A-F)
      */
+    @NotNull
     public static String hex(int len) {
         return next(len, Hex);
     }
 
     /**
-     * 生成len长度的0-9A-Z去油(UOIL)的密码
-     *
-     * @param len 长度
-     * @return 密码
+     * Generate `len` length de-oiled code (0-9A-Z without UOIL)
      */
+    @NotNull
     public static String oil(int len) {
         return next(len, B32);
     }
 
     /**
-     * 生成len长度的数字密码
-     *
-     * @param len 长度
-     * @return 密码
+     * Generate `len` length code of number (0-9)
      */
     public static String number(int len) {
         return next(len, Num);
     }
 
     /**
-     * 生成len长度的字母小写密码
-     *
-     * @param len 长度
-     * @return 密码
+     * Generate `len` length code of lower (a-z)
      */
     public static String lower(int len) {
         return next(len, Low);
     }
 
     /**
-     * 生成len长度的字母大写密码
-     *
-     * @param len 长度
-     * @return 密码
+     * Generate `len` length code of upper (A-Z)
      */
     public static String upper(int len) {
         return next(len, Upr);
     }
 
     /**
-     * 生成len长度的字母大小写密码
-     *
-     * @param len 长度
-     * @return 密码
+     * Generate `len` length code of letter (a-zA-Z)
      */
     public static String letter(int len) {
         return next(len, Low, Upr);
     }
 
     /**
-     * 生成len长度的字母大小写和数字密码
-     *
-     * @param len 长度
-     * @return 密码
+     * Generate `len` length code of number and letter (0-9a-zA-Z)
      */
     public static String numlet(int len) {
         return next(len, Num, Low, Upr);
     }
 
     /**
-     * 生成len长度的字母大小写和数字符号密码
-     *
-     * @param len 长度
-     * @return 密码
+     * Generate `len` length code with number, letter and symbolic
      */
     public static String strong(int len) {
         return next(len, Num, Low, Upr, Sym);
     }
 
     /**
-     * 生成len长度的字母大小写和数字可读性好的密码。
-     * 供32个英数，去掉了30个(0oO,1il,cC,j,kK,mM,nN,pP,sS,uU,vV,wW,xX,y,zZ)
-     *
-     * @param len 长度
-     * @return 密码
+     * <pre>
+     * Generate `len` length code with good readability of 32 chars.
+     * from 62 chars remove 30 (0oO,1il,cC,j,kK,mM,nN,pP,sS,uU,vV,wW,xX,y,zZ)
+     * </pre>
      */
     public static String human(int len) {
         return next(len, Man);
     }
 
     /**
-     * 常用800中日韩通用汉字
-     *
-     * @param len 长度
-     * @return 密码
+     * Generate `len` length code of 800 Chinese Chars Commonly Used in China, Japan and Korea
      */
     public static String cjk(int len) {
         return next(len, Cjk);
     }
 
     /**
-     * 混合了汉字英数的密码
-     *
-     * @param len 长度
-     * @return 密码
+     * Generate `len` length code mixed chinese and english
      */
     public static String mix(int len) {
         return next(len, Mix);
     }
 
     /**
-     * 300姓氏（299，去掉了复姓：欧阳）
-     *
-     * @param len 长度
-     * @return 密码
+     * random get one of Family Names of chinese
+     */
+    public static String sur() {
+        return next(1, Sur);
+    }
+
+    /**
+     * Generate `len` length code of Family Names of chinese
      */
     public static String sur(int len) {
         return next(len, Sur);
