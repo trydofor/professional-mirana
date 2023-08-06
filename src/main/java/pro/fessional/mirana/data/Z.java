@@ -18,7 +18,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 /**
- * 第一个满足条件(如非null)的数据操作
+ * The first data operation that satisfies the condition (e.g., non-null)
  *
  * @author trydofor
  * @since 2019-10-24
@@ -26,12 +26,8 @@ import java.util.function.Supplier;
 public interface Z {
 
     /**
-     * 按指定的方式提取key，保证顺序的唯一对象
-     *
-     * @param ts  对象
-     * @param fn  唯一项提取期
-     * @param <T> 元素
-     * @return 保证顺序的唯一对象
+     * Extract the key in the specified way.
+     * return objects that are unique and in the same order as the input.
      */
     @SuppressWarnings("unchecked")
     @SafeVarargs
@@ -92,14 +88,7 @@ public interface Z {
     }
 
     /**
-     * 转换第一个非null的可以转的对象
-     *
-     * @param d   默认值
-     * @param f   转换方法
-     * @param ts  被转对象
-     * @param <T> 转换前
-     * @param <R> 转换后
-     * @return 第一个能转换的对象
+     * Convert the first non-null object that can be applied to `f`.
      */
     @SafeVarargs
     @Contract("!null,_,_ ->!null")
@@ -136,11 +125,7 @@ public interface Z {
     }
 
     /**
-     * 第一个可以转换的非null对象
-     *
-     * @param d  默认值
-     * @param ts 转换前
-     * @return 转换后
+     * The first non-null decimal that can be converted
      */
     @Contract("!null,_ ->!null")
     static BigDecimal decimalSafe(BigDecimal d, CharSequence... ts) {
@@ -178,11 +163,7 @@ public interface Z {
     }
 
     /**
-     * 第一个可以转换的非null对象
-     *
-     * @param d  默认值
-     * @param ts 转换前
-     * @return 转换后
+     * The first non-null long that can be converted
      */
     @Contract("!null,_ ->!null")
     static Long int64Safe(Long d, CharSequence... ts) {
@@ -220,11 +201,7 @@ public interface Z {
     }
 
     /**
-     * 第一个可以转换的非null对象
-     *
-     * @param d  默认值
-     * @param ts 转换前
-     * @return 转换后
+     * The first non-null integer that can be converted
      */
     @Contract("!null,_ ->!null")
     static Integer int32Safe(Integer d, CharSequence... ts) {

@@ -3,7 +3,7 @@ package pro.fessional.mirana.data;
 import java.util.Objects;
 
 /**
- * 用来内部传递数据，不建议过度使用。
+ * Used to pass data internally, do NOT overuse
  *
  * @author trydofor
  * @since 2019-10-11

@@ -88,8 +88,9 @@ public class Diff {
     }
 
     /**
-     * 以map1为主，对map2做diff，获取key下的V数据
+     * Base on map1, do diff on map2 to get the V data under the key
      */
+    @NotNull
     public static <K> LinkedHashMap<K, V<Object>> of(@Nullable Map<? extends K, ?> map1, @Nullable Map<? extends K, ?> map2) {
         if (map1 == null) map1 = Collections.emptyMap();
         if (map2 == null) map2 = Collections.emptyMap();
@@ -128,12 +129,7 @@ public class Diff {
     }
 
     /**
-     * 使用 T.equals 比较A和B集合的差异，相同时以A为准
-     *
-     * @param setA 集合A
-     * @param setB 集合A
-     * @param <E>  元素
-     * @return A有B无，B有A无，AB都有
+     * Use T.equals to do a diff between setA and setB, with setA taking precedence if they are equal
      */
     @NotNull
     public static <E> S<E> of(@Nullable Collection<? extends E> setA, @Nullable Collection<? extends E> setB) {
@@ -166,26 +162,37 @@ public class Diff {
     }
 
     public static class D<E> {
-        // 集合new中新增和更新(不相同)的数据
+        /**
+         * new record to setNew
+         */
         public final LinkedHashSet<E> newInsert = new LinkedHashSet<>();
+        /**
+         * updated record in setNew
+         */
         public final LinkedHashSet<E> newUpdate = new LinkedHashSet<>();
-        // 集合old中更新(不相同)和删除的数据
+        /**
+         * updated record in setOld
+         */
         public final LinkedHashSet<E> oldUpdate = new LinkedHashSet<>();
+        /**
+         * deleted record from setOld
+         */
         public final LinkedHashSet<E> oldDelete = new LinkedHashSet<>();
-        // new和old集合中相等的数据
+        /**
+         * same record in both setNew and setOld
+         */
         public final LinkedHashSet<E> oldEqsNew = new LinkedHashSet<>();
     }
 
 
     /**
-     * 通过B判定A集合内数据的，增，删，改，未变化，默认使用equals比较
+     * Base on setOld, do a diff on setNew, use equals to get insert/update/delete/same element.
      *
-     * @param setNew 新集合
-     * @param setOld 旧集合
-     * @param getPk  元素主键
-     * @param <E>    元素
-     * @param <K>    主键
-     * @return 增，删，改，未变化
+     * @param setNew Set New
+     * @param setOld Set Old
+     * @param getPk  to get key
+     * @param <E>    Element type
+     * @param <K>    Key type
      */
     @NotNull
     public static <E, K> D<E> of(@Nullable Collection<? extends E> setNew, @Nullable Collection<? extends E> setOld,

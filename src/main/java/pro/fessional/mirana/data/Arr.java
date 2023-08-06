@@ -3,7 +3,7 @@ package pro.fessional.mirana.data;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Array的一些操作
+ * Operation of Array
  *
  * @author trydofor
  * @since 2020-06-08

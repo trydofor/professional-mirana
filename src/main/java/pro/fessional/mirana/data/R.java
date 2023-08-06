@@ -1,6 +1,7 @@
 package pro.fessional.mirana.data;
 
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 import pro.fessional.mirana.i18n.I18nAware;
 import pro.fessional.mirana.i18n.I18nString;
@@ -12,20 +13,20 @@ import java.util.function.Function;
 
 /**
  * <pre>
- * 基础结果类，
- * - success 判定操作成功|失败。
- * - message 用户消息，有则显示。
- * - code 业务code，有则判定。注意CodeEnum类，会自动替换code。
- * - data 业务数据，有则使用。
+ * Basic result container.
+ * * `success` - whether the operation succeeded or failed.
+ * * `message` - message to the user.
+ * * `code` - business code. Note CodeEnum auto set the code.
+ * * `data` - business data to use if available.
  *
- * 以下字段为@Transient，hashCode,equals,json时默认忽略
- * - cause 内部错误，用于跟踪。如异常，字符串，enum等标识中断执行的原因。
- * - i18nCode, i18nArgs用来处理I18N信息，一般用来替换Message。
+ * The following are `@Transient`, should ignore for `hashCode`, `equals`, and `json`.
+ * * `cause` - Internal error for tracking. Such as exceptions, strings, enum, etc.
+ * * `i18nCode`/`i18nArgs` - I18N messages to replace `message`.
  *
- * 使用cast*方法时，注意避免产生ClassCast异常。
+ * When using the`cast*` method, be careful to avoid the ClassCastException.
  * </pre>
  *
- * @param <T> Data的类型
+ * @param <T> Data Type
  */
 public class R<T> implements DataResult<T>, I18nAware {
     public static final R<Void> OK = new R<>(true, null, null, null);
@@ -68,6 +69,7 @@ public class R<T> implements DataResult<T>, I18nAware {
         return success;
     }
 
+    @Contract("_->this")
     public R<T> setSuccess(boolean success) {
         this.success = success;
         return this;
@@ -79,19 +81,17 @@ public class R<T> implements DataResult<T>, I18nAware {
         return message;
     }
 
+    @Contract("_->this")
     public R<T> setMessage(String message) {
         this.message = message;
         return this;
     }
 
     /**
-     * 设置i18nCode和i18nArgs，
-     * code和message为null时，设置
-     *
-     * @param ce  code
-     * @param arg i18n 参数
-     * @return this
+     * set i18nCode and i18nArgs.
+     * set code and message only if it is null
      */
+    @Contract("_,_->this")
     public R<T> setI18nMessage(CodeEnum ce, Object... arg) {
         if (this.code == null) {
             this.code = ce.getCode();
@@ -105,12 +105,10 @@ public class R<T> implements DataResult<T>, I18nAware {
     }
 
     /**
-     * 设置i18nCode和i18nArgs，
-     * message为null时，设置
-     *
-     * @param message i18n 参数
-     * @return this
+     * set i18nCode and i18nArgs.
+     * set message only if it is null
      */
+    @Contract("_->this")
     public R<T> setI18nMessage(I18nAware message) {
         if (message instanceof I18nString) {
             if (this.message == null) {
@@ -124,6 +122,7 @@ public class R<T> implements DataResult<T>, I18nAware {
         return this;
     }
 
+    @Contract("_,_->this")
     public R<T> setI18nMessage(String i18nCode, Object... args) {
         this.i18nCode = i18nCode;
         i18nArgs = args;
@@ -137,6 +136,7 @@ public class R<T> implements DataResult<T>, I18nAware {
         return (T) data;
     }
 
+    @Contract("_->this")
     public R<T> setData(T data) {
         this.data = data;
         return this;
@@ -148,11 +148,13 @@ public class R<T> implements DataResult<T>, I18nAware {
         return code;
     }
 
+    @Contract("_->this")
     public R<T> setCode(String code) {
         this.code = code;
         return this;
     }
 
+    @Contract("_->this")
     public R<T> setCode(CodeEnum code) {
         if (code != null) {
             this.code = code.getCode();
@@ -180,6 +182,7 @@ public class R<T> implements DataResult<T>, I18nAware {
         }
     }
 
+    @Contract("_->this")
     public R<T> setCause(Object cause) {
         this.cause = cause;
         return this;
@@ -207,27 +210,27 @@ public class R<T> implements DataResult<T>, I18nAware {
     }
 
     /**
-     * 强制类型转换
+     * force to cast to subclass
      *
-     * @param <S>  子类型
-     * @param <X>  数据类型
-     * @return 子类型
-     * @throws ClassCastException 如果类型不匹配
+     * @param <S> subclass type
+     * @param <X> data type
+     * @throws ClassCastException if type not match
      */
+    @Contract("->this")
     @SuppressWarnings("unchecked")
     public <S extends R<X>, X> S castType() {
         return (S) this;
     }
 
     /**
-     * 替换data，并强转子类型
+     * replace the data and force to cast to subclass
      *
-     * @param <S>  子类型
-     * @param data 新数据
-     * @param <X>  数据类型
-     * @return 子类型
-     * @throws ClassCastException 如果类型不匹配
+     * @param <S>  subclass type
+     * @param data new data
+     * @param <X>  data type
+     * @throws ClassCastException if type not match
      */
+    @Contract("_->this")
     @SuppressWarnings("unchecked")
     public <S extends R<X>, X> S castData(X data) {
         this.data = data;
@@ -235,14 +238,14 @@ public class R<T> implements DataResult<T>, I18nAware {
     }
 
     /**
-     * 替换data，并强转子类型
+     * replace the data and force to cast to subclass
      *
-     * @param <S> 子类型
-     * @param <X> 新类型
-     * @param fun 类型转换
-     * @return 子类型
-     * @throws ClassCastException 如果类型不匹配
+     * @param <S> subclass type
+     * @param <X> new type
+     * @param fun type convertor
+     * @throws ClassCastException if type not match
      */
+    @Contract("_->this")
     @SuppressWarnings("unchecked")
     public <S extends R<X>, X> S castData(Function<T, X> fun) {
         this.data = fun.apply((T) data);
