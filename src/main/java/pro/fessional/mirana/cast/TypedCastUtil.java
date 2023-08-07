@@ -12,9 +12,9 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * 带有类型检查的的类型转换。
- * 如果指定Class，则先进行类型检查，如果类型不对，返回null
- * 否则强制类型转换，类型不对时，跑出ClassCastException。
+ * Type casting with type checking first.
+ * If Class is specified and the type is wrong, null is returned,
+ * otherwise, a ClassCastException is thrown.
  *
  * @author trydofor
  * @since 2019-07-03
@@ -23,12 +23,9 @@ public class TypedCastUtil {
 
 
     /**
-     * 强制类型转换
+     * force to cast object
      *
-     * @param obj 目标对象
-     * @param <T> 希望类型
-     * @return 希望类型的对象
-     * @throws ClassCastException 如果类型不匹配。
+     * @throws ClassCastException if type wrong.
      */
     @Contract("!null->!null")
     @SuppressWarnings("unchecked")
@@ -37,13 +34,7 @@ public class TypedCastUtil {
     }
 
     /**
-     * 先类型检查再转换，如果claz是null则强制类型转换
-     *
-     * @param obj  目标对象
-     * @param claz 希望的类型的类
-     * @param <T>  希望类型
-     * @return 希望类型的对象；null如果类型不匹配。
-     * @throws ClassCastException 如果 claz是null，且类型不匹配。
+     * type checking first, then cast type. return null if type wrong.
      */
     @Nullable
     @SuppressWarnings("unchecked")
@@ -58,12 +49,9 @@ public class TypedCastUtil {
 
 
     /**
-     * 强制类型转换
+     * force to cast object in collection.
      *
-     * @param obj 目标对象
-     * @param <T> 希望类型
-     * @return 希望类型的对象，emptyList 如果obj为null
-     * @throws ClassCastException 如果类型不匹配。
+     * @throws ClassCastException if type wrong.
      */
     @NotNull
     public static <T> Collection<T> castCollection(Collection<?> obj) {
@@ -71,13 +59,7 @@ public class TypedCastUtil {
     }
 
     /**
-     * 先类型检查再转换，如果claz是null则强制类型转换。
-     *
-     * @param obj  目标对象
-     * @param claz 希望的类型的类
-     * @param <T>  希望类型
-     * @return 希望类型的对象；emptyList如果类型不匹配或obj为null。
-     * @throws ClassCastException 如果 claz是null，且类型不匹配。
+     * type checking first, then cast type. return empty if type wrong.
      */
     @NotNull
     @SuppressWarnings("unchecked")
@@ -100,12 +82,9 @@ public class TypedCastUtil {
 
 
     /**
-     * 强制类型转换
+     * force to cast object in collection.
      *
-     * @param obj 目标对象
-     * @param <T> 希望类型
-     * @return 希望类型的对象，emptyList 如果obj为null
-     * @throws ClassCastException 如果类型不匹配。
+     * @throws ClassCastException if type wrong.
      */
     @NotNull
     public static <T> List<T> castList(Collection<?> obj) {
@@ -113,13 +92,7 @@ public class TypedCastUtil {
     }
 
     /**
-     * 先类型检查再转换，如果claz是null则强制类型转换。
-     *
-     * @param obj  目标对象
-     * @param claz 希望的类型的类
-     * @param <T>  希望类型
-     * @return 希望类型的对象；emptyList如果类型不匹配或obj为null。
-     * @throws ClassCastException 如果 claz是null，且类型不匹配。
+     * type checking first, then cast type. return empty if type wrong.
      */
     @NotNull
     @SuppressWarnings("unchecked")
@@ -141,12 +114,9 @@ public class TypedCastUtil {
     }
 
     /**
-     * 强制类型转换
+     * force to cast object in collection.
      *
-     * @param obj 目标对象
-     * @param <T> 希望类型
-     * @return 希望类型的对象，emptyList 如果obj为null
-     * @throws ClassCastException 如果类型不匹配。
+     * @throws ClassCastException if type wrong.
      */
     @NotNull
     public static <T> Set<T> castSet(Collection<?> obj) {
@@ -155,13 +125,7 @@ public class TypedCastUtil {
 
 
     /**
-     * 先类型检查再转换，如果claz是null则强制类型转换。
-     *
-     * @param obj  目标对象
-     * @param claz 希望的类型的类
-     * @param <T>  希望类型
-     * @return 希望类型的对象；emptySet如果类型不匹配或obj为null。
-     * @throws ClassCastException 如果 claz是null，且类型不匹配。
+     * type checking first, then cast type. return empty if type wrong.
      */
     @NotNull
     @SuppressWarnings("unchecked")

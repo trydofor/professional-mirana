@@ -10,7 +10,7 @@ import static pro.fessional.mirana.cast.BoxedTypeUtil.isAssignable;
 import static pro.fessional.mirana.cast.BoxedTypeUtil.isInstance;
 
 /**
- * Source和Target的双向转换，`-or`后缀以和主力框架区分
+ * Bi-direction conversion of Source and Target, `-or` suffix to diff from the main framework
  *
  * @author trydofor
  * @since 2021-01-17
@@ -18,48 +18,44 @@ import static pro.fessional.mirana.cast.BoxedTypeUtil.isInstance;
 public interface BiConvertor<S, T> {
 
     /**
-     * 源类型
-     *
-     * @return 源类型
+     * the source type
      */
     @NotNull
     Class<S> sourceType();
 
     /**
-     * 目标类型
-     *
-     * @return 目标类型
+     * the target type
      */
     @NotNull
     Class<T> targetType();
 
     /**
-     * 转换source到target
+     * convert source to target
      *
-     * @param s 源
-     * @return 目标
-     * @throws java.util.IllegalFormatConversionException 不支持时
+     * @param source the source
+     * @return the target
+     * @throws java.util.IllegalFormatConversionException if unsupported
      */
     @Nullable
     @Contract("null->null;!null->!null")
-    T toTarget(S s);
+    T toTarget(S source);
 
     /**
-     * 转换target到source
+     * convert target to source
      *
-     * @param t 目标
-     * @return 源
-     * @throws java.util.IllegalFormatConversionException 不支持时
+     * @param target the target
+     * @return the source
+     * @throws java.util.IllegalFormatConversionException if unsupported
      */
     @Nullable
     @Contract("null->null;!null->!null")
-    S toSource(T t);
+    S toSource(T target);
 
     /**
-     * 尝试转换任意源，先检查canToTarget，然后try，不能转换时返回null
+     * Try to convert any source to target, first check `canToTarget`, then try, return null if it can't
      *
-     * @param source 任意源
-     * @return null或目标对象
+     * @param source any type of source
+     * @return null or target
      */
     @Nullable
     @SuppressWarnings("unchecked")
@@ -77,10 +73,10 @@ public interface BiConvertor<S, T> {
     }
 
     /**
-     * 尝试转换任意目标，先检查canToSource，然后try，不能转换时返回null
+     * Try to convert any target to source, first check `canToSource`, then try, return null if it can't
      *
-     * @param target 任意目标
-     * @return null或源对象
+     * @param target any type of target
+     * @return null or source
      */
     @Nullable
     @SuppressWarnings("unchecked")
@@ -98,11 +94,11 @@ public interface BiConvertor<S, T> {
     }
 
     /**
-     * 尝试转换任意源，先检查canToTarget，然后try，不能转换时返回null
+     * Try to convert any source to target, first check `canToTarget`, then try, return null if it can't
      *
-     * @param target 对象
-     * @param source 任意源
-     * @return null或目标对象
+     * @param target target type
+     * @param source any source
+     * @return null or target
      */
     @Nullable
     @SuppressWarnings("unchecked")
@@ -120,11 +116,11 @@ public interface BiConvertor<S, T> {
     }
 
     /**
-     * 尝试转换任意目标，先检查canToSource，然后try，不能转换时返回null
+     * Try to convert any target to source, first check `canToSource`, then try, return null if it can't
      *
-     * @param source 指定类型
-     * @param target 任意目标
-     * @return null或源对象
+     * @param source source type
+     * @param target any target
+     * @return null or source
      */
     @Nullable
     @SuppressWarnings("unchecked")
@@ -142,51 +138,41 @@ public interface BiConvertor<S, T> {
     }
 
     /**
-     * 是否可以把target对象，转换成指定的source类型
+     * Whether the target can be converted to the specified source type
      *
-     * @param source 指定类型
-     * @param target 对象
-     * @return 可否转换
+     * @param source the source type
+     * @param target target
      */
     default boolean canToSource(Class<?> source, Object target) {
         return isAssignable(source, sourceType()) && isInstance(targetType(), target);
     }
 
     /**
-     * 是否尅把source对象，转换成指定的target类型。
+     * Whether the source can be converted to the specified target type
      *
-     * @param target 指定类型
-     * @param source 对象
-     * @return 可否转换
+     * @param target the target type
+     * @param source source
      */
     default boolean canToTarget(Class<?> target, Object source) {
         return isAssignable(targetType(), target) && isInstance(sourceType(), source);
     }
 
     /**
-     * 是否可以转换target对象
-     *
-     * @param target 对象
-     * @return 是否转换
+     * Whether the target can be converted to the source
      */
     default boolean canToSource(Object target) {
         return isInstance(targetType(), target);
     }
 
     /**
-     * 是否可以转换source对象
-     *
-     * @param source 对象
-     * @return 是否转换
+     * Whether the source can be converted to the target
      */
     default boolean canToTarget(Object source) {
         return isInstance(sourceType(), source);
     }
 
     /**
-     * 反转。注：特征名，避免多converter的override返回值冲突
-     *
-     * @return 反转
+     * reverse the source and target
      */
     default BiConvertor<T, S> reverseBiConvertor() {
         final BiConvertor<S, T> thiz = this;
@@ -219,11 +205,11 @@ public interface BiConvertor<S, T> {
     }
 
     /**
-     * 组合A2B，B2C为A2C转换器
+     * Combine S2T and T2R to S2R convertor
      *
-     * @param that 另外转换器
-     * @param <R>  目标类型
-     * @return 转换器
+     * @param that T2R convertor
+     * @param <R>  return type
+     * @return S2R convertor
      */
     default <R> BiConvertor<S, R> compose(BiConvertor<T, R> that) {
         final BiConvertor<S, T> thiz = this;
@@ -253,7 +239,7 @@ public interface BiConvertor<S, T> {
     }
 
     /**
-     * 工具类，构造一个A2B匿名转换器
+     * Tool to construct a A2B anonymous convertor
      *
      * @param ca  class A
      * @param cb  class B
@@ -261,7 +247,7 @@ public interface BiConvertor<S, T> {
      * @param b2a b2a lambda
      * @param <A> A
      * @param <B> B
-     * @return 转换器
+     * @return convertor
      */
     static <A, B> BiConvertor<A, B> of(Class<A> ca,
                                        Class<B> cb,

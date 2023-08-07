@@ -14,114 +14,93 @@ import java.math.BigDecimal;
 public class StringCastUtil {
 
     /**
-     * true,t,yes,y,不区分大小写，认为是true
-     * 注意，和asFalse不是存在传递关系
-     *
-     * @param str 字符串
-     * @return 结果
+     * parse case-insensitive `true|t|yes|y` to true
+     * Note, no pass-through relationship with asFalse.
      */
     public static boolean asTrue(@Nullable String str) {
         if (str == null) return false;
         return "true".equalsIgnoreCase(str) ||
-                "t".equalsIgnoreCase(str) ||
-                "yes".equalsIgnoreCase(str) ||
-                "y".equalsIgnoreCase(str);
+               "t".equalsIgnoreCase(str) ||
+               "yes".equalsIgnoreCase(str) ||
+               "y".equalsIgnoreCase(str);
     }
 
     /**
-     * null, empty, blank, false,f,no,n不区分大小写，认为是false
-     * 注意，和asTrue不是存在传递关系
-     *
-     * @param str 字符串
-     * @return 结果
+     * parse case-insensitive `null`, `empty`, `blank` and `false,f,no,n` to false
+     * Note, no pass-through relationship with asTrue.
      */
     public static boolean asFalse(@Nullable String str) {
         if (str == null) return true;
         return "false".equalsIgnoreCase(str) ||
-                "f".equalsIgnoreCase(str) ||
-                "no".equalsIgnoreCase(str) ||
-                "n".equalsIgnoreCase(str) ||
-                str.isEmpty() ||
-                str.trim().isEmpty();
+               "f".equalsIgnoreCase(str) ||
+               "no".equalsIgnoreCase(str) ||
+               "n".equalsIgnoreCase(str) ||
+               str.isEmpty() ||
+               str.trim().isEmpty();
     }
 
     /**
-     * 转换成long
-     *
-     * @param str 字符串
-     * @param elz 默认值
-     * @return 成功的结果或默认值
+     * convert to long, or elz if fail
      */
     public static long asLong(@Nullable String str, long elz) {
         if (str == null) return elz;
         try {
             return Long.parseLong(str);
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e) {
             return elz;
         }
     }
 
     /**
-     * 转换成long
-     *
-     * @param str 字符串
-     * @param elz 默认值
-     * @return 成功的结果或默认值
+     * convert to int, or elz if fail
      */
     public static int asInt(@Nullable String str, int elz) {
         if (str == null) return elz;
         try {
             return Integer.parseInt(str);
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e) {
             return elz;
         }
     }
 
     /**
-     * 转换成float
-     *
-     * @param str 字符串
-     * @param elz 默认值
-     * @return 成功的结果或默认值
+     * convert to float, or elz if fail
      */
     public static float asFloat(@Nullable String str, float elz) {
         if (str == null) return elz;
         try {
             return Float.parseFloat(str);
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e) {
             return elz;
         }
     }
 
     /**
-     * 转换成double
-     *
-     * @param str 字符串
-     * @param elz 默认值
-     * @return 成功的结果或默认值
+     * convert to double, or elz if fail
      */
     public static double asDouble(@Nullable String str, double elz) {
         if (str == null) return elz;
         try {
             return Double.parseDouble(str);
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e) {
             return elz;
         }
     }
 
     /**
-     * 转换成BigDecimal
-     *
-     * @param str 字符串
-     * @param elz 默认值
-     * @return 成功的结果或默认值
+     * convert to BigDecimal, or elz if fail
      */
     @NotNull
     public static BigDecimal asDecimal(String str, @NotNull BigDecimal elz) {
         if (str == null) return elz;
         try {
             return new BigDecimal(str);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             return elz;
         }
     }

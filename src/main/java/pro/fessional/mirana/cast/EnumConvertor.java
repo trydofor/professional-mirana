@@ -5,8 +5,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * 支持enum全路径模糊序列化和具名精确序列化，默认分隔符为`#`
- * pro.fessional.mirana.cast.Enums#VALUE : Enums.VALUE
+ * Supports enum full-path fuzzy and exact serialization, with a default separator of `#`.
+ * eg. pro.fessional.mirana.cast.Enums#VALUE of Enums.VALUE
  *
  * @author trydofor
  * @since 2021-02-17
@@ -93,11 +93,11 @@ public class EnumConvertor<E extends Enum<E>> implements BiConvertor<String, E> 
     }
 
     /**
-     * 根据class和key解析Enum
+     * parse enum by class and key
      *
-     * @param clz full name
-     * @param key enum
-     * @param <T> Enum
+     * @param clz full class name of enum
+     * @param key enum name
+     * @param <T> Enum type
      * @return Enum
      */
     @SuppressWarnings("unchecked")
@@ -113,15 +113,15 @@ public class EnumConvertor<E extends Enum<E>> implements BiConvertor<String, E> 
     }
 
     /**
-     * 根据class和key解析Enum
+     * parse enum by class and key
      *
-     * @param enu full name
-     * @param key enum
-     * @param <T> Enum
+     * @param clz the class of enum
+     * @param key enum name
+     * @param <T> Enum type
      * @return Enum
      */
-    public static <T extends Enum<T>> T parseEnum(Class<T> enu, String key) {
-        if (enu == null || key == null || key.isEmpty()) return null;
-        return Enum.valueOf(enu, key);
+    public static <T extends Enum<T>> T parseEnum(Class<T> clz, String key) {
+        if (clz == null || key == null || key.isEmpty()) return null;
+        return Enum.valueOf(clz, key);
     }
 }
