@@ -69,10 +69,9 @@ public class MdHelp {
     }
 
     /**
-     * 获得内部MessageDigest，实例创建线程安全，不可跨线程使用
-     *
-     * @return 实例
+     * create a Mac instance, the instance it not thread-safe
      */
+    @NotNull
     public MessageDigest newOne() {
         return newOne(algorithm);
     }
@@ -104,23 +103,28 @@ public class MdHelp {
     public static final MdHelp sha1 = of("SHA-1");
     public static final MdHelp sha256 = of("SHA-256");
 
-    public static MdHelp of(String algorithm) {
+    @NotNull
+    public static MdHelp of(@NotNull String algorithm) {
         return new MdHelp(algorithm);
     }
 
+    @NotNull
     public static MessageDigest newMd5() {
         return newOne("MD5");
     }
 
+    @NotNull
     public static MessageDigest newSha1() {
         return newOne("SHA-1");
     }
 
+    @NotNull
     public static MessageDigest newSha256() {
         return newOne("SHA-256");
     }
 
-    public static MessageDigest newOne(String algorithm) {
+    @NotNull
+    public static MessageDigest newOne(@NotNull String algorithm) {
         try {
             return MessageDigest.getInstance(algorithm);
         }
@@ -130,11 +134,10 @@ public class MdHelp {
     }
 
     /**
-     * 根据sum长度，和obj类型自动验证指纹
+     * Auto check sum based on sum length, and obj type
      *
-     * @param sum 不区分大小写的HEX格式，支持 MD5, SHA1, SHA256
-     * @param obj 支持 byte[], CharSequence, InputStream
-     * @return 不区分大小写验证sum和obj的指纹
+     * @param sum case-insensitive HEX string, support MD5,SHA1,SHA256
+     * @param obj support byte[], CharSequence, InputStream
      */
     public static boolean checks(@Nullable String sum, @Nullable Object obj) {
         if (obj == null || sum == null) return false;

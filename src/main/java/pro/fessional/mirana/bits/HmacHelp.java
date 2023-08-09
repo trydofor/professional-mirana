@@ -15,7 +15,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * Message Authentication Code helper and thread safe
- * https://docs.oracle.com/javase/8/docs/api/javax/crypto/Mac.html
+ * <a href="https://docs.oracle.com/javase/8/docs/api/javax/crypto/Mac.html">crypto/Mac</a>
  *
  * @author trydofor
  * @since 2021-01-24
@@ -23,9 +23,9 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public class HmacHelp {
 
     public final String algorithm;
-    public final byte[] key;
+    public final byte @NotNull [] key;
 
-    protected HmacHelp(String algorithm, byte[] key) {
+    protected HmacHelp(String algorithm, byte @NotNull [] key) {
         this.algorithm = algorithm;
         this.key = key;
     }
@@ -54,28 +54,27 @@ public class HmacHelp {
     @NotNull
     public String sum(@Nullable InputStream ins, boolean upper) {
         if (ins == null) return Null.Str;
-        byte[] bytes = InputStreams.readBytes(ins);
+        byte @NotNull [] bytes = InputStreams.readBytes(ins);
         return sum(bytes, upper);
     }
 
     @NotNull
     public String sum(byte @Nullable [] bytes, boolean upper) {
         if (bytes == null) return Null.Str;
-        byte[] hash = digest(bytes);
+        byte @NotNull [] hash = digest(bytes);
         return Bytes.hex(hash, upper);
     }
 
-    public byte @NotNull[] digest(byte @Nullable [] bytes) {
+    public byte @NotNull [] digest(byte @Nullable [] bytes) {
         if (bytes == null) return Null.Bytes;
         Mac mac = newOne();
         return mac.doFinal(bytes);
     }
 
     /**
-     * 获得内部Mac，实例创建线程安全，不可跨线程使用
-     *
-     * @return 实例
+     * create a Mac instance, the instance it not thread-safe
      */
+    @NotNull
     public Mac newOne() {
         return newOne(algorithm, key);
     }
@@ -98,7 +97,8 @@ public class HmacHelp {
         return sum.equalsIgnoreCase(md5);
     }
 
-    public static Mac newOne(String algorithm, byte[] key) {
+    @NotNull
+    public static Mac newOne(@NotNull String algorithm, byte @NotNull [] key) {
         try {
             SecretKeySpec sks = new SecretKeySpec(key, algorithm);
             final Mac mac = Mac.getInstance(algorithm);
@@ -111,31 +111,38 @@ public class HmacHelp {
     }
 
     //
-    public static HmacHelp md5(byte[] key) {
+    @NotNull
+    public static HmacHelp md5(byte @NotNull [] key) {
         return of("HmacMD5", key);
     }
 
-    public static HmacHelp sha1(byte[] key) {
+    @NotNull
+    public static HmacHelp sha1(byte @NotNull [] key) {
         return of("HmacSHA1", key);
     }
 
-    public static HmacHelp sha256(byte[] key) {
+    @NotNull
+    public static HmacHelp sha256(byte @NotNull [] key) {
         return of("HmacSHA256", key);
     }
 
-    public static HmacHelp of(String algorithm, byte[] key) {
+    @NotNull
+    public static HmacHelp of(@NotNull String algorithm, byte @NotNull [] key) {
         return new HmacHelp(algorithm, key);
     }
 
-    public static Mac newMd5(byte[] key) {
+    @NotNull
+    public static Mac newMd5(byte @NotNull [] key) {
         return newOne("HmacMD5", key);
     }
 
-    public static Mac newSha1(byte[] key) {
+    @NotNull
+    public static Mac newSha1(byte @NotNull [] key) {
         return newOne("HmacSHA1", key);
     }
 
-    public static Mac newSha256(byte[] key) {
+    @NotNull
+    public static Mac newSha256(byte @NotNull [] key) {
         return newOne("HmacSHA256", key);
     }
 }

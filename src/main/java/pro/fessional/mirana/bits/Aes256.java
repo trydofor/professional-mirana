@@ -8,10 +8,12 @@ import javax.crypto.spec.PBEKeySpec;
 import java.security.spec.KeySpec;
 
 /**
- * 默认使用 jdk AES/CBC/PKCS5Padding。PBKDF2WithHmacSHA256
- * 如果使用 AES/CBC/PKCS7Padding，用 bouncycastle
- * 注，java1.8.0_162以下，需要安装扩展包，参考
- * https://bugs.openjdk.org/browse/JDK-8170157
+ * <pre>
+ * the jdk AES/CBC/PKCS5Padding as default.
+ * If AES/CBC/PKCS7Padding required, try `bouncycastle`
+ *
+ * Note, java1.8.0_162 or lower, extension is required, see <a href="https://bugs.openjdk.org/browse/JDK-8170157">cryptographic policy</a>
+ * </pre>
  *
  * @author trydofor
  * @since 2016-12-03

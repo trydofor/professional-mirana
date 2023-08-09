@@ -2,6 +2,7 @@ package pro.fessional.mirana.bits;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import pro.fessional.mirana.best.Param;
 import pro.fessional.mirana.data.Null;
 
 import java.io.ByteArrayOutputStream;
@@ -15,10 +16,7 @@ import java.io.OutputStream;
 public class Bytes {
 
     /**
-     * 把hex字符串（可含有 `0x20\t\r\n` 不区分大小写），解析成bytes
-     *
-     * @param hex 字符串
-     * @return bytes
+     * Parse HEX string (can contain `0x20\t\r\n` case insensitive) into bytes.
      */
     public static byte[] hex(@Nullable String hex) {
         if (hex == null || hex.isEmpty()) return Null.Bytes;
@@ -28,13 +26,11 @@ public class Bytes {
     }
 
     /**
-     * 把hex字符串（可含有 `0x20\t\r\n` 不区分大小写），写入流
+     * Parse HEX string (can contain `0x20\t\r\n` case insensitive) into stream.
      *
-     * @param os  流
-     * @param hex 字符串
-     * @return 写入长度
+     * @return count of bytes wrote to the stream
      */
-    public static int hex(OutputStream os, @Nullable String hex) {
+    public static int hex(@Param.Out OutputStream os, @Nullable String hex) {
         if (hex == null || hex.isEmpty()) return 0;
         int cnt = 0;
         int c1 = -1, c2 = -1;
@@ -80,11 +76,10 @@ public class Bytes {
     }
 
     /**
-     * hex输出，控制大小写
+     * Write bytes to HEX string
      *
      * @param bytes bytes
-     * @param upper 是否大写
-     * @return hex
+     * @param upper whether all UPPER CASE hex char
      */
     @NotNull
     public static String hex(byte[] bytes, boolean upper) {
@@ -101,7 +96,7 @@ public class Bytes {
     private static final char[] HEX_LOWER = new char[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 
     /**
-     * 查表获得hex
+     * get HEX by lookup table
      *
      * @param sb    buffer
      * @param b     byte
@@ -115,12 +110,14 @@ public class Bytes {
     private static final byte[] HEX_BYTE = new byte[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
     /**
-     * 把一个char变成java的unicode转移格式，`我`(25105)=&gt;'\u6211'
-     * 效率不高，更多场合，参考StringEscapeUtil，ByteBuffer
+     * <pre>
+     * Turning a char into java's unicode format. eg. `我`(25105)->'\u6211'
+     * Note, this method is not very efficient, for more options see StringEscapeUtil, ByteBuffer
+     * </pre>
      *
-     * @param c  字符
-     * @param ob 长度大于等于6的byte数组
-     * @return ob中字符数量，ascii时候是1，unicode是6
+     * @param c  the char
+     * @param ob byte arrays of length greater than or equal to 6
+     * @return byte wrote in the ob, ascii is 1, unicode is 6
      */
     public static int unicode(char c, byte[] ob) {
         if (ob == null) return 0;

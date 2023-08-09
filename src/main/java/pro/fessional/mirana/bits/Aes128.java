@@ -5,12 +5,12 @@ import org.jetbrains.annotations.NotNull;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
- * 默认使用 jdk AES/CBC/PKCS5Padding。
- * 如果使用 AES/CBC/PKCS7Padding，用 bouncycastle
+ * the jdk AES/CBC/PKCS5Padding as default.
+ * If AES/CBC/PKCS7Padding required, try `bouncycastle`
  *
  * @author trydofor
  * @since 2016-12-03
- * @deprecated 推荐使用 Aes256
+ * @deprecated Aes256 instead
  */
 @Deprecated
 public class Aes128 extends Aes {

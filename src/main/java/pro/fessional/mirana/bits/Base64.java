@@ -10,8 +10,9 @@ import java.io.InputStream;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
- * 默认使用 RFC4648_URLSAFE 和 UTF8，没有pad
  * <pre>
+ * RFC4648_URLSAFE, UTF8 and no pad by default.
+ *
  * This array is a lookup table that translates 6-bit positive integer
  * index values into their "Base64 Alphabet" equivalents as specified
  * in "Table 1: The Base64 Alphabet" of RFC 2045 (and RFC 4648).

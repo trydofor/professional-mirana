@@ -13,7 +13,7 @@ import java.io.InputStream;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
- * 默认 "AES/CBC/PKCS5Padding"
+ * `AES/CBC/PKCS5Padding` as default
  *
  * @author trydofor
  * @since 2022-11-07
@@ -39,10 +39,7 @@ public abstract class Aes {
     }
 
     /**
-     * 加密明文
-     *
-     * @param plain 明文
-     * @return 密文
+     * encrypt plain text
      */
     public byte @NotNull [] encode(@Nullable String plain) {
         if (plain == null) return Null.Bytes;
@@ -51,10 +48,7 @@ public abstract class Aes {
     }
 
     /**
-     * 加密明文
-     *
-     * @param plain 明文
-     * @return 密文
+     * encrypt plain text
      */
     public byte @NotNull [] encode(@Nullable InputStream plain) {
         if (plain == null) return Null.Bytes;
@@ -63,15 +57,12 @@ public abstract class Aes {
     }
 
     /**
-     * 加密明文
-     *
-     * @param plain 明文
-     * @return 密文
+     * encrypt plain text
      */
     public byte @NotNull [] encode(byte[] plain) {
         if (plain == null) return Null.Bytes;
         try {
-            Cipher ins = Cipher.getInstance(cipherName);//"算法/模式/补码方式"
+            Cipher ins = Cipher.getInstance(cipherName);
             ins.init(Cipher.ENCRYPT_MODE, keySpec, algSpec);
             return ins.doFinal(plain);
         }
@@ -81,15 +72,12 @@ public abstract class Aes {
     }
 
     /**
-     * 解密密文
-     *
-     * @param cipher 密文
-     * @return 明文
+     * decrypt the cipher to its plain text
      */
     public byte @NotNull [] decode(byte[] cipher) {
         if (cipher == null || cipher.length == 0) return Null.Bytes;
         try {
-            Cipher ins = Cipher.getInstance(cipherName);//"算法/模式/补码方式"
+            Cipher ins = Cipher.getInstance(cipherName);
             ins.init(Cipher.DECRYPT_MODE, keySpec, algSpec);
             return ins.doFinal(cipher);
         }
@@ -99,10 +87,7 @@ public abstract class Aes {
     }
 
     /**
-     * 解密密文
-     *
-     * @param cipher 密文
-     * @return 明文
+     * decrypt the cipher to its plain text
      */
     public byte @NotNull [] decode(@Nullable InputStream cipher) {
         if (cipher == null) return Null.Bytes;
@@ -111,10 +96,7 @@ public abstract class Aes {
     }
 
     /**
-     * 加密明文为16进制密文
-     *
-     * @param plain 明文
-     * @return 密文
+     * encrypt plain text to HEX
      */
     @NotNull
     public String encode16(@Nullable String plain) {
@@ -125,10 +107,7 @@ public abstract class Aes {
     }
 
     /**
-     * 解密16进制密文
-     *
-     * @param cipher 密文
-     * @return 明文
+     * decrypt the HEX cipher to its plain text
      */
     @NotNull
     public String decode16(@Nullable String cipher) {
@@ -139,10 +118,7 @@ public abstract class Aes {
     }
 
     /**
-     * 加密明文，输出base64密文
-     *
-     * @param plain 明文
-     * @return base64密文
+     * encrypt plain text to RFC4648_URLSAFE
      */
     @NotNull
     public String encode64(@Nullable String plain) {
@@ -152,6 +128,9 @@ public abstract class Aes {
         return Base64.encode(cb);
     }
 
+    /**
+     * decrypt any type of BASE64 cipher to its plain text
+     */
     @NotNull
     public String decode64(@Nullable String cipher) {
         if (cipher == null || cipher.isEmpty()) return Null.Str;
