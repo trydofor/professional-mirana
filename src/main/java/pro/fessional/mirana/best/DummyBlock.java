@@ -6,7 +6,7 @@ import pro.fessional.mirana.evil.TweakingContext;
 import java.util.function.Consumer;
 
 /**
- * 关闭一些安全的代码块的IDE警报
+ * Turn off IDE alerts for some safe code blocks
  *
  * @author trydofor
  * @since 2022-10-24
@@ -32,7 +32,7 @@ public class DummyBlock {
     }
 
     /**
-     * 业务上不可到达的代码
+     * Code never reached in Biz Logic
      */
     @Contract("->fail")
     public static void never() throws IllegalStateException {
@@ -40,7 +40,7 @@ public class DummyBlock {
     }
 
     /**
-     * 业务上不可到达的代码
+     * Code never reached in Biz Logic
      */
     @Contract("_->fail")
     public static void never(String msg) throws IllegalStateException {
@@ -48,7 +48,7 @@ public class DummyBlock {
     }
 
     /**
-     * 未实现的方法，不可执行
+     * Code to be done
      */
     @Contract("->fail")
     public static void todo() throws IllegalStateException {
@@ -56,7 +56,7 @@ public class DummyBlock {
     }
 
     /**
-     * 未实现的方法，不可执行
+     * Code to be done
      */
     @Contract("_->fail")
     public static void todo(String msg) throws IllegalStateException {
@@ -64,7 +64,7 @@ public class DummyBlock {
     }
 
     /**
-     * 等待修复的代码，不可执行
+     * Code awaiting fix
      */
     @Contract("->fail")
     public static void fixme() throws IllegalStateException {
@@ -72,7 +72,7 @@ public class DummyBlock {
     }
 
     /**
-     * 等待修复的代码，不可执行
+     * Code awaiting fix
      */
     @Contract("_->fail")
     public static void fixme(String msg) throws IllegalStateException {

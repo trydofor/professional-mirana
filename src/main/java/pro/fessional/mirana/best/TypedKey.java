@@ -10,15 +10,17 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * 使用方法，在接口中构造子类。
  * <pre>
+ * Usage: construct final anonymous subclasses in interfaces.
+ * {@code
  * public interface Solos {
  *  TypedKey<String> PasssaltByUid = new TypedKey<String>() {};
  *  TypedKey<Set<String>> PermitsByUid = new TypedKey<Set<String>>() {};
  * }
+ * }
  * </pre>
  *
- * @param <V> value类型
+ * @param <V> value type
  * @author trydofor
  * @since 2022-10-30
  */

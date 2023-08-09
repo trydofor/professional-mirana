@@ -31,4 +31,25 @@ public interface Param {
     @interface InOut {
         String value() default "";
     }
+
+    /**
+     * param will be close in the method
+     */
+    @Documented
+    @Retention(RetentionPolicy.CLASS)
+    @Target(ElementType.PARAMETER)
+    @interface HadClose {
+        String value() default "";
+    }
+
+    /**
+     * param will be NOT close in the method
+     */
+
+    @Documented
+    @Retention(RetentionPolicy.CLASS)
+    @Target(ElementType.PARAMETER)
+    @interface NotClose {
+        String value() default "";
+    }
 }
