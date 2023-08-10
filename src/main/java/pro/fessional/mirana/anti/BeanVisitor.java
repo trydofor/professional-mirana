@@ -1,5 +1,6 @@
 package pro.fessional.mirana.anti;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,16 +21,27 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * <pre>
- * 反射遍历Bean的Field，可直接更改，主要用于属性格式化。
- * Bean指有Declared的Field及其Getter(isXxx/getXxx/xxx)
- * 忽略 final/transient的field和@Transient的Getter
- * (JLS 17.5.3 compile-time constants get inlined - 初始值的final在编译时inline，修改filed不改变getter)
- * 收敛于①没有Bean可遍历，②this在遍历链中存在 ③到达遍历深度
- * 若返回值 != 原值，则以返回值覆盖原值，但原始类型，忽略null
- * 若原值为以下类型，且未被修改，则遍历元素
- * - Object[]: 元素
- * - Map: Value对象
- * - Iterable - 元素
+ * Visit and modify bean's field by reflection, mainly used for property formatting.
+ * Bean means the object with `Declared` field and its getter(isXxx/getXxx/xxx)
+ * Ignore `final`/`transient` fields and `@Transient` getters
+ *
+ * A final with an initial value is inline at compile time,
+ * and modifying it does not change the return value of the getter
+ * Initializing final values with the constructor does not have this restriction.
+ * See JLS 17.5.3 compile-time constants get inlined
+ *
+ * The visit ends if one of the following conditions is true,
+ * - no bean to visit,
+ * - has been visited,
+ * - the visit depth is reached.
+ *
+ * The original is modified to the `return` value if
+ * the `return` is primitive type or not same as the original ref, and not `null`.
+ *
+ * If the original value is of the following types and not modified, then visit its element
+ * - Object[]: element
+ * - Map: Value object
+ * - Iterable - element
  * </pre>
  *
  * @author trydofor
@@ -121,10 +133,10 @@ public class BeanVisitor {
             while (uz != Object.class) {
                 for (Field f : uz.getDeclaredFields()) {
                     final int md = f.getModifiers();
-                    if (f.isSynthetic() // 非bean字段
-                        || (opt.skipTransient && Modifier.isTransient(md)) // 没必要
-                        || (opt.skipFinal && Modifier.isFinal(md)) // 编译器内联，可能影响行为
-                        || notGetter(opt.tryRawGetter, f, uz)) { // 不是Bean
+                    if (f.isSynthetic() // not bean filed
+                        || (opt.skipTransient && Modifier.isTransient(md)) // no need
+                        || (opt.skipFinal && Modifier.isFinal(md)) // Compiler inlining, may affect behavior
+                        || notGetter(opt.tryRawGetter, f, uz)) { // not Bean
                         continue;
                     }
                     ds.add(new Fd(f));
@@ -140,7 +152,7 @@ public class BeanVisitor {
         final String nm = fld.getName();
         final String up = Character.toUpperCase(nm.charAt(0)) + nm.substring(1);
 
-        // ① isXxx()
+        // (1) isXxx()
         if (Boolean.class.equals(ft) || boolean.class.equals(ft)) {
             final int h1 = hasGetter(clz, "is" + up);
             if (h1 == 1) {
@@ -151,7 +163,7 @@ public class BeanVisitor {
             }
         }
 
-        // ② getXxx()
+        // (2) getXxx()
         final int h2 = hasGetter(clz, "get" + up);
         if (h2 == 1) {
             return false;
@@ -159,7 +171,7 @@ public class BeanVisitor {
         else if (h2 == 0) {
             return true;
         }
-        // ③ xxx()
+        // (3) xxx()
         return raw && hasGetter(clz, nm) != 1;
     }
 
@@ -211,8 +223,9 @@ public class BeanVisitor {
         }
 
         /**
-         * 是否只能被Visitor修改一次，默认true
+         * Whether be modified by Visitor only once, default is true.
          */
+        @Contract("_->this")
         public Opt amendOnce(boolean b) {
             amendOnce = b;
             return this;
@@ -220,44 +233,50 @@ public class BeanVisitor {
 
         /**
          * <pre>
-         * 是否跳过final字段，默认true。
-         * 有初始值的final在编译时inline，修改filed不改变getter的返回值
-         * 使用constructor初始final值，没有这个限制。
-         * 参考：JLS 17.5.3 compile-time constants get inlined
+         * Whether to skip final fields, default true.
+         * A final with an initial value is inline at compile time,
+         * and modifying it does not change the return value of the getter
+         * Initializing final values with the constructor does not have this restriction.
+         * See JLS 17.5.3 compile-time constants get inlined
          * </pre>
          */
+        @Contract("_->this")
         public Opt skipFinal(boolean b) {
             skipFinal = b;
             return this;
         }
 
         /**
-         * 是否跳过 Transient 字段和@Transient的Getter，默认true
+         * Whether to skip Transient field and @Transient Getter, default true
          */
+        @Contract("_->this")
         public Opt skipTransient(boolean b) {
             skipTransient = b;
             return this;
         }
 
         /**
-         * 是否包括xxx()形式的属性同名Getter，默认true
+         * Whether to include a Getter of the same name as the field in the form of xxx(), default true
          */
+        @Contract("_->this")
         public Opt tryRawGetter(boolean b) {
             tryRawGetter = b;
             return this;
         }
 
         /**
-         * 有异常时是throw，还是忽略，默认true，抛出异常
+         * Whether to throw or ignore exception, default true to throw
          */
+        @Contract("_->this")
         public Opt throwOnError(boolean b) {
             throwOnError = b;
             return this;
         }
 
         /**
-         * 设置遍历深度，仅计算Bean，不算集合或数组，默认 Integer.MAX_VALUE
+         * Set the visit depth, java bean only, not collection or array, default Integer.MAX_VALUE
          */
+        @Contract("_->this")
         public Opt walkDepth(int depth) {
             walkDepth = depth;
             return this;
@@ -318,31 +337,33 @@ public class BeanVisitor {
 
     public interface Vzt {
         /**
-         * 是否对这个field进行处理
+         * Whether to amend this field
          *
-         * @param field bean的field
-         * @param annos field上的注解
-         * @return 是否需要修改值
+         * @param field bean field
+         * @param annos annotation on the field
+         * @return whether to amend the field
          */
         boolean cares(@NotNull Field field, @NotNull Annotation[] annos);
 
         /**
-         * 处理field值或容器元素，对象引用变化为修改
+         * Handle field value or container element, object reference changes as modifications
          *
-         * @param field bean的field
-         * @param annos field上的注解
-         * @param obj   field对象本身或容器内元素
-         * @return 原对象或修改后对象
+         * @param field bean field
+         * @param annos annotation on the field
+         * @param obj   field value or container element
+         * @return origin (same ref) or amended object(diff ref)
          */
         Object amend(@NotNull Field field, @NotNull Annotation[] annos, Object obj);
     }
 
     /**
-     * 递归处理常见的有空构造函数容器类型，如常见的：
+     * <pre>
+     * Recursively handle common containers with empty constructor, eg.
      * ArrayList, LinkedList,
      * HashSet, TreeSet,
      * HashMap, TreeMap, LinkedHashMap
      * Object[]
+     * </pre>
      */
     public static abstract class ContainerVisitor implements Vzt {
 
@@ -507,7 +528,7 @@ public class BeanVisitor {
         }
 
         /**
-         * 构造对象,如Spring的BeanUtils.instantiateClass。
+         * new instance, eg. Spring BeanUtils.instantiateClass
          */
         @NotNull
         @SuppressWarnings("unchecked")
@@ -530,7 +551,7 @@ public class BeanVisitor {
         }
 
         /**
-         * 非List/Map/Set/Object[]
+         * obj is not List/Map/Set/Object[]
          */
         @Nullable
         protected abstract Object amendValue(@NotNull Field field, @NotNull Annotation[] annos, @Nullable Object obj);

@@ -12,11 +12,13 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 反模式，不要过度使用: ThreadLocal收集信息，收集日志。
- * 及时使用，及时移除。当内存不够是SoftReference会被GC。
- * <p>
- * `(Cate:)?Message\n`格式的消息。
- * 最后一个`\n`可以省略，支持slf4j语法
+ * <pre>
+ * Anti-pattern, do NOT overuse: gathers information or logs by ThreadLocal.
+ * Use in time, remove in time. SoftReference can be GC if not enough memory.
+ *
+ * In `(Cate:)?Message\n` format with slf4j syntax placeholder.
+ * and the last `\n` can be omitted.
+ * </pre>
  *
  * @author trydofor
  * @since 2021-03-24

@@ -3,8 +3,10 @@ package pro.fessional.mirana.anti;
 import java.util.WeakHashMap;
 
 /**
- * 反模式，不要过度使用: 主要用来debug或跨层传递。
- * 及时使用，及时移除。WeakReference，丢失Key则可能被GC
+ * <pre>
+ * Anti-pattern, do NOT overuse: mainly used for debugging or passing data across layers.
+ * Use in time, remove in time, WeakReference may lose Key if GC.
+ * </pre>
  *
  * @author trydofor
  * @since 2021-06-23
