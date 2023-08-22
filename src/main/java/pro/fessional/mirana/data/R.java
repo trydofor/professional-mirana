@@ -309,6 +309,10 @@ public class R<T> implements DataResult<T>, I18nAware {
 
     // /////////////////
 
+    @SuppressWarnings("unchecked")
+    public static <T> R<T> OK() {
+        return (R<T>) R.OK;
+    }
     public static <T> R<T> ok() {
         return new R<>(true, null, null, null);
     }
@@ -354,6 +358,11 @@ public class R<T> implements DataResult<T>, I18nAware {
     }
 
     // /////////////////
+
+    @SuppressWarnings("unchecked")
+    public static <T> R<T> NG() {
+        return (R<T>) R.NG;
+    }
 
     public static <T> R<T> ng() {
         return new R<>(false, null, null, null);
