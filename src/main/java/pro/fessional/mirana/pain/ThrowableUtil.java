@@ -2,11 +2,131 @@ package pro.fessional.mirana.pain;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import pro.fessional.mirana.best.Param.Out;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
 public class ThrowableUtil {
+
+    /**
+     * print StackTrace to buffer in 5-StackTrace (except root cause), Reversed, Shorten.
+     * And filename only in 1st stack, full stack only in root cause.
+     *
+     * @param buffer to write
+     * @param t      throwable
+     */
+    public static void print(@Out Appendable buffer, Throwable t) {
+        print(buffer, t, true, true, 5, Integer.MAX_VALUE, 1);
+    }
+
+    /**
+     * print StackTrace to buffer. but filename only in 1st stack, full stack only in root cause.
+     *
+     * @param buffer  to write
+     * @param t       throwable
+     * @param reverse reverse the stack
+     * @param shorten shorten the class
+     */
+    public static void print(@Out Appendable buffer, Throwable t, boolean reverse, boolean shorten) {
+        print(buffer, t, reverse, shorten, Integer.MAX_VALUE, Integer.MAX_VALUE, 1);
+    }
+
+    /**
+     * print StackTrace to buffer. but filename only in 1st stack, full stack only in root cause.
+     *
+     * @param buffer   to write
+     * @param t        throwable
+     * @param reverse  reverse the stack
+     * @param shorten  shorten the class
+     * @param maxStack max Stack (except root cause) to print, default Integer#MAX_VALUE
+     * @param maxCause max Cause  to print, default Integer#MAX_VALUE
+     */
+    public static void print(@Out Appendable buffer, Throwable t, boolean reverse, boolean shorten, int maxStack, int maxCause) {
+        print(buffer, t, reverse, shorten, maxStack, maxCause, 1);
+    }
+
+    private static void print(@Out final Appendable buffer, final Throwable t, final boolean reverse, final boolean shorten, final int stack, final int max, final int cur) {
+        if (t == null || max < cur) return;
+        final Throwable c = t.getCause();
+        int nextDepth = cur + 1;
+        boolean caused = c != null;
+        try {
+            if (reverse) {
+                if (caused) print(buffer, c, reverse, shorten, stack, max, nextDepth);
+                doPrint(buffer, t, reverse, shorten, !caused, caused ? stack : Integer.MAX_VALUE, cur);
+            }
+            else {
+                doPrint(buffer, t, reverse, shorten, !caused, caused ? stack : Integer.MAX_VALUE, cur);
+                if (caused) print(buffer, c, reverse, shorten, stack, max, nextDepth);
+            }
+        }
+        catch (IOException e) {
+            throw new IORuntimeException(e);
+        }
+    }
+
+    private static void doPrint(@Out final Appendable buffer, final Throwable t, final boolean reverse, final boolean shorten, final boolean root, final int stk, final int cur) throws IOException {
+
+        if (reverse) {
+            if (!root) buffer.append("Causes to: ");
+        }
+        else {
+            if (cur > 1) buffer.append("Caused by: ");
+        }
+
+        if (root) buffer.append("(RootCause) ");
+        buffer.append(t.getClass().getName()).append(": ").append(t.getMessage()).append('\n');
+
+        int i = 0;
+        boolean nfn = true;
+        final StringBuilder sb = buffer instanceof StringBuilder ? (StringBuilder) buffer : new StringBuilder();
+        for (StackTraceElement el : t.getStackTrace()) {
+            if (++i > stk) break;
+
+            buffer.append("\tat ");
+            final String cn = el.getClassName();
+            if (shorten) {
+                int cl = sb.length();
+                for (int j = 0, ln = cn.length(); j < ln; j++) {
+                    char c = cn.charAt(j);
+                    if (c == '.') {
+                        sb.setLength(cl + 1);
+                        cl = cl + 2;
+                    }
+                    buffer.append(c);
+                }
+                if (sb != buffer) {
+                    buffer.append(sb.toString());
+                    sb.setLength(0);
+                }
+            }
+            else {
+                buffer.append(cn);
+            }
+
+            buffer.append('.').append(el.getMethodName()).append('(');
+            if (el.isNativeMethod()) {
+                buffer.append("Native");
+            }
+            else {
+                String fn = el.getFileName();
+                if (fn == null) {
+                    buffer.append("Unknown");
+                }
+                else {
+                    if (nfn){
+                        buffer.append(fn);
+                        nfn = false;
+                    }
+                    buffer.append(":").append(String.valueOf(el.getLineNumber()));
+                }
+            }
+
+            buffer.append(")\n");
+        }
+    }
 
     /**
      * print StackTrace to String

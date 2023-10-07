@@ -50,7 +50,7 @@ public class FormatUtil {
     }
 
     /**
-     * <pre>use `&` and `=` sort and join the string as http query string, sort by ascii asc</pre>
+     * <pre>use `&amp;` and `=` sort and join the string as http query string, sort by ascii asc</pre>
      *
      * @see #sortParam(Map, String, String)
      */

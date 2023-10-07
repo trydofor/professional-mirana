@@ -135,4 +135,41 @@ class ThrowableUtilTest {
             }
         });
     }
+
+    @Test
+    void print() {
+        String e2str = ThrowableUtil.toString(e2);
+        System.out.println(e2str);
+
+        {
+            System.out.println("true, true, 5, 10");
+            StringBuilder sb = new StringBuilder();
+            ThrowableUtil.print(sb, e2, true, true, 5, 10);
+            System.out.println(sb);
+        }
+        {
+            System.out.println("true, false, 5, 10");
+            StringBuilder sb = new StringBuilder();
+            ThrowableUtil.print(sb, e2, true, false, 5, 10);
+            System.out.println(sb);
+        }
+        {
+            System.out.println("false, true, 5, 10");
+            StringBuilder sb = new StringBuilder();
+            ThrowableUtil.print(sb, e2, false, true, 5, 10);
+            System.out.println(sb);
+        }
+        {
+            System.out.println("false, false, 5, 10");
+            StringBuilder sb = new StringBuilder();
+            ThrowableUtil.print(sb, e2, false, false, 5, 10);
+            System.out.println(sb);
+        }
+        {
+            System.out.println("false, false, 5, 1");
+            StringBuilder sb = new StringBuilder();
+            ThrowableUtil.print(sb, e2, false, false, 5, 1);
+            System.out.println(sb);
+        }
+    }
 }
