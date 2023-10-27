@@ -3,6 +3,7 @@ package pro.fessional.mirana.text;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -53,15 +54,16 @@ public class WhiteUtil {
             0xFEFF,//U+FEFF zero width non-breaking
     };
 
+    static {
+        Arrays.sort(WS);
+    }
+
     public static boolean notWhiteSpace(char c) {
-        for (char w : WS) {
-            if (c == w) return false;
-        }
-        return true;
+        return Arrays.binarySearch(WS, c) < 0;
     }
 
     public static boolean isWhiteSpace(char c) {
-        return !notWhiteSpace(c);
+        return Arrays.binarySearch(WS, c) >= 0;
     }
 
     /**
@@ -72,27 +74,46 @@ public class WhiteUtil {
         if (str == null) return "";
 
         final int len = str.length();
+        int p1 = 0, p2 = len;
 
-        int p1 = 0;
-        int p2 = len;
-        for (int i = 0; i < len; i++) {
-            if (notWhiteSpace(str.charAt(i))) {
-                p1 = i;
-                break;
+        while (p1 < p2 && Arrays.binarySearch(WS, str.charAt(p1)) >= 0) p1++;
+        while (p2 > p1 && Arrays.binarySearch(WS, str.charAt(p2 - 1)) >= 0) p2--;
+
+        return (p1 == 0 && p2 == len) ? str.toString() : str.subSequence(p1, p2).toString();
+    }
+
+    @NotNull
+    public static String trim(CharSequence str, char... cs) {
+        if (str == null) return "";
+
+        final int len = str.length();
+        int p1 = 0, p2 = len;
+
+        o1:
+        while (p1 < p2) {
+            char c = str.charAt(p1);
+            for (char c1 : cs) {
+                if (c == c1) {
+                    p1++;
+                    continue o1;
+                }
             }
+            break;
         }
 
-        for (int i = len - 1; i >= 0; i--) {
-            if (notWhiteSpace(str.charAt(i))) {
-                p2 = i + 1;
-                break;
+        o2:
+        while (p2 > p1) {
+            char c = str.charAt(p2 - 1);
+            for (char c1 : cs) {
+                if (c == c1) {
+                    p2--;
+                    continue o2;
+                }
             }
+            break;
         }
-        if (p1 >= p2)
-            return "";
-        if (p1 == 0 && p2 == len)
-            return str.toString();
-        return str.subSequence(p1, p2).toString();
+
+        return (p1 == 0 && p2 == len) ? str.toString() : str.subSequence(p1, p2).toString();
     }
 
     /**
