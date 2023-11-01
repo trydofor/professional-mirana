@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -25,16 +26,21 @@ import java.util.Objects;
  * @since 2022-10-30
  */
 public abstract class TypedKey<V> {
+
+    private static final Map<String, TypedKey<?>> INSTANCE = new HashMap<>();
+
     @NotNull
-    public final Type regType;
+    public final Class<? extends TypedKey<V>> regType;
     @NotNull
     public final Type valType;
 
+    @SuppressWarnings("unchecked")
     protected TypedKey() {
-        final Class<?> clz = getClass();
+        final Class<? extends TypedKey<V>> clz = (Class<? extends TypedKey<V>>) getClass();
         final Type[] tps = ((ParameterizedType) clz.getGenericSuperclass()).getActualTypeArguments();
         regType = clz;
         valType = tps[0];
+        INSTANCE.put(clz.getName(), this);
     }
 
     @SuppressWarnings("unchecked")
@@ -71,9 +77,40 @@ public abstract class TypedKey<V> {
 
     @Override
     public String toString() {
-        return "TypedVal{" +
+        return "TypedKey{" +
                "regType=" + regType +
                ", valType=" + valType +
                '}';
+    }
+
+    /**
+     * serialize to string
+     */
+    @NotNull
+    public String serialize() {
+        return regType.getName();
+    }
+
+    /**
+     * deserialize to singleton instance
+     */
+    @NotNull
+    public static <K> TypedKey<K> deserialize(@NotNull String clz) {
+        return deserialize(clz, true);
+    }
+
+    /**
+     * deserialize to singleton instance
+     */
+    @Contract("_,true->!null")
+    @SuppressWarnings("unchecked")
+    public static <K> TypedKey<K> deserialize(@NotNull String clz, boolean nonnull) {
+        TypedKey<?> ins = INSTANCE.get(clz);
+        if (ins == null && nonnull) {
+            throw new ClassCastException("instance not found, class=" + clz);
+        }
+        else {
+            return (TypedKey<K>) ins;
+        }
     }
 }

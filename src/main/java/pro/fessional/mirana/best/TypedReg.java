@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -26,19 +27,24 @@ import java.util.Objects;
  * @since 2022-10-30
  */
 public abstract class TypedReg<K, V> {
+
+    private static final Map<String, TypedReg<?, ?>> INSTANCE = new HashMap<>();
+
     @NotNull
-    public final Type regType;
+    public final Class<? extends TypedReg<K, V>> regType;
     @NotNull
     public final Type keyType;
     @NotNull
     public final Type valType;
 
+    @SuppressWarnings("unchecked")
     protected TypedReg() {
-        final Class<?> clz = getClass();
+        final Class<? extends TypedReg<K, V>> clz = (Class<? extends TypedReg<K, V>>) getClass();
         final Type[] tps = ((ParameterizedType) clz.getGenericSuperclass()).getActualTypeArguments();
         regType = clz;
         keyType = tps[0];
         valType = tps[1];
+        INSTANCE.put(clz.getName(), this);
     }
 
     @Override
@@ -61,6 +67,37 @@ public abstract class TypedReg<K, V> {
                ", keyType=" + keyType +
                ", valType=" + valType +
                '}';
+    }
+
+    /**
+     * serialize to string
+     */
+    @NotNull
+    public String serialize() {
+        return regType.getName();
+    }
+
+    /**
+     * deserialize to singleton instance
+     */
+    @NotNull
+    public static <K, V> TypedReg<K, V> deserialize(@NotNull String clz) {
+        return deserialize(clz, true);
+    }
+
+    /**
+     * deserialize to singleton instance
+     */
+    @Contract("_,true->!null")
+    @SuppressWarnings("unchecked")
+    public static <K, V> TypedReg<K, V> deserialize(@NotNull String clz, boolean nonnull) {
+        TypedReg<?, ?> ins = INSTANCE.get(clz);
+        if (ins == null && nonnull) {
+            throw new ClassCastException("instance not found, class=" + clz);
+        }
+        else {
+            return (TypedReg<K, V>) ins;
+        }
     }
 
     public static <K, V> Key<K, V> key(@NotNull TypedReg<K, V> reg, K key) {
