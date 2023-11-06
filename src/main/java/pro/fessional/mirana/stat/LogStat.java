@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -110,75 +111,100 @@ public class LogStat {
     }
 
     public static final String Suffix = ".scanned.tmp";
+    public static final int Preview = 5;
+
+    @NotNull
+    public static Stat stat(String log, long from, String... keys) {
+        return stat(log, from, Preview, keys);
+    }
 
     /**
      * Directly obtain statistics, which may be overwritten when logs are output
      * at the same time within the same millisecond of the same log.
      *
-     * @param log  the log file
-     * @param from Start byte, negative means start at the end
-     * @param keys keyword in utf8
+     * @param log     the log file
+     * @param from    Start byte, negative means start at the end
+     * @param keys    keyword in utf8
+     * @param preview preview lines after matched key
      * @return stat
      */
     @NotNull
-    public static Stat stat(String log, long from, String... keys) {
+    public static Stat stat(String log, long from, int preview, String... keys) {
         Word[] words = new Word[keys.length];
         for (int i = 0; i < keys.length; i++) {
             Word wd = new Word();
             wd.bytes = keys[i].getBytes(StandardCharsets.UTF_8);
             words[i] = wd;
         }
-        return stat(log, from, words);
+        return stat(log, from, preview, words);
+    }
+
+    @NotNull
+    public static Stat stat(String log, long from, byte[]... keys) {
+        return stat(log, from, Preview, keys);
     }
 
     /**
      * Directly obtain statistics, which may be overwritten when logs are output
      * at the same time within the same millisecond of the same log.
      *
-     * @param log  the log file
-     * @param from Start byte, negative means start at the end
-     * @param keys keyword in bytes
+     * @param log     the log file
+     * @param from    Start byte, negative means start at the end
+     * @param keys    keyword in bytes
+     * @param preview preview lines after matched key
      * @return stat
      */
     @NotNull
-    public static Stat stat(String log, long from, byte[]... keys) {
+    public static Stat stat(String log, long from, int preview, byte[]... keys) {
         Word[] words = new Word[keys.length];
         for (int i = 0; i < keys.length; i++) {
             Word wd = new Word();
             wd.bytes = keys[i];
             words[i] = wd;
         }
-        return stat(log, from, words);
+        return stat(log, from, preview, words);
     }
 
-    /**
-     * Directly obtain statistics, which may be overwritten when logs are output
-     * at the same time within the same millisecond of the same log.
-     *
-     * @param log  the log file
-     * @param from Start byte, negative means start at the end
-     * @param keys keyword
-     * @return stat
-     */
     @NotNull
     public static Stat stat(String log, long from, Word... keys) {
-        return stat(log, from, Arrays.asList(keys));
+        return stat(log, from, Preview, Arrays.asList(keys));
     }
 
     /**
      * Directly obtain statistics, which may be overwritten when logs are output
      * at the same time within the same millisecond of the same log.
      *
-     * @param log  the log file
-     * @param from Start byte, negative means start at the end
-     * @param keys keyword
+     * @param log     the log file
+     * @param from    Start byte, negative means start at the end
+     * @param keys    keyword
+     * @param preview preview lines after matched key
      * @return stat
      */
     @NotNull
-    public static Stat stat(String log, long from, List<Word> keys) {
+    public static Stat stat(String log, long from, int preview, Word... keys) {
+        return stat(log, from, preview, Arrays.asList(keys));
+    }
+
+    @NotNull
+    public static Stat stat(String log, long from, Collection<? extends Word> keys) {
+        return stat(log, from, Preview, keys);
+    }
+
+    /**
+     * Directly obtain statistics, which may be overwritten when logs are output
+     * at the same time within the same millisecond of the same log.
+     *
+     * @param log     the log file
+     * @param from    Start byte, negative means start at the end
+     * @param keys    keyword
+     * @param preview preview lines after matched key
+     * @return stat
+     */
+    @NotNull
+    public static Stat stat(String log, long from, int preview, Collection<? extends Word> keys) {
         final Stat stat;
         try {
-            stat = buildStat(log, from, keys);
+            stat = buildStat(log, from, keys, Suffix, preview);
         }
         catch (IOException e) {
             throw new RuntimeException(e);
@@ -228,11 +254,15 @@ public class LogStat {
      * @param keys keyword
      * @return stat
      */
-    public static Stat buildStat(String log, long from, List<Word> keys) throws IOException {
-        return buildStat(log, from, keys, Suffix);
+    public static Stat buildStat(String log, long from, Collection<? extends Word> keys) throws IOException {
+        return buildStat(log, from, keys, Suffix, 0);
     }
 
-    public static Stat buildStat(String log, long from, List<Word> keys, String suffix) throws IOException {
+    public static Stat buildStat(String log, long from, Collection<? extends Word> keys, String suffix) throws IOException {
+        return buildStat(log, from, keys, suffix, 0);
+    }
+
+    public static Stat buildStat(String log, long from, Collection<? extends Word> keys, String suffix, int preview) throws IOException {
         final long bgn = System.currentTimeMillis();
 
         final Stat stat = new Stat();
@@ -250,7 +280,7 @@ public class LogStat {
         stat.pathLog = ins.getAbsolutePath();
         stat.byteFrom = from;
 
-        if (fln == 0 || keys == null || keys.size() == 0) {
+        if (fln == 0 || keys == null || keys.isEmpty()) {
             stat.byteDone = fln;
             stat.pathOut = null;
             stat.timeDone = bgn;
@@ -282,6 +312,7 @@ public class LogStat {
                 final byte cr = '\n';
                 int readOff = 0, readEnd, readLen;
                 int findLen = -1, lineEnd, nextOff;
+                int viewLen = 0;
 
                 while ((readLen = raf.read(buff, readOff, cap - readOff)) >= 0) {
                     readEnd = readOff + readLen;
@@ -291,7 +322,10 @@ public class LogStat {
                             nextOff = i + 1;
                             if (findLen > 0) {
                                 fos.write(buff, lineEnd, nextOff - lineEnd);
-                                findLen = 0;
+                                if (viewLen-- <= 0) {
+                                    findLen = 0;
+                                    viewLen = 0;
+                                }
                             }
                             lineEnd = nextOff;
                         }
@@ -302,6 +336,7 @@ public class LogStat {
                                     Word m = find(buff, i, lineEnd, keys);
                                     if (m != null) {
                                         findLen = m.bytes.length;
+                                        viewLen = preview;
                                         i = i + findLen - 1;
                                     }
                                 }
@@ -359,7 +394,7 @@ public class LogStat {
         return stat;
     }
 
-    private static Word find(byte[] buff, int pos, int pcr, List<Word> keys) {
+    private static Word find(byte[] buff, int pos, int pcr, Collection<? extends Word> keys) {
         final int idx = pos - pcr;
         out:
         for (Word key : keys) {
@@ -381,7 +416,7 @@ public class LogStat {
             clean("/Users/trydofor/Downloads/tmp/admin.log", -1);
             System.exit(0);
         }
-        System.exit(0);
+//        System.exit(0);
 
         System.out.println("usage: log-file:File [byte-from:Long] [Word:String,rang1:int,rang2:int]");
         final int aln = args.length;
