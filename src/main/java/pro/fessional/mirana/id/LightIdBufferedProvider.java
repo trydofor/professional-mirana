@@ -43,31 +43,32 @@ import java.util.concurrent.atomic.AtomicReference;
 @ThreadSafe
 public class LightIdBufferedProvider implements LightIdProvider {
 
-    private static final int MAX_COUNT = 10_000;
-    private static final int MIN_COUNT = 100;
-    private static final int MAX_ERROR = 5;
-    private static final long ERR_ALIVE = 120_000; // 2 minute
-    private static final long TIME_OUT = 1000; // 1 second
+    public static final int MAX_COUNT = 10_000;
+    public static final int MIN_COUNT = 100;
+    public static final int FIX_COUNT = 0;
+    public static final int MAX_ERROR = 5;
+    public static final long ERR_ALIVE = 120_000; // 2 minute
+    public static final long TIME_OUT = 1000; // 1 second
+    public static final Generator GENERATOR = (name, block, timeout) -> LightIdUtil.toId(block, timeout);
 
     private final ExecutorService executor;
     private final Loader loader;
     private final ConcurrentHashMap<String, SegmentBuffer> cache = new ConcurrentHashMap<>();
 
-    private final AtomicLong loadTimeout = new AtomicLong(TIME_OUT);
-    private final AtomicInteger loadMaxError = new AtomicInteger(MAX_ERROR);
-    private final AtomicInteger loadMaxCount = new AtomicInteger(MAX_COUNT);
-    private final AtomicInteger loadMinCount = new AtomicInteger(MIN_COUNT);
-    private final AtomicInteger loadFixCount = new AtomicInteger(0);
-    private final AtomicLong loadErrAlive = new AtomicLong(ERR_ALIVE);
-
-    private final AtomicReference<SequenceHandler> sequenceHandler = new AtomicReference<>();
+    private volatile long loadTimeout = TIME_OUT;
+    private volatile int loadMaxError = MAX_ERROR;
+    private volatile int loadMaxCount = MAX_COUNT;
+    private volatile int loadMinCount = MIN_COUNT;
+    private volatile int loadFixCount = FIX_COUNT;
+    private volatile long loadErrAlive = ERR_ALIVE;
+    private volatile Generator generator = GENERATOR;
 
     /**
      * default thread pool is core-size=3, max-size=64, keep-alive 60S
      *
      * @param loader the loader
      */
-    public LightIdBufferedProvider(Loader loader) {
+    public LightIdBufferedProvider(@NotNull Loader loader) {
         this(loader, new ThreadPoolExecutor(3, 64, 60L, TimeUnit.SECONDS, new SynchronousQueue<>(), new ThreadFactory() {
             private final AtomicInteger counter = new AtomicInteger(1);
 
@@ -84,38 +85,38 @@ public class LightIdBufferedProvider implements LightIdProvider {
      * @param loader   the loader
      * @param executor the executor
      */
-    public LightIdBufferedProvider(Loader loader, ExecutorService executor) {
+    public LightIdBufferedProvider(@NotNull Loader loader, @NotNull ExecutorService executor) {
         this.loader = loader;
         this.executor = executor;
     }
 
     public long getErrAlive() {
-        return loadErrAlive.get();
+        return loadErrAlive;
     }
 
 
     public long getTimeout() {
-        return loadTimeout.get();
+        return loadTimeout;
     }
 
     public int getMaxError() {
-        return loadMaxError.get();
+        return loadMaxError;
     }
 
     public int getMaxCount() {
-        return loadMaxCount.get();
+        return loadMaxCount;
     }
 
     public int getMinCount() {
-        return loadMinCount.get();
+        return loadMinCount;
     }
 
     public int getFixCount() {
-        return loadFixCount.get();
+        return loadFixCount;
     }
 
-    public SequenceHandler getSequenceHandler() {
-        return sequenceHandler.get();
+    public Generator getGenerator() {
+        return generator;
     }
 
     /**
@@ -123,9 +124,10 @@ public class LightIdBufferedProvider implements LightIdProvider {
      * Less than 0 means it will not be cleared
      *
      * @param t time in mills
+     * @see #ERR_ALIVE
      */
     public void setErrAlive(long t) {
-        loadErrAlive.set(t);
+        loadErrAlive = t;
     }
 
     /**
@@ -133,10 +135,11 @@ public class LightIdBufferedProvider implements LightIdProvider {
      *
      * @param t time in mills
      * @return ture if the count is greater than 0
+     * @see #TIME_OUT
      */
     public boolean setTimeout(long t) {
         if (t > 0) {
-            loadTimeout.set(t);
+            loadTimeout = t;
             return true;
         }
         else {
@@ -149,10 +152,11 @@ public class LightIdBufferedProvider implements LightIdProvider {
      *
      * @param n count
      * @return ture if the count is greater than 0
+     * @see #MAX_ERROR
      */
     public boolean setMaxError(int n) {
         if (n >= 0) {
-            loadMaxError.set(n);
+            loadMaxError = n;
             return true;
         }
         else {
@@ -165,10 +169,11 @@ public class LightIdBufferedProvider implements LightIdProvider {
      *
      * @param n count
      * @return ture if the count is greater than 0
+     * @see #MAX_COUNT
      */
     public boolean setMaxCount(int n) {
         if (n >= 0) {
-            loadMaxCount.set(n);
+            loadMaxCount = n;
             return true;
         }
         else {
@@ -181,10 +186,11 @@ public class LightIdBufferedProvider implements LightIdProvider {
      *
      * @param n count
      * @return ture if the count is greater than 0
+     * @see #MIN_COUNT
      */
     public boolean setMinCount(int n) {
         if (n >= 0) {
-            loadMinCount.set(n);
+            loadMinCount = n;
             return true;
         }
         else {
@@ -198,17 +204,21 @@ public class LightIdBufferedProvider implements LightIdProvider {
      *
      * @param n count, Fixed count if greater than 0
      * @return success or not
+     * @see #FIX_COUNT
      */
     public boolean setFixCount(int n) {
-        loadFixCount.set(n);
+        loadFixCount = n;
         return true;
     }
 
     /**
      * set Sequence Handler to edit the sequence before the LightId
+     *
+     * @see LightIdUtil#toId(int, long)
+     * @see #GENERATOR
      */
-    public void setSequenceHandler(SequenceHandler sequenceHandler) {
-        this.sequenceHandler.set(sequenceHandler);
+    public void setGenerator(@NotNull Generator generator) {
+        this.generator = generator;
     }
 
     /**
@@ -236,23 +246,13 @@ public class LightIdBufferedProvider implements LightIdProvider {
 
     @Override
     public long next(@NotNull String name, int block) {
-        return load(block, name).nextId(loadTimeout.get());
+        return load(block, name).nextId(loadTimeout);
     }
 
     @Override
     public long next(@NotNull String name, int block, long timeout) {
-        if (timeout <= 0) timeout = loadTimeout.get();
+        if (timeout <= 0) timeout = loadTimeout;
         return load(block, name).nextId(timeout);
-    }
-
-    public interface SequenceHandler {
-        /**
-         * edit the sequence before using it with LightId
-         *
-         * @param seq old Sequence
-         * @return new Sequence
-         */
-        long handle(long seq);
     }
 
     // init or reload
@@ -285,7 +285,7 @@ public class LightIdBufferedProvider implements LightIdProvider {
         }
 
         public int count60s(int mul) {
-            int fix = loadFixCount.get();
+            int fix = loadFixCount;
             if (fix > 0) return fix;
 
             long ms = (System.currentTimeMillis() - startMs);
@@ -298,8 +298,8 @@ public class LightIdBufferedProvider implements LightIdProvider {
                 count = count * mul;
             }
 
-            int max = loadMaxCount.get();
-            int min = loadMinCount.get();
+            int max = loadMaxCount;
+            int min = loadMinCount;
             if (count < 0 || count > max) { // overflow
                 return max;
             }
@@ -351,13 +351,7 @@ public class LightIdBufferedProvider implements LightIdProvider {
                 loadSegment(slot.count60s(0), true);
             }
 
-            //
-            final SequenceHandler sh = LightIdBufferedProvider.this.sequenceHandler.get();
-            if (sh != null) {
-                seq = sh.handle(seq);
-            }
-
-            return LightIdUtil.toId(block, seq);
+            return generator.gen(name, block, seq);
         }
 
 
@@ -501,7 +495,7 @@ public class LightIdBufferedProvider implements LightIdProvider {
         }
 
         private void checkError() {
-            long lf = loadErrAlive.get();
+            long lf = loadErrAlive;
             long ep = errorEpoch.get();
             if (lf > 0 && ep > 0 && (System.currentTimeMillis() - ep) > lf) {
                 errorCount.set(0);
@@ -521,7 +515,7 @@ public class LightIdBufferedProvider implements LightIdProvider {
             }
 
             // out of count
-            if (errorCount.get() > loadMaxError.get()) {
+            if (errorCount.get() > loadMaxError) {
                 throw err;
             }
         }

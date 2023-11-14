@@ -45,6 +45,16 @@ public interface LightIdProvider {
 
 
     /**
+     * Id generator
+     */
+    interface Generator {
+        /**
+         * generate id by block and sequence
+         */
+        long gen(@NotNull String name, int block, long sequence);
+    }
+
+    /**
      * the Loader to load LightId via Segment
      */
     interface Loader {
