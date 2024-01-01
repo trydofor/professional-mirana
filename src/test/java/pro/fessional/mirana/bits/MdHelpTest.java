@@ -2,6 +2,7 @@ package pro.fessional.mirana.bits;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import pro.fessional.mirana.SystemOut;
 import pro.fessional.mirana.code.RandCode;
 
 import java.security.MessageDigest;
@@ -35,9 +36,9 @@ class MdHelpTest {
         final String sha1Sum = MdHelp.sha1.sum(mes);
         final String sha256Sum = MdHelp.sha256.sum(mes);
 
-        System.out.println("Md5    Hex=" + md5Sum);
-        System.out.println("Sha1   Hex=" + sha1Sum);
-        System.out.println("Sha256 Hex=" + sha256Sum);
+        SystemOut.println("Md5    Hex=" + md5Sum);
+        SystemOut.println("Sha1   Hex=" + sha1Sum);
+        SystemOut.println("Sha256 Hex=" + sha256Sum);
 
         Assertions.assertEquals(MdHelp.LEN_MD5_HEX, md5Sum.length());
         Assertions.assertEquals(MdHelp.LEN_SHA1_HEX, sha1Sum.length());
@@ -47,9 +48,9 @@ class MdHelpTest {
         Assertions.assertTrue(MdHelp.checks(sha256Sum, mes));
 
         final byte[] bytes = mes.getBytes();
-        System.out.println("Md5    B64=" + Base64.encode(MdHelp.md5.digest(bytes)));
-        System.out.println("Sha1   B64=" + Base64.encode(MdHelp.sha1.digest(bytes)));
-        System.out.println("Sha256 B64=" + Base64.encode(MdHelp.sha256.digest(bytes)));
+        SystemOut.println("Md5    B64=" + Base64.encode(MdHelp.md5.digest(bytes)));
+        SystemOut.println("Sha1   B64=" + Base64.encode(MdHelp.sha1.digest(bytes)));
+        SystemOut.println("Sha256 B64=" + Base64.encode(MdHelp.sha256.digest(bytes)));
     }
 
     @Test

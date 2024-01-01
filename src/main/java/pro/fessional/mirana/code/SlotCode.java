@@ -118,18 +118,4 @@ public class SlotCode {
             return -1;
         }
     }
-
-    public static void main(String[] args) {
-        System.out.println(full);
-        System.out.println("--:" + Integer.toBinaryString(full));
-        System.out.println("===========");
-        for (int i = 0; i < mask.length; i++) {
-            System.out.println(String.format("%02d:%32s", i + 1, Integer.toBinaryString(mask[i])).replace(' ', '0'));
-        }
-        System.out.println("===========");
-        for (int i = 1; i <= 36; i++) {
-            SlotCode sc = new SlotCode(i);
-            System.out.println(String.format("%02d:%32s", i, Integer.toBinaryString(sc.last)).replace(' ', '0'));
-        }
-    }
 }

@@ -2,6 +2,7 @@ package pro.fessional.mirana.math;
 
 
 import org.junit.jupiter.api.Test;
+import pro.fessional.mirana.SystemOut;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -15,7 +16,7 @@ public class RatioNumberTest {
         RatioNumber a1 = RatioNumber.number(10, 1);
         // Sold 13 orders
         RatioNumber is1 = a1.sub(13, r1, RatioNumber.Grade.Isolated);
-        System.out.println(is1);
+        SystemOut.println(is1);
         assertEquals(RatioNumber.number(10, -12), is1);
         assertEquals(RatioNumber.number(7, 3), is1.grade(r1));
     }
@@ -28,10 +29,10 @@ public class RatioNumberTest {
         RatioNumber a1 = RatioNumber.number(2, 900);
         // Sold 10 orders
         RatioNumber ps1 = a1.sub(30 * 10, r1, RatioNumber.Grade.Positive);
-        System.out.println(ps1);
+        SystemOut.println(ps1);
         // Sold 40 orders
         RatioNumber is1 = a1.sub(30 * 40, r1, RatioNumber.Grade.Isolated);
-        System.out.println(is1);
+        SystemOut.println(is1);
 
         assertEquals(RatioNumber.number(2, 600), ps1);
         assertEquals(RatioNumber.number(2, -300), is1);
@@ -50,8 +51,8 @@ public class RatioNumberTest {
         // Sold 100 orders
         RatioNumber is1 = a1.sub(10 * 100, r1, RatioNumber.Grade.Isolated);
         RatioNumber ps1 = a1.sub(10 * 100, r1, RatioNumber.Grade.Positive);
-        System.out.println(is1);
-        System.out.println(ps1);
+        SystemOut.println(is1);
+        SystemOut.println(ps1);
 
         assertEquals(RatioNumber.number(2, -100), is1);
         assertEquals(RatioNumber.number(1, 400), ps1);
@@ -68,7 +69,7 @@ public class RatioNumberTest {
         RatioNumber a1 = RatioNumber.number(10, 1);
         RatioNumber ps1 = a1.sub(1, r1, RatioNumber.Grade.Positive);
         RatioNumber ps2 = a1.sub(2, r1, RatioNumber.Grade.Positive);
-        System.out.println(ps1);
+        SystemOut.println(ps1);
         assertEquals(RatioNumber.number(10, 0).grade(r1), ps1);
         assertEquals(RatioNumber.number(8, 3), ps1);
         assertEquals(RatioNumber.number(8, 2), ps2);

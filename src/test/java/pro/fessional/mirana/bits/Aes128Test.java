@@ -1,6 +1,7 @@
 package pro.fessional.mirana.bits;
 
 import org.junit.jupiter.api.Test;
+import pro.fessional.mirana.SystemOut;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -16,7 +17,7 @@ class Aes128Test {
         String key = "420105198908100418";
         Aes128 aes128 = new Aes128(key);
         final String en = aes128.encode16(json);
-        System.out.println("Aes128.encode16=" + en);
+        SystemOut.println("Aes128.encode16=" + en);
         aes128 = new Aes128(key);
         final String de = aes128.decode16(en);
         assertEquals(de, json);
@@ -28,7 +29,7 @@ class Aes128Test {
         String key = "420105198908100418";
         Aes128 aes128 = new Aes128(key);
         final String en = aes128.encode64(json);
-        System.out.println("Aes128.encode64=" + en);
+        SystemOut.println("Aes128.encode64=" + en);
         aes128 = new Aes128(key);
         final String de = aes128.decode64(en);
         assertEquals(de, json);
@@ -40,7 +41,7 @@ class Aes128Test {
         String key = "420105198908100418";
         Aes128 aes128 = new Aes128(key);
         final String en = aes128.encode64(json);
-        System.out.println("Aes128.empty=" + en);
+        SystemOut.println("Aes128.empty=" + en);
         aes128 = new Aes128(key);
         final String de = aes128.decode64(en);
         assertEquals(de, json);

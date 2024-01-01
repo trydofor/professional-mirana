@@ -1,6 +1,7 @@
 package pro.fessional.mirana.pain;
 
 import org.junit.jupiter.api.Test;
+import pro.fessional.mirana.SystemOut;
 import pro.fessional.mirana.data.Null;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -24,9 +25,9 @@ class CodeExceptionTest {
 
         assertTrue(hoc.getStackTrace().length > 0);
 
-        noc.printStackTrace();
-        System.out.println("======");
-        hoc.printStackTrace();
+        SystemOut.printStackTrace(noc);
+        SystemOut.println("======");
+        SystemOut.printStackTrace(hoc);
     }
 
     @Test

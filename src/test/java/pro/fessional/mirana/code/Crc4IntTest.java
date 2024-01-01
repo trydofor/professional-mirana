@@ -1,7 +1,9 @@
 package pro.fessional.mirana.code;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import pro.fessional.mirana.SystemOut;
 
 import static pro.fessional.mirana.code.Crc4Int.MAX_SEQ;
 import static pro.fessional.mirana.code.Crc4Int.MIN_SEQ;
@@ -20,10 +22,9 @@ class Crc4IntTest {
             int num = encode(i);
             int seq = decode(num);
             if (i != seq) {
-                System.err.println(i + ":" + seq + ":" + num);
-                return;
+                Assertions.fail(i + ":" + seq + ":" + num);
             }
-            if (i < 10000) System.out.printf("%04d\t%06d\n", i, num);
+            if (i < 10000) SystemOut.printf("%04d\t%06d\n", i, num);
         }
     }
 
@@ -57,6 +58,6 @@ class Crc4IntTest {
                 m = l;
             }
         }
-        System.out.printf("%d=%d\n", b, m);
+        SystemOut.printf("%d=%d\n", b, m);
     }
 }

@@ -1,6 +1,7 @@
 package pro.fessional.mirana.text;
 
 import org.junit.jupiter.api.Test;
+import pro.fessional.mirana.SystemOut;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -14,12 +15,12 @@ public class FormatUtilTest {
     @Test
     public void count() {
         FormatUtil.V all = (fmt, idx, str, sub) -> {
-            System.out.printf("%d,%d,%s\n", idx, sub, str);
+            SystemOut.printf("%d,%d,%s\n", idx, sub, str);
             return true;
         };
 
         String ptn = "%s-%s-%s%%%%";
-        System.out.println(ptn);
+        SystemOut.println(ptn);
         int[] r1 = FormatUtil.count(all, ptn, "%", "%%", "%%%", "%%%%");
         assertEquals(7, r1[0]);
         assertEquals(2, r1[1]);
@@ -27,7 +28,7 @@ public class FormatUtilTest {
         assertEquals(1, r1[3]);
 
         FormatUtil.V fst = (fmt, idx, str, sub) -> {
-            System.out.printf("%d,%d,%s\n", idx, sub, str);
+            SystemOut.printf("%d,%d,%s\n", idx, sub, str);
             return false;
         };
 

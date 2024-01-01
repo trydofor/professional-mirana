@@ -1,6 +1,7 @@
 package pro.fessional.mirana.math;
 
 import org.junit.jupiter.api.Test;
+import pro.fessional.mirana.SystemOut;
 
 import java.math.BigDecimal;
 
@@ -18,30 +19,30 @@ class AverageDecimalTest {
 
         for (int j = 1; j < 10; j++) {
             AverageDecimal avg = AverageDecimal.of(number, j);
-            System.out.println(avg);
-            System.out.print("\t[");
+            SystemOut.println(avg);
+            SystemOut.print("\t[");
             BigDecimal sum = BigDecimal.ZERO;
             for (int i = 0; i < avg.size(); i++) {
                 BigDecimal v = avg.get(i);
                 sum = sum.add(v);
-                System.out.print(v);
-                System.out.print(" + ");
+                SystemOut.print(v);
+                SystemOut.print(" + ");
             }
-            System.out.println("] = " + sum + " :" + (sum.compareTo(number) == 0));
+            SystemOut.println("] = " + sum + " :" + (sum.compareTo(number) == 0));
             assertEquals(0, sum.compareTo(number));
         }
 
         for (int j = 1; j < 10; j++) {
             AverageDecimal avg = AverageDecimal.of(number, j, 0);
-            System.out.println(avg);
-            System.out.print("\t[");
+            SystemOut.println(avg);
+            SystemOut.print("\t[");
             BigDecimal sum = BigDecimal.ZERO;
             for (BigDecimal v : avg) {
                 sum = sum.add(v);
-                System.out.print(v);
-                System.out.print(" + ");
+                SystemOut.print(v);
+                SystemOut.print(" + ");
             }
-            System.out.println("] = " + sum + " :" + (sum.compareTo(number) == 0));
+            SystemOut.println("] = " + sum + " :" + (sum.compareTo(number) == 0));
             assertEquals(0, sum.compareTo(number));
         }
 

@@ -1,6 +1,7 @@
 package pro.fessional.mirana.time;
 
 import org.junit.jupiter.api.Test;
+import pro.fessional.mirana.SystemOut;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,28 +23,28 @@ public class DateFormatterTest {
 
     @Test
     public void printDateTime() {
-        System.out.println("------");
-        System.out.println(DateFormatter.fixFull19("2017-04-26"));
-        System.out.println(DateFormatter.fixFull19("2017-04-26 12"));
-        System.out.println(DateFormatter.fixFull19("2017-04-26 12:34"));
-        System.out.println(DateFormatter.fixFull19("2017-04-26 12:34:56"));
-        System.out.println(DateFormatter.fixFull19("2017-04-26 1"));
-        System.out.println(DateFormatter.fixFull19("2017-04-26 12:3"));
-        System.out.println(DateFormatter.fixFull19("2017-04-26 12:34:5"));
+        SystemOut.println("------");
+        SystemOut.println(DateFormatter.fixFull19("2017-04-26"));
+        SystemOut.println(DateFormatter.fixFull19("2017-04-26 12"));
+        SystemOut.println(DateFormatter.fixFull19("2017-04-26 12:34"));
+        SystemOut.println(DateFormatter.fixFull19("2017-04-26 12:34:56"));
+        SystemOut.println(DateFormatter.fixFull19("2017-04-26 1"));
+        SystemOut.println(DateFormatter.fixFull19("2017-04-26 12:3"));
+        SystemOut.println(DateFormatter.fixFull19("2017-04-26 12:34:5"));
     }
 
     @Test
     public void printFull23() {
-        System.out.println("------");
+        SystemOut.println("------");
 
         Date d = new Date();
 
-        System.out.println(DateFormatter.full23().format(d));
-        System.out.println(DateFormatter.full23(d));
+        SystemOut.println(DateFormatter.full23().format(d));
+        SystemOut.println(DateFormatter.full23(d));
 
         LocalDateTime n = LocalDateTime.now();
-        System.out.println(DateFormatter.FMT_FULL_23.format(n));
-        System.out.println(DateFormatter.full23(n));
+        SystemOut.println(DateFormatter.FMT_FULL_23.format(n));
+        SystemOut.println(DateFormatter.full23(n));
     }
 
     /**
@@ -60,14 +61,14 @@ public class DateFormatterTest {
         // 2021-05-06 20:28:26.883 +0800 Asia/Shanghai
         DateTimeFormatter d2 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS ZZ VV");
         final ZonedDateTime now = ZonedDateTime.now();
-        System.out.println(now.format(d1));
-        System.out.println(now.format(d2));
+        SystemOut.println(now.format(d1));
+        SystemOut.println(now.format(d2));
 
         for (String zid : ZoneId.getAvailableZoneIds()) {
-            System.out.println(zid);
+            SystemOut.println(zid);
         }
-        System.out.println(DateFormatter.fullTz(now));
-        System.out.println(DateFormatter.fullTz(now.toOffsetDateTime()));
+        SystemOut.println(DateFormatter.fullTz(now));
+        SystemOut.println(DateFormatter.fullTz(now.toOffsetDateTime()));
     }
 
     @Test

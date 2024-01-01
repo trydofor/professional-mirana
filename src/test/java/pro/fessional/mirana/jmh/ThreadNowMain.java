@@ -14,6 +14,7 @@ import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
+import pro.fessional.mirana.SystemOut;
 import pro.fessional.mirana.time.ThreadNow;
 
 import java.time.Clock;
@@ -75,7 +76,7 @@ public class ThreadNowMain {
             new Runner(opt).run();
         }
         catch (RunnerException e) {
-            e.printStackTrace();
+            SystemOut.printStackTrace(e);
         }
     }
 }

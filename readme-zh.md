@@ -2,7 +2,7 @@
 
 ![Maven Central](https://img.shields.io/maven-central/v/pro.fessional/mirana?color=00DD00)
 ![Sonatype Snapshots](https://img.shields.io/nexus/s/pro.fessional/mirana?server=https%3A%2F%2Foss.sonatype.org)
-[![Coverage Status](https://coveralls.io/repos/github/trydofor/pro.fessional.mirana/badge.svg)](https://coveralls.io/github/trydofor/pro.fessional.mirana)
+[![Coverage Status](https://coveralls.io/repos/github/trydofor/professional-mirana/badge.svg)](https://coveralls.io/github/trydofor/professional-mirana)
 
 > 中文 🇨🇳 | [English 🇺🇸](readme.md)
 

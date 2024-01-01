@@ -1,6 +1,7 @@
 package pro.fessional.mirana.time;
 
 import org.junit.jupiter.api.Test;
+import pro.fessional.mirana.SystemOut;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -161,14 +162,14 @@ public class DateParserTest {
 
         List<DateParser.QuietPos> ta = DateParser.parseTemporal(dtf, "Jan/2/2021 3:4:5", false);
         for (DateParser.QuietPos qp : ta) {
-            System.out.println("====");
-            System.out.println("formatter=" + qp.getFormatter().toString());
-            System.out.println("error index=" + qp.getErrorIndexReal());
-            System.out.println("index=" + qp.getIndex());
-            System.out.println("Temporal=" + qp.getTemporal());
+            SystemOut.println("====");
+            SystemOut.println("formatter=" + qp.getFormatter().toString());
+            SystemOut.println("error index=" + qp.getErrorIndexReal());
+            SystemOut.println("index=" + qp.getIndex());
+            SystemOut.println("Temporal=" + qp.getTemporal());
             final RuntimeException ex = qp.getException();
             if (ex != null) {
-                ex.printStackTrace();
+                SystemOut.printStackTrace(ex);
             }
         }
     }

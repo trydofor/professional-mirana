@@ -1,6 +1,7 @@
 package pro.fessional.mirana.text;
 
 import org.junit.jupiter.api.Test;
+import pro.fessional.mirana.SystemOut;
 
 import java.util.concurrent.CountDownLatch;
 
@@ -97,7 +98,7 @@ public class StringTemplateTest {
                     mainl.countDown();
                 }
                 catch (InterruptedException e) {
-                    e.printStackTrace();
+                    SystemOut.printStackTrace(e);
                 }
                 for (int j = 0; j < stp; j++) {
                     String token = "token_" + (t * stp + j);
@@ -110,7 +111,7 @@ public class StringTemplateTest {
                                               .bindStr("OPENID", token)
                                               .toString();
                     assertEquals(t1, t2);
-                    if (j % 1000 == 5) System.out.print('.');
+                    if (j % 1000 == 5) SystemOut.print('.');
                 }
             }).start();
         }

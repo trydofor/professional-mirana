@@ -1,6 +1,7 @@
 package pro.fessional.mirana.bits;
 
 import org.junit.jupiter.api.Test;
+import pro.fessional.mirana.SystemOut;
 import pro.fessional.mirana.code.RandCode;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -20,7 +21,7 @@ class BytesTest {
             String s2 = new String(b2);
             assertEquals(s1, s2);
             final String h3 = h1.replaceAll("(\\d)", "$1 ");
-            System.out.println(h3);
+            SystemOut.println(h3);
             String s3 = new String(Bytes.hex(h3));
             assertEquals(s1, s3);
         }
@@ -34,7 +35,7 @@ class BytesTest {
         String s2 = new String(b2);
         assertEquals(s1, s2);
         final String h3 = h1.replaceAll("(\\d)", "$1 ");
-        System.out.println(h3);
+        SystemOut.println(h3);
         String s3 = new String(Bytes.hex(h3));
         assertEquals(s1, s3);
     }
@@ -42,7 +43,7 @@ class BytesTest {
     @Test
     void print() {
         final byte[] bytes = RandCode.human(20).getBytes();
-        System.out.println(Bytes.hex(bytes, true));
-        System.out.println(Bytes.hex(bytes, false));
+        SystemOut.println(Bytes.hex(bytes, true));
+        SystemOut.println(Bytes.hex(bytes, false));
     }
 }

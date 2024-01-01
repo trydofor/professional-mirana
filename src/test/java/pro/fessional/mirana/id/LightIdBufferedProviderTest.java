@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import pro.fessional.mirana.SystemOut;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -47,7 +48,7 @@ public class LightIdBufferedProviderTest {
         public LightIdProvider.Segment require(@NotNull String name, int block, int count, boolean exact) {
             if (name.equals("404") && s404.get()) throw new NoSuchElementException("404");
             if (name.equals("403")) {
-                System.out.println(Thread.currentThread().getName() + ">>>>403");
+                SystemOut.println(Thread.currentThread().getName() + ">>>>403");
                 throw new IllegalStateException("403");
             }
 
@@ -57,7 +58,7 @@ public class LightIdBufferedProviderTest {
                     Thread.sleep(s);
                 }
                 catch (InterruptedException e) {
-                    e.printStackTrace();
+                    SystemOut.printStackTrace(e);
                 }
             }
 
@@ -107,8 +108,8 @@ public class LightIdBufferedProviderTest {
             }
         }
         for (Exception key : err.keySet()) {
-            System.out.println("============ print for 403 ===================");
-            key.printStackTrace();
+            SystemOut.println("============ print for 403 ===================");
+            SystemOut.printStackTrace(key);
         }
     }
 
@@ -134,7 +135,7 @@ public class LightIdBufferedProviderTest {
             assertTrue(e instanceof NoSuchElementException);
         }
         finally {
-            System.out.println("direct 404 cost = " + (System.currentTimeMillis() - s2));
+            SystemOut.println("direct 404 cost = " + (System.currentTimeMillis() - s2));
         }
 
         long s3 = System.currentTimeMillis();
@@ -146,7 +147,7 @@ public class LightIdBufferedProviderTest {
             assertTrue(e instanceof NoSuchElementException);
         }
         finally {
-            System.out.println("buffered-1 404 cost = " + (System.currentTimeMillis() - s3));
+            SystemOut.println("buffered-1 404 cost = " + (System.currentTimeMillis() - s3));
         }
 
         long s4 = System.currentTimeMillis();
@@ -157,7 +158,7 @@ public class LightIdBufferedProviderTest {
             assertTrue(e instanceof NoSuchElementException);
         }
         finally {
-            System.out.println("buffered-2 404 cost = " + (System.currentTimeMillis() - s4));
+            SystemOut.println("buffered-2 404 cost = " + (System.currentTimeMillis() - s4));
         }
 
         long s5 = System.currentTimeMillis();
@@ -167,10 +168,10 @@ public class LightIdBufferedProviderTest {
             long next = bufferedProvider.next("404", 0, 10_000_000);
         }
         catch (Exception e) {
-            e.printStackTrace();
+            SystemOut.printStackTrace(e);
         }
         finally {
-            System.out.println("buffered-3 404 cost = " + (System.currentTimeMillis() - s5));
+            SystemOut.println("buffered-3 404 cost = " + (System.currentTimeMillis() - s5));
         }
     }
 
@@ -183,7 +184,7 @@ public class LightIdBufferedProviderTest {
             // single thread
             int capacity = 500_0000;
             int threads = 1;
-            System.out.printf("\n[capacity=%9d, threads=%3d] speed(ms)", capacity, threads);
+            SystemOut.printf("\n[capacity=%9d, threads=%3d] speed(ms)", capacity, threads);
 
             run(true, directProvider(), capacity, threads);
             run(true, bufferedProvider(), capacity, threads);
@@ -193,7 +194,7 @@ public class LightIdBufferedProviderTest {
             // multiple thread
             int capacity = 10_0000;
             int threads = 500;
-            System.out.printf("\n[capacity=%9d, threads=%3d] speed(ms)", capacity, threads);
+            SystemOut.printf("\n[capacity=%9d, threads=%3d] speed(ms)", capacity, threads);
 
             run(true, directProvider(), capacity, threads);
             run(true, bufferedProvider(), capacity, threads);
@@ -229,7 +230,7 @@ public class LightIdBufferedProviderTest {
             int step = ((i + 1) % 100) * 500;
             bufferedProvider.setMaxCount(step);
             stampedProvider.setMaxCount(step);
-            System.out.printf("\n[%3d, sleep=%2d, step=%6d] speed(ms)", i, s, step);
+            SystemOut.printf("\n[%3d, sleep=%2d, step=%6d] speed(ms)", i, s, step);
 
             run(false, directProvider, capacity, threads);
             run(false, bufferedProvider, capacity, threads);
@@ -272,7 +273,7 @@ public class LightIdBufferedProviderTest {
                                     throw e;
                                 }
                                 else {
-                                    System.err.println(this.getName() + " error=" + e.getMessage());
+                                    SystemOut.println(this.getName() + " error=" + e.getMessage());
                                     continue;
                                 }
                             }
@@ -288,7 +289,7 @@ public class LightIdBufferedProviderTest {
                         }
                     }
                     catch (Exception e) {
-                        e.printStackTrace();
+                        SystemOut.printStackTrace(e);
                         System.exit(-1);
                     }
                     finally {
@@ -300,7 +301,7 @@ public class LightIdBufferedProviderTest {
         }
         try {
             latchStop.await();
-            System.out.printf(", %s=%5d", pname, (capacity / (System.currentTimeMillis() - s0)));
+            SystemOut.printf(", %s=%5d", pname, (capacity / (System.currentTimeMillis() - s0)));
             //
             if (check) {
                 Map<String, Long> map = new HashMap<>();
@@ -316,7 +317,7 @@ public class LightIdBufferedProviderTest {
                     if (threads == 1) {
                         long seq = LightIdUtil.sequenceLong(id);
                         if (old + 1 != seq) {
-                            System.err.println("lost seq, old-seq=" + old + ", cur-seq=" + seq);
+                            SystemOut.println("lost seq, old-seq=" + old + ", cur-seq=" + seq);
                         }
                         old = seq;
                     }
@@ -328,7 +329,7 @@ public class LightIdBufferedProviderTest {
             }
         }
         catch (InterruptedException e) {
-            e.printStackTrace();
+            SystemOut.printStackTrace(e);
         }
     }
 }

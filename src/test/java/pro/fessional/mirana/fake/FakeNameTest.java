@@ -1,6 +1,7 @@
 package pro.fessional.mirana.fake;
 
 import org.junit.jupiter.api.Test;
+import pro.fessional.mirana.SystemOut;
 
 /**
  * @author trydofor
@@ -11,15 +12,15 @@ class FakeNameTest {
     @Test
     void chinese() {
         for (int i = 0; i < 10; i++) {
-            System.out.println(FakeName.chinese());
+            SystemOut.println(FakeName.chinese());
         }
-        System.out.println("=== 2 ===");
+        SystemOut.println("=== 2 ===");
         for (int i = 0; i < 10; i++) {
-            System.out.println(FakeName.chinese(2));
+            SystemOut.println(FakeName.chinese(2));
         }
-        System.out.println("=== 3 ===");
+        SystemOut.println("=== 3 ===");
         for (int i = 0; i < 10; i++) {
-            System.out.println(FakeName.chinese(3));
+            SystemOut.println(FakeName.chinese(3));
         }
     }
 

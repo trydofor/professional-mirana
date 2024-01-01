@@ -1,6 +1,7 @@
 package pro.fessional.mirana.id;
 
 import org.junit.jupiter.api.Test;
+import pro.fessional.mirana.SystemOut;
 
 import java.util.Random;
 
@@ -84,10 +85,10 @@ public class LightIdTest {
                     long wdi = wid.toLong();
                     LightId wid1 = LightIdUtil.toLightId(wdi);
                     assertEquals(wid, wid1);
-                    System.out.println(Long.toBinaryString(wdi) + "\t" +f + ":" + b + "|" + wdi + "\t" + wid1);
+                    SystemOut.println(Long.toBinaryString(wdi) + "\t" + f + ":" + b + "|" + wdi + "\t" + wid1);
                 }
             }
-            System.out.println("=========");
+            SystemOut.println("=========");
             for (int f = 0; f < 2; f++) {
                 LightIdUtil.forceBlockFirst(f == 0);
                 for (int b = 3; b < 23; b++) {
@@ -101,7 +102,7 @@ public class LightIdTest {
                         LightId wid1 = LightIdUtil.toLightId(wdi);
                         assertEquals(wid, wid1);
                         if (i == 1) {
-                            System.out.println(Long.toBinaryString(wdi) + "\t" + f + ":" + b + "|" + wdi + "\t" + wid1);
+                            SystemOut.println(Long.toBinaryString(wdi) + "\t" + f + ":" + b + "|" + wdi + "\t" + wid1);
                         }
 
                         int max = (int) Math.pow(2, b);

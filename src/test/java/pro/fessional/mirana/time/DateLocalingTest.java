@@ -1,6 +1,7 @@
 package pro.fessional.mirana.time;
 
 import org.junit.jupiter.api.Test;
+import pro.fessional.mirana.SystemOut;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -28,21 +29,21 @@ public class DateLocalingTest {
 
     @Test
     public void testPrint() {
-        System.out.println(ln);
-        System.out.println(DateLocaling.useLdt(ln, cn));
-        System.out.println(DateLocaling.local(jp, ln, cn));
-        System.out.println(DateLocaling.local(zn, cn));
-        System.out.println(dateTime(cn));
-        System.out.println(dateTime(jp));
-        System.out.println("thisMonday=" + monday(jp));
-        System.out.println("thisSunday=" + sunday(jp));
-        System.out.println("thisMonth=" + month(jp));
-        System.out.println("today=" + today(jp));
+        SystemOut.println(ln);
+        SystemOut.println(DateLocaling.useLdt(ln, cn));
+        SystemOut.println(DateLocaling.local(jp, ln, cn));
+        SystemOut.println(DateLocaling.local(zn, cn));
+        SystemOut.println(dateTime(cn));
+        SystemOut.println(dateTime(jp));
+        SystemOut.println("thisMonday=" + monday(jp));
+        SystemOut.println("thisSunday=" + sunday(jp));
+        SystemOut.println("thisMonth=" + month(jp));
+        SystemOut.println("today=" + today(jp));
         //
-        System.out.println("2020-01-31@2=" + LocalDate.of(2020, 1, 31).withMonth(2));
-        System.out.println("2020-01-31+1M=" + LocalDate.of(2020, 1, 31).plusMonths(1));
+        SystemOut.println("2020-01-31@2=" + LocalDate.of(2020, 1, 31).withMonth(2));
+        SystemOut.println("2020-01-31+1M=" + LocalDate.of(2020, 1, 31).plusMonths(1));
 
-        System.out.printf("%,.2f%%", 300000.14159);
+        SystemOut.printf("%,.2f%%", 300000.14159);
     }
 
     @Test

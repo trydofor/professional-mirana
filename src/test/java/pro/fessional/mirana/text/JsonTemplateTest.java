@@ -61,7 +61,8 @@ class JsonTemplateTest {
                         .putVal("isAtAll", false))
                 .putObj("text", ob -> ob
                         .putVal("content", "Look how the prey scatters before us."))
-                .putVal("msgtype", "text"));
+                .putVal("msgtype", "text"))
+                .replaceAll("[ \n]+", "");
         Assertions.assertEquals(r1, j1);
 
         final String f1 = new JSONObject()
@@ -72,7 +73,8 @@ class JsonTemplateTest {
                 .fluentPut("text", new JSONObject()
                         .fluentPut("content", "Look how the prey scatters before us."))
                 .fluentPut("msgtype", "text")
-                .toString();
+                .toString()
+                .replaceAll("[ \n]+", "");
         Assertions.assertEquals(r1, f1);
 
 

@@ -1,5 +1,6 @@
 package pro.fessional.mirana.stat;
 
+import pro.fessional.mirana.best.Param;
 import pro.fessional.mirana.cast.StringCastUtil;
 import pro.fessional.mirana.data.Null;
 import pro.fessional.mirana.io.Exec;
@@ -7,6 +8,7 @@ import pro.fessional.mirana.io.Exec;
 import javax.sql.DataSource;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -337,16 +339,22 @@ public class GitStat {
     public static final String STAT_DATE = "dd";
     public static final String STAT_HOUR = "HH";
 
+
+    public static void stat(List<S> infos, String pattern, Map<String, String> alias, boolean han2) {
+        stat(new PrintWriter(System.out), infos, pattern, alias, han2);
+    }
+
     /**
      * Statistics by time and author, including number of commits, number of files committed, number of lines added, number of lines deleted.
      * Try not to use Chinese names, there are console character alignment issues.
      *
+     * @param out     PrintWriter to write to
      * @param infos   information
      * @param pattern date format
      * @param alias   alias:author, alias is case-insensitive.
      * @param han2    whether a Chinese char equal to 2 English char
      */
-    public static void stat(List<S> infos, String pattern, Map<String, String> alias, boolean han2) {
+    public static void stat(@Param.Out PrintWriter out, List<S> infos, String pattern, Map<String, String> alias, boolean han2) {
         if (infos == null || pattern == null) return;
         if (alias == null) {
             alias = Collections.emptyMap();
@@ -400,8 +408,8 @@ public class GitStat {
 
         // title
         String bar = " | ";
-        System.out.printf("Authors=%d, (C)ommits=%d, (F)iles-commit=%d, (A)dd-lines=%d, (D)el-lines=%d\n", authors.size(), total.commits.size(), total.cofiles.size(), total.linenumAdd, total.linenumDel);
-        System.out.print(pattern);
+        out.printf("Authors=%d, (C)ommits=%d, (F)iles-commit=%d, (A)dd-lines=%d, (D)el-lines=%d\n", authors.size(), total.commits.size(), total.cofiles.size(), total.linenumAdd, total.linenumDel);
+        out.print(pattern);
         for (Map.Entry<String, int[]> e : authors.entrySet()) {
             String name = e.getKey();
             int[] mx = e.getValue();
@@ -439,9 +447,9 @@ public class GitStat {
                 if (pad <= 0) pad = 1;
             }
 
-            System.out.printf("%s%-" + pad + "s", bar, name);
+            out.printf("%s%-" + pad + "s", bar, name);
         }
-        System.out.print("\n");
+        out.print("\n");
 
         // rows
         StringBuilder row0 = new StringBuilder();
@@ -473,10 +481,10 @@ public class GitStat {
                 }
             }
             if (row0 != null) {
-                System.out.println(row0);
+                out.println(row0);
                 row0 = null;
             }
-            System.out.println(rowN);
+            out.println(rowN);
             rowN.setLength(0);
         }
     }

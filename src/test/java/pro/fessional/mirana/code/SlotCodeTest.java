@@ -2,6 +2,7 @@ package pro.fessional.mirana.code;
 
 
 import org.junit.jupiter.api.Test;
+import pro.fessional.mirana.SystemOut;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,7 +22,7 @@ public class SlotCodeTest {
         int size = 99;
         SlotCode sc = new SlotCode(size);
         for (int i = 0; i < size; i++) {
-            System.out.printf("%02d:%02d\n", i + 1, sc.next());
+            SystemOut.printf("%02d:%02d\n", i + 1, sc.next());
         }
     }
 
@@ -39,7 +40,7 @@ public class SlotCodeTest {
             }
         }
 
-        System.out.println("cost=" + (System.currentTimeMillis() - sms));
+        SystemOut.println("cost=" + (System.currentTimeMillis() - sms));
         int cur = 0;
         int cnt = 0;
         for (Map.Entry<Integer, AtomicInteger> entry : count.entrySet()) {
@@ -47,7 +48,7 @@ public class SlotCodeTest {
             cnt += i;
             if (i != ts) {
                 if (cur++ < 100) {
-                    System.err.println(entry.getKey() + "=" + i);
+                    SystemOut.println(entry.getKey() + "=" + i);
                 }
             }
         }
@@ -70,7 +71,7 @@ public class SlotCodeTest {
                     start.await();
                 }
                 catch (InterruptedException e) {
-                    e.printStackTrace();
+                    SystemOut.printStackTrace(e);
                 }
                 for (int j = 0; j < size; j++) {
                     Integer next = sc.next();
@@ -81,7 +82,7 @@ public class SlotCodeTest {
         }
         start.countDown();
         done.await();
-        System.out.println("cost=" + (System.currentTimeMillis() - sms));
+        SystemOut.println("cost=" + (System.currentTimeMillis() - sms));
         int cur = 0;
         int cnt = 0;
         for (Map.Entry<Integer, AtomicInteger> entry : count.entrySet()) {
@@ -89,7 +90,7 @@ public class SlotCodeTest {
             cnt += i;
             if (i != ts) {
                 if (cur++ < 100) {
-                    System.err.println(entry.getKey() + "=" + i);
+                    SystemOut.println(entry.getKey() + "=" + i);
                 }
             }
         }

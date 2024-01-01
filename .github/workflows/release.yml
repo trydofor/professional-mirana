@@ -50,16 +50,26 @@ jobs:
       - name: Env JAVA_HOME
         id: java-env
         run: echo "JAVA_HOME=$(asdf where java)" >> "$GITHUB_OUTPUT"
-      ## get revision if tag_name
+      ## get revision if release
       - name: Opt revision
         id: opt-revision
-        run: echo "OPT_REVISION=-Drevision=${{github.event.release.tag_name}}" >> "$GITHUB_OUTPUT"
         if: github.event.release.tag_name != ''
+        run: echo "OPT_REVISION=-Drevision=${{github.event.release.tag_name}}" >> "$GITHUB_OUTPUT"
       ## info deploy
       - name: Info Deploy
         run: |
           mvn -v ${{ steps.opt-revision.outputs.OPT_REVISION }}
           git log --pretty=format:'%H - %an, %ad %d : %s' --graph -10
+        env:
+          JAVA_HOME: ${{ steps.java-env.outputs.JAVA_HOME }}
+      ## ci report if not release
+      - name: Coveralls Report
+        if: github.event.release.tag_name == ''
+        run: >
+          mvn -P ci --quiet
+          -DrepoToken=${{ secrets.COVERALLS_REPO_TOKEN }}
+          -Dtest-verbose=false
+          clean test jacoco:report coveralls:report
         env:
           JAVA_HOME: ${{ steps.java-env.outputs.JAVA_HOME }}
       ## import gpp private key
@@ -75,7 +85,6 @@ jobs:
           -P ossrh
           ${{ steps.opt-revision.outputs.OPT_REVISION }}
           -Dgpg.passphrase=${MVN_GPG_PASS}
-          -Dgpg.skip=false
           -Dmaven.test.skip=true
           clean deploy
         env:

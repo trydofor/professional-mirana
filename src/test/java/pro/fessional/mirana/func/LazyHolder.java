@@ -1,6 +1,7 @@
 package pro.fessional.mirana.func;
 
 import org.jetbrains.annotations.NotNull;
+import pro.fessional.mirana.SystemOut;
 
 /**
  * @author trydofor
@@ -19,12 +20,12 @@ public class LazyHolder {
     }
 
     public static void coupleCat() {
-        System.out.println("cat: miao");
+        SystemOut.println("cat: miao");
     }
 
     public static class Dog {
         public Dog() {
-            System.out.println("dog: wang ");
+            SystemOut.println("dog: wang ");
         }
     }
 }

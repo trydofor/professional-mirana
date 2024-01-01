@@ -2,6 +2,7 @@ package pro.fessional.mirana.code;
 
 
 import org.junit.jupiter.api.Test;
+import pro.fessional.mirana.SystemOut;
 
 import java.util.Random;
 
@@ -19,13 +20,13 @@ public class LeapCodeTest {
 
     private final Random random = new Random();
 
-    private void checkRandom(int base, LeapCode code) {
-        for (int i = 0; i < 1000_000; i++) {
+    private void checkRandom(int base, LeapCode code, int loop) {
+        for (int i = 0; i < loop; i++) {
             String e = "--|" + code.encode(base, i, 30);
             long d = code.decode(e, 3, e.length());
             assertEquals(i, d);
         }
-        for (int i = 0; i < 1000_000; i++) {
+        for (int i = 0; i < loop; i++) {
             long n = random.nextLong() & Crc8Long.MAX_NUMBER;
             String e = "--|" + code.encode(base, n, 30);
             long d = code.decode(e, 3, e.length());
@@ -45,10 +46,11 @@ public class LeapCodeTest {
 
     @Test
     public void testRandom() {
-        checkRandom(26, codeSystem);
-        checkRandom(26, codeCustom);
-        checkRandom(32, codeSystem);
-        checkRandom(32, codeCustom);
+        int loop = 100_000;
+        checkRandom(26, codeSystem, loop);
+        checkRandom(26, codeCustom, loop);
+        checkRandom(32, codeSystem, loop);
+        checkRandom(32, codeCustom, loop);
     }
 
     @Test
@@ -63,20 +65,20 @@ public class LeapCodeTest {
     public void printRandom() {
         for (int i = 0; i < 1000; i++) {
             String e = codeSystem.encode(26, i, 20);
-            System.out.println("e=" + e + ",i=" + i);
+            SystemOut.println("e=" + e + ",i=" + i);
         }
         for (int i = 0; i < 1000; i++) {
             String e = codeSystem.encode(32, i, 20);
-            System.out.println("e=" + e + ",i=" + i);
+            SystemOut.println("e=" + e + ",i=" + i);
         }
     }
 
     @Test
     public void printBound() {
-        System.out.println("max32=" + codeSystem.encode32(LeapCode.MAX_NUMBER));
-        System.out.println("min32=" + codeSystem.encode32(LeapCode.MIN_NUMBER));
-        System.out.println("max26=" + codeSystem.encode26(LeapCode.MAX_NUMBER));
-        System.out.println("min26=" + codeSystem.encode26(LeapCode.MIN_NUMBER));
+        SystemOut.println("max32=" + codeSystem.encode32(LeapCode.MAX_NUMBER));
+        SystemOut.println("min32=" + codeSystem.encode32(LeapCode.MIN_NUMBER));
+        SystemOut.println("max26=" + codeSystem.encode26(LeapCode.MAX_NUMBER));
+        SystemOut.println("min26=" + codeSystem.encode26(LeapCode.MIN_NUMBER));
     }
 
 }

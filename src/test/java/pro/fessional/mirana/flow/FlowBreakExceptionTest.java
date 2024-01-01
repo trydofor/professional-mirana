@@ -2,6 +2,7 @@ package pro.fessional.mirana.flow;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import pro.fessional.mirana.SystemOut;
 import pro.fessional.mirana.pain.NoStackRuntimeException;
 
 /**
@@ -19,13 +20,13 @@ class FlowBreakExceptionTest {
 
     @Test
     void testPrint() {
-        new FlowBreakException(T.None).printStackTrace();
-        System.out.println("=====");
+        SystemOut.printStackTrace(new FlowBreakException(T.None));
+        SystemOut.println("=====");
         final NoStackRuntimeException nsr = new NoStackRuntimeException("test");
         nsr.getCause();
         nsr.getStackTrace();
         nsr.getSuppressed();
-        nsr.printStackTrace();
+        SystemOut.printStackTrace(nsr);
     }
 
     @Test
@@ -45,7 +46,7 @@ class FlowBreakExceptionTest {
             }
         }
         l = System.currentTimeMillis() - l;
-        System.out.println("RuntimeException took " + l + " ms");
+        SystemOut.println("RuntimeException took " + l + " ms");
 
 
         l = System.currentTimeMillis();
@@ -58,6 +59,6 @@ class FlowBreakExceptionTest {
             }
         }
         l = System.currentTimeMillis() - l;
-        System.out.println("FlowControlException took " + l + " ms");
+        SystemOut.println("FlowControlException took " + l + " ms");
     }
 }

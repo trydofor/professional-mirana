@@ -2,6 +2,7 @@ package pro.fessional.mirana.evil;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import pro.fessional.mirana.SystemOut;
 
 import java.util.concurrent.CountDownLatch;
 
@@ -24,7 +25,7 @@ class ThreadLocalProxyTest {
                     Assertions.assertNull(tlp.get());
                 }
                 catch (InterruptedException e) {
-                    e.printStackTrace();
+                    SystemOut.printStackTrace(e);
                 }
             }).start();
         }

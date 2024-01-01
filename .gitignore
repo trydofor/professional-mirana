@@ -1,3 +1,6 @@
+# wings
+.pom.xml
+
 # Compiled class file
 *.class
 target/

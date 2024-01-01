@@ -1,6 +1,7 @@
 package pro.fessional.mirana.time;
 
 import org.junit.jupiter.api.Test;
+import pro.fessional.mirana.SystemOut;
 
 /**
  * @author trydofor
@@ -22,7 +23,7 @@ class StopWatchTest {
                 tree1(0);
             }
             catch (InterruptedException e) {
-                e.printStackTrace();
+                SystemOut.printStackTrace(e);
             }
         }).start();
 
@@ -36,7 +37,7 @@ class StopWatchTest {
             Thread.sleep(500);
             watch.close();
         }
-        System.out.println(stopWatch);
+        SystemOut.println(stopWatch);
     }
 
     void tree1(int tm) throws InterruptedException {

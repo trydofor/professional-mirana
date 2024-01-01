@@ -1,5 +1,7 @@
 package pro.fessional.mirana.stat;
 
+import pro.fessional.mirana.SystemOut;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -11,7 +13,7 @@ class JvmStatTest {
     @SuppressWarnings("all")
     public static void main(String[] args) throws Exception {
         final int p = Runtime.getRuntime().availableProcessors();
-        System.out.println("Processors=" + p);
+        SystemOut.println("Processors=" + p);
         AtomicInteger count = new AtomicInteger(p);
         for (int i = 0; i < p; i++) {
             new Thread(() -> {
@@ -26,8 +28,8 @@ class JvmStatTest {
         while (count.get() > 0) {
             final JvmStat.Stat stat = JvmStat.stat();
             Runtime runtime = Runtime.getRuntime();
-            System.out.println(stat);
-            System.out.println("runtime total=" + runtime.totalMemory()
+            SystemOut.println(stat);
+            SystemOut.println("runtime total=" + runtime.totalMemory()
                                + ", free=" + runtime.freeMemory()
                                + ", max=" + runtime.maxMemory()
             );

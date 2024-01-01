@@ -1,6 +1,7 @@
 package pro.fessional.mirana.anti;
 
 import org.junit.jupiter.api.Test;
+import pro.fessional.mirana.SystemOut;
 
 /**
  * @author trydofor
@@ -14,6 +15,6 @@ class LTest {
         L.error("userid={}", 1);
         L.message("message");
         final String rs1 = L.finish();
-        System.out.println(rs1);
+        SystemOut.println(rs1);
     }
 }

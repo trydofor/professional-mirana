@@ -1,6 +1,7 @@
 package pro.fessional.mirana.pain;
 
 import org.junit.jupiter.api.Test;
+import pro.fessional.mirana.SystemOut;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -46,7 +47,7 @@ class ThrowableUtilTest {
         }
         catch (Exception e) {
             final String s = ThrowableUtil.toString(e);
-            System.out.println(s);
+            SystemOut.println(s);
         }
     }
 
@@ -139,37 +140,37 @@ class ThrowableUtilTest {
     @Test
     void print() {
         String e2str = ThrowableUtil.toString(e2);
-        System.out.println(e2str);
+        SystemOut.println(e2str);
 
         {
-            System.out.println("true, true, 5, 10");
+            SystemOut.println("true, true, 5, 10");
             StringBuilder sb = new StringBuilder();
             ThrowableUtil.print(sb, e2, true, true, 5, 10);
-            System.out.println(sb);
+            SystemOut.println(sb);
         }
         {
-            System.out.println("true, false, 5, 10");
+            SystemOut.println("true, false, 5, 10");
             StringBuilder sb = new StringBuilder();
             ThrowableUtil.print(sb, e2, true, false, 5, 10);
-            System.out.println(sb);
+            SystemOut.println(sb);
         }
         {
-            System.out.println("false, true, 5, 10");
+            SystemOut.println("false, true, 5, 10");
             StringBuilder sb = new StringBuilder();
             ThrowableUtil.print(sb, e2, false, true, 5, 10);
-            System.out.println(sb);
+            SystemOut.println(sb);
         }
         {
-            System.out.println("false, false, 5, 10");
+            SystemOut.println("false, false, 5, 10");
             StringBuilder sb = new StringBuilder();
             ThrowableUtil.print(sb, e2, false, false, 5, 10);
-            System.out.println(sb);
+            SystemOut.println(sb);
         }
         {
-            System.out.println("false, false, 5, 1");
+            SystemOut.println("false, false, 5, 1");
             StringBuilder sb = new StringBuilder();
             ThrowableUtil.print(sb, e2, false, false, 5, 1);
-            System.out.println(sb);
+            SystemOut.println(sb);
         }
     }
 }
