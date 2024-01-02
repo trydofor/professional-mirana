@@ -58,17 +58,21 @@ jobs:
       ## info deploy
       - name: Info Deploy
         run: |
-          mvn -v ${{ steps.opt-revision.outputs.OPT_REVISION }}
-          git log --pretty=format:'%H - %an, %ad %d : %s' --graph -10
+          mvn --quiet --non-recursive -DforceStdout -Dexpression=project.version ${{ steps.opt-revision.outputs.OPT_REVISION }} help:evaluate
+          echo
+          mvn -v
+          git --no-pager log --graph -10 --pretty=format:'%H - %an, %ad %d : %s'
         env:
           JAVA_HOME: ${{ steps.java-env.outputs.JAVA_HOME }}
       ## ci report if not release
       - name: Coveralls Report
         if: github.event.release.tag_name == ''
         run: >
-          mvn -P ci --quiet
+          mvn --quiet
+          -P ci
           -DrepoToken=${{ secrets.COVERALLS_REPO_TOKEN }}
           -Dtest-verbose=false
+          -Dmaven.test.skip=false
           clean test jacoco:report coveralls:report
         env:
           JAVA_HOME: ${{ steps.java-env.outputs.JAVA_HOME }}
