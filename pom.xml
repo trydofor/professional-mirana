@@ -263,7 +263,7 @@
     <profiles>
         <profile>
             <!-- -DrepoToken=${{ secrets.COVERALLS_REPO_TOKEN }} -->
-            <id>ci</id>
+            <id>test</id>
             <properties>
                 <maven.test.skip>false</maven.test.skip>
             </properties>
@@ -278,6 +278,21 @@
                         <groupId>org.jacoco</groupId>
                         <artifactId>jacoco-maven-plugin</artifactId>
                         <version>0.8.11</version>
+                        <configuration>
+                            <excludes>
+                                <exclude>**/best/**</exclude>
+                                <exclude>**/stat/**</exclude>
+                                <exclude>**/flow/**</exclude>
+                                <exclude>**/img/**</exclude>
+                                <exclude>**/data/Null*</exclude>
+                                <exclude>**/data/Q*</exclude>
+                                <exclude>**/data/R*</exclude>
+                                <exclude>**/data/U*</exclude>
+                                <exclude>**/*Assert.*</exclude>
+                                <exclude>**/*Exception.*</exclude>
+                                <exclude>**/WhoAmI.*</exclude>
+                            </excludes>
+                        </configuration>
                         <executions>
                             <execution>
                                 <id>prepare-agent</id>

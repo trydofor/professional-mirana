@@ -6,7 +6,7 @@ package pro.fessional.mirana;
  */
 public class SystemOut {
 
-    public static final String TestVerbose = "test-verbose";
+    public static final String TestVerbose = "TEST_VERBOSE";
     private static volatile Boolean NotTestVerbose = null;
 
     public static void printf(String format, Object... args) {
@@ -26,7 +26,7 @@ public class SystemOut {
 
     public static boolean notTestVerbose() {
         if (NotTestVerbose == null) {
-            NotTestVerbose = "false".equalsIgnoreCase(System.getProperty(TestVerbose));
+            NotTestVerbose = "false".equalsIgnoreCase(System.getenv(TestVerbose));
         }
         return NotTestVerbose;
     }
