@@ -3,6 +3,7 @@ package pro.fessional.mirana.cast;
 import org.junit.jupiter.api.Test;
 import pro.fessional.mirana.SystemOut;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
 /**
@@ -21,6 +22,13 @@ public class EnumConvertorTest {
         ONE
     }
 
+    @Test
+    public void instanceInvoke() {
+        EnumConvertor<Tx> ec = new EnumConvertor<>(Tx.class);
+        assertEquals(Tx.class, ec.targetType());
+        assertEquals("pro.fessional.mirana.cast.EnumConvertorTest$Tx#ONE", ec.toSource(Tx.ONE));
+        assertEquals(Tx.ONE, ec.toTarget("ONE"));
+    }
 
     @Test
     public void staticInvoke() {

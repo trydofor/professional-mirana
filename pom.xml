@@ -309,6 +309,7 @@
                                 <exclude>**/netx/SslVersion.*</exclude>
                                 <!-- exception only mark -->
                                 <exclude>**/*Exception.*</exclude>
+                                <exclude>**/*Enum.*</exclude>
                                 <!-- just for fun -->
                                 <exclude>**/WhoAmI.*</exclude>
                             </excludes>

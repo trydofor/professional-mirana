@@ -26,8 +26,9 @@ public class StringCastUtil {
     }
 
     /**
-     * parse case-insensitive `null`, `empty`, `blank` and `false,f,no,n` to false
-     * Note, no pass-through relationship with asTrue.
+     * parse case-insensitive `null`, `empty`, `blank` and `false,f,no,n` to false (BUT return true)
+     * NOTE1, no pass-through relationship with asTrue.
+     * NOTE2, return true if asFalse, e.g. "false".equalsIgnoreCase(str)
      */
     public static boolean asFalse(@Nullable String str) {
         if (str == null) return true;
