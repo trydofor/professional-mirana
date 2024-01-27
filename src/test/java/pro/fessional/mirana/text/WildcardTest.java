@@ -17,13 +17,13 @@ public class WildcardTest {
 
     @Test
     public void pattern() {
-        assertArrayEquals(Arr.of("*", ".doc"), Wildcard.compile("*.doc"));
-        assertArrayEquals(Arr.of("abc?.doc"), Wildcard.compile("abc?.doc"));
-        assertArrayEquals(Arr.of("*", ".doc"), Wildcard.compile("**.doc"));
-        assertArrayEquals(Arr.of("??", "*", ".doc"), Wildcard.compile("??*.doc"));
-        assertArrayEquals(Arr.of("?", "*", ".doc"), Wildcard.compile("**?**.doc"));
-        assertArrayEquals(Arr.of("?", "*"), Wildcard.compile("**?**"));
-        assertArrayEquals(Arr.of("?", "*", ".doc??", "*"), Wildcard.compile("**?**.doc??*"));
+        assertArrayEquals(Arr.obj("*", ".doc"), Wildcard.compile("*.doc"));
+        assertArrayEquals(Arr.obj("abc?.doc"), Wildcard.compile("abc?.doc"));
+        assertArrayEquals(Arr.obj("*", ".doc"), Wildcard.compile("**.doc"));
+        assertArrayEquals(Arr.obj("??", "*", ".doc"), Wildcard.compile("??*.doc"));
+        assertArrayEquals(Arr.obj("?", "*", ".doc"), Wildcard.compile("**?**.doc"));
+        assertArrayEquals(Arr.obj("?", "*"), Wildcard.compile("**?**"));
+        assertArrayEquals(Arr.obj("?", "*", ".doc??", "*"), Wildcard.compile("**?**.doc??*"));
     }
 
     @Test

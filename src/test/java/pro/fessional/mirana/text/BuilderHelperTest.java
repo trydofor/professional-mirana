@@ -41,7 +41,7 @@ public class BuilderHelperTest {
     @Test
     public void join() {
         StringBuilder sb = new StringBuilder();
-        Object[] arr = Arr.of(1, "2", 3L, null, '5');
+        Object[] arr = Arr.obj(1, "2", 3L, null, '5');
         BuilderHelper.join(sb, ",", arr);
         assertEquals("1,2,3,,5", sb.toString());
 

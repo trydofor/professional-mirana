@@ -112,10 +112,7 @@ public class Diff {
                 result.put(k, v);
             }
             else {
-                final Object v2 = en.getValue();
-                if (!Objects.equals(vs.v1, v2)) {
-                    vs.v2 = v2;
-                }
+                vs.v2 = en.getValue();
             }
         }
 

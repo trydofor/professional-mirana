@@ -280,18 +280,25 @@
                         <version>0.8.11</version>
                         <configuration>
                             <excludes>
-                                <exclude>**/best/**</exclude>
-                                <exclude>**/flow/**</exclude>
-                                <exclude>**/data/Null*</exclude>
-                                <exclude>**/data/Q*</exclude>
-                                <exclude>**/data/R*</exclude>
-                                <exclude>**/data/U*</exclude>
+                                <!-- mark or assert -->
+                                <exclude>**/best/Assert*</exclude>
+                                <exclude>**/best/Dummy*</exclude>
+                                <exclude>**/best/Param*</exclude>
+                                <exclude>**/best/Typed*</exclude>
+                                <!-- data struct -->
+                                <exclude>**/data/Null.*</exclude>
+                                <exclude>**/data/Null$*</exclude>
+                                <exclude>**/data/Q.*</exclude>
+                                <exclude>**/data/Q$*</exclude>
+                                <exclude>**/data/R.*</exclude>
+                                <exclude>**/data/R$*</exclude>
+                                <exclude>**/data/U.*</exclude>
+                                <exclude>**/data/U$*</exclude>
+                                <!-- exception thrown -->
+                                <exclude>**/flow/FlowBreak.*</exclude>
                                 <!-- stat manually checked -->
                                 <exclude>**/stat/GitStat.*</exclude>
                                 <exclude>**/stat/LogStat.*</exclude>
-                                <!-- exception only mark -->
-                                <exclude>**/*Assert.*</exclude>
-                                <exclude>**/*Exception.*</exclude>
                                 <!-- image manually checked -->
                                 <exclude>**/img/ImageIoFix.*</exclude>
                                 <exclude>**/img/StreamJpg.*</exclude>
@@ -300,6 +307,8 @@
                                 <!-- trusted ssl invoke -->
                                 <exclude>**/netx/SslTrustAll.*</exclude>
                                 <exclude>**/netx/SslVersion.*</exclude>
+                                <!-- exception only mark -->
+                                <exclude>**/*Exception.*</exclude>
                                 <!-- just for fun -->
                                 <exclude>**/WhoAmI.*</exclude>
                             </excludes>
