@@ -57,6 +57,20 @@ public class TweakingContext<T> {
     }
 
     /**
+     * init the default value
+     */
+    public void initGlobal(T value) {
+        tweakGlobal(value);
+    }
+
+    /**
+     * init the default value
+     */
+    public void initGlobal(Supplier<T> value) {
+        tweakGlobal(value);
+    }
+
+    /**
      * init thread value
      */
     public void initThread(@NotNull ThreadLocal<Supplier<T>> threadLocal, boolean tryToCleanOld) throws ThreadLocalAttention {
