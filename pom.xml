@@ -306,6 +306,14 @@
                                 <exclude>**/img/StreamJpg.*</exclude>
                                 <exclude>**/img/Watermark.*</exclude>
                                 <exclude>**/img/ZoomRotateCrop.*</exclude>
+                                <!-- aware interface -->
+                                <exclude>**/i18n/*Aware.*</exclude>
+                                <!-- simple or manully checked -->
+                                <exclude>**/io/CompatibleObjectStream.*</exclude>
+                                <exclude>**/io/DirHasher.*</exclude>
+                                <exclude>**/io/Exec*</exclude>
+                                <exclude>**/io/NonCloseStream.*</exclude>
+                                <exclude>**/io/Zipper*</exclude>
                                 <!-- trusted ssl invoke -->
                                 <exclude>**/netx/SslTrustAll.*</exclude>
                                 <exclude>**/netx/SslVersion.*</exclude>

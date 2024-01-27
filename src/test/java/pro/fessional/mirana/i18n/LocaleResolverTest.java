@@ -1,5 +1,7 @@
 package pro.fessional.mirana.i18n;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import pro.fessional.mirana.SystemOut;
 
@@ -26,18 +28,23 @@ public class LocaleResolverTest {
 
     @Test
     public void resolve() {
-        SystemOut.println("zh-CN=" + LocaleResolver.locale("zh-CN"));
-        SystemOut.println("zh-cn=" + LocaleResolver.locale("zh-cn"));
-        SystemOut.println("ZH-CN=" + LocaleResolver.locale("ZH-CN"));
-        SystemOut.println("ZH-cn=" + LocaleResolver.locale("ZH-cn"));
-        SystemOut.println("CN=" + LocaleResolver.locale("CN"));
-        SystemOut.println("zh=" + LocaleResolver.locale("zh"));
-        SystemOut.println("zh_CN=" + LocaleResolver.locale("zh_CN"));
-        SystemOut.println("zh_cn=" + LocaleResolver.locale("zh_cn"));
-        SystemOut.println("ZH_CN=" + LocaleResolver.locale("ZH_CN"));
+        Assertions.assertEquals(Locale.SIMPLIFIED_CHINESE, LocaleResolver.locale("zh-CN"));
+        Assertions.assertEquals(Locale.SIMPLIFIED_CHINESE, LocaleResolver.locale("zh-cn"));
+        Assertions.assertEquals(Locale.SIMPLIFIED_CHINESE, LocaleResolver.locale("ZH-CN"));
+        Assertions.assertEquals(Locale.SIMPLIFIED_CHINESE, LocaleResolver.locale("ZH-cn"));
+
+        Assertions.assertEquals(Locale.SIMPLIFIED_CHINESE, LocaleResolver.locale("zh_CN"));
+        Assertions.assertEquals(Locale.SIMPLIFIED_CHINESE, LocaleResolver.locale("zh_cn"));
+        Assertions.assertEquals(Locale.SIMPLIFIED_CHINESE, LocaleResolver.locale("ZH_CN"));
+        Assertions.assertEquals(Locale.SIMPLIFIED_CHINESE, LocaleResolver.locale("ZH_cn"));
+        Assertions.assertEquals(Locale.CHINESE, LocaleResolver.locale("zh"));
+
+        Assertions.assertEquals(Locale.getDefault(), LocaleResolver.locale("und"));
+
     }
 
     @Test
+    @Disabled("time test")
     public void loop() {
         long s1 = System.currentTimeMillis();
         for (int i = 0; i < 100_000; i++) {

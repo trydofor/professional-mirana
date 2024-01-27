@@ -15,8 +15,8 @@ import java.util.Objects;
  * String can be used as i18n template,
  * * code - template id
  * * args - template arguments
- * * hint - default text or template
- * * i18n - i18n text
+ * * hint - default text or template, not in hash and equals
+ * * i18n - i18n text, not in hash and equals
  * </pre>
  *
  * @author trydofor
@@ -28,7 +28,7 @@ public class I18nString implements I18nAware {
 
     private final String code;
     private final Object[] args;
-    private final String hint;
+    private String hint;
     private transient String i18n = null;
 
     public I18nString(String code) {
@@ -63,6 +63,12 @@ public class I18nString implements I18nAware {
     @Nullable
     public String getI18n() {
         return i18n;
+    }
+
+    @Contract("_ -> this")
+    public I18nString setHint(String hint) {
+        this.hint = hint == null ? "" : hint;;
+        return this;
     }
 
     @Contract("_ -> this")

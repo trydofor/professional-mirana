@@ -1,5 +1,7 @@
 package pro.fessional.mirana.i18n;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import pro.fessional.mirana.SystemOut;
 
@@ -23,18 +25,21 @@ public class ZoneIdResolverTest {
     }
 
     @Test
-    public void print() {
-        SystemOut.println(ZoneIdResolver.zoneId("Asia/Shanghai"));
-        SystemOut.println(ZoneIdResolver.zoneId("ASIA/SHANGHAI"));
-        SystemOut.println(ZoneIdResolver.zoneId("asia/shanghai"));
-        SystemOut.println(ZoneIdResolver.zoneId("Shanghai"));
-        SystemOut.println(ZoneIdResolver.zoneId("ShangHai"));
-        SystemOut.println(ZoneIdResolver.timeZone("Asia/Shanghai"));
-        SystemOut.println(ZoneIdResolver.timeZone("Shanghai"));
-        SystemOut.println(ZoneIdResolver.timeZone("ShangHai"));
+    public void test() {
+        ZoneId zidSh = ZoneId.of("Asia/Shanghai");
+        Assertions.assertEquals(zidSh, ZoneIdResolver.zoneId("Asia/Shanghai"));
+        Assertions.assertEquals(zidSh, ZoneIdResolver.zoneId("ASIA/SHANGHAI"));
+        Assertions.assertEquals(zidSh, ZoneIdResolver.zoneId("asia/shanghai"));
+        Assertions.assertEquals(zidSh, ZoneIdResolver.zoneId("Shanghai"));
+        Assertions.assertEquals(zidSh, ZoneIdResolver.zoneId("ShangHai"));
+        TimeZone tzSh = TimeZone.getTimeZone("Asia/Shanghai");
+        Assertions.assertEquals(tzSh, ZoneIdResolver.timeZone("Asia/Shanghai"));
+        Assertions.assertEquals(tzSh, ZoneIdResolver.timeZone("Shanghai"));
+        Assertions.assertEquals(tzSh, ZoneIdResolver.timeZone("ShangHai"));
     }
 
     @Test
+    @Disabled("time test")
     public void loop() {
         long s0 = System.currentTimeMillis();
         for (int i = 0; i < 100_000; i++) {
