@@ -25,7 +25,7 @@ public class Diff {
         public V() {
         }
 
-        public V(E v1, E v2) {
+        private V(E v1, E v2) {
             this.v1 = v1;
             this.v2 = v2;
         }
@@ -75,16 +75,12 @@ public class Diff {
         public boolean v1EqV2() {
             return Objects.equals(v1, v2);
         }
+    }
 
-        public static <T> V<T> of(T t1, T t2) {
-            return new V<>(t1, t2);
-        }
 
-        public static <K, T> void diff(Map<K, V<?>> map, K key, T t1, T t2) {
-            if (!Objects.equals(t1, t2)) {
-                map.put(key, new V<>(t1, t2));
-            }
-        }
+    @NotNull
+    public static <T> V<T> v(T t1, T t2) {
+        return new V<>(t1, t2);
     }
 
     /**
