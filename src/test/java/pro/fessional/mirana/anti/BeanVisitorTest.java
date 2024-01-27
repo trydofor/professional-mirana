@@ -11,8 +11,10 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author trydofor
@@ -37,7 +39,9 @@ class BeanVisitorTest {
     final BeanVisitor.Vzt ctnz = new BeanVisitor.ContainerVisitor() {
         @Override
         protected @Nullable Object amendValue(@NotNull Field field, @NotNull Annotation[] annos, @Nullable Object obj) {
-            return obj instanceof Long ? 0L : obj;
+            if (obj instanceof Long) return 0L;
+            if (obj instanceof String) return "";
+            return obj;
         }
 
         @Override public boolean cares(@NotNull Field field, @NotNull Annotation[] annos) {
@@ -47,23 +51,41 @@ class BeanVisitorTest {
 
     @Test
     void visitBean() {
-        Po po = new Po();
-        BeanVisitor.visit(new BeanVisitor.Opt().skipFinal(false), po, vzts);
+        Po po1 = new Po();
+        BeanVisitor.visit(new BeanVisitor.Opt().skipFinal(false), po1, vzts);
 
-        Assertions.assertEquals(0L, po.getId());
-        Assertions.assertEquals("-10086", po.getTo());
-        Assertions.assertEquals(-10086L, po.getTi());
-        Assertions.assertEquals("-10086", po.ng);
-        Assertions.assertNull(po.getName());
-        Assertions.assertNull(po.getLst());
-        Assertions.assertNull(po.getMap());
+        Assertions.assertEquals(0L, po1.getId());
+        Assertions.assertEquals("-10086", po1.getTo());
+        Assertions.assertEquals(-10086L, po1.getTi());
+        Assertions.assertEquals("-10086", po1.ng);
+        Assertions.assertNull(po1.getName());
+        Assertions.assertNull(po1.getLst());
+        Assertions.assertNull(po1.getMap());
 
-        final Co[] arr = po.getArr();
-        Assertions.assertNotNull(arr);
-        Assertions.assertEquals(0L, arr[0].getId());
-        Assertions.assertEquals("-10086", arr[0].getTo());
-        Assertions.assertEquals(-10086L, arr[0].getTi());
-        Assertions.assertEquals("-10086", arr[0].ng);
+        final Co[] arr1 = po1.getArr();
+        Assertions.assertNotNull(arr1);
+        Assertions.assertEquals(0L, arr1[0].getId());
+        Assertions.assertEquals("-10086", arr1[0].getTo());
+        Assertions.assertEquals(-10086L, arr1[0].getTi());
+        Assertions.assertEquals("-10086", arr1[0].ng);
+
+        Po po2 = new Po();
+        BeanVisitor.visit(new BeanVisitor.Opt().skipFinal(false), po2, ctnz);
+
+        Assertions.assertEquals(0L, po2.getId());
+        Assertions.assertEquals("-10086", po2.getTo()); // @Transient
+        Assertions.assertEquals(-10086L, po2.getTi()); // transient
+        Assertions.assertEquals("-10086", po2.ng); // no getter
+        Assertions.assertEquals("", po2.getName());
+        Assertions.assertNotNull(po2.getLst());
+        Assertions.assertNotNull(po2.getMap());
+
+        final Co[] arr2 = po2.getArr();
+        Assertions.assertNotNull(arr2);
+        Assertions.assertEquals(0L, arr2[0].getId());
+        Assertions.assertEquals("-10086", po2.getTo()); // @Transient
+        Assertions.assertEquals(-10086L, po2.getTi()); // transient
+        Assertions.assertEquals("-10086", po2.ng); // no getter
     }
 
     @Test
@@ -160,6 +182,7 @@ class BeanVisitorTest {
         private final boolean man;
         private final List<Co> lst;
         private final Map<String, Co> map;
+        private final Set<Co> set;
         private final Co[] arr;
 
         public Po() {
@@ -170,6 +193,8 @@ class BeanVisitorTest {
             map = new HashMap<>();
             map.put("this", this);
             arr = new Co[]{new Co()};
+            set = new HashSet<>();
+            set.add(this);
         }
 
         public boolean isMan() {
@@ -186,6 +211,10 @@ class BeanVisitorTest {
 
         public Map<String, Co> getMap() {
             return map;
+        }
+
+        public Set<Co> getSet() {
+            return set;
         }
 
         public Co[] getArr() {
