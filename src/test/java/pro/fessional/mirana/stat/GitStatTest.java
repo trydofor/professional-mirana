@@ -29,7 +29,7 @@ public class GitStatTest {
         dataSource.setPassword("moilioncircle");
         dataSource.setServerName("127.0.0.1");
 
-        File workDir = new File("/Users/trydofor/Workspace/github.com/pro.fessional.wings");
+        File workDir = new File("/Users/trydofor/Workspace/github-com/professional-wings");
         List<GitStat.S> infos = GitStat.logAll(workDir, "2 weeks ago", "2020-10-01");
         GitStat.saveMysql(infos, "git_log_wings", dataSource);
     }

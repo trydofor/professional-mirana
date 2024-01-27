@@ -281,15 +281,26 @@
                         <configuration>
                             <excludes>
                                 <exclude>**/best/**</exclude>
-                                <exclude>**/stat/**</exclude>
                                 <exclude>**/flow/**</exclude>
-                                <exclude>**/img/**</exclude>
                                 <exclude>**/data/Null*</exclude>
                                 <exclude>**/data/Q*</exclude>
                                 <exclude>**/data/R*</exclude>
                                 <exclude>**/data/U*</exclude>
+                                <!-- stat manually checked -->
+                                <exclude>**/stat/GitStat.*</exclude>
+                                <exclude>**/stat/LogStat.*</exclude>
+                                <!-- exception only mark -->
                                 <exclude>**/*Assert.*</exclude>
                                 <exclude>**/*Exception.*</exclude>
+                                <!-- image manually checked -->
+                                <exclude>**/img/ImageIoFix.*</exclude>
+                                <exclude>**/img/StreamJpg.*</exclude>
+                                <exclude>**/img/Watermark.*</exclude>
+                                <exclude>**/img/ZoomRotateCrop.*</exclude>
+                                <!-- trusted ssl invoke -->
+                                <exclude>**/netx/SslTrustAll.*</exclude>
+                                <exclude>**/netx/SslVersion.*</exclude>
+                                <!-- just for fun -->
                                 <exclude>**/WhoAmI.*</exclude>
                             </excludes>
                         </configuration>
