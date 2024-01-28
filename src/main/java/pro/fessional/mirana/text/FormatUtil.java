@@ -216,24 +216,28 @@ public class FormatUtil {
     public static Object[] fixArgs(int size, Object... args) {
         if (size <= 0) return Null.Objects;
 
-        Object[] tmp = null;
-        if (args == null || args.length < size) {
-            tmp = new Object[size];
+        if (args != null && args.length == size) {
+            for (int i = 0; i < args.length; i++) {
+                if (args[i] == null) args[i] = Null.Str;
+            }
+            return args;
         }
-        else {
-            for (Object arg : args) {
-                if (arg == null) {
-                    tmp = new Object[size];
-                    break;
-                }
+
+        Object[] tmp = new Object[size];
+        if (args == null) {
+            Arrays.fill(tmp, Null.Str);
+        }
+        else if (args.length > tmp.length) {
+            for (int i = 0; i < tmp.length; i++) {
+                tmp[i] = args[i] == null ? Null.Str : args[i];
             }
         }
-        if (tmp == null) return args;
-
-        Arrays.fill(tmp, Null.Str);
-        if (args != null) {
+        else {
             for (int i = 0; i < args.length; i++) {
-                if (args[i] != null) tmp[i] = args[i];
+                tmp[i] = args[i] == null ? Null.Str : args[i];
+            }
+            for (int i = args.length; i < tmp.length; i++) {
+                tmp[i] = Null.Str;
             }
         }
         return tmp;

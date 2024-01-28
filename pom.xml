@@ -287,8 +287,7 @@
                                 <exclude>**/best/Typed*</exclude>
                                 <!-- data struct -->
                                 <exclude>**/data/DataResult.*</exclude>
-                                <exclude>**/data/Null.*</exclude>
-                                <exclude>**/data/Null$*</exclude>
+                                <exclude>**/data/Null*</exclude>
                                 <exclude>**/data/Q.*</exclude>
                                 <exclude>**/data/Q$*</exclude>
                                 <exclude>**/data/R.*</exclude>
@@ -299,24 +298,24 @@
                                 <exclude>**/flow/FlowBreak.*</exclude>
                                 <exclude>**/evil/*Attention.*</exclude>
                                 <!-- stat manually checked -->
-                                <exclude>**/stat/GitStat.*</exclude>
-                                <exclude>**/stat/LogStat.*</exclude>
+                                <exclude>**/stat/GitStat*</exclude>
+                                <exclude>**/stat/LogStat*</exclude>
                                 <!-- image manually checked -->
-                                <exclude>**/img/ImageIoFix.*</exclude>
-                                <exclude>**/img/StreamJpg.*</exclude>
-                                <exclude>**/img/Watermark.*</exclude>
-                                <exclude>**/img/ZoomRotateCrop.*</exclude>
+                                <exclude>**/img/ImageIoFix*</exclude>
+                                <exclude>**/img/StreamJpg*</exclude>
+                                <exclude>**/img/Watermark*</exclude>
+                                <exclude>**/img/ZoomRotateCrop*</exclude>
                                 <!-- aware interface -->
                                 <exclude>**/i18n/*Aware.*</exclude>
                                 <!-- simple or manully checked -->
-                                <exclude>**/io/CompatibleObjectStream.*</exclude>
-                                <exclude>**/io/DirHasher.*</exclude>
+                                <exclude>**/io/CompatibleObjectStream*</exclude>
+                                <exclude>**/io/DirHasher*</exclude>
                                 <exclude>**/io/Exec*</exclude>
-                                <exclude>**/io/NonCloseStream.*</exclude>
+                                <exclude>**/io/NonCloseStream*</exclude>
                                 <exclude>**/io/Zipper*</exclude>
                                 <!-- trusted ssl invoke -->
-                                <exclude>**/netx/SslTrustAll.*</exclude>
-                                <exclude>**/netx/SslVersion.*</exclude>
+                                <exclude>**/netx/SslTrustAll*</exclude>
+                                <exclude>**/netx/SslVersion*</exclude>
                                 <!-- exception only mark -->
                                 <exclude>**/*Exception.*</exclude>
                                 <exclude>**/*Enum.*</exclude>

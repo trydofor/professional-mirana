@@ -81,6 +81,29 @@ public class CaseSwitcherTest {
     }
 
     @Test
+    public void testDot() {
+        assertEquals("hello123", CaseSwitcher.dot("hello123"));
+        assertEquals("hello.123", CaseSwitcher.dot("hello_123"));
+        assertEquals("hello.123", CaseSwitcher.dot("HELLO_123"));
+        assertEquals("hello.123", CaseSwitcher.dot("Hello-123"));
+        assertEquals("hello.123", CaseSwitcher.dot("hello-123"));
+
+        assertEquals("hello.world", CaseSwitcher.dot("hello_world"));
+        assertEquals("hello.world", CaseSwitcher.dot("HELLO_WORLD"));
+        assertEquals("hello.world", CaseSwitcher.dot("Hello-World"));
+        assertEquals("hello.world", CaseSwitcher.dot("hello-world"));
+        assertEquals("hello.world", CaseSwitcher.dot("helloWorld"));
+        assertEquals("hello.world.abc", CaseSwitcher.dot("HelloWorldAbc"));
+
+        assertEquals("hello.world", CaseSwitcher.dot("hello__world"));
+        assertEquals("hello.world", CaseSwitcher.dot("HELLO__WORLD"));
+        assertEquals("hello.world", CaseSwitcher.dot("Hello--World"));
+        assertEquals("hello.world", CaseSwitcher.dot("hello--world"));
+        assertEquals("hello.world", CaseSwitcher.dot("helloWORld"));
+        assertEquals("hello.world.abc", CaseSwitcher.dot("HelloWORldAbc"));
+    }
+
+    @Test
     public void testPascal() {
         assertEquals("Hello123", CaseSwitcher.pascal("hello123"));
         assertEquals("Hello123", CaseSwitcher.pascal("hello_123"));
