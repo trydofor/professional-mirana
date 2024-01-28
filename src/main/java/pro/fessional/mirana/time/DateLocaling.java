@@ -2,9 +2,7 @@ package pro.fessional.mirana.time;
 
 import java.time.DayOfWeek;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
@@ -67,19 +65,6 @@ public class DateLocaling {
         return ZonedDateTime.now(at).toLocalDateTime();
     }
 
-    /**
-     * current local date at zoneId
-     */
-    public static LocalDate date(ZoneId at) {
-        return ZonedDateTime.now(at).toLocalDate();
-    }
-
-    /**
-     * current local time at zoneId
-     */
-    public static LocalTime time(ZoneId at) {
-        return ZonedDateTime.now(at).toLocalTime();
-    }
 
     /**
      * current local 0:0:0.0 at zoneId

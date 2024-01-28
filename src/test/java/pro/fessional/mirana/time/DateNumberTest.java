@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -14,37 +16,48 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class DateNumberTest {
 
+    final LocalDate ld = LocalDate.of(2019, 5, 21);
+    final LocalTime lt = LocalTime.of(12, 34, 56, 789_000_000);
+    final LocalDateTime ldt = LocalDateTime.of(ld, lt);
+    final ZonedDateTime zdt = ZonedDateTime.of(ld, lt, ZoneId.systemDefault());
+
     @Test
     public void date8() {
-        LocalDate ld = LocalDate.of(2019, 5, 21);
         assertEquals(20190521, DateNumber.date8(ld));
+        assertEquals(20190521, DateNumber.date8(ldt));
+        assertEquals(20190521, DateNumber.date8(zdt));
     }
 
     @Test
     public void dateTime14() {
-        LocalDate ld = LocalDate.of(2019, 5, 21);
-        LocalTime lt = LocalTime.of(12, 34, 56, 789_000_000);
-        LocalDateTime ldt = LocalDateTime.of(ld, lt);
         assertEquals(20190521123456L, DateNumber.dateTime14(ldt));
+        assertEquals(20190521123456L, DateNumber.dateTime14(zdt));
     }
 
     @Test
     public void dateTime17() {
-        LocalDate ld = LocalDate.of(2019, 5, 21);
-        LocalTime lt = LocalTime.of(12, 34, 56, 789_000_000);
-        LocalDateTime ldt = LocalDateTime.of(ld, lt);
         assertEquals(20190521123456789L, DateNumber.dateTime17(ldt));
+        assertEquals(20190521123456789L, DateNumber.dateTime17(zdt));
     }
 
     @Test
     public void time6() {
-        LocalTime lt = LocalTime.of(12, 34, 56, 789_000_000);
         assertEquals(123456, DateNumber.time6(lt));
+        assertEquals(123456, DateNumber.time6(ldt));
+        assertEquals(123456, DateNumber.time6(zdt));
     }
 
     @Test
     public void time9() {
-        LocalTime lt = LocalTime.of(12, 34, 56, 789_000_000);
         assertEquals(123456789, DateNumber.time9(lt));
+        assertEquals(123456789, DateNumber.time9(ldt));
+        assertEquals(123456789, DateNumber.time9(zdt));
+    }
+
+    @Test
+    public void parse() {
+        assertEquals(lt, DateNumber.parseTime(123456789));
+        assertEquals(ld, DateNumber.parseDate(20190521));
+        assertEquals(ldt, DateNumber.parseDateTime(20190521123456789L));
     }
 }
