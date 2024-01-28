@@ -1,5 +1,6 @@
 package pro.fessional.mirana.math;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import pro.fessional.mirana.SystemOut;
 
@@ -56,9 +57,15 @@ class BalanceDecimalTest {
         BalanceDecimal avg = BalanceDecimal.of(total, items, 2);
         final BigDecimal v1 = new BigDecimal("3.34");
         final BigDecimal v2 = new BigDecimal("3.33");
-        for (BigDecimal v : avg) {
+        for (int i = 0; i < 3; i++) {
+            BigDecimal v = avg.get(i);
             assertTrue(v1.equals(v) || v2.equals(v));
         }
+
+        Assertions.assertEquals(3, avg.size());
+        Assertions.assertEquals(total, avg.total());
+        Assertions.assertEquals(2, avg.scale());
+        Assertions.assertEquals(new BigDecimal("0.01"), avg.getPrecision());
     }
 
     @Test

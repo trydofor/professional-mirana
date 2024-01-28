@@ -1,5 +1,6 @@
 package pro.fessional.mirana.math;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import pro.fessional.mirana.SystemOut;
 
@@ -12,6 +13,25 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @since 2021-01-19
  */
 class AverageDecimalTest {
+
+    @Test
+    void avg() {
+        AverageDecimal avg0 = AverageDecimal.of(BigDecimal.TEN, 5,1);
+        Assertions.assertEquals(new BigDecimal("2.0"), avg0.getAvgValue());
+        Assertions.assertEquals(BigDecimal.TEN, avg0.total());
+        Assertions.assertEquals(1, avg0.scale());
+        Assertions.assertEquals(5, avg0.size());
+        Assertions.assertEquals(new BigDecimal("0.1"), avg0.getPrecision());
+
+        AverageDecimal avg1 = AverageDecimal.of(BigDecimal.TEN, 3,1);
+        Assertions.assertEquals(new BigDecimal("3.3"), avg1.getAvgValue());
+        Assertions.assertEquals(BigDecimal.TEN, avg1.total());
+        Assertions.assertEquals(1, avg1.scale());
+        Assertions.assertEquals(3, avg1.size());
+        Assertions.assertEquals(new BigDecimal("0.1"), avg1.getPrecision());
+        Assertions.assertEquals(new BigDecimal("3.4"), avg1.getFixValue());
+        Assertions.assertEquals(1, avg1.getFixCount());
+    }
 
     @Test
     void of() {
@@ -45,6 +65,5 @@ class AverageDecimalTest {
             SystemOut.println("] = " + sum + " :" + (sum.compareTo(number) == 0));
             assertEquals(0, sum.compareTo(number));
         }
-
     }
 }

@@ -9,6 +9,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static java.math.BigDecimal.ONE;
 import static java.math.BigDecimal.TEN;
@@ -183,8 +184,18 @@ public class BigDecimalUtilTest {
 
         BigDecimal n2 = BigDecimalUtil.w(TEN, 2)
                                       .add(ONE)
+                                      .mul(ONE)
                                       .mul("2.0", null, null, ONE, ONE)
+                                      .mulIf(false, ZERO, ONE)
+                                      .mulMap(Arrays.asList(null, null, ONE, ONE))
+                                      .mulMap(Arrays.asList(ONE, ONE), Objects::toString)
+                                      .div(ONE)
                                       .div(ONE, ONE)
+                                      .divIf(true, ONE, ZERO)
+                                      .divMap(Arrays.asList(ONE, ONE))
+                                      .divMap(Arrays.asList(ONE, ONE),Objects::toString)
+                                      .neg()
+                                      .neg()
                                       .pow(2)
                                       .resultFloor();
 
@@ -206,6 +217,7 @@ public class BigDecimalUtilTest {
         assertEquals(new BigDecimal("1.50"), BigDecimalUtil.unitUp("1.60", unit, down));
         assertEquals(new BigDecimal("2.00"), BigDecimalUtil.unitUp("1.61", unit, down));
     }
+
     @Test
     public void unitDown() {
         final BigDecimal unit = new BigDecimal("0.50");
