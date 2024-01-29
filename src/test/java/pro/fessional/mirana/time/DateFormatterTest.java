@@ -39,6 +39,43 @@ public class DateFormatterTest {
     final Date ud0 = new Date(zdt0.toEpochSecond() * 1000L);
 
     @Test
+    public void utilDate() {
+        // SimpleDateFormat, Calendar and util.Date deps on System defaultTimezone
+        TimeZone df = TimeZone.getDefault();
+        try {
+            TimeZone.setDefault(TimeZone.getTimeZone("GMT+8"));
+            DateFormatter.DATE_FORMAT_19.remove();
+            DateFormatter.DATE_FORMAT_23.remove();
+
+            Assertions.assertEquals("2017-04-26 12:34:56.789", DateFormatter.full(ud9));
+            Assertions.assertEquals("2017-04-26 13:34:56.789", DateFormatter.full(ud9, tz9));
+            Assertions.assertEquals("2017-04-26 12:34:56", DateFormatter.full19(ud9));
+            Assertions.assertEquals("2017-04-26 13:34:56", DateFormatter.full19(ud9, tz9));
+            Assertions.assertEquals("2017-04-26 12:34:56.789", DateFormatter.full23(ud9));
+            Assertions.assertEquals("2017-04-26 13:34:56.789", DateFormatter.full23(ud9, tz9));
+            Assertions.assertEquals("2017-04-26 12:34:56.000", DateFormatter.full23(ud0));
+            Assertions.assertEquals("2017-04-26 13:34:56.000", DateFormatter.full23(ud0, tz9));
+            Assertions.assertEquals("2017-04-26", DateFormatter.date10(ud9));
+            Assertions.assertEquals("2017-04-26", DateFormatter.date10(ud9, tz9));
+            Assertions.assertEquals("12:34:56", DateFormatter.time08(ud9));
+            Assertions.assertEquals("13:34:56", DateFormatter.time08(ud9, tz9));
+            Assertions.assertEquals("12:34:56", DateFormatter.time08(ud0));
+            Assertions.assertEquals("13:34:56", DateFormatter.time08(ud0, tz9));
+            Assertions.assertEquals("12:34:56.789", DateFormatter.time(ud9));
+            Assertions.assertEquals("13:34:56.789", DateFormatter.time(ud9, tz9));
+            Assertions.assertEquals("12:34:56", DateFormatter.time(ud0));
+            Assertions.assertEquals("13:34:56", DateFormatter.time(ud0, tz9));
+            Assertions.assertEquals("12:34:56.789", DateFormatter.time12(ud9));
+            Assertions.assertEquals("13:34:56.789", DateFormatter.time12(ud9, tz9));
+            Assertions.assertEquals("12:34:56.000", DateFormatter.time12(ud0));
+            Assertions.assertEquals("13:34:56.000", DateFormatter.time12(ud0, tz9));
+        }
+        finally {
+            TimeZone.setDefault(df);
+        }
+    }
+
+    @Test
     public void full19() {
         Assertions.assertEquals("2017-04-26 14:38:22", DateFormatter.fixFull19("2017-04-26"));
         Assertions.assertEquals("2017-04-26 12:25:17", DateFormatter.fixFull19("2017-04-26 12"));
@@ -51,9 +88,7 @@ public class DateFormatterTest {
         Assertions.assertEquals(new SimpleDateFormat(PTN_FULL_19), DateFormatter.full19());
         Assertions.assertEquals("2017-04-26 12:34:56", DateFormatter.full19(ldt9));
         Assertions.assertEquals("2017-04-26 12:34:56", DateFormatter.full19(zdt9));
-        Assertions.assertEquals("2017-04-26 12:34:56", DateFormatter.full19(ud9));
         Assertions.assertEquals("2017-04-26 13:34:56", DateFormatter.full19(zdt9, tz9));
-        Assertions.assertEquals("2017-04-26 13:34:56", DateFormatter.full19(ud9, tz9));
     }
 
     @Test
@@ -61,15 +96,11 @@ public class DateFormatterTest {
         Assertions.assertEquals(new SimpleDateFormat(PTN_FULL_23), DateFormatter.full23());
         Assertions.assertEquals("2017-04-26 12:34:56.789", DateFormatter.full23(ldt9));
         Assertions.assertEquals("2017-04-26 12:34:56.789", DateFormatter.full23(zdt9));
-        Assertions.assertEquals("2017-04-26 12:34:56.789", DateFormatter.full23(ud9));
         Assertions.assertEquals("2017-04-26 13:34:56.789", DateFormatter.full23(zdt9, tz9));
-        Assertions.assertEquals("2017-04-26 13:34:56.789", DateFormatter.full23(ud9, tz9));
 
         Assertions.assertEquals("2017-04-26 12:34:56.000", DateFormatter.full23(ldt0));
         Assertions.assertEquals("2017-04-26 12:34:56.000", DateFormatter.full23(zdt0));
-        Assertions.assertEquals("2017-04-26 12:34:56.000", DateFormatter.full23(ud0));
         Assertions.assertEquals("2017-04-26 13:34:56.000", DateFormatter.full23(zdt0, tz9));
-        Assertions.assertEquals("2017-04-26 13:34:56.000", DateFormatter.full23(ud0, tz9));
     }
 
 
@@ -77,15 +108,11 @@ public class DateFormatterTest {
     public void full() {
         Assertions.assertEquals("2017-04-26 12:34:56.789", DateFormatter.full(ldt9));
         Assertions.assertEquals("2017-04-26 12:34:56.789", DateFormatter.full(zdt9));
-        Assertions.assertEquals("2017-04-26 12:34:56.789", DateFormatter.full(ud9));
         Assertions.assertEquals("2017-04-26 13:34:56.789", DateFormatter.full(zdt9, tz9));
-        Assertions.assertEquals("2017-04-26 13:34:56.789", DateFormatter.full(ud9, tz9));
 
         Assertions.assertEquals("2017-04-26 12:34:56", DateFormatter.full(ldt0));
         Assertions.assertEquals("2017-04-26 12:34:56", DateFormatter.full(zdt0));
-        Assertions.assertEquals("2017-04-26 12:34:56", DateFormatter.full(ud0));
         Assertions.assertEquals("2017-04-26 13:34:56", DateFormatter.full(zdt0, tz9));
-        Assertions.assertEquals("2017-04-26 13:34:56", DateFormatter.full(ud0, tz9));
     }
 
     @Test
@@ -93,9 +120,7 @@ public class DateFormatterTest {
         Assertions.assertEquals("2017-04-26", DateFormatter.date10(ld));
         Assertions.assertEquals("2017-04-26", DateFormatter.date10(ldt9));
         Assertions.assertEquals("2017-04-26", DateFormatter.date10(zdt9));
-        Assertions.assertEquals("2017-04-26", DateFormatter.date10(ud9));
         Assertions.assertEquals("2017-04-26", DateFormatter.date10(zdt9, tz9));
-        Assertions.assertEquals("2017-04-26", DateFormatter.date10(ud9, tz9));
     }
 
 
@@ -106,15 +131,11 @@ public class DateFormatterTest {
 
         Assertions.assertEquals("12:34:56.789", DateFormatter.time(ldt9));
         Assertions.assertEquals("12:34:56.789", DateFormatter.time(zdt9));
-        Assertions.assertEquals("12:34:56.789", DateFormatter.time(ud9));
         Assertions.assertEquals("13:34:56.789", DateFormatter.time(zdt9, tz9));
-        Assertions.assertEquals("13:34:56.789", DateFormatter.time(ud9, tz9));
 
         Assertions.assertEquals("12:34:56", DateFormatter.time(ldt0));
         Assertions.assertEquals("12:34:56", DateFormatter.time(zdt0));
-        Assertions.assertEquals("12:34:56", DateFormatter.time(ud0));
         Assertions.assertEquals("13:34:56", DateFormatter.time(zdt0, tz9));
-        Assertions.assertEquals("13:34:56", DateFormatter.time(ud0, tz9));
     }
 
     @Test
@@ -124,15 +145,11 @@ public class DateFormatterTest {
 
         Assertions.assertEquals("12:34:56", DateFormatter.time08(ldt9));
         Assertions.assertEquals("12:34:56", DateFormatter.time08(zdt9));
-        Assertions.assertEquals("12:34:56", DateFormatter.time08(ud9));
         Assertions.assertEquals("13:34:56", DateFormatter.time08(zdt9, tz9));
-        Assertions.assertEquals("13:34:56", DateFormatter.time08(ud9, tz9));
 
         Assertions.assertEquals("12:34:56", DateFormatter.time08(ldt0));
         Assertions.assertEquals("12:34:56", DateFormatter.time08(zdt0));
-        Assertions.assertEquals("12:34:56", DateFormatter.time08(ud0));
         Assertions.assertEquals("13:34:56", DateFormatter.time08(zdt0, tz9));
-        Assertions.assertEquals("13:34:56", DateFormatter.time08(ud0, tz9));
     }
 
     @Test
@@ -142,15 +159,11 @@ public class DateFormatterTest {
 
         Assertions.assertEquals("12:34:56.789", DateFormatter.time12(ldt9));
         Assertions.assertEquals("12:34:56.789", DateFormatter.time12(zdt9));
-        Assertions.assertEquals("12:34:56.789", DateFormatter.time12(ud9));
         Assertions.assertEquals("13:34:56.789", DateFormatter.time12(zdt9, tz9));
-        Assertions.assertEquals("13:34:56.789", DateFormatter.time12(ud9, tz9));
 
         Assertions.assertEquals("12:34:56.000", DateFormatter.time12(ldt0));
         Assertions.assertEquals("12:34:56.000", DateFormatter.time12(zdt0));
-        Assertions.assertEquals("12:34:56.000", DateFormatter.time12(ud0));
         Assertions.assertEquals("13:34:56.000", DateFormatter.time12(zdt0, tz9));
-        Assertions.assertEquals("13:34:56.000", DateFormatter.time12(ud0, tz9));
     }
 
     @Test

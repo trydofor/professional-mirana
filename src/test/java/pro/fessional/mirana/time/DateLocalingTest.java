@@ -79,13 +79,20 @@ public class DateLocalingTest {
     @Test
     public void useAll() {
         assertEquals(utcMs, DateLocaling.useEpoch(cnLdt, cnZid));
-
+        assertEquals(utcMs, DateLocaling.useEpoch(jpLdt, jpZid));
         assertEquals(cnZdt, DateLocaling.useZdt(jpZdt, cnZid));
-        assertEquals(cnZdt, DateLocaling.useZdt(cnLdt, cnZid));
-
-        assertEquals(cnLdt, DateLocaling.useLdt(utcMs, cnZid));
         assertEquals(cnLdt, DateLocaling.useLdt(jpZdt, cnZid));
-        assertEquals(cnLdt, DateLocaling.useLdt(cnLdt, cnZid));
+        assertEquals(cnLdt, DateLocaling.useLdt(utcMs, cnZid));
+
+        try {
+            // cnLdt default timezone is UTC+8
+            ThreadNow.TweakZone.tweakGlobal(TimeZone.getTimeZone("GMT+8"));
+            assertEquals(cnZdt, DateLocaling.useZdt(cnLdt, cnZid));
+            assertEquals(cnLdt, DateLocaling.useLdt(cnLdt, cnZid));
+        }
+        finally {
+            ThreadNow.TweakZone.resetGlobal();
+        }
     }
 
     @Test
