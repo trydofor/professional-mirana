@@ -1,5 +1,5 @@
 name: Release-To-OssRh
-run-name: Release ${{github.ref_name}} by @${{ github.event_name }}
+run-name: Release ${{ github.ref_name }} by @${{ github.event_name }}
 
 on:
   workflow_dispatch:
@@ -26,7 +26,9 @@ on:
         required: false
   release:
     types: [published]
-
+  push:
+    branches:
+      - 'main'
 jobs:
   release:
     name: Release to Sonatype
@@ -36,7 +38,7 @@ jobs:
       TEST_VERBOSE: ${{ inputs.testVerbose }}
 
     steps:
-      - name: Checkout ${{github.event.release.tag_name}}
+      - name: Checkout ${{ github.event.release.tag_name }}
         uses: actions/checkout@v4
         with:
           fetch-depth: 10
@@ -49,13 +51,13 @@ jobs:
           path: |
             ~/.asdf/
             ~/.m2/repository/
-          key: asdf-m2-repo-${{hashFiles('.tool-versions')}}
+          key: asdf-m2-repo-${{ hashFiles('pom.xml') }}
 
       ## install jdk and maven
       - name: Install asdf & tools
         uses: asdf-vm/actions/install@v3
         with:
-          skip_install: ${{steps.cache-sdk-repo.outputs.cache-hit == 'true'}}
+          skip_install: ${{ steps.cache-sdk-repo.outputs.cache-hit == 'true' }}
 
       ## write settings.xml
       - name: Maven settings.xml
@@ -68,16 +70,21 @@ jobs:
           _opt=$(git describe --tags --exact-match 2>/dev/null || true)
           if [ "$_opt" != "" ]; then
             _opt="-Drevision=$_opt"
-            echo $_opt
+            echo "MVN_REVISION=$_opt"
             echo "MVN_REVISION=$_opt" >> "$GITHUB_OUTPUT"
           fi
           
           _ver=$(mvn --quiet --non-recursive -DforceStdout -Dexpression=project.version $_opt help:evaluate)
-          echo $_ver
+          echo "WINGS_VERSION=$_ver"
           echo "WINGS_VERSION=$_ver" >> "$GITHUB_OUTPUT"
           
-          echo "MVN_COVERAGE=${{ inputs.testCoverReport || github.event_name == 'release' }}" >> "$GITHUB_OUTPUT"
-          echo "MVN_DEPLOYRH=${{ inputs.deployOssrh || github.event_name == 'release' }}" >> "$GITHUB_OUTPUT"
+          _cov=${{ inputs.testCoverReport || github.event_name == 'push' }}
+          echo "MVN_COVERAGE=$_cov"
+          echo "MVN_COVERAGE=$_cov" >> "$GITHUB_OUTPUT"
+          
+          _drh=${{ inputs.deployOssrh || github.event_name == 'release' }}
+          echo "MVN_DEPLOYRH=$_drh"
+          echo "MVN_DEPLOYRH=$_drh" >> "$GITHUB_OUTPUT"
           
           mvn -v
           git --no-pager log --graph -10 --pretty=format:'%H - %ai %d %s'
@@ -98,7 +105,7 @@ jobs:
 
       ## report if not release
       - name: Test Coverage ${{ steps.settings.outputs.WINGS_VERSION }} ${{ steps.settings.outputs.GIT_BRANCH }}
-        if: steps.settings.outputs.MVN_COVERAGE
+        if: steps.settings.outputs.MVN_COVERAGE == 'true'
         run: >
           mvn 
           -P coverage
@@ -109,7 +116,7 @@ jobs:
           JAVA_HOME: ${{ steps.settings.outputs.JAVA_HOME }}
       ## import gpp private key
       - name: Import GPG key
-        if: steps.settings.outputs.MVN_DEPLOYRH
+        if: steps.settings.outputs.MVN_DEPLOYRH == 'true'
         uses: crazy-max/ghaction-import-gpg@v6
         with:
           gpg_private_key: ${{ secrets.MVN_GPG_SKEY }}
@@ -117,7 +124,7 @@ jobs:
 
       ## maven deploy
       - name: Deploy ${{ steps.settings.outputs.WINGS_VERSION }} ${{ steps.settings.outputs.GIT_BRANCH }}
-        if: steps.settings.outputs.MVN_DEPLOYRH
+        if: steps.settings.outputs.MVN_DEPLOYRH == 'true'
         run: >
           mvn 
           -P ossrh
