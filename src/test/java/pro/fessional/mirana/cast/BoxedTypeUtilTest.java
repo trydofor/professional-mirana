@@ -17,6 +17,13 @@ class BoxedTypeUtilTest {
         assertEquals(Boolean.class, BoxedTypeUtil.box(Boolean.class));
         assertEquals(Integer.class, BoxedTypeUtil.box(int.class));
         assertEquals(Integer.class, BoxedTypeUtil.box(Integer.class));
+        assertEquals(Long.class, BoxedTypeUtil.box(long.class));
+        assertEquals(Long.class, BoxedTypeUtil.box(Long.class));
+        assertEquals(Float.class, BoxedTypeUtil.box(float.class));
+        assertEquals(Float.class, BoxedTypeUtil.box(Float.class));
+        assertEquals(Double.class, BoxedTypeUtil.box(double.class));
+        assertEquals(Double.class, BoxedTypeUtil.box(Double.class));
+        assertEquals(Void.class, BoxedTypeUtil.box(void.class));
     }
 
     @Test

@@ -2,7 +2,14 @@ package pro.fessional.mirana.text;
 
 import org.junit.jupiter.api.Test;
 import pro.fessional.mirana.SystemOut;
+import pro.fessional.mirana.evil.ThreadLocalAttention;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
@@ -37,6 +44,8 @@ public class FormatUtilTest {
         assertEquals(1, r2[1]);
         assertEquals(1, r2[2]);
         assertEquals(1, r2[3]);
+        assertEquals(0, FormatUtil.count(null,""));
+        assertEquals(0, FormatUtil.count("", (String) null));
     }
 
     @Test
@@ -160,5 +169,46 @@ public class FormatUtilTest {
         assertEquals("1234567890", FormatUtil.rightFix("123456789", 10, '0'));
         assertEquals("1234567890", FormatUtil.rightFix("1234567890", 10, '0'));
         assertEquals("1234567890", FormatUtil.rightFix("123456789012345678", 10, '0'));
+    }
+
+    @Test
+    public void holder() throws ThreadLocalAttention {
+        FormatHolder hd = new FormatHolder("%s");
+        assertEquals("%s", hd.getPattern());
+    }
+
+    @Test
+    public void mess() {
+        assertEquals("a,b,c", FormatUtil.join(true, ",", Arrays.asList("a", "b", "c")));
+        assertEquals("[true,false]", FormatUtil.toString(new boolean[]{true,false}));
+        assertEquals("[1,2]", FormatUtil.toString(new short[]{1,2}));
+        assertEquals("[1,2]", FormatUtil.toString(new int[]{1,2}));
+        assertEquals("[1,2]", FormatUtil.toString(new long[]{1L,2L}));
+        assertEquals("[1.0,2.0]", FormatUtil.toString(new float[]{1.0F,2.0F}));
+        assertEquals("[1.0,2.0]", FormatUtil.toString(new double[]{1.0D,2.0D}));
+    }
+
+    @Test
+    public void sortParam() {
+        Map<String, String> p1 = new HashMap<>();
+        p1.put("k2", "v2");
+        p1.put("k1", "v1");
+        assertEquals("k1=v1&k2=v2", FormatUtil.sortParam(p1));
+
+        Map<String, String> p2 = new TreeMap<>();
+        p2.put("k2", "v2");
+        p2.put("k1", "v1");
+        assertEquals("k1=v1&k2=v2", FormatUtil.sortParam(p2));
+    }
+
+    @Test
+    public void fixArgs() {
+        assertArrayEquals(new Object[]{}, FormatUtil.fixArgs(0, "a", "b"));
+        assertArrayEquals(new Object[]{"a"}, FormatUtil.fixArgs(1, "a", "b"));
+        assertArrayEquals(new Object[]{"a","b"}, FormatUtil.fixArgs(2, "a", "b"));
+        assertArrayEquals(new Object[]{"a","b",""}, FormatUtil.fixArgs(3, "a", "b"));
+        assertArrayEquals(new Object[]{"a","",""}, FormatUtil.fixArgs(3, "a", null));
+        Object[] args = null;
+        assertArrayEquals(new Object[]{"","",""}, FormatUtil.fixArgs(3, args));
     }
 }

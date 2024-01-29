@@ -285,6 +285,9 @@ public class BoxedCastUtil {
         else if (obj instanceof char[]) {
             vs = BoxedCastUtil.list((char[]) obj);
         }
+        else if (obj instanceof short[]) {
+            vs = BoxedCastUtil.list((short[]) obj);
+        }
         else if (obj instanceof int[]) {
             vs = BoxedCastUtil.list((int[]) obj);
         }
@@ -296,6 +299,9 @@ public class BoxedCastUtil {
         }
         else if (obj instanceof double[]) {
             vs = BoxedCastUtil.list((double[]) obj);
+        }
+        else if (obj instanceof List) {
+            vs = (List<?>) obj;
         }
         else if (obj instanceof Collection) {
             vs = new ArrayList<>((Collection<?>) obj);

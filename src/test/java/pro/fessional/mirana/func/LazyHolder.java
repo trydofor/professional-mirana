@@ -20,12 +20,13 @@ public class LazyHolder {
     }
 
     public static void coupleCat() {
-        SystemOut.println("cat: miao");
+        SystemOut.println("cat.saying: miao");
     }
 
     public static class Dog {
         public Dog() {
-            SystemOut.println("dog: wang ");
+            System.setProperty("dog.saying","wang");
+            SystemOut.println("dog.saying: wang");
         }
     }
 }

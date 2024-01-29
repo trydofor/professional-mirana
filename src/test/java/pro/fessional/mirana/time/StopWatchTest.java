@@ -1,5 +1,6 @@
 package pro.fessional.mirana.time;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import pro.fessional.mirana.SystemOut;
 
@@ -35,9 +36,22 @@ class StopWatchTest {
         {
             final StopWatch.Watch watch = stopWatch.start("flat2");
             Thread.sleep(500);
+
+            watch.setMark("mark");
+            Assertions.assertEquals("mark", watch.getMark());
+            Assertions.assertTrue(watch.isRunning());
             watch.close();
+            Assertions.assertFalse(watch.isRunning());
+            Assertions.assertTrue(watch.getElapse() > 0);
+            Assertions.assertTrue(watch.getElapseMs() > 0);
         }
+
+        // nothing but coverage
+        Assertions.assertTrue(stopWatch.totalElapse() > 0);
+        Assertions.assertFalse(stopWatch.getWatches().isEmpty());
+        Assertions.assertFalse(stopWatch.isRunning());
         SystemOut.println(stopWatch);
+        stopWatch.clear();
     }
 
     void tree1(int tm) throws InterruptedException {

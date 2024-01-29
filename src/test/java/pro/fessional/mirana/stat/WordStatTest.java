@@ -1,7 +1,6 @@
 package pro.fessional.mirana.stat;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;
@@ -27,9 +26,8 @@ class WordStatTest {
     }
 
     @Test
-    @Disabled
-    void printRuoYi() {
+    void infoHere() {
         WordStat ws = new WordStat();
-        ws.printJavax(Paths.get("/Volumes/WORK-CS/Workspace/gitee.com/RuoYi"));
+        ws.printJavax(Paths.get("."));
     }
 }

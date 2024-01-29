@@ -784,35 +784,26 @@ public class BigDecimalUtil {
     }
 
     /**
-     * @see #unitUp(Object, BigDecimal, BigDecimal)
-     */
-    @NotNull
-    public static BigDecimal unitUp(Object num, BigDecimal unit) {
-        return unitUp(num, unit, ZERO);
-    }
-
-    /**
      * <pre>
-     * The `unit` is round up, null treated as zero, and scale is based on unit.
-     * Take weighing and pricing as an example, weighing accuracy 0.01, every 0.5 pricing
+     * The `unit` is round up, and scale is based on unit.
+     * Take weighing and pricing as an example, pricing unit=0.5, weighing accuracy=0.01
      * When x > 0.1, treated as 0.5, otherwise treated as 0.
      * When x > 0.6, treated as 1, otherwise treated as 0.5.
      * </pre>
      *
-     * @param num  the number
-     * @param unit the unit
-     * @param down less than or equal to the value is rounded off
+     * @param num      the number
+     * @param unit     the unit
+     * @param accuracy less than or equal to the value is rounded off
      */
     @NotNull
-    public static BigDecimal unitUp(Object num, BigDecimal unit, BigDecimal down) {
-        final int unitScale = unit.scale();
+    public static BigDecimal unitUp(Object num, @NotNull BigDecimal unit, @NotNull BigDecimal accuracy) {
         BigDecimal d = object(num, ZERO);
 
-        if (down == null) down = ZERO;
         BigDecimal[] dr = d.divideAndRemainder(unit);
         d = dr[0].multiply(unit);
 
-        if (compareTo(dr[1], down, unitScale, FLOOR) > 0) { // round up
+        final int unitScale = unit.scale();
+        if (compareTo(dr[1], accuracy, unitScale, FLOOR) > 0) { // round up
             d = d.add(unit);
         }
 
@@ -823,35 +814,26 @@ public class BigDecimalUtil {
     }
 
     /**
-     * @see #unitDown(Object, BigDecimal, BigDecimal)
-     */
-    @NotNull
-    public static BigDecimal unitDown(Object num, BigDecimal unit) {
-        return unitDown(num, unit, unit);
-    }
-
-    /**
      * <pre>
-     * The `unit` is round down, null treated as zero, and scale is based on unit.
-     * Take weighing and pricing as an example, weighing accuracy 0.01, every 0.5 pricing
+     * The `unit` is round down, and scale is based on unit.
+     * Take weighing and pricing as an example, pricing unit=0.5, weighing accuracy=0.01
      * When x > 0.4, treated as 0.5, otherwise treated as 0.
      * When x > 0.9, treated as 1, otherwise treated as 0.5.
      * </pre>
      *
-     * @param num  the number
-     * @param unit the unit
-     * @param upto greater than or equal to the value is rounded up
+     * @param num      the number
+     * @param unit     the unit
+     * @param accuracy greater than or equal to the value is rounded up
      */
     @NotNull
-    public static BigDecimal unitDown(Object num, BigDecimal unit, BigDecimal upto) {
-        final int unitScale = unit.scale();
-
+    public static BigDecimal unitDown(Object num, @NotNull BigDecimal unit, @NotNull BigDecimal accuracy) {
         BigDecimal d = object(num, ZERO);
 
         BigDecimal[] dr = d.divideAndRemainder(unit);
         d = dr[0].multiply(unit);
 
-        if (compareTo(dr[1], upto, unitScale, FLOOR) >= 0) { // round up
+        final int unitScale = unit.scale();
+        if (compareTo(dr[1], unit.subtract(accuracy), unitScale, FLOOR) > 0) { // round up
             d = d.add(unit);
         }
 
@@ -945,18 +927,13 @@ public class BigDecimalUtil {
         }
 
         @NotNull
-        public BigDecimal resultUnitUp(BigDecimal unit) {
-            return BigDecimalUtil.unitUp(value, unit);
+        public BigDecimal resultUnitUp(@NotNull BigDecimal unit, @NotNull BigDecimal accuracy) {
+            return BigDecimalUtil.unitUp(value, unit, accuracy);
         }
 
         @NotNull
-        public BigDecimal resultUnitUp(BigDecimal unit, BigDecimal zeroing) {
-            return BigDecimalUtil.unitUp(value, unit, zeroing);
-        }
-
-        @NotNull
-        public BigDecimal resultUnitDown(BigDecimal unit) {
-            return BigDecimalUtil.unitDown(value, unit);
+        public BigDecimal resultUnitDown(@NotNull BigDecimal unit, @NotNull BigDecimal accuracy) {
+            return BigDecimalUtil.unitDown(value, unit, accuracy);
         }
 
         @NotNull

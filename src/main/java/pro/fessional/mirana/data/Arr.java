@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 public class Arr {
 
     @SafeVarargs
-    public static <T> T[] of(T... ts) {
+    public static <T> T[] obj(T... ts) {
         return ts;
     }
 
@@ -55,7 +55,7 @@ public class Arr {
             return arr;
         }
         else {
-            boolean[] tmp = new boolean[arr.length * 2];
+            boolean[] tmp = new boolean[Math.max(idx, arr.length) + 1];
             System.arraycopy(arr, 0, tmp, 0, arr.length);
             tmp[idx] = v;
             return tmp;
@@ -69,7 +69,7 @@ public class Arr {
             return arr;
         }
         else {
-            byte[] tmp = new byte[arr.length * 2];
+            byte[] tmp = new byte[Math.max(idx, arr.length) + 1];
             System.arraycopy(arr, 0, tmp, 0, arr.length);
             tmp[idx] = v;
             return tmp;
@@ -83,7 +83,7 @@ public class Arr {
             return arr;
         }
         else {
-            short[] tmp = new short[arr.length * 2];
+            short[] tmp = new short[Math.max(idx, arr.length) + 1];
             System.arraycopy(arr, 0, tmp, 0, arr.length);
             tmp[idx] = v;
             return tmp;
@@ -97,7 +97,7 @@ public class Arr {
             return arr;
         }
         else {
-            char[] tmp = new char[arr.length * 2];
+            char[] tmp = new char[Math.max(idx, arr.length) + 1];
             System.arraycopy(arr, 0, tmp, 0, arr.length);
             tmp[idx] = v;
             return tmp;
@@ -111,7 +111,7 @@ public class Arr {
             return arr;
         }
         else {
-            int[] tmp = new int[arr.length * 2];
+            int[] tmp = new int[Math.max(idx, arr.length) + 1];
             System.arraycopy(arr, 0, tmp, 0, arr.length);
             tmp[idx] = v;
             return tmp;
@@ -125,7 +125,7 @@ public class Arr {
             return arr;
         }
         else {
-            long[] tmp = new long[arr.length * 2];
+            long[] tmp = new long[Math.max(idx, arr.length) + 1];
             System.arraycopy(arr, 0, tmp, 0, arr.length);
             tmp[idx] = v;
             return tmp;
@@ -139,7 +139,7 @@ public class Arr {
             return arr;
         }
         else {
-            float[] tmp = new float[arr.length * 2];
+            float[] tmp = new float[Math.max(idx, arr.length) + 1];
             System.arraycopy(arr, 0, tmp, 0, arr.length);
             tmp[idx] = v;
             return tmp;
@@ -153,7 +153,7 @@ public class Arr {
             return arr;
         }
         else {
-            double[] tmp = new double[arr.length * 2];
+            double[] tmp = new double[Math.max(idx, arr.length) + 1];
             System.arraycopy(arr, 0, tmp, 0, arr.length);
             tmp[idx] = v;
             return tmp;

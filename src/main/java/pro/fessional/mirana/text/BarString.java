@@ -59,7 +59,8 @@ public class BarString {
 
     private int index = 0;
     private boolean valid = true;
-    private int count = 0;
+    private int strLength = 0;
+    private int keyCount = 0;
 
     private final LinkedList<Ent> values = new LinkedList<>();
     private final boolean[] exists = new boolean[Bars.length];
@@ -68,11 +69,12 @@ public class BarString {
     }
 
     private void appendKey() {
+        keyCount++;
         values.add(Ent.Bar);
     }
 
     private void appendValue(@NotNull String str, boolean check) {
-        count += str.length();
+        strLength += str.length();
         values.add(new Ent(str, check));
 
         if (check && valid && str.indexOf(Bars[index]) >= 0) {
@@ -159,7 +161,7 @@ public class BarString {
         if (values.isEmpty()) return Null.Str;
 
         final char bar = Bars[index];
-        StringBuilder buff = new StringBuilder(count + values.size());
+        StringBuilder buff = new StringBuilder(strLength + values.size());
         for (Ent v : values) {
             if (v == Ent.Bar) {
                 buff.append(bar);
@@ -170,6 +172,22 @@ public class BarString {
         }
         buff.append(bar);
         return buff.toString();
+    }
+
+    @NotNull
+    public ArrayList<String> values(boolean nullToEmpty) {
+        ArrayList<String> list = new ArrayList<>(keyCount);
+        Ent lst = null;
+        for (Ent e : values) {
+            if (e != Ent.Bar) {
+                list.add(e.value);
+            }
+            else if (lst == Ent.Bar) {
+                list.add(nullToEmpty ? Null.Str : null);
+            }
+            lst = e;
+        }
+        return list;
     }
 
     private static class Ent {
@@ -199,7 +217,7 @@ public class BarString {
      * parse the BarString, item in list is not null.
      *
      * @param str     BarString
-     * @param max     max size, 0 means auto
+     * @param max     max size, -1 means auto
      * @param exactly return empty if the size is not equal the max.
      */
     @NotNull

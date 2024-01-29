@@ -1,6 +1,9 @@
 package pro.fessional.mirana.stat;
 
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import pro.fessional.mirana.SystemOut;
+import pro.fessional.mirana.time.Sleep;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -10,8 +13,24 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 class JvmStatTest {
 
-    @SuppressWarnings("all")
-    public static void main(String[] args) throws Exception {
+    @Test
+    void infoStat(){
+        int pid = JvmStat.jvmPid();
+        String jvm = JvmStat.jvmName();
+        SystemOut.println(pid);
+        SystemOut.println(jvm);
+
+        final JvmStat.Stat stat = JvmStat.stat();
+        JvmStat.buildCpuLoad(stat);
+        JvmStat.buildMemory(stat);
+        JvmStat.buildThread(stat);
+        JvmStat.buildRuntime(stat);
+        SystemOut.println(stat);
+    }
+
+    @Test
+    @Disabled("pressure")
+    void pressure() {
         final int p = Runtime.getRuntime().availableProcessors();
         SystemOut.println("Processors=" + p);
         AtomicInteger count = new AtomicInteger(p);
@@ -33,7 +52,7 @@ class JvmStatTest {
                                + ", free=" + runtime.freeMemory()
                                + ", max=" + runtime.maxMemory()
             );
-            Thread.sleep(1_000L);
+            Sleep.ignoreInterrupt(1_000L);
         }
     }
 }

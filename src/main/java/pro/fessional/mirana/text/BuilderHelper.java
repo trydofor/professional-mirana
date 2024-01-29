@@ -158,10 +158,11 @@ public class BuilderHelper {
 
         final int len = sb.length();
         for (T t : arr) {
-            if (t != null) {
-                sb.append(fn.apply(t));
+            R o = fn.apply(t);
+            if (o != null) {
+                sb.append(o);
             }
-            if (t != null || !skipNull) {
+            if (o != null || !skipNull) {
                 sb.append(jn);
             }
         }

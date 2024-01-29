@@ -376,7 +376,7 @@ public class DateFormatter {
      */
     @NotNull
     public static String date10(@Nullable Date date) {
-        return full19().format(date).substring(0, 8);
+        return full19().format(date).substring(0, 10);
     }
 
     /**
@@ -416,10 +416,10 @@ public class DateFormatter {
     public static String time(@Nullable Date date) {
         final String ft = full23().format(date);
         if (ft.endsWith(".000")) {
-            return ft.substring(9, 19);
+            return ft.substring(11, 19);
         }
         else {
-            return ft.substring(9);
+            return ft.substring(11);
         }
     }
 
@@ -428,7 +428,7 @@ public class DateFormatter {
      */
     @NotNull
     public static String time08(@Nullable Date date) {
-        return full19().format(date).substring(9);
+        return full19().format(date).substring(11);
     }
 
     /**
@@ -436,7 +436,7 @@ public class DateFormatter {
      */
     @NotNull
     public static String time12(@Nullable Date date) {
-        return full23().format(date).substring(9);
+        return full23().format(date).substring(11);
     }
 
 

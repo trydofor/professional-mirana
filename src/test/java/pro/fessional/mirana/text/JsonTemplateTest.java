@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import pro.fessional.mirana.bits.Base64;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -24,6 +25,33 @@ class JsonTemplateTest {
     }
 
     @Test
+    void testArray() {
+        byte[] bytes = "ab".getBytes();
+        final String j1 = JsonTemplate.obj(obj -> {
+            obj.putVal("charArray", "ab".toCharArray());
+            obj.putVal("byteArray", bytes);
+            obj.putVal("boolArray", new boolean[]{true, false});
+            obj.putVal("shortArray", new short[]{1, 2});
+            obj.putVal("intArray", new int[]{3, 4});
+            obj.putVal("longArray", new long[]{3, 4});
+            obj.putVal("floatArray", new float[]{5.0F, 6.0F});
+            obj.putVal("doubleArray", new double[]{7.0D, 8.0D});
+            obj.putArr("objArr", new Object[]{1, 2});
+        });
+        Assertions.assertEquals("{"
+                                + "\"charArray\":\"ab\","
+                                + "\"byteArray\":\"" + Base64.encode(bytes) + "\","
+                                + "\"boolArray\":[true,false],"
+                                + "\"shortArray\":[1,2],"
+                                + "\"intArray\":[3,4],"
+                                + "\"longArray\":[3,4],"
+                                + "\"floatArray\":[5.0,6.0],"
+                                + "\"doubleArray\":[7.0,8.0],"
+                                + "\"objArr\":[1,2]"
+                                + "}", j1);
+    }
+
+    @Test
     void testSimple() {
         final String j1 = JsonTemplate.obj(obj -> {
             obj.putVal("msgtype", "mar\"kd\\own");
@@ -33,9 +61,10 @@ class JsonTemplateTest {
         Assertions.assertEquals("{\"msgtype\":\"mar\\\"kd\\\\own\",\"success\":true}", j1);
         final String j2 = JsonTemplate.arr(arr -> {
             arr.addVal(true);
-            arr.addVal(1).addVal("mar\"kd\\own");
+            arr.addVal(new Object[]{1, 2})
+               .addVal("mar\"kd\\own");
         });
-        Assertions.assertEquals("[true,1,\"mar\\\"kd\\\\own\"]", j2);
+        Assertions.assertEquals("[true,1,2,\"mar\\\"kd\\\\own\"]", j2);
     }
 
     @Test
@@ -55,14 +84,14 @@ class JsonTemplateTest {
         ).replaceAll("[ \n]+", "");
 
         final String j1 = JsonTemplate.obj(top -> top
-                .putObj("at", ob -> ob
-                        .putArr("atMobiles", ar -> ar
-                                .addVal("180xxxxxx"))
-                        .putVal("isAtAll", false))
-                .putObj("text", ob -> ob
-                        .putVal("content", "Look how the prey scatters before us."))
-                .putVal("msgtype", "text"))
-                .replaceAll("[ \n]+", "");
+                                              .putObj("at", ob -> ob
+                                                      .putArr("atMobiles", ar -> ar
+                                                              .addVal("180xxxxxx"))
+                                                      .putVal("isAtAll", false))
+                                              .putObj("text", ob -> ob
+                                                      .putVal("content", "Look how the prey scatters before us."))
+                                              .putVal("msgtype", "text"))
+                                      .replaceAll("[ \n]+", "");
         Assertions.assertEquals(r1, j1);
 
         final String f1 = new JSONObject()

@@ -8,7 +8,9 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
@@ -69,6 +71,9 @@ public class DateParserTest {
         assertEquals(ZoneId.of("+0800"), DateParser.parseZoned(str1).getZone());
         assertEquals(ZoneId.of("GMT+8"), DateParser.parseZoned(str2).getZone());
         assertEquals(ZoneId.of("Europe/Paris"), DateParser.parseZoned(str3).getZone());
+
+        assertEquals(ld1, DateParser.parseZoned(ld1, zid));
+        assertEquals(ld1, DateParser.parseZoned(OffsetDateTime.of(ld1.toLocalDateTime(), ld1.getOffset()), zid));
     }
 
     @Test
@@ -189,6 +194,15 @@ public class DateParserTest {
         assertEquals(LocalDate.of(2021, 1, 2), DateParser.parseDate("2021-01-02", f1));
         assertEquals(LocalDate.of(2021, 1, 1), DateParser.parseDate("2021-1", f1));
         assertEquals(LocalDate.of(2021, 1, 1), DateParser.parseDate("21", f1));
+    }
+
+    @Test
+    public void parseOffset() {
+        ZoneId zid = ZoneId.of("+0800");
+        OffsetDateTime odt = OffsetDateTime.of(2024, 1, 28, 20, 19, 49, 0, ZoneOffset.ofHours(8));
+        System.out.println(DateFormatter.FMT_FULL_OZ.format(odt));
+        assertEquals(odt, DateParser.parseOffset("2024-01-28 20:19:49 +08:00", zid, DateFormatter.FMT_FULL_OZ));
+
     }
 
     @Test

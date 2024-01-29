@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 
 /**
@@ -20,6 +22,32 @@ class BarStringTest {
         final ArrayList<String> split = BarString.split(str, -1, false);
         Assertions.assertEquals("", str);
         Assertions.assertEquals(0, split.size());
+    }
+
+    @Test
+    void append() {
+        BarString bs = new BarString();
+        bs.append("str");
+        bs.append(BigDecimal.ONE);
+        bs.append((Object) null);
+        bs.append(1L);
+        bs.append(2);
+        bs.append(true);
+        bs.append(3F);
+        bs.append(4D);
+        String str = bs.toString();
+
+        ArrayList<String> values = bs.values(true);
+        Assertions.assertEquals(values, BarString.split(str));
+
+        String v0 = values.get(0);
+        String ve = str.substring(v0.length() + 2, str.length() - 1);
+        Assertions.assertEquals(Arrays.asList(v0, ve), BarString.split(str, 2));
+
+        String bad = str.substring(0, str.length() - 1);
+        Assertions.assertEquals(Collections.singletonList(bad), BarString.split(bad, 2, true));
+
+        Assertions.assertEquals(Collections.emptyList(), BarString.split(str, 50, true));
     }
 
     @Test

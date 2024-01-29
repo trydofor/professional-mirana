@@ -32,19 +32,16 @@ public class FullCharUtil {
     @NotNull
     public static String leftCut(@Nullable CharSequence str, int count, int off) {
         if (str == null || count < 1) return "";
+        StringBuilder sb = new StringBuilder(count);
         int hzCnt = 0;
-        final int hfCnt = count * 2;
-        StringBuilder sb = new StringBuilder(hfCnt);
-
-        int len = str.length();
-        for (int i = Math.max(off, 0); i < len; i++) {
+        for (int i = Math.max(off, 0), len = str.length(); i < len; i++) {
             char c = str.charAt(i);
             hzCnt += c <= Byte.MAX_VALUE ? 1 : 2;
-            if (hzCnt == hfCnt) {
+            if (hzCnt == count) {
                 sb.append(c);
                 break;
             }
-            else if (hzCnt > hfCnt) {
+            else if (hzCnt > count) {
                 break;
             }
             else {
@@ -75,17 +72,16 @@ public class FullCharUtil {
     public static String rightCut(@Nullable CharSequence str, int count, int off) {
         if (str == null || count < 1) return "";
         int hzCnt = 0;
-        final int hfCnt = count * 2;
-        StringBuilder sb = new StringBuilder(hfCnt);
+        StringBuilder sb = new StringBuilder(count);
 
         for (int i = str.length() - (off < 0 ? 1 : off + 1); i >= 0; i--) {
             char c = str.charAt(i);
             hzCnt += c <= Byte.MAX_VALUE ? 1 : 2;
-            if (hzCnt == hfCnt) {
+            if (hzCnt == count) {
                 sb.append(c);
                 break;
             }
-            else if (hzCnt > hfCnt) {
+            else if (hzCnt > count) {
                 break;
             }
             else {
