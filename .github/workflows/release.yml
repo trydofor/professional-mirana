@@ -1,5 +1,5 @@
 name: Release-To-OssRh
-run-name: Deploy ${{github.event.release.tag_name}} to Sonatype by @${{ github.actor }}
+run-name: Release ${{github.ref_name}} by @${{ github.event_name }}
 
 on:
   workflow_dispatch:
@@ -76,6 +76,9 @@ jobs:
           echo $_ver
           echo "WINGS_VERSION=$_ver" >> "$GITHUB_OUTPUT"
           
+          echo "MVN_COVERAGE=${{ inputs.testCoverReport || github.event_name == 'release' }}" >> "$GITHUB_OUTPUT"
+          echo "MVN_DEPLOYRH=${{ inputs.deployOssrh || github.event_name == 'release' }}" >> "$GITHUB_OUTPUT"
+          
           mvn -v
           git --no-pager log --graph -10 --pretty=format:'%H - %ai %d %s'
           
@@ -95,7 +98,7 @@ jobs:
 
       ## report if not release
       - name: Test Coverage ${{ steps.settings.outputs.WINGS_VERSION }} ${{ steps.settings.outputs.GIT_BRANCH }}
-        if: inputs.testCoverReport
+        if: steps.settings.outputs.MVN_COVERAGE
         run: >
           mvn 
           -P coverage
@@ -106,7 +109,7 @@ jobs:
           JAVA_HOME: ${{ steps.settings.outputs.JAVA_HOME }}
       ## import gpp private key
       - name: Import GPG key
-        if: inputs.deployOssrh
+        if: steps.settings.outputs.MVN_DEPLOYRH
         uses: crazy-max/ghaction-import-gpg@v6
         with:
           gpg_private_key: ${{ secrets.MVN_GPG_SKEY }}
@@ -114,7 +117,7 @@ jobs:
 
       ## maven deploy
       - name: Deploy ${{ steps.settings.outputs.WINGS_VERSION }} ${{ steps.settings.outputs.GIT_BRANCH }}
-        if: inputs.deployOssrh
+        if: steps.settings.outputs.MVN_DEPLOYRH
         run: >
           mvn 
           -P ossrh
