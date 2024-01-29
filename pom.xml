@@ -60,7 +60,7 @@
     </issueManagement>
 
     <properties>
-        <revision>2.6.5-SNAPSHOT</revision>
+        <revision>2.7.0-SNAPSHOT</revision>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -72,8 +72,8 @@
         <!-- test -->
         <junit.version>5.10.1</junit.version>
         <jmh.version>1.37</jmh.version>
-        <mysql.version>8.2.0</mysql.version>
-        <fastjson2.version>2.0.44</fastjson2.version>
+        <mysql.version>8.3.0</mysql.version>
+        <fastjson2.version>2.0.45</fastjson2.version>
         <sulky-ulid.version>8.3.0</sulky-ulid.version>
     </properties>
 
@@ -175,7 +175,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.2.3</version>
+                <version>3.2.5</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -235,7 +235,7 @@
                 <!-- https://www.mojohaus.org/flatten-maven-plugin/flatten-mojo.html -->
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>flatten-maven-plugin</artifactId>
-                <version>1.5.0</version>
+                <version>1.6.0</version>
                 <configuration>
                     <updatePomFile>true</updatePomFile>
                     <flattenMode>resolveCiFriendliesOnly</flattenMode>
