@@ -197,7 +197,7 @@ public class GitStat {
         StringBuilder out = new StringBuilder();
         ByteArrayOutputStream buf = new ByteArrayOutputStream();
         for (String s : str) {
-            if (s == null || s.length() == 0) continue;
+            if (s == null || s.isEmpty()) continue;
 
             for (int i = 0, len = s.length(); i < len; i++) {
                 char c = s.charAt(i);

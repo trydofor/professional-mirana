@@ -139,7 +139,7 @@ public interface Z {
         for (CharSequence t : ts) {
             if (t != null && t.length() > 0) {
                 String s = t.toString().trim();
-                if (s.length() > 0) {
+                if (!s.isEmpty()) {
                     try {
                         return new BigDecimal(s);
                     }
@@ -177,7 +177,7 @@ public interface Z {
         for (CharSequence t : ts) {
             if (t != null && t.length() > 0) {
                 String s = t.toString().trim();
-                if (s.length() > 0) {
+                if (!s.isEmpty()) {
                     try {
                         return Long.valueOf(s);
                     }
@@ -215,7 +215,7 @@ public interface Z {
         for (CharSequence t : ts) {
             if (t != null && t.length() > 0) {
                 String s = t.toString().trim();
-                if (s.length() > 0) {
+                if (!s.isEmpty()) {
                     try {
                         return Integer.valueOf(s);
                     }
@@ -330,7 +330,7 @@ public interface Z {
         for (CharSequence t : ts) {
             if (t != null && t.length() > 0) {
                 String s = t.toString().trim();
-                if (s.length() > 0) return s;
+                if (!s.isEmpty()) return s;
             }
         }
         return d;

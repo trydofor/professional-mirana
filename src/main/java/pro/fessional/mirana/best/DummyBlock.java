@@ -28,7 +28,9 @@ public class DummyBlock {
     /**
      * statement has empty body
      */
+    @SuppressWarnings("EmptyMethod")
     public static void empty() {
+        // ignore, need empty
     }
 
     /**

@@ -68,7 +68,7 @@ public class EqualsUtil {
     public static boolean inVal(Number a, Number b, Number... nums) {
         if (a == null || b == null || nums == null) return false;
         final boolean e = eqVal(a, b);
-        return e ? e : inVal(a, Arrays.asList(nums));
+        return e || inVal(a, Arrays.asList(nums));
 
     }
 
@@ -133,7 +133,7 @@ public class EqualsUtil {
     public static boolean inCase(String a, CharSequence b, CharSequence... strs) {
         if (a == null || b == null || strs == null) return false;
         final boolean e = eqCase(a, b);
-        return e ? e : inCase(a, Arrays.asList(strs));
+        return e || inCase(a, Arrays.asList(strs));
     }
 
     public static boolean inCase(String a, Iterable<? extends CharSequence> strs) {
@@ -159,7 +159,7 @@ public class EqualsUtil {
     public static boolean inCaseless(String a, CharSequence b, CharSequence... strs) {
         if (a == null || b == null || strs == null) return false;
         final boolean e = eqCaseless(a, b);
-        return e ? e : inCaseless(a, Arrays.asList(strs));
+        return e || inCaseless(a, Arrays.asList(strs));
     }
 
     public static boolean inCaseless(String a, Iterable<? extends CharSequence> strs) {

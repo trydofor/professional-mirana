@@ -41,7 +41,7 @@ public interface DataResult<T> extends Serializable {
      */
     default boolean hasMessage() {
         String msg = getMessage();
-        return msg != null && msg.length() > 0;
+        return msg != null && !msg.isEmpty();
     }
 
     /**

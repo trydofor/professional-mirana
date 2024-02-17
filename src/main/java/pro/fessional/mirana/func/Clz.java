@@ -35,13 +35,12 @@ public class Clz {
                         if (p < 0) throw new RuntimeException("Invalid signature: " + signature);
                         list.add(Class.forName(signature.substring(i, p + 1).replace('/', '.')));
                         i = p;
-                        break;
                     }
                     else {
                         list.add(Class.forName(signature.substring(i, Math.min(j + 1, len))));
                         i = j;
-                        break;
                     }
+                    break;
                 }
             }
             else if (c == 'B') list.add(byte.class);

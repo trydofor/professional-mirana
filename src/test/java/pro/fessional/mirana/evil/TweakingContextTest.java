@@ -2,6 +2,7 @@ package pro.fessional.mirana.evil;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import pro.fessional.mirana.data.Null;
 
 /**
  * @author trydofor
@@ -10,7 +11,7 @@ import org.junit.jupiter.api.Test;
 class TweakingContextTest {
 
     @Test
-    void resetThread() throws ThreadLocalAttention {
+    void resetThread() {
         final TweakingContext<String> ctx = new TweakingContext<>(() -> "d");
 
         Assertions.assertEquals("d", ctx.defaultValue(false));
@@ -22,7 +23,7 @@ class TweakingContextTest {
         Assertions.assertEquals("g", ctx.globalValue(false));
         Assertions.assertEquals("g", ctx.current(true));
 
-        ctx.initThread(new ThreadLocal<>(), true);
+        ctx.initThread(Null.Str);
         ctx.tweakThread(() -> "t");
         Assertions.assertEquals("t", ctx.threadValue(true));
         Assertions.assertEquals("t", ctx.current(true));

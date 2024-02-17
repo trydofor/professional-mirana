@@ -79,7 +79,7 @@ public class StringTemplate {
         @NotNull
         @Contract("_,_->this")
         public B bindStr(String str, Object obj) {
-            if (str != null && str.length() > 0) {
+            if (str != null && !str.isEmpty()) {
                 final K k = new K(false, str, keys.size());
                 keys.add(k);
                 objs.add(obj);
@@ -90,7 +90,7 @@ public class StringTemplate {
         @NotNull
         @Contract("_,_->this")
         public B bindReg(String reg, Object obj) {
-            if (reg != null && reg.length() > 0) {
+            if (reg != null && !reg.isEmpty()) {
                 final K k = new K(true, reg, keys.size());
                 keys.add(k);
                 objs.add(obj);

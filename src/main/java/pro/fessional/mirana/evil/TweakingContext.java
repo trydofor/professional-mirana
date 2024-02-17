@@ -1,14 +1,14 @@
 package pro.fessional.mirana.evil;
 
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
+import pro.fessional.mirana.dync.OrderedSpi;
 
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
 /**
  * <pre>
- * init - should init before the service and called once.
+ * default - should init before the service and called once.
  * global - global scope, should be used at the system level.
  * thread - thread scope, should use try {tweak} finally{reset} pattern.
  * </pre>
@@ -20,18 +20,22 @@ public class TweakingContext<T> {
 
     private final AtomicReference<Supplier<T>> defaultValue = new AtomicReference<>();
     private final AtomicReference<Supplier<T>> globalValue = new AtomicReference<>();
-    private final ThreadLocalProxy<Supplier<T>> threadValue = new ThreadLocalProxy<>();
+    private final ThreadLocal<Supplier<T>> threadValue;
 
     /**
      * without default value
      */
+    @SuppressWarnings("unchecked")
     public TweakingContext() {
+        ThreadLocalProvider spi = OrderedSpi.first(ThreadLocalProvider.class);
+        threadValue = spi == null ? new ThreadLocal<>() : (ThreadLocal<Supplier<T>>) spi.get();
     }
 
     /**
      * init with default value
      */
     public TweakingContext(T initDefault) {
+        this();
         initDefault(initDefault);
     }
 
@@ -39,6 +43,7 @@ public class TweakingContext<T> {
      * init with default value
      */
     public TweakingContext(Supplier<T> initDefault) {
+        this();
         initDefault(initDefault);
     }
 
@@ -73,22 +78,29 @@ public class TweakingContext<T> {
     /**
      * init thread value
      */
-    public void initThread(@NotNull ThreadLocal<Supplier<T>> threadLocal, boolean tryToCleanOld) throws ThreadLocalAttention {
-        threadValue.replaceBackend(threadLocal, tryToCleanOld);
+    public void initThread(T value) {
+        tweakThread(value);
+    }
+
+    /**
+     * init thread value
+     */
+    public void initThread(Supplier<T> value) {
+        tweakThread(value);
     }
 
     /**
      * tweak global value
      */
-    public void tweakGlobal(T stack) {
-        globalValue.set(() -> stack);
+    public void tweakGlobal(T value) {
+        globalValue.set(() -> value);
     }
 
     /**
      * tweak global value
      */
-    public void tweakGlobal(Supplier<T> stack) {
-        globalValue.set(stack);
+    public void tweakGlobal(Supplier<T> value) {
+        globalValue.set(value);
     }
 
     /**
@@ -101,25 +113,15 @@ public class TweakingContext<T> {
     /**
      * tweak thread value. should use try {tweak} finally{reset} pattern
      */
-    public void tweakThread(T stack) {
-        if (stack == null) {
-            threadValue.remove();
-        }
-        else {
-            threadValue.set(() -> stack);
-        }
+    public void tweakThread(T value) {
+        threadValue.set(() -> value);
     }
 
     /**
      * tweak thread value. should use try {tweak} finally{reset} pattern
      */
-    public void tweakThread(Supplier<T> stack) {
-        if (stack == null) {
-            threadValue.remove();
-        }
-        else {
-            threadValue.set(stack);
-        }
+    public void tweakThread(Supplier<T> value) {
+        threadValue.set(value);
     }
 
     /**

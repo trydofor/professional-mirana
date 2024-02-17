@@ -334,11 +334,13 @@ public class BuilderHelper {
         }
 
         @Override
+        @NotNull
         public IntStream chars() {
             return builder.chars();
         }
 
         @Override
+        @NotNull
         public IntStream codePoints() {
             return builder.codePoints();
         }
@@ -354,6 +356,7 @@ public class BuilderHelper {
         }
 
         @Override
+        @NotNull
         public CharSequence subSequence(int start, int end) {
             return builder.subSequence(start, end);
         }

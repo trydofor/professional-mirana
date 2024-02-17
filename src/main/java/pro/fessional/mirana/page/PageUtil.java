@@ -99,7 +99,7 @@ public class PageUtil {
 
         @Contract("_,_->this")
         public Sb by(String key, boolean asc) {
-            if (key != null && key.length() > 0) {
+            if (key != null && !key.isEmpty()) {
                 buf.append(SORT_DELI);
                 if (!asc) buf.append(SORT_DESC);
                 buf.append(key);

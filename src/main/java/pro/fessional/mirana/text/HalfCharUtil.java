@@ -19,7 +19,8 @@ public class HalfCharUtil {
             if (c == '\u3000') {
                 c = ' ';
             }
-            else if (c > '\uFF00' && c < '\uFF5F') {
+            else //noinspection UnnecessaryUnicodeEscape
+                if (c > '\uFF00' && c < '\uFF5F') {
                 c = (char) (c - 65248);
             }
             sb.append(c);
@@ -31,7 +32,8 @@ public class HalfCharUtil {
         if (c == '\u3000') {
             c = ' ';
         }
-        else if (c > '\uFF00' && c < '\uFF5F') {
+        else //noinspection UnnecessaryUnicodeEscape
+            if (c > '\uFF00' && c < '\uFF5F') {
             c = (char) (c - 65248);
         }
         return c;

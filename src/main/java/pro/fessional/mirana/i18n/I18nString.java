@@ -67,7 +67,7 @@ public class I18nString implements I18nAware {
 
     @Contract("_ -> this")
     public I18nString setHint(String hint) {
-        this.hint = hint == null ? "" : hint;;
+        this.hint = hint == null ? "" : hint;
         return this;
     }
 
@@ -114,8 +114,8 @@ public class I18nString implements I18nAware {
 
     @Override
     public String toString() {
-        if (i18n != null && i18n.length() > 0) return i18n;
-        if (hint != null && hint.length() > 0) return hint;
+        if (i18n != null && !i18n.isEmpty()) return i18n;
+        if (hint != null && !hint.isEmpty()) return hint;
         return code;
     }
 

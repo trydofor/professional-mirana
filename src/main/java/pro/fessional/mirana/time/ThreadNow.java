@@ -61,6 +61,7 @@ public class ThreadNow {
      *
      * @see #UtcTimeZone
      */
+    @SuppressWarnings("SameReturnValue")
     public static TimeZone utcTimeZone() {
         return UtcTimeZone;
     }
@@ -70,6 +71,7 @@ public class ThreadNow {
      *
      * @see #UtcZoneId
      */
+    @SuppressWarnings("SameReturnValue")
     public static ZoneId utcZoneId() {
         return UtcZoneId;
     }

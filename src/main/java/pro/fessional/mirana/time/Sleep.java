@@ -59,6 +59,7 @@ public class Sleep {
         boolean rup = false;
         do {
             try {
+                //noinspection BusyWait
                 Thread.sleep(ms);
                 break;
             }

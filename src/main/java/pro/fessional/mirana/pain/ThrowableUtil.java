@@ -54,12 +54,12 @@ public class ThrowableUtil {
         boolean caused = c != null;
         try {
             if (reverse) {
-                if (caused) print(buffer, c, reverse, shorten, stack, max, nextDepth);
-                doPrint(buffer, t, reverse, shorten, !caused, caused ? stack : Integer.MAX_VALUE, cur);
+                if (caused) print(buffer, c, true, shorten, stack, max, nextDepth);
+                doPrint(buffer, t, true, shorten, !caused, caused ? stack : Integer.MAX_VALUE, cur);
             }
             else {
-                doPrint(buffer, t, reverse, shorten, !caused, caused ? stack : Integer.MAX_VALUE, cur);
-                if (caused) print(buffer, c, reverse, shorten, stack, max, nextDepth);
+                doPrint(buffer, t, false, shorten, !caused, caused ? stack : Integer.MAX_VALUE, cur);
+                if (caused) print(buffer, c, false, shorten, stack, max, nextDepth);
             }
         }
         catch (IOException e) {
@@ -164,7 +164,7 @@ public class ThrowableUtil {
                 t = x;
             }
         }
-        return t;
+        return null;
     }
 
     /**
