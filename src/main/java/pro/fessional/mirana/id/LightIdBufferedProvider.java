@@ -200,13 +200,15 @@ public class LightIdBufferedProvider implements LightIdProvider {
 
     /**
      * Whether to preload a fixed count of ids.
-     * fixed if greater than zero, dynamic otherwise
+     * fixed if ge FIX_COUNT, dynamic otherwise
      *
-     * @param n count, Fixed count if greater than 0
+     * @param n count, Fixed count if ge FIX_COUNT
      * @return success or not
      * @see #FIX_COUNT
      */
     public boolean setFixCount(int n) {
+        if (n < FIX_COUNT) return false;
+
         loadFixCount = n;
         return true;
     }

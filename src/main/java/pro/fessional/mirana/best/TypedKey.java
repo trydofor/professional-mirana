@@ -67,6 +67,7 @@ public abstract class TypedKey<V> {
         if (this == o) return true;
         if (!(o instanceof TypedReg)) return false;
         TypedReg<?, ?> reg = (TypedReg<?, ?>) o;
+        //noinspection EqualsBetweenInconvertibleTypes
         return Objects.equals(regType, reg.regType);
     }
 

@@ -123,6 +123,7 @@ public class Bytes {
         if (ob == null) return 0;
 
         if (c > Byte.MAX_VALUE) {
+            //noinspection UnnecessaryLocalVariable
             final int i = c;
             ob[0] = '\\';
             ob[1] = 'u';

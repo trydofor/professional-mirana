@@ -41,6 +41,7 @@ public class SlotCodeTest {
         }
 
         SystemOut.println("cost=" + (System.currentTimeMillis() - sms));
+        sc.reset();
         int cur = 0;
         int cnt = 0;
         for (Map.Entry<Integer, AtomicInteger> entry : count.entrySet()) {

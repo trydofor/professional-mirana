@@ -237,7 +237,7 @@ public class PageResult<E> extends R<Collection<E>> implements Iterable<E> {
 
     @Contract("_->this")
     public PageResult<E> addData(Collection<E> ds) {
-        if (ds != null && ds.size() > 0) {
+        if (ds != null && !ds.isEmpty()) {
             Collection<E> data = getData();
             if (data == empty) {
                 data = new ArrayList<>(size > 0 ? size : 20);
@@ -250,7 +250,7 @@ public class PageResult<E> extends R<Collection<E>> implements Iterable<E> {
     @Override
     public boolean hasData() {
         final Collection<E> data = getData();
-        return data.size() > 0;
+        return !data.isEmpty();
     }
 
     @NotNull

@@ -715,7 +715,7 @@ public class DateParser {
 
     // /////////////////////////////
 
-    enum Ptn {
+    public enum Ptn {
         DATE(8, new String[]{"2000", "01", "01"}),
         TIME(9, new String[]{"00", "00", "00", "000"}),
         FULL(17, new String[]{"2000", "01", "01", "00", "00", "00", "000"}),

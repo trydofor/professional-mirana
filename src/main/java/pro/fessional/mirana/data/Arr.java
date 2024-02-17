@@ -69,7 +69,7 @@ public class Arr {
             return arr;
         }
         else {
-            byte[] tmp = new byte[Math.max(idx, arr.length) + 1];
+            byte[] tmp = new byte[idx + 1];
             System.arraycopy(arr, 0, tmp, 0, arr.length);
             tmp[idx] = v;
             return tmp;
@@ -83,7 +83,7 @@ public class Arr {
             return arr;
         }
         else {
-            short[] tmp = new short[Math.max(idx, arr.length) + 1];
+            short[] tmp = new short[idx + 1];
             System.arraycopy(arr, 0, tmp, 0, arr.length);
             tmp[idx] = v;
             return tmp;
@@ -97,7 +97,7 @@ public class Arr {
             return arr;
         }
         else {
-            char[] tmp = new char[Math.max(idx, arr.length) + 1];
+            char[] tmp = new char[idx + 1];
             System.arraycopy(arr, 0, tmp, 0, arr.length);
             tmp[idx] = v;
             return tmp;
@@ -111,7 +111,7 @@ public class Arr {
             return arr;
         }
         else {
-            int[] tmp = new int[Math.max(idx, arr.length) + 1];
+            int[] tmp = new int[idx + 1];
             System.arraycopy(arr, 0, tmp, 0, arr.length);
             tmp[idx] = v;
             return tmp;
@@ -125,7 +125,7 @@ public class Arr {
             return arr;
         }
         else {
-            long[] tmp = new long[Math.max(idx, arr.length) + 1];
+            long[] tmp = new long[idx + 1];
             System.arraycopy(arr, 0, tmp, 0, arr.length);
             tmp[idx] = v;
             return tmp;
@@ -139,7 +139,7 @@ public class Arr {
             return arr;
         }
         else {
-            float[] tmp = new float[Math.max(idx, arr.length) + 1];
+            float[] tmp = new float[idx + 1];
             System.arraycopy(arr, 0, tmp, 0, arr.length);
             tmp[idx] = v;
             return tmp;
@@ -153,7 +153,7 @@ public class Arr {
             return arr;
         }
         else {
-            double[] tmp = new double[Math.max(idx, arr.length) + 1];
+            double[] tmp = new double[idx + 1];
             System.arraycopy(arr, 0, tmp, 0, arr.length);
             tmp[idx] = v;
             return tmp;

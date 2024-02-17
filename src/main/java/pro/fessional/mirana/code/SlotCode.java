@@ -28,7 +28,6 @@ public class SlotCode {
     }
 
     public final int size;
-    private final int last;
     private final Slot[] slot;
     private final Random rand;
 
@@ -49,7 +48,7 @@ public class SlotCode {
     public SlotCode(int size, Random rand) {
         final int page = (size - 1) / bits + 1;
         this.size = size;
-        this.last = (1 << (bits - size % bits)) - 1;
+        int last = (1 << (bits - size % bits)) - 1;
         this.rand = rand;
         this.slot = new Slot[page];
         for (int i = 0; i < page; i++) {
