@@ -30,7 +30,7 @@ public class AssertState {
 
     @Contract("false, _, _ -> fail")
     public static void isTrue(boolean b, @NotNull CodeEnum code, Object... args) {
-        if (!b) throw new BadStateException(false, code, args);
+        if (!b) throw new BadStateException(code, args);
     }
 
     //
@@ -46,7 +46,7 @@ public class AssertState {
 
     @Contract("true, _, _ -> fail")
     public static void isFalse(boolean b, @NotNull CodeEnum code, Object... args) {
-        if (b) throw new BadStateException(false, code, args);
+        if (b) throw new BadStateException(code, args);
     }
 
     // ////
@@ -62,7 +62,7 @@ public class AssertState {
 
     @Contract("!null, _, _ -> fail")
     public static void isNull(@Nullable Object b, @NotNull CodeEnum code, Object... args) {
-        if (b != null) throw new BadStateException(false, code, args);
+        if (b != null) throw new BadStateException(code, args);
     }
 
     //
@@ -78,7 +78,7 @@ public class AssertState {
 
     @Contract("null, _, _ -> fail")
     public static void notNull(@Nullable Object b, @NotNull CodeEnum code, Object... args) {
-        if (b == null) throw new BadStateException(false, code, args);
+        if (b == null) throw new BadStateException(code, args);
     }
 
     // ////
@@ -91,7 +91,7 @@ public class AssertState {
     }
 
     public static void isEmpty(@Nullable CharSequence c, @NotNull CodeEnum code, Object... args) {
-        if (c != null && c.length() > 0) throw new BadStateException(false, code, args);
+        if (c != null && c.length() > 0) throw new BadStateException(code, args);
     }
 
     //
@@ -107,7 +107,7 @@ public class AssertState {
 
     @Contract("null, _, _ -> fail")
     public static void notEmpty(@Nullable CharSequence c, @NotNull CodeEnum code, Object... args) {
-        if (c == null || c.length() == 0) throw new BadStateException(false, code, args);
+        if (c == null || c.length() == 0) throw new BadStateException(code, args);
     }
 
     // ////
@@ -120,7 +120,7 @@ public class AssertState {
     }
 
     public static void isEmpty(@Nullable Collection<?> c, @NotNull CodeEnum code, Object... args) {
-        if (c != null && !c.isEmpty()) throw new BadStateException(false, code, args);
+        if (c != null && !c.isEmpty()) throw new BadStateException(code, args);
     }
 
     //
@@ -136,7 +136,7 @@ public class AssertState {
 
     @Contract("null, _, _ -> fail")
     public static void notEmpty(@Nullable Collection<?> c, @NotNull CodeEnum code, Object... args) {
-        if (c == null || c.isEmpty()) throw new BadStateException(false, code, args);
+        if (c == null || c.isEmpty()) throw new BadStateException(code, args);
     }
 
     // ////
@@ -149,7 +149,7 @@ public class AssertState {
     }
 
     public static void isEmpty(@Nullable Map<?, ?> c, @NotNull CodeEnum code, Object... args) {
-        if (c != null && !c.isEmpty()) throw new BadStateException(false, code, args);
+        if (c != null && !c.isEmpty()) throw new BadStateException(code, args);
     }
 
     //
@@ -165,7 +165,7 @@ public class AssertState {
 
     @Contract("null, _, _ -> fail")
     public static void notEmpty(@Nullable Map<?, ?> c, @NotNull CodeEnum code, Object... args) {
-        if (c == null || c.isEmpty()) throw new BadStateException(false, code, args);
+        if (c == null || c.isEmpty()) throw new BadStateException(code, args);
     }
 
     // ////
@@ -178,7 +178,7 @@ public class AssertState {
     }
 
     public static void isEmpty(@Nullable Object[] c, @NotNull CodeEnum code, Object... args) {
-        if (c != null && c.length > 0) throw new BadStateException(false, code, args);
+        if (c != null && c.length > 0) throw new BadStateException(code, args);
     }
 
     //
@@ -194,7 +194,7 @@ public class AssertState {
 
     @Contract("null, _, _ -> fail")
     public static void notEmpty(@Nullable Object[] c, @NotNull CodeEnum code, Object... args) {
-        if (c == null || c.length == 0) throw new BadStateException(false, code, args);
+        if (c == null || c.length == 0) throw new BadStateException(code, args);
     }
 
 
@@ -211,7 +211,7 @@ public class AssertState {
 
     public static <T extends Comparable<T>> void aEqb(@Nullable T a, @Nullable T b, @NotNull CodeEnum code, Object... args) {
         if (a == null && b == null) return;
-        if (a == null || !a.equals(b)) throw new BadStateException(false, code, args);
+        if (a == null || !a.equals(b)) throw new BadStateException(code, args);
     }
 
     //
@@ -227,7 +227,7 @@ public class AssertState {
 
     public static <T extends Comparable<T>> void aGeb(@Nullable T a, @Nullable T b, @NotNull CodeEnum code, Object... args) {
         if (a == null && b == null) return;
-        if (a == null || b == null || a.compareTo(b) < 0) throw new BadStateException(false, code, args);
+        if (a == null || b == null || a.compareTo(b) < 0) throw new BadStateException(code, args);
     }
 
     //
@@ -240,7 +240,7 @@ public class AssertState {
     }
 
     public static <T extends Comparable<T>> void aGtb(@Nullable T a, @Nullable T b, @NotNull CodeEnum code, Object... args) {
-        if (a == null || b == null || a.compareTo(b) <= 0) throw new BadStateException(false, code, args);
+        if (a == null || b == null || a.compareTo(b) <= 0) throw new BadStateException(code, args);
     }
 
     //
@@ -256,7 +256,7 @@ public class AssertState {
 
     public static <T extends Comparable<T>> void aLeb(@Nullable T a, @Nullable T b, @NotNull CodeEnum code, Object... args) {
         if (a == null && b == null) return;
-        if (a == null || b == null || a.compareTo(b) > 0) throw new BadStateException(false, code, args);
+        if (a == null || b == null || a.compareTo(b) > 0) throw new BadStateException(code, args);
     }
 
     //
@@ -269,6 +269,6 @@ public class AssertState {
     }
 
     public static <T extends Comparable<T>> void aLtb(@Nullable T a, @Nullable T b, @NotNull CodeEnum code, Object... args) {
-        if (a == null || b == null || a.compareTo(b) >= 0) throw new BadStateException(false, code, args);
+        if (a == null || b == null || a.compareTo(b) >= 0) throw new BadStateException(code, args);
     }
 }
