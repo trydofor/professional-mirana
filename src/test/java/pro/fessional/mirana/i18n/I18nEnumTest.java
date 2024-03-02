@@ -2,6 +2,8 @@ package pro.fessional.mirana.i18n;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import pro.fessional.mirana.best.AssertState;
+import pro.fessional.mirana.pain.CodeException;
 
 /**
  * @author trydofor
@@ -29,5 +31,33 @@ class I18nEnumTest {
         Assertions.assertEquals("Ti11", ti.getCode());
         Assertions.assertEquals("pro.fessional.mirana.i18n.TestEnum", ti.getHint());
         Assertions.assertEquals("pro.fessional.mirana.i18n.TestEnum.Ti11", ti.getI18nCode());
+    }
+
+    @Test
+    void tweakStack() {
+        try {
+            AssertState.notNull(null, Ti11.LGD, "");
+            Assertions.fail();
+        }
+        catch (Exception e) {
+            StackTraceElement[] st = e.getStackTrace();
+            Assertions.assertEquals(0, st.length);
+        }
+        finally {
+            CodeException.TweakStack.resetGlobal();
+        }
+
+        try {
+            CodeException.TweakStack.tweakGlobal(true);
+            AssertState.notNull(null, Ti11.LGD, "");
+            Assertions.fail();
+        }
+        catch (Exception e) {
+            StackTraceElement[] st = e.getStackTrace();
+            Assertions.assertTrue(st.length > 0);
+        }
+        finally {
+            CodeException.TweakStack.resetGlobal();
+        }
     }
 }
