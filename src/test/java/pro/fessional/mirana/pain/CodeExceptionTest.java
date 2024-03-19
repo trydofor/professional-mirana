@@ -1,5 +1,6 @@
 package pro.fessional.mirana.pain;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import pro.fessional.mirana.SystemOut;
 import pro.fessional.mirana.data.Null;
@@ -39,5 +40,21 @@ class CodeExceptionTest {
         assertEquals(Null.Str, noc.getCode());
         assertEquals(0, noc.getStackTrace().length);
         assertEquals(0, noc.getSuppressed().length);
+    }
+
+    @Test
+    void testCode() {
+        String stack = "stack";
+        CodeException.TweakStack.tweakCode(stack, true);
+        final CodeException st1 = new CodeException(stack);
+        Assertions.assertTrue(st1.getStackTrace().length > 0);
+
+        CodeException.TweakStack.tweakCode(stack, false);
+        final CodeException st2 = new CodeException(stack);
+        Assertions.assertEquals(0, st2.getStackTrace().length);
+
+        CodeException.TweakStack.resetCode(stack);
+        final CodeException st3 = new CodeException(stack);
+        Assertions.assertEquals(0, st3.getStackTrace().length);
     }
 }
