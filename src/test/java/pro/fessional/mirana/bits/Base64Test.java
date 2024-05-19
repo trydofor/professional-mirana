@@ -39,6 +39,30 @@ class Base64Test {
     }
 
     @Test
+    void b64() {
+        Assertions.assertTrue(Base64.isB64("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ="));
+        Assertions.assertTrue(Base64.isB64("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ=+/"));
+        Assertions.assertTrue(Base64.isB64("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ=-_"));
+        Assertions.assertTrue(Base64.isB64("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ=",false));
+        Assertions.assertTrue(Base64.isB64("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ=",true));
+        Assertions.assertTrue(Base64.isB64("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ=+/",false));
+        Assertions.assertTrue(Base64.isB64("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ=-_",true));
+
+        Assertions.assertFalse(Base64.isB64("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ=+/",true));
+        Assertions.assertFalse(Base64.isB64("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ=-_",false));
+        Assertions.assertFalse(Base64.isB64(null));
+        Assertions.assertFalse(Base64.isB64(null,false));
+        Assertions.assertFalse(Base64.isB64(null,true));
+        Assertions.assertFalse(Base64.isB64(""));
+        Assertions.assertFalse(Base64.isB64("",false));
+        Assertions.assertFalse(Base64.isB64("",true));
+        Assertions.assertFalse(Base64.isB64("%"));
+        Assertions.assertFalse(Base64.isB64("&",false));
+        Assertions.assertFalse(Base64.isB64("%",true));
+
+    }
+
+    @Test
     void print() {
         String en = "1234567890";
         String de = "MTIzNDU2Nzg5MA==";

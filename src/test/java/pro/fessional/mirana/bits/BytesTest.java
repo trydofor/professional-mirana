@@ -1,5 +1,6 @@
 package pro.fessional.mirana.bits;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import pro.fessional.mirana.SystemOut;
 import pro.fessional.mirana.code.RandCode;
@@ -25,6 +26,37 @@ class BytesTest {
             String s3 = new String(Bytes.hex(h3));
             assertEquals(s1, s3);
         }
+    }
+
+    @Test
+    void hex() {
+        Assertions.assertTrue(Bytes.isHex("0123456789abcdef",16));
+        Assertions.assertTrue(Bytes.isHex("0123456789ABCDEF",16));
+        Assertions.assertTrue(Bytes.isHex("0123456789abcdef"));
+        Assertions.assertTrue(Bytes.isHex("0123456789ABCDEF"));
+
+        Assertions.assertFalse(Bytes.isHex("0123456789abcdef",15));
+        Assertions.assertFalse(Bytes.isHex(""));
+        Assertions.assertFalse(Bytes.isHex("",15));
+        Assertions.assertFalse(Bytes.isHex(null));
+        Assertions.assertFalse(Bytes.isHex(null,15));
+        Assertions.assertFalse(Bytes.isHex("1 2 3"));
+        Assertions.assertFalse(Bytes.isHex("1 2 3",3));
+        Assertions.assertFalse(Bytes.isHex("1 2 3",5));
+
+        Assertions.assertTrue(Bytes.asHex("0123456789abcdef",16));
+        Assertions.assertTrue(Bytes.asHex("0123456789ABCDEF",16));
+        Assertions.assertTrue(Bytes.asHex("0123456789abcdef"));
+        Assertions.assertTrue(Bytes.asHex("0123456789ABCDEF"));
+
+        Assertions.assertFalse(Bytes.asHex("0123456789abcdef",15));
+        Assertions.assertFalse(Bytes.asHex(""));
+        Assertions.assertFalse(Bytes.asHex("",15));
+        Assertions.assertFalse(Bytes.asHex(null));
+        Assertions.assertFalse(Bytes.asHex(null,15));
+        Assertions.assertTrue(Bytes.asHex("1 2 3"));
+        Assertions.assertTrue(Bytes.asHex("1 2 3",3));
+        Assertions.assertFalse(Bytes.asHex("1 2 3",5));
     }
 
     @Test

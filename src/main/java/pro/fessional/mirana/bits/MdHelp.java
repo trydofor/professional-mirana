@@ -20,9 +20,33 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public class MdHelp {
 
     public final String algorithm;
+    public final int hexLength;
 
     protected MdHelp(String algorithm) {
         this.algorithm = algorithm;
+        this.hexLength = guessHexLength(algorithm);
+    }
+
+    protected MdHelp(String algorithm, int hexLen) {
+        this.algorithm = algorithm;
+        this.hexLength = hexLen;
+    }
+
+    public boolean isSum(@Nullable String str) {
+        return Bytes.isHex(str, hexLength);
+    }
+
+    public boolean asSum(@Nullable String str) {
+        return Bytes.asHex(str, hexLength);
+    }
+
+    @NotNull
+    public String getAlgorithm() {
+        return algorithm;
+    }
+
+    public int getHexLength() {
+        return hexLength;
     }
 
     @NotNull
@@ -98,10 +122,23 @@ public class MdHelp {
     public static final int LEN_MD5_HEX = 32;
     public static final int LEN_SHA1_HEX = 40;
     public static final int LEN_SHA256_HEX = 64;
+    public static final String MD_MD5 = "MD5";
+    public static final String MD_SHA1 = "SHA-1";
+    public static final String MD_SHA256 = "SHA-256";
 
-    public static final MdHelp md5 = of("MD5");
-    public static final MdHelp sha1 = of("SHA-1");
-    public static final MdHelp sha256 = of("SHA-256");
+    public static final MdHelp md5 = of(MD_MD5, LEN_MD5_HEX);
+    public static final MdHelp sha1 = of(MD_SHA1, LEN_SHA1_HEX);
+    public static final MdHelp sha256 = of(MD_SHA256, LEN_SHA256_HEX);
+
+    /**
+     * guess hex sum length, return 0 if not (MD5,SHA-1,SHA-256)
+     */
+    public static int guessHexLength(@NotNull String algorithm){
+        if(MD_MD5.equalsIgnoreCase(algorithm)) return LEN_MD5_HEX;
+        if(MD_SHA1.equalsIgnoreCase(algorithm)) return LEN_SHA1_HEX;
+        if(MD_SHA256.equalsIgnoreCase(algorithm)) return LEN_SHA256_HEX;
+        return 0;
+    }
 
     @NotNull
     public static MdHelp of(@NotNull String algorithm) {
@@ -109,18 +146,23 @@ public class MdHelp {
     }
 
     @NotNull
+    public static MdHelp of(@NotNull String algorithm, int hexLen) {
+        return new MdHelp(algorithm, hexLen);
+    }
+
+    @NotNull
     public static MessageDigest newMd5() {
-        return newOne("MD5");
+        return newOne(MD_MD5);
     }
 
     @NotNull
     public static MessageDigest newSha1() {
-        return newOne("SHA-1");
+        return newOne(MD_SHA1);
     }
 
     @NotNull
     public static MessageDigest newSha256() {
-        return newOne("SHA-256");
+        return newOne(MD_SHA256);
     }
 
     @NotNull
