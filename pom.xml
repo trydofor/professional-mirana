@@ -339,6 +339,7 @@
             <id>deploy</id>
             <properties>
                 <maven.test.skip>true</maven.test.skip>
+                <maven.install.skip>true</maven.install.skip>
             </properties>
             <build>
                 <plugins>
@@ -363,7 +364,7 @@
             </build>
         </profile>
         <profile>
-            <id>ossrh</id>
+            <id>deploy-ossrh</id>
             <build>
                 <plugins>
                     <plugin>
@@ -392,13 +393,62 @@
             </distributionManagement>
         </profile>
         <profile>
-            <id>altrh</id>
+            <id>deploy-altrh</id>
             <properties>
                 <!--suppress UnresolvedMavenProperty -->
                 <altReleaseDeploymentRepository>altrh::${MVN_ALT_REPO}</altReleaseDeploymentRepository>
                 <!--suppress UnresolvedMavenProperty -->
                 <altSnapshotDeploymentRepository>altrh::${MVN_ALT_SNAP}</altSnapshotDeploymentRepository>
             </properties>
+        </profile>
+        <profile>
+            <id>deploy-old</id>
+            <properties>
+                <deploy.old.todir>${project.build.directory}/old-build</deploy.old.todir>
+                <deploy.old.files>${project.artifactId}-${project.version}*</deploy.old.files>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <!-- Backup before packaging -->
+                            <execution>
+                                <id>backup-artifacts</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <delete dir="${deploy.old.todir}" failonerror="false"/>
+                                        <copy todir="${deploy.old.todir}" overwrite="true">
+                                            <fileset dir="${project.build.directory}" includes="${deploy.old.files}"/>
+                                        </copy>
+                                    </target>
+                                </configuration>
+                            </execution>
+                            <!-- Restore artifacts before deployment -->
+                            <execution>
+                                <id>restore-artifacts</id>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <copy todir="${project.build.directory}" overwrite="true">
+                                            <fileset dir="${deploy.old.todir}" includes="${deploy.old.files}" erroronmissingdir="false"/>
+                                        </copy>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
 </project>
