@@ -73,4 +73,16 @@ class ThreadNowTest {
             TweakClock.resetGlobal();
         }
     }
+
+    @Test
+    void same() {
+        LocalDateTime ldt1 = DateLocaling.dateTime(cnZid);
+        Instant ins1 = ldt1.toInstant(ZoneOffset.UTC);
+        LocalDateTime ldt2 = ThreadNow.localDateTime(cnZid);
+        Instant ins2 = ldt2.toInstant(ZoneOffset.UTC);
+        long ms1 = ins1.toEpochMilli();
+        long ms2 = ins2.toEpochMilli();
+        System.out.println("ldt1=" + ldt1 + ", ldt2=" + ldt2);
+        Assertions.assertTrue(Math.abs(ms1 - ms2) < 500);
+    }
 }
