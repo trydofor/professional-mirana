@@ -109,6 +109,22 @@ public class BigDecimalUtilTest {
         assertEquals("1", BigDecimalUtil.string(new BigDecimal("1.00"), 1, true));
     }
 
+    public String getZeroStr() {
+        return "0";
+    }
+
+    public int getZeroInt() {
+        return 0;
+    }
+
+    public long getZeroLong() {
+        return 0L;
+    }
+
+    public double getZeroDouble() {
+        return 0D;
+    }
+
     @Test
     public void testObject() {
         assertEquals(new BigDecimal("0"), BigDecimalUtil.object("0"));
@@ -122,8 +138,14 @@ public class BigDecimalUtilTest {
         assertEquals(new BigDecimal("10"), BigDecimalUtil.object(10D).setScale(0, RoundingMode.FLOOR));
         assertEquals(new BigDecimal("10"), BigDecimalUtil.object(BigInteger.TEN));
 
-        BigDecimal[] arr = BigDecimalUtil.objects(TEN, 1, (Long) null, 0L);
+        BigDecimal[] arr = BigDecimalUtil.objects(TEN, 1, null, 0L);
         assertArrayEquals(new BigDecimal[]{ONE, TEN, ZERO}, arr);
+
+        // Object is not a functional interface
+        assertEquals(new BigDecimal("0"), BigDecimalUtil.object(this::getZeroStr));
+        assertEquals(new BigDecimal("0"), BigDecimalUtil.object(this::getZeroInt));
+        assertEquals(new BigDecimal("0"), BigDecimalUtil.object(this::getZeroLong));
+        assertEquals(new BigDecimal("0"), BigDecimalUtil.object(this::getZeroDouble).setScale(0, RoundingMode.FLOOR));
     }
 
     @Test
@@ -131,6 +153,8 @@ public class BigDecimalUtilTest {
         assertEquals(TEN, BigDecimalUtil.notNull(null, "10"));
         assertEquals(TEN, BigDecimalUtil.ifElse(false, null, "10"));
         assertEquals(0, BigDecimalUtil.compareTo(10, "10"));
+
+        assertEquals(ZERO, BigDecimalUtil.ifElse(false, null, this::getZeroStr));
     }
 
     @Test
@@ -175,6 +199,7 @@ public class BigDecimalUtilTest {
                                       .add(ZERO, null, ONE, ONE, null)
                                       .sub(ONE, ONE, ONE, null)
                                       .subIf(true, null, null)
+                                      .subIf(true, () -> null, () -> null)
                                       .subIf(true, ONE, null)
                                       .addIf(true, ONE, null)
                                       .subIf(false, ONE, null)
@@ -187,13 +212,15 @@ public class BigDecimalUtilTest {
                                       .mul(ONE)
                                       .mul("2.0", null, null, ONE, ONE)
                                       .mulIf(false, ZERO, ONE)
+                                      .mulIf(false, () -> ZERO, () -> ONE)
                                       .mulMap(Arrays.asList(null, null, ONE, ONE))
                                       .mulMap(Arrays.asList(ONE, ONE), Objects::toString)
                                       .div(ONE)
                                       .div(ONE, ONE)
                                       .divIf(true, ONE, ZERO)
+                                      .divIf(true, () -> ONE, () -> ZERO)
                                       .divMap(Arrays.asList(ONE, ONE))
-                                      .divMap(Arrays.asList(ONE, ONE),Objects::toString)
+                                      .divMap(Arrays.asList(ONE, ONE), Objects::toString)
                                       .neg()
                                       .neg()
                                       .pow(2)

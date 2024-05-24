@@ -11,7 +11,11 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.function.DoubleSupplier;
 import java.util.function.Function;
+import java.util.function.IntSupplier;
+import java.util.function.LongSupplier;
+import java.util.function.Supplier;
 
 import static java.math.BigDecimal.ZERO;
 import static java.math.RoundingMode.CEILING;
@@ -19,7 +23,18 @@ import static java.math.RoundingMode.FLOOR;
 import static java.math.RoundingMode.HALF_UP;
 
 /**
+ * <pre>
  * Null-friendly BigDecimal utility
+ * * avg/min/max/sum : skip null
+ * * nums + null : get nums, skip null
+ * * null + nums : get nums, skip null
+ * * nums - null : get nums, skip null
+ * * null - nums : throw NullPointerException
+ * * nums * null : get nums, skip null
+ * * null * nums : get nums, skip null
+ * * nums / null : get nums, skip null
+ * * null / nums : throw NullPointerException
+ * </pre>
  *
  * @author trydofor
  * @since 2015-12-11.
@@ -92,9 +107,41 @@ public class BigDecimalUtil {
     /**
      * convert `num` object to BigDecimal
      */
+    @NotNull
+    public static BigDecimal object(int num) {
+        return new BigDecimal(num);
+    }
+
+    /**
+     * convert `num` object to BigDecimal
+     */
+    @NotNull
+    public static BigDecimal object(long num) {
+        return new BigDecimal(num);
+    }
+
+    /**
+     * convert `num` object to BigDecimal
+     */
+    @NotNull
+    public static BigDecimal object(double num) {
+        return BigDecimal.valueOf(num);
+    }
+
+    /**
+     * convert `num` object to BigDecimal
+     */
     @Contract("!null -> !null")
     public static BigDecimal object(Object num) {
         return object(num, null, false);
+    }
+
+    /**
+     * convert `num` object to BigDecimal
+     */
+    @Contract("!null -> !null")
+    public static BigDecimal object(Supplier<?> num) {
+        return object((Object) num, null, false);
     }
 
     /**
@@ -107,49 +154,54 @@ public class BigDecimalUtil {
 
     /**
      * convert `num` object to BigDecimal, return `elze` if `num` is null.
+     */
+    @Contract("_, !null -> !null")
+    public static BigDecimal object(Supplier<?> num, BigDecimal elze) {
+        return object((Object) num, elze, false);
+    }
+
+    /**
+     * convert `num` object to BigDecimal, return `elze` if `num` is null.
+     * throw the exception if there is exception and `fail`
+     */
+    @Contract("_, !null, _ -> !null")
+    public static BigDecimal object(Supplier<?> num, BigDecimal elze, boolean fail) {
+        return object((Object) num, elze, fail);
+    }
+
+    /**
+     * convert `num` object to BigDecimal, return `elze` if `num` is null.
      * throw the exception if there is exception and `fail`
      */
     @Contract("_, !null, _ -> !null")
     public static BigDecimal object(Object num, BigDecimal elze, boolean fail) {
-        BigDecimal r;
-        if (num == null) {
-            r = elze;
-        }
-        else if (num instanceof Integer) {
-            r = new BigDecimal((Integer) num);
-        }
-        else if (num instanceof Long) {
-            r = new BigDecimal((Long) num);
-        }
-        else if (num instanceof Double) {
-            r = BigDecimal.valueOf((Double) num);
-        }
-        else if (num instanceof Float) {
-            r = BigDecimal.valueOf((Float) num);
-        }
-        else if (num instanceof BigInteger) {
-            r = new BigDecimal((BigInteger) num);
-        }
-        else if (num instanceof BigDecimal) {
-            r = (BigDecimal) num;
-        }
-        else {
-            final String str = num.toString().trim();
-            try {
-                r = str.isEmpty() ? elze : new BigDecimal(str);
-            }
-            catch (Exception e) {
-                if (fail) {
-                    throw e;
-                }
-                else {
-                    r = elze;
-                }
-            }
 
+        try {
+            // sort by frequency
+            if (num == null) return elze;
+
+            if (num instanceof Long) return new BigDecimal((Long) num);
+            if (num instanceof BigDecimal) return (BigDecimal) num;
+            if (num instanceof CharSequence) return new BigDecimal(((CharSequence) num).toString());
+            if (num instanceof Supplier<?>) return object(((Supplier<?>) num).get(), elze, fail);
+
+            if (num instanceof Integer) return new BigDecimal((Integer) num);
+            if (num instanceof Double) return BigDecimal.valueOf((Double) num);
+            if (num instanceof Float) return BigDecimal.valueOf((Float) num);
+            if (num instanceof BigInteger) return new BigDecimal((BigInteger) num);
+
+            if (num instanceof IntSupplier) return object(((IntSupplier) num).getAsInt(), elze, fail);
+            if (num instanceof LongSupplier) return object(((LongSupplier) num).getAsLong(), elze, fail);
+            if (num instanceof DoubleSupplier) return object(((DoubleSupplier) num).getAsDouble(), elze, fail);
+
+            final String str = num.toString();
+            return new BigDecimal(str);
+        }
+        catch (Exception e) {
+            if (fail) throw e;
         }
 
-        return r;
+        return elze;
     }
 
     @NotNull
@@ -186,10 +238,19 @@ public class BigDecimalUtil {
         return Objects.requireNonNull(d);
     }
 
+    /**
+     * parse `a` if `cond`, else `b`, NullPointerException if all null.
+     */
+    @NotNull
+    public static BigDecimal ifElse(boolean cond, Supplier<?> a, Supplier<?> b) {
+        final BigDecimal d = cond ? object((Object) a) : object((Object) b);
+        return Objects.requireNonNull(d);
+    }
+
     // ////// avg //////
 
     /**
-     * skip null num and get the average, NullPointerException if get null.
+     * skip null num and get the average, NullPointerException if get null result.
      */
     @NotNull
     public static BigDecimal avg(Object... nums) {
@@ -198,7 +259,7 @@ public class BigDecimalUtil {
     }
 
     /**
-     * skip null num and get the average, NullPointerException if get null.
+     * skip null num and get the average, NullPointerException if get null result.
      */
     @NotNull
     public static BigDecimal avgMap(Iterable<?> nums) {
@@ -207,7 +268,7 @@ public class BigDecimalUtil {
     }
 
     /**
-     * skip null num and get the average, NullPointerException if get null.
+     * skip null num and get the average, NullPointerException if get null result.
      */
     @NotNull
     public static <T> BigDecimal avgMap(Iterable<T> nums, Function<? super T, ?> mapper) {
@@ -394,6 +455,24 @@ public class BigDecimalUtil {
     }
 
     @NotNull
+    public static BigDecimal add(Object a, int b) {
+        final BigDecimal x = object(a);
+        return x == null ? object(b) : x.add(object(b), MC);
+    }
+
+    @NotNull
+    public static BigDecimal add(Object a, long b) {
+        final BigDecimal x = object(a);
+        return x == null ? object(b) : x.add(object(b), MC);
+    }
+
+    @NotNull
+    public static BigDecimal add(Object a, double b) {
+        final BigDecimal x = object(a);
+        return x == null ? object(b) : x.add(object(b), MC);
+    }
+
+    @NotNull
     public static BigDecimal add(Object a, Object b) {
         BigDecimal t = addNull(a, b);
         return Objects.requireNonNull(t);
@@ -495,6 +574,24 @@ public class BigDecimalUtil {
     }
 
     @NotNull
+    public static BigDecimal sub(Object a, int b) {
+        BigDecimal t = Objects.requireNonNull(object(a));
+        return t.subtract(object(b), MC);
+    }
+
+    @NotNull
+    public static BigDecimal sub(Object a, long b) {
+        BigDecimal t = Objects.requireNonNull(object(a));
+        return t.subtract(object(b), MC);
+    }
+
+    @NotNull
+    public static BigDecimal sub(Object a, double b) {
+        BigDecimal t = Objects.requireNonNull(object(a));
+        return t.subtract(object(b), MC);
+    }
+
+    @NotNull
     public static BigDecimal sub(Object a, Object b) {
         BigDecimal t = Objects.requireNonNull(object(a));
         final BigDecimal x = object(b);
@@ -560,6 +657,24 @@ public class BigDecimalUtil {
     }
 
     @NotNull
+    public static BigDecimal mul(Object a, int b) {
+        final BigDecimal x = object(a);
+        return x == null ? object(b) : x.multiply(object(b), MC);
+    }
+
+    @NotNull
+    public static BigDecimal mul(Object a, long b) {
+        final BigDecimal x = object(a);
+        return x == null ? object(b) : x.multiply(object(b), MC);
+    }
+
+    @NotNull
+    public static BigDecimal mul(Object a, double b) {
+        final BigDecimal x = object(a);
+        return x == null ? object(b) : x.multiply(object(b), MC);
+    }
+
+    @NotNull
     public static BigDecimal mul(Object a, Object b) {
         BigDecimal t = mulNull(a, b);
         return Objects.requireNonNull(t);
@@ -584,27 +699,27 @@ public class BigDecimalUtil {
     }
 
     @Contract("!null,_,_ -> !null")
-    public static BigDecimal mulElse(BigDecimal e, Object a, Object b) {
+    public static BigDecimal mulElse(BigDecimal elze, Object a, Object b) {
         BigDecimal t = mulNull(a, b);
-        return t == null ? e : t;
+        return t == null ? elze : t;
     }
 
     @Contract("!null,_,_,_ -> !null")
-    public static BigDecimal mulElse(BigDecimal e, Object a, Object b, Object... nums) {
+    public static BigDecimal mulElse(BigDecimal elze, Object a, Object b, Object... nums) {
         BigDecimal t = mulNull(a, b, nums);
-        return t == null ? e : t;
+        return t == null ? elze : t;
     }
 
     @Contract("!null,_ -> !null")
-    public static <T> BigDecimal mulMapElse(BigDecimal e, Iterable<T> cols) {
+    public static <T> BigDecimal mulMapElse(BigDecimal elze, Iterable<T> cols) {
         BigDecimal t = mulMapNull(cols);
-        return t == null ? e : t;
+        return t == null ? elze : t;
     }
 
     @Contract("!null,_,_ -> !null")
-    public static <T> BigDecimal mulMapElse(BigDecimal e, Iterable<T> cols, Function<? super T, ?> mapper) {
+    public static <T> BigDecimal mulMapElse(BigDecimal elze, Iterable<T> cols, Function<? super T, ?> mapper) {
         BigDecimal t = mulMapNull(cols, mapper);
-        return t == null ? e : t;
+        return t == null ? elze : t;
     }
 
     @Nullable
@@ -660,6 +775,24 @@ public class BigDecimalUtil {
             }
         }
         return t;
+    }
+
+    @NotNull
+    public static BigDecimal div(Object a, int b) {
+        BigDecimal t = Objects.requireNonNull(object(a));
+        return t.divide(object(b), MC);
+    }
+
+    @NotNull
+    public static BigDecimal div(Object a, long b) {
+        BigDecimal t = Objects.requireNonNull(object(a));
+        return t.divide(object(b), MC);
+    }
+
+    @NotNull
+    public static BigDecimal div(Object a, double b) {
+        BigDecimal t = Objects.requireNonNull(object(a));
+        return t.divide(object(b), MC);
     }
 
     @NotNull
@@ -970,6 +1103,24 @@ public class BigDecimalUtil {
 
         // ////
         @Contract("_->this")
+        public W add(int a) {
+            value = BigDecimalUtil.add(value, a);
+            return this;
+        }
+
+        @Contract("_->this")
+        public W add(long a) {
+            value = BigDecimalUtil.add(value, a);
+            return this;
+        }
+
+        @Contract("_->this")
+        public W add(double a) {
+            value = BigDecimalUtil.add(value, a);
+            return this;
+        }
+
+        @Contract("_->this")
         public W add(Object a) {
             value = BigDecimalUtil.add(value, a);
             return this;
@@ -988,6 +1139,13 @@ public class BigDecimalUtil {
             return this;
         }
 
+        @Contract("_,_,_->this")
+        public W addIf(boolean c, Supplier<?> a, Supplier<?> b) {
+            final BigDecimal num = c ? object((Object) a) : object((Object) b);
+            value = BigDecimalUtil.add(value, num);
+            return this;
+        }
+
         @Contract("_->this")
         public W addMap(Iterable<?> cols) {
             final BigDecimal x = BigDecimalUtil.addMapNull(cols);
@@ -999,6 +1157,24 @@ public class BigDecimalUtil {
         public <T> W addMap(Iterable<T> cols, Function<? super T, ?> mapper) {
             final BigDecimal x = BigDecimalUtil.addMapNull(cols, mapper);
             value = BigDecimalUtil.add(value, x);
+            return this;
+        }
+
+        @Contract("_->this")
+        public W sub(int a) {
+            value = BigDecimalUtil.sub(value, a);
+            return this;
+        }
+
+        @Contract("_->this")
+        public W sub(long a) {
+            value = BigDecimalUtil.sub(value, a);
+            return this;
+        }
+
+        @Contract("_->this")
+        public W sub(double a) {
+            value = BigDecimalUtil.sub(value, a);
             return this;
         }
 
@@ -1021,6 +1197,13 @@ public class BigDecimalUtil {
             return this;
         }
 
+        @Contract("_,_,_->this")
+        public W subIf(boolean c, Supplier<?> a, Supplier<?> b) {
+            final BigDecimal num = c ? object((Object) a) : object((Object) b);
+            value = BigDecimalUtil.sub(value, num);
+            return this;
+        }
+
         @Contract("_->this")
         public W subMap(Iterable<?> cols) {
             value = BigDecimalUtil.subMap(value, cols);
@@ -1030,6 +1213,24 @@ public class BigDecimalUtil {
         @Contract("_,_->this")
         public <T> W subMap(Iterable<T> cols, Function<? super T, ?> mapper) {
             value = BigDecimalUtil.subMap(value, cols, mapper);
+            return this;
+        }
+
+        @Contract("_->this")
+        public W mul(int a) {
+            value = BigDecimalUtil.mul(value, a);
+            return this;
+        }
+
+        @Contract("_->this")
+        public W mul(long a) {
+            value = BigDecimalUtil.mul(value, a);
+            return this;
+        }
+
+        @Contract("_->this")
+        public W mul(double a) {
+            value = BigDecimalUtil.mul(value, a);
             return this;
         }
 
@@ -1052,6 +1253,13 @@ public class BigDecimalUtil {
             return this;
         }
 
+        @Contract("_,_,_->this")
+        public W mulIf(boolean c, Supplier<?> a, Supplier<?> b) {
+            final BigDecimal num = c ? object((Object) a) : object((Object) b);
+            value = BigDecimalUtil.mul(value, num);
+            return this;
+        }
+
         @Contract("_->this")
         public W mulMap(Iterable<?> cols) {
             final BigDecimal x = BigDecimalUtil.mulMapNull(cols);
@@ -1066,6 +1274,23 @@ public class BigDecimalUtil {
             return this;
         }
 
+        @Contract("_->this")
+        public W div(int a) {
+            value = BigDecimalUtil.div(value, a);
+            return this;
+        }
+
+        @Contract("_->this")
+        public W div(long a) {
+            value = BigDecimalUtil.div(value, a);
+            return this;
+        }
+
+        @Contract("_->this")
+        public W div(double a) {
+            value = BigDecimalUtil.div(value, a);
+            return this;
+        }
 
         @Contract("_->this")
         public W div(Object a) {
@@ -1082,6 +1307,13 @@ public class BigDecimalUtil {
         @Contract("_,_,_->this")
         public W divIf(boolean c, Object a, Object b) {
             final BigDecimal num = c ? object(a) : object(b);
+            value = BigDecimalUtil.div(value, num);
+            return this;
+        }
+
+        @Contract("_,_,_->this")
+        public W divIf(boolean c, Supplier<?> a, Supplier<?> b) {
+            final BigDecimal num = c ? object((Object) a) : object((Object) b);
             value = BigDecimalUtil.div(value, num);
             return this;
         }
