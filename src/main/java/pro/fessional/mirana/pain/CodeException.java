@@ -13,15 +13,16 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Readability and performance first exception.
- * always enable suppression and support tweak stacktrace,
- * ClassStack(1) has higher priority than TweakStack(2)
+ * always enable suppression and support tweak stacktrace.
+ * the tweaking priority is para, code, claz, elze, thread then global.
  *
  * @author trydofor
  * @since 2019-05-29
  */
 public class CodeException extends RuntimeException implements I18nAware {
     private static final long serialVersionUID = 19791023L;
-    public static final TweakingCodeException TweakStack = new TweakingCodeException(false);
+    public static final boolean DefaultStack = false;
+    public static final TweakingCodeException TweakStack = new TweakingCodeException(DefaultStack);
 
     private final String code;
 
@@ -32,28 +33,28 @@ public class CodeException extends RuntimeException implements I18nAware {
      * Constructs a stacked or unstacked exception depending on the Global or Thread setting.
      */
     public CodeException(String code) {
-        this(TweakStack.current(code), code, null);
+        this(TweakStack.current(code, null, null), code, null);
     }
 
     /**
      * Constructs a stacked or unstacked exception depending on the Global or Thread setting.
      */
     public CodeException(String code, String message) {
-        this(TweakStack.current(code), code, message);
+        this(TweakStack.current(code, null, null), code, message);
     }
 
     /**
      * Constructs a stacked or unstacked exception depending on the Global or Thread setting.
      */
     public CodeException(CodeEnum code) {
-        this(TweakStack.current(code), code, Null.Objects);
+        this(TweakStack.current(code, null, null), code, Null.Objects);
     }
 
     /**
      * Constructs a stacked or unstacked exception depending on the Global or Thread setting.
      */
     public CodeException(CodeEnum code, Object... args) {
-        this(TweakStack.current(code), code, args);
+        this(TweakStack.current(code, null, null), code, args);
     }
 
     /**
@@ -169,23 +170,28 @@ public class CodeException extends RuntimeException implements I18nAware {
     public static class TweakingCodeException extends TweakingContext<Boolean> {
 
         public final ConcurrentHashMap<String, Boolean> tweakCode = new ConcurrentHashMap<>();
+        public final ConcurrentHashMap<Class<? extends CodeException>, Boolean> tweakClass = new ConcurrentHashMap<>();
 
         public TweakingCodeException(boolean initDefault) {
             super(initDefault);
         }
 
-        public boolean current(@Nullable String code) {
-            if (code == null || code.isEmpty()) {
-                return TweakStack.current(true);
-            }
-            else {
-                Boolean b = tweakCode.get(code);
-                return b != null ? b : TweakStack.current(true);
-            }
+        /**
+         * priority is code, claz, elze, thread then global.
+         */
+        public boolean current(@Nullable String code, Class<? extends CodeException> claz, Boolean elze) {
+            final Boolean boolCode = code == null || code.isEmpty() ? null : tweakCode.get(code);
+            if (boolCode != null) return boolCode;
+            final Boolean boolClaz = claz == null ? null : tweakClass.get(claz);
+            if (boolClaz != null) return boolClaz;
+            return elze != null ? elze : TweakStack.current(true);
         }
 
-        public boolean current(@Nullable CodeEnum code) {
-            return current(code == null ? null : code.getCode());
+        /**
+         * priority is code, claz, elze, thread then global.
+         */
+        public boolean current(@Nullable CodeEnum code, Class<? extends CodeException> claz, Boolean elze) {
+            return current(code == null ? null : code.getCode(), claz, elze);
         }
 
         public void tweakCode(@NotNull String code, boolean stack) {
@@ -202,6 +208,14 @@ public class CodeException extends RuntimeException implements I18nAware {
 
         public void resetCode(@NotNull CodeEnum code) {
             tweakCode.remove(code.getCode());
+        }
+
+        public void tweakClass(@NotNull Class<? extends CodeException> claz, boolean stack) {
+            tweakClass.put(claz, stack);
+        }
+
+        public void resetClass(@NotNull Class<? extends CodeException> claz) {
+            tweakClass.remove(claz);
         }
     }
 }
