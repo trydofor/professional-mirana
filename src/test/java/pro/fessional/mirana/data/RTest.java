@@ -64,4 +64,15 @@ class RTest {
         R<String> r4 = R.ng(OkNg.ng, "ngData");
         Assertions.assertEquals(r4, r3);
     }
+
+    @Test
+    void testImmutable() {
+        try {
+            R.OK().setCode("ng");
+            Assertions.fail();
+        }
+        catch (UnsupportedOperationException e) {
+            Assertions.assertTrue(true);
+        }
+    }
 }
