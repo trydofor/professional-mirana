@@ -2,6 +2,7 @@ package pro.fessional.mirana.data;
 
 
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pro.fessional.mirana.i18n.I18nAware;
 import pro.fessional.mirana.i18n.I18nString;
@@ -10,6 +11,7 @@ import pro.fessional.mirana.pain.CodeException;
 import java.beans.Transient;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * <pre>
@@ -51,6 +53,13 @@ public class R<T> implements DataResult<T>, I18nAware {
         this.code = null;
     }
 
+    public R(boolean success) {
+        this.success = success;
+        this.data = null;
+        this.message = null;
+        this.code = null;
+    }
+
     protected R(boolean success, String message, String code, T data) {
         this.success = success;
         this.data = data;
@@ -87,9 +96,29 @@ public class R<T> implements DataResult<T>, I18nAware {
         return this;
     }
 
+    @Contract("_->this")
+    public R<T> setMessageIfOk(String message) {
+        return success ? setMessage(message) : this;
+    }
+
+    @Contract("_->this")
+    public R<T> setMessageIfNg(String message) {
+        return success ? this : setMessage(message);
+    }
+
+    @Contract("_->this")
+    public R<T> setMessageIfOk(@NotNull Supplier<String> message) {
+        return success ? setMessage(message.get()) : this;
+    }
+
+    @Contract("_->this")
+    public R<T> setMessageIfNg(@NotNull Supplier<String> message) {
+        return success ? this : setMessage(message.get());
+    }
+
     /**
      * set i18nCode and i18nArgs.
-     * set code and message only if it is null
+     * set code and message only if it was null
      */
     @Contract("_,_->this")
     public R<T> setI18nMessage(CodeEnum ce, Object... arg) {
@@ -104,9 +133,19 @@ public class R<T> implements DataResult<T>, I18nAware {
         return this;
     }
 
+    @Contract("_,_->this")
+    public R<T> setI18nMessageIfOk(CodeEnum ce, Object... arg) {
+        return success ? setI18nMessage(ce, arg) : this;
+    }
+
+    @Contract("_,_->this")
+    public R<T> setI18nMessageIfNg(CodeEnum ce, Object... arg) {
+        return success ? this : setI18nMessage(ce, arg);
+    }
+
     /**
      * set i18nCode and i18nArgs.
-     * set message only if it is null
+     * set message only if it was null
      */
     @Contract("_->this")
     public R<T> setI18nMessage(I18nAware message) {
@@ -122,11 +161,41 @@ public class R<T> implements DataResult<T>, I18nAware {
         return this;
     }
 
+    @Contract("_->this")
+    public R<T> setI18nMessageIfOk(I18nAware message) {
+        return success ? setI18nMessage(message) : this;
+    }
+
+    @Contract("_->this")
+    public R<T> setI18nMessageIfNg(I18nAware message) {
+        return success ? this : setI18nMessage(message);
+    }
+
+    @Contract("_->this")
+    public R<T> setI18nMessageIfOk(Supplier<I18nAware> message) {
+        return success ? setI18nMessage(message.get()) : this;
+    }
+
+    @Contract("_->this")
+    public R<T> setI18nMessageIfNg(Supplier<I18nAware> message) {
+        return success ? this : setI18nMessage(message.get());
+    }
+
     @Contract("_,_->this")
     public R<T> setI18nMessage(String i18nCode, Object... args) {
         this.i18nCode = i18nCode;
         i18nArgs = args;
         return this;
+    }
+
+    @Contract("_,_->this")
+    public R<T> setI18nMessageIfOk(String i18nCode, Object... arg) {
+        return success ? setI18nMessage(i18nCode, arg) : this;
+    }
+
+    @Contract("_,_->this")
+    public R<T> setI18nMessageIfNg(String i18nCode, Object... arg) {
+        return success ? this : setI18nMessage(i18nCode, arg);
     }
 
     @Nullable
@@ -142,6 +211,26 @@ public class R<T> implements DataResult<T>, I18nAware {
         return this;
     }
 
+    @Contract("_->this")
+    public R<T> setDataIfOk(T data) {
+        return success ? setData(data) : this;
+    }
+
+    @Contract("_->this")
+    public R<T> setDataIfNg(T data) {
+        return success ? this : setData(data);
+    }
+
+    @Contract("_->this")
+    public R<T> setDataIfOk(@NotNull Supplier<T> data) {
+        return success ? setData(data.get()) : this;
+    }
+
+    @Contract("_->this")
+    public R<T> setDataIfNg(@NotNull Supplier<T> data) {
+        return success ? this : setData(data.get());
+    }
+
     @Override
     @Nullable
     public String getCode() {
@@ -155,6 +244,16 @@ public class R<T> implements DataResult<T>, I18nAware {
     }
 
     @Contract("_->this")
+    public R<T> setCodeIfOk(String code) {
+        return success ? setCode(code) : this;
+    }
+
+    @Contract("_->this")
+    public R<T> setCodeIfNg(String code) {
+        return success ? this : setCode(code);
+    }
+
+    @Contract("_->this")
     public R<T> setCode(CodeEnum code) {
         if (code != null) {
             this.code = code.getCode();
@@ -162,6 +261,26 @@ public class R<T> implements DataResult<T>, I18nAware {
             this.i18nCode = code.getI18nCode();
         }
         return this;
+    }
+
+    @Contract("_->this")
+    public R<T> setCodeIfOk(CodeEnum code) {
+        return success ? setCode(code) : this;
+    }
+
+    @Contract("_->this")
+    public R<T> setCodeIfNg(CodeEnum code) {
+        return success ? this : setCode(code);
+    }
+
+    @Contract("_->this")
+    public R<T> setCodeIfOk(@NotNull Supplier<CodeEnum> code) {
+        return success ? setCode(code.get()) : this;
+    }
+
+    @Contract("_->this")
+    public R<T> setCodeIfNg(@NotNull Supplier<CodeEnum> code) {
+        return success ? this : setCode(code.get());
     }
 
     @Transient
@@ -279,6 +398,28 @@ public class R<T> implements DataResult<T>, I18nAware {
 
     // /////////////////////
 
+    public static <T> R<T> orMessage(boolean success, String okMessage, String ngMessage) {
+        String message = success ? okMessage : ngMessage;
+        return new R<>(success, message, null, null);
+    }
+
+    public static <T> R<T> orCode(boolean success, CodeEnum okCode, CodeEnum ngCode) {
+        CodeEnum code = success ? okCode : ngCode;
+        return new R<>(success, code, null);
+    }
+
+    public static <T> R<T> orCode(boolean success, String okCode, String ngCode) {
+        String code = success ? okCode : ngCode;
+        return new R<>(success, null, code, null);
+    }
+
+    public static <T> R<T> orData(boolean success, T okData, T ngData) {
+        T data = success ? okData : ngData;
+        return new R<>(success, null, null, data);
+    }
+
+    // /////////////////////
+
     public static <T> R<T> of(boolean success) {
         return new R<>(success, null, null, null);
     }
@@ -313,6 +454,7 @@ public class R<T> implements DataResult<T>, I18nAware {
     public static <T> R<T> OK() {
         return (R<T>) R.OK;
     }
+
     public static <T> R<T> ok() {
         return new R<>(true, null, null, null);
     }
