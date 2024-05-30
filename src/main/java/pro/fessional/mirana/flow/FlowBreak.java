@@ -22,7 +22,7 @@ public class FlowBreak {
     }
 
     @Contract("-> fail")
-    public static void returnNull() {
+    public static void returnVoid() {
         throw FlowReturn;
     }
 
