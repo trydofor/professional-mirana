@@ -56,7 +56,7 @@ public class JvmStaticGlobalLock implements GlobalLock {
      * @return AutoLock
      * @see #lock(String)
      */
-    public static @NotNull AutoLock lock(@NotNull Object... key) {
+    public static @NotNull AutoLock autolock(@NotNull Object... key) {
         return new AutoLock(get(key));
     }
 

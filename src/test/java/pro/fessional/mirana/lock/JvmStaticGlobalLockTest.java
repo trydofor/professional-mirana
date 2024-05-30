@@ -1,5 +1,6 @@
 package pro.fessional.mirana.lock;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import pro.fessional.mirana.SystemOut;
 
@@ -33,6 +34,23 @@ class JvmStaticGlobalLockTest {
         finally {
             lock.unlock();
         }
+
+        try (GlobalLock.AutoLock ignore = globalLock.lock("test-lock")) {
+            assertTrue(true, "get Lock");
+            CountDownLatch latch = new CountDownLatch(1);
+            lockFail(latch);
+            latch.await();
+        }
+
+        try (GlobalLock.AutoLock ignore = JvmStaticGlobalLock.autolock(new ArrayKey("test-lock"))) {
+            assertTrue(true, "get Lock");
+            CountDownLatch latch = new CountDownLatch(1);
+            lockFail(latch);
+            latch.await();
+        }
+
+        int lockCount = JvmStaticGlobalLock.countLocks();
+        Assertions.assertTrue(lockCount >= 1);
     }
 
     void lockFail(CountDownLatch latch) {
