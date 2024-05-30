@@ -14,8 +14,6 @@ import java.util.List;
  * @since 2016-12-14
  */
 public class WhiteUtil {
-    protected WhiteUtil() {
-    }
 
     private static final char[] WS = {
             0x0009, //U+0009 character tabulation

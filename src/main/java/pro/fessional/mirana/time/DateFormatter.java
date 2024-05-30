@@ -33,8 +33,6 @@ import java.util.Date;
  */
 
 public class DateFormatter {
-    protected DateFormatter() {
-    }
 
     public static final String PTN_DATE_10 = "yyyy-MM-dd";
     public static final String PTN_TIME_08 = "HH:mm:ss";

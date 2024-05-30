@@ -133,15 +133,7 @@ public class BigDecimalUtil {
      */
     @Contract("!null -> !null")
     public static BigDecimal object(Object num) {
-        return object(num, null, false);
-    }
-
-    /**
-     * convert `num` object to BigDecimal
-     */
-    @Contract("!null -> !null")
-    public static BigDecimal object(Supplier<?> num) {
-        return object((Object) num, null, false);
+        return object(num, (BigDecimal) null);
     }
 
     /**
@@ -153,20 +145,11 @@ public class BigDecimalUtil {
     }
 
     /**
-     * convert `num` object to BigDecimal, return `elze` if `num` is null.
+     * convert `num` object to BigDecimal, return `elze`.get() if `num` is null.
      */
     @Contract("_, !null -> !null")
-    public static BigDecimal object(Supplier<?> num, BigDecimal elze) {
-        return object((Object) num, elze, false);
-    }
-
-    /**
-     * convert `num` object to BigDecimal, return `elze` if `num` is null.
-     * throw the exception if there is exception and `fail`
-     */
-    @Contract("_, !null, _ -> !null")
-    public static BigDecimal object(Supplier<?> num, BigDecimal elze, boolean fail) {
-        return object((Object) num, elze, fail);
+    public static BigDecimal object(Object num, Supplier<BigDecimal> elze) {
+        return object(num, elze, false);
     }
 
     /**
@@ -175,24 +158,38 @@ public class BigDecimalUtil {
      */
     @Contract("_, !null, _ -> !null")
     public static BigDecimal object(Object num, BigDecimal elze, boolean fail) {
+        BigDecimal rv = object(num, fail);
+        return rv != null ? rv : elze;
+    }
 
+    /**
+     * convert `num` object to BigDecimal, return `elze` if `num` is null.
+     * throw the exception if there is exception and `fail`
+     */
+    @Contract("_, !null, _ -> !null")
+    public static BigDecimal object(Object num, Supplier<BigDecimal> elze, boolean fail) {
+        BigDecimal rv = object(num, fail);
+        return rv != null ? rv : elze.get();
+    }
+
+    private static BigDecimal object(Object num, boolean fail) {
         try {
             // sort by frequency
-            if (num == null) return elze;
+            if (num == null) return null;
 
             if (num instanceof Long) return new BigDecimal((Long) num);
             if (num instanceof BigDecimal) return (BigDecimal) num;
             if (num instanceof CharSequence) return new BigDecimal(((CharSequence) num).toString());
-            if (num instanceof Supplier<?>) return object(((Supplier<?>) num).get(), elze, fail);
+            if (num instanceof Supplier<?>) return object(((Supplier<?>) num).get(), fail);
 
             if (num instanceof Integer) return new BigDecimal((Integer) num);
             if (num instanceof Double) return BigDecimal.valueOf((Double) num);
             if (num instanceof Float) return BigDecimal.valueOf((Float) num);
             if (num instanceof BigInteger) return new BigDecimal((BigInteger) num);
 
-            if (num instanceof IntSupplier) return object(((IntSupplier) num).getAsInt(), elze, fail);
-            if (num instanceof LongSupplier) return object(((LongSupplier) num).getAsLong(), elze, fail);
-            if (num instanceof DoubleSupplier) return object(((DoubleSupplier) num).getAsDouble(), elze, fail);
+            if (num instanceof IntSupplier) return object(((IntSupplier) num).getAsInt(), fail);
+            if (num instanceof LongSupplier) return object(((LongSupplier) num).getAsLong(), fail);
+            if (num instanceof DoubleSupplier) return object(((DoubleSupplier) num).getAsDouble(), fail);
 
             final String str = num.toString();
             return new BigDecimal(str);
@@ -200,8 +197,7 @@ public class BigDecimalUtil {
         catch (Exception e) {
             if (fail) throw e;
         }
-
-        return elze;
+        return null;
     }
 
     @NotNull

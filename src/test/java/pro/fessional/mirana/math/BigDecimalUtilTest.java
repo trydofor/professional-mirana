@@ -1,6 +1,7 @@
 package pro.fessional.mirana.math;
 
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -10,6 +11,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.DoubleSupplier;
+import java.util.function.IntSupplier;
+import java.util.function.LongSupplier;
+import java.util.function.Supplier;
 
 import static java.math.BigDecimal.ONE;
 import static java.math.BigDecimal.TEN;
@@ -17,6 +22,7 @@ import static java.math.BigDecimal.ZERO;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author trydofor
@@ -30,6 +36,10 @@ public class BigDecimalUtilTest {
         assertNull(BigDecimalUtil.addNull(null, null, null, null));
         assertEquals(ONE, BigDecimalUtil.add(null, ONE, null, null));
         assertEquals(ONE, BigDecimalUtil.add(null, null, ONE));
+
+        assertEquals(ZERO, BigDecimalUtil.add(ONE, -1));
+        assertEquals(ZERO, BigDecimalUtil.add(ONE, -1L));
+        assertEquals(ZERO, BigDecimalUtil.round(BigDecimalUtil.add(ONE, -1D), 0));
 
         assertEquals(ONE, BigDecimalUtil.add(ONE, null, null, null));
         assertEquals(TEN, BigDecimalUtil.add(ONE, null, NINE));
@@ -49,6 +59,9 @@ public class BigDecimalUtilTest {
         BigDecimal NEG1 = new BigDecimal("-1");
         assertEquals(ONE, BigDecimalUtil.sub(ONE, null, null, null));
         assertEquals(ZERO, BigDecimalUtil.sub(ONE, ONE, null, null));
+        assertEquals(ZERO, BigDecimalUtil.sub(ONE, 1));
+        assertEquals(ZERO, BigDecimalUtil.sub(ONE, 1L));
+        assertEquals(new BigDecimal("0.0"), BigDecimalUtil.sub(ONE, 1D));
         assertEquals(NEG1, BigDecimalUtil.sub(ONE, ONE, ONE));
         assertEquals(NEG1, BigDecimalUtil.sub(ZERO, null, ONE));
         List<Object> lst = Arrays.asList(1, "2", 3L);
@@ -60,6 +73,9 @@ public class BigDecimalUtilTest {
     public void mul() {
         assertNull(BigDecimalUtil.mulNull(null, null, null, null));
         assertEquals(ONE, BigDecimalUtil.mul(ONE, null));
+        assertEquals(ONE, BigDecimalUtil.mul(ONE, 1));
+        assertEquals(ONE, BigDecimalUtil.mul(ONE, 1L));
+        assertEquals(new BigDecimal("1.0"), BigDecimalUtil.mul(ONE, 1D));
         assertEquals(ONE, BigDecimalUtil.mul(ONE, null, null, null));
         assertEquals(ONE, BigDecimalUtil.mul(ONE, ONE, null, null));
         assertEquals(ONE, BigDecimalUtil.mul(null, ONE, ONE));
@@ -80,6 +96,9 @@ public class BigDecimalUtilTest {
     public void div() {
         assertEquals(TEN, BigDecimalUtil.div(TEN, ONE, null, null));
         assertEquals(ONE, BigDecimalUtil.div(ONE, ONE, ONE));
+        assertEquals(ONE, BigDecimalUtil.div(ONE, 1));
+        assertEquals(ONE, BigDecimalUtil.div(ONE, 1L));
+        assertEquals(ONE, BigDecimalUtil.div(ONE, 1D));
         assertEquals(ONE, BigDecimalUtil.div(TEN, "5", "2"));
         assertEquals(ONE, BigDecimalUtil.div(TEN, "5", null, "2"));
 
@@ -109,25 +128,27 @@ public class BigDecimalUtilTest {
         assertEquals("1", BigDecimalUtil.string(new BigDecimal("1.00"), 1, true));
     }
 
-    public String getZeroStr() {
-        return "0";
-    }
+    Object getZeroStr = (Supplier<String>) () -> "0";
 
-    public int getZeroInt() {
-        return 0;
-    }
 
-    public long getZeroLong() {
-        return 0L;
-    }
+    Object getZeroInt = (IntSupplier) () -> 0;
 
-    public double getZeroDouble() {
-        return 0D;
-    }
+    Object getZeroLong = (LongSupplier) () -> 0L;
+
+    Object getZeroDouble = (DoubleSupplier) () -> 0D;
+
+    Object object = new Object() {
+        @Override public String toString() {
+            return "0";
+        }
+    };
 
     @Test
     public void testObject() {
-        assertEquals(new BigDecimal("0"), BigDecimalUtil.object("0"));
+        assertEquals(ZERO, BigDecimalUtil.object(object));
+        assertEquals(ZERO, BigDecimalUtil.object("0"));
+        assertEquals(ZERO, BigDecimalUtil.object((Object) null, ZERO));
+        assertEquals(ZERO, BigDecimalUtil.object((Object) null, () -> ZERO));
         assertEquals(new BigDecimal("0.0"), BigDecimalUtil.object("0.0"));
         assertEquals(new BigDecimal("0.00"), BigDecimalUtil.object("0.00"));
         assertEquals(new BigDecimal("1.00"), BigDecimalUtil.object("1.00"));
@@ -142,19 +163,32 @@ public class BigDecimalUtilTest {
         assertArrayEquals(new BigDecimal[]{ONE, TEN, ZERO}, arr);
 
         // Object is not a functional interface
-        assertEquals(new BigDecimal("0"), BigDecimalUtil.object(this::getZeroStr));
-        assertEquals(new BigDecimal("0"), BigDecimalUtil.object(this::getZeroInt));
-        assertEquals(new BigDecimal("0"), BigDecimalUtil.object(this::getZeroLong));
-        assertEquals(new BigDecimal("0"), BigDecimalUtil.object(this::getZeroDouble).setScale(0, RoundingMode.FLOOR));
+        assertEquals(ZERO, BigDecimalUtil.object(getZeroStr));
+        assertEquals(ZERO, BigDecimalUtil.object(getZeroInt));
+        assertEquals(ZERO, BigDecimalUtil.object(getZeroLong));
+        assertEquals(ZERO, BigDecimalUtil.object(getZeroDouble).setScale(0, RoundingMode.FLOOR));
+
+        assertEquals(ZERO, BigDecimalUtil.object("BAD", () -> ZERO, false));
+        try {
+            assertEquals(ZERO, BigDecimalUtil.object("BAD", () -> ZERO, true));
+            Assertions.fail();
+        }
+        catch (Exception e) {
+            assertTrue(e instanceof NumberFormatException);
+        }
     }
 
     @Test
     public void notNull() {
         assertEquals(TEN, BigDecimalUtil.notNull(null, "10"));
         assertEquals(TEN, BigDecimalUtil.ifElse(false, null, "10"));
-        assertEquals(0, BigDecimalUtil.compareTo(10, "10"));
+        assertEquals(TEN, BigDecimalUtil.ifElse(false, () -> null, () -> "10"));
+        assertEquals(ZERO, BigDecimalUtil.ifElse(false, null, getZeroStr));
 
-        assertEquals(ZERO, BigDecimalUtil.ifElse(false, null, this::getZeroStr));
+        assertEquals(0, BigDecimalUtil.compareTo(10, "10"));
+        assertEquals(0, BigDecimalUtil.compareTo(10, "10.01", 1, RoundingMode.FLOOR));
+        assertTrue(BigDecimalUtil.equalsValue(10, "10.00"));
+        assertTrue(BigDecimalUtil.equalsValue(10, "10.01", 1, RoundingMode.FLOOR));
     }
 
     @Test
@@ -195,38 +229,100 @@ public class BigDecimalUtilTest {
 
     @Test
     public void w() {
-        BigDecimal n1 = BigDecimalUtil.w(ZERO)
-                                      .add(ZERO, null, ONE, ONE, null)
-                                      .sub(ONE, ONE, ONE, null)
-                                      .subIf(true, null, null)
-                                      .subIf(true, () -> null, () -> null)
-                                      .subIf(true, ONE, null)
-                                      .addIf(true, ONE, null)
-                                      .subIf(false, ONE, null)
-                                      .addIf(false, ONE, null)
-                                      .resultFloor(2);
-        assertEquals(new BigDecimal("-1.00"), n1);
 
-        BigDecimal n2 = BigDecimalUtil.w(TEN, 2)
-                                      .add(ONE)
-                                      .mul(ONE)
-                                      .mul("2.0", null, null, ONE, ONE)
-                                      .mulIf(false, ZERO, ONE)
-                                      .mulIf(false, () -> ZERO, () -> ONE)
-                                      .mulMap(Arrays.asList(null, null, ONE, ONE))
-                                      .mulMap(Arrays.asList(ONE, ONE), Objects::toString)
-                                      .div(ONE)
-                                      .div(ONE, ONE)
-                                      .divIf(true, ONE, ZERO)
-                                      .divIf(true, () -> ONE, () -> ZERO)
-                                      .divMap(Arrays.asList(ONE, ONE))
-                                      .divMap(Arrays.asList(ONE, ONE), Objects::toString)
-                                      .neg()
-                                      .neg()
-                                      .pow(2)
-                                      .resultFloor();
+        BigDecimalUtil.W w0 = BigDecimalUtil.w(ZERO);
+        w0.setValue("2.1").ceil(0);
+        assertEquals(new BigDecimal("3"), w0.resultRaw());
+        assertEquals(new BigDecimal("3.00"), w0.result(2, RoundingMode.FLOOR));
+        w0.setValue("2.1");
+        assertEquals(new BigDecimal("3"), w0.resultCeil(0));
 
-        assertEquals(new BigDecimal("484.00"), n2);
+        w0.setValue("2.1").floor(0);
+        assertEquals(new BigDecimal("2"), w0.resultRaw());
+        w0.setValue("2.1").round(0);
+        assertEquals(new BigDecimal("2"), w0.resultRaw());
+        w0.setValue("2.6").round(0);
+        assertEquals(new BigDecimal("3"), w0.resultRaw());
+
+        final BigDecimal unit = new BigDecimal("0.50");
+        final BigDecimal down = new BigDecimal("0.10");
+        final BigDecimal upto = new BigDecimal("0.10");
+        w0.setValue("1.09");
+        assertEquals(new BigDecimal("1.00"), w0.resultUnitUp(unit, down));
+        assertEquals(new BigDecimal("1.00"), w0.resultUnitDown(unit, upto));
+        w0.setValue("1.1001");
+        assertEquals(new BigDecimal("1.00"), w0.resultUnitUp(unit, down));
+        w0.setValue("1.4001");
+        assertEquals(new BigDecimal("1.00"), w0.resultUnitDown(unit, upto));
+
+
+        BigDecimalUtil.W w1 = BigDecimalUtil.w(ZERO)
+                                            .add(ZERO, null, ONE, ONE, null)
+                                            .sub(ONE, ONE, ONE, null)
+                                            .subIf(true, null, null)
+                                            .subIf(true, () -> null, () -> null)
+                                            .subIf(true, ONE, null)
+                                            .addIf(true, ONE, null)
+                                            .subIf(false, ONE, null)
+                                            .addIf(false, ONE, null);
+
+        assertEquals(new BigDecimal("-1"), w1.resultFloor());
+        assertEquals(new BigDecimal("-1.00"), w1.resultFloor(2));
+        assertEquals(new BigDecimal("-1"), w1.result(RoundingMode.FLOOR));
+        assertEquals(new BigDecimal("-1"), w1.resultCeil());
+        assertEquals(new BigDecimal("-1.00"), w1.resultCeil(2));
+        assertEquals(new BigDecimal("-1"), w1.resultRound());
+        assertEquals(new BigDecimal("-1.00"), w1.resultRound(2));
+
+        w1.setValue("2.0");
+        assertEquals(new BigDecimal("2.0"), w1.resultRaw());
+
+        w1.add(1);
+        w1.add(1L);
+        w1.add(1D);
+        w1.add("1");
+        w1.addIf(true, () -> 1L, () -> -1L);
+        assertEquals(new BigDecimal("7.0"), w1.resultRaw());
+
+        w1.sub(1);
+        w1.sub(1L);
+        w1.sub(1D);
+        w1.sub("1");
+        w1.subIf(true, () -> 1L, () -> -1L);
+        assertEquals(new BigDecimal("2.0"), w1.resultRaw());
+
+        w1.mul(1);
+        w1.mul(1L);
+        w1.mul(1D); // double scale
+        w1.mul("1");
+        w1.mulIf(true, () -> 1L, () -> -1L);
+        assertEquals(new BigDecimal("2.00"), w1.resultRaw());
+
+        w1.div(1);
+        w1.div(1L);
+        w1.div(1D);
+        w1.div("1");
+        w1.divIf(true, () -> 1L, () -> -1L);
+        assertEquals(new BigDecimal("2.0"), w1.resultRaw());
+
+        BigDecimalUtil.W w2 = BigDecimalUtil.w(TEN, 2)
+                                            .add(ONE)
+                                            .mul(ONE)
+                                            .mul("2.0", null, null, ONE, ONE)
+                                            .mulIf(false, ZERO, ONE)
+                                            .mulIf(false, () -> ZERO, () -> ONE)
+                                            .mulMap(Arrays.asList(null, null, ONE, ONE))
+                                            .mulMap(Arrays.asList(ONE, ONE), Objects::toString)
+                                            .div(ONE)
+                                            .div(ONE, ONE)
+                                            .divIf(true, ONE, ZERO)
+                                            .divIf(true, () -> ONE, () -> ZERO)
+                                            .divMap(Arrays.asList(ONE, ONE))
+                                            .divMap(Arrays.asList(ONE, ONE), Objects::toString)
+                                            .neg()
+                                            .neg()
+                                            .pow(2);
+        assertEquals(new BigDecimal("484.00"), w2.resultFloor());
     }
 
     @Test
@@ -290,8 +386,8 @@ public class BigDecimalUtilTest {
 
         final BigDecimal min1 = BigDecimalUtil.minMap(c1, Ins::getDec);
         final BigDecimal min2 = BigDecimalUtil.minMap(c2);
-        assertEquals(new BigDecimal("0"), min1);
-        assertEquals(new BigDecimal("0"), min2);
+        assertEquals(ZERO, min1);
+        assertEquals(ZERO, min2);
 
 
         final BigDecimal max1 = BigDecimalUtil.maxMap(c1, Ins::getDec);
@@ -316,5 +412,7 @@ public class BigDecimalUtilTest {
                                             .resultRaw();
         assertEquals(ZERO, s1);
         assertEquals(ZERO, s2);
+
+        assertEquals(new BigDecimal("0.0"), BigDecimalUtil.round(null, 1));
     }
 }

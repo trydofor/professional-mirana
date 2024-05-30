@@ -18,7 +18,7 @@ class JsonTemplateTest {
 
     @Test
     void testEmpty() {
-        final String j1 = JsonTemplate.obj(obj -> {});
+        final String j1 = JsonTemplate.obj(1000, obj -> {});
         Assertions.assertEquals("{}", j1);
         final String j2 = JsonTemplate.arr(arr -> {});
         Assertions.assertEquals("[]", j2);
@@ -27,7 +27,7 @@ class JsonTemplateTest {
     @Test
     void testArray() {
         byte[] bytes = "ab".getBytes();
-        final String j1 = JsonTemplate.obj(obj -> {
+        final String j1 = JsonTemplate.obj(1000, obj -> {
             obj.putVal("charArray", "ab".toCharArray());
             obj.putVal("byteArray", bytes);
             obj.putVal("boolArray", new boolean[]{true, false});
@@ -53,13 +53,13 @@ class JsonTemplateTest {
 
     @Test
     void testSimple() {
-        final String j1 = JsonTemplate.obj(obj -> {
+        final String j1 = JsonTemplate.obj(1000, obj -> {
             obj.putVal("msgtype", "mar\"kd\\own");
             obj.putVal("success", true);
             obj.putVal("code", null);
         });
         Assertions.assertEquals("{\"msgtype\":\"mar\\\"kd\\\\own\",\"success\":true}", j1);
-        final String j2 = JsonTemplate.arr(arr -> {
+        final String j2 = JsonTemplate.arr(1000, arr -> {
             arr.addVal(true);
             arr.addVal(new Object[]{1, 2})
                .addVal("mar\"kd\\own");
@@ -151,7 +151,7 @@ class JsonTemplateTest {
     void testInner() {
         LinkedHashMap<String, Object> m1 = new LinkedHashMap<>();
         m1.put("key1", 1);
-        m1.put("arr", Arrays.asList("1", "2", "3"));
+        m1.put("arr", new String[]{"1", "2", "3"});
         m1.put("map", Collections.singletonMap("k1", "k2"));
         m1.put("obj", Collections.singletonMap("a1",
                 Arrays.asList("1", Arrays.asList(true, false), Collections.singletonMap("nk1", "nk2"))));

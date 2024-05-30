@@ -141,7 +141,8 @@ public class DateParserTest {
         List<DateTimeFormatter> dtf = Arrays.asList(
                 DateTimeFormatter.ofPattern("y-M-d"),
                 DateTimeFormatter.ofPattern("y-M-d[ H:m:s]"),
-                DateTimeFormatter.ofPattern("MMM/d/[yyyy][yy][ H:m:s]")
+                DateTimeFormatter.ofPattern("MMM/d/[yyyy][yy][ H:m:s]"),
+                DateTimeFormatter.ofPattern("H:m:s")
         );
 
         {
@@ -164,6 +165,10 @@ public class DateParserTest {
             final TemporalAccessor ta = DateParser.parseTemporal("Jan/2/2021 3:4:5", dtf, false);
             assertEquals(LocalDateTime.of(2021, 1, 2, 3, 4, 5), ta.query(LocalDateTime::from));
         }
+        {
+            final TemporalAccessor ta = DateParser.parseTemporal("3:4:5", dtf, false);
+            assertEquals(LocalTime.of(3, 4, 5), ta.query(LocalTime::from));
+        }
 
         List<DateParser.QuietPos> ta = DateParser.parseTemporal(dtf, "Jan/2/2021 3:4:5", false);
         for (DateParser.QuietPos qp : ta) {
@@ -174,6 +179,7 @@ public class DateParserTest {
             SystemOut.println("Temporal=" + qp.getTemporal());
             final RuntimeException ex = qp.getException();
             if (ex != null) {
+                SystemOut.println("ignore this exception");
                 SystemOut.printStackTrace(ex);
             }
         }

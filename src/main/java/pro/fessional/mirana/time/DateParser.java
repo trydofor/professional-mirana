@@ -57,9 +57,6 @@ import static java.time.temporal.ChronoField.YEAR;
  */
 public class DateParser {
 
-    protected DateParser() {
-    }
-
     public static final TemporalQuery<LocalTime> QueryTime = (temporal) -> {
         if (temporal instanceof LocalTime) {
             return (LocalTime) temporal;
