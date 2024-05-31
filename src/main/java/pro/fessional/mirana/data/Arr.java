@@ -1,5 +1,6 @@
 package pro.fessional.mirana.data;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -11,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 public class Arr {
 
     @SafeVarargs
+    @Contract("!null->!null")
     public static <T> T[] obj(T... ts) {
         return ts;
     }

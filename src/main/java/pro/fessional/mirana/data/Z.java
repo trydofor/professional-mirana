@@ -7,7 +7,6 @@ import pro.fessional.mirana.best.DummyBlock;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -59,13 +58,7 @@ public interface Z {
         return result;
     }
 
-
-    @SafeVarargs
-    @Nullable
-    static <T> T find(Predicate<T> p, T... ts) {
-        if (ts == null) return null;
-        return find(p, Arrays.asList(ts));
-    }
+    //// find
 
     @Nullable
     static <T> T find(Predicate<T> p, Iterable<? extends T> ts) {
@@ -78,28 +71,45 @@ public interface Z {
 
     @SafeVarargs
     @Nullable
-    static <T, R> R make(Function<T, R> f, T... ts) {
-        return makeSafe(null, f, ts);
+    static <T> T find(Predicate<T> p, T... ts) {
+        if (ts == null) return null;
+        for (T t : ts) {
+            if (t != null && p.test(t)) return t;
+        }
+        return null;
     }
+
+    @SafeVarargs
+    @Contract("!null,_,_ ->!null")
+    static <T> T findSure(T d, Predicate<T> p, T... ts) {
+        T t = find(p, ts);
+        return t == null ? d : t;
+    }
+
+    @Contract("!null,_,_ ->!null")
+    static <T> T findSure(T d, Predicate<T> p, Iterable<? extends T> ts) {
+        T t = find(p, ts);
+        return t == null ? d : t;
+    }
+
+    @SafeVarargs
+    @Contract("!null,_,_ ->!null")
+    static <T> T findSafe(Supplier<T> d, Predicate<T> p, T... ts) {
+        T t = find(p, ts);
+        return t == null ? d.get() : t;
+    }
+
+    @Contract("!null,_,_ ->!null")
+    static <T> T findSafe(Supplier<T> d, Predicate<T> p, Iterable<? extends T> ts) {
+        T t = find(p, ts);
+        return t == null ? d.get() : t;
+    }
+
+    //// make
 
     @Nullable
     static <T, R> R make(Function<T, R> f, Iterable<? extends T> ts) {
-        return makeSafe(null, f, ts);
-    }
-
-    /**
-     * Convert the first non-null object that can be applied to `f`.
-     */
-    @SafeVarargs
-    @Contract("!null,_,_ ->!null")
-    static <T, R> R makeSafe(R d, Function<T, R> f, T... ts) {
-        if (ts == null) return d;
-        return makeSafe(d, f, Arrays.asList(ts));
-    }
-
-    @Contract("!null,_,_ ->!null")
-    static <T, R> R makeSafe(R d, Function<T, R> f, Iterable<? extends T> ts) {
-        if (ts == null) return d;
+        if (ts == null) return null;
         for (T t : ts) {
             if (t != null) {
                 try {
@@ -111,31 +121,60 @@ public interface Z {
                 }
             }
         }
-        return d;
+        return null;
     }
 
+    @SafeVarargs
     @Nullable
-    static BigDecimal decimal(CharSequence... ts) {
-        return decimalSafe(null, ts);
+    static <T, R> R make(Function<T, R> f, T... ts) {
+        if (ts == null) return null;
+        for (T t : ts) {
+            if (t != null) {
+                try {
+                    R r = f.apply(t);
+                    if (r != null) return r;
+                }
+                catch (Exception e) {
+                    DummyBlock.ignore(e);
+                }
+            }
+        }
+        return null;
     }
 
-    @Nullable
-    static BigDecimal decimal(Iterable<? extends CharSequence> ts) {
-        return decimalSafe(null, ts);
+    @SafeVarargs
+    @Contract("!null,_,_ ->!null")
+    static <T, R> R makeSure(R d, Function<T, R> f, T... ts) {
+        R t = make(f, ts);
+        return t == null ? d : t;
+    }
+
+    @Contract("!null,_,_ ->!null")
+    static <T, R> R makeSure(R d, Function<T, R> f, Iterable<? extends T> ts) {
+        R t = make(f, ts);
+        return t == null ? d : t;
     }
 
     /**
-     * The first non-null decimal that can be converted
+     * Convert the first non-null object that can be applied to `f`.
      */
-    @Contract("!null,_ ->!null")
-    static BigDecimal decimalSafe(BigDecimal d, CharSequence... ts) {
-        if (ts == null) return d;
-        return decimalSafe(d, Arrays.asList(ts));
+    @SafeVarargs
+    @Contract("!null,_,_ ->!null")
+    static <T, R> R makeSafe(Supplier<R> d, Function<T, R> f, T... ts) {
+        R t = make(f, ts);
+        return t == null ? d.get() : t;
     }
 
-    @Contract("!null,_ ->!null")
-    static BigDecimal decimalSafe(BigDecimal d, Iterable<? extends CharSequence> ts) {
-        if (ts == null) return d;
+    @Contract("!null,_,_ ->!null")
+    static <T, R> R makeSafe(Supplier<R> d, Function<T, R> f, Iterable<? extends T> ts) {
+        R t = make(f, ts);
+        return t == null ? d.get() : t;
+    }
+
+    //// decimal
+    @Nullable
+    static BigDecimal decimal(Iterable<? extends CharSequence> ts) {
+        if (ts == null) return null;
         for (CharSequence t : ts) {
             if (t != null && t.length() > 0) {
                 String s = t.toString().trim();
@@ -149,31 +188,60 @@ public interface Z {
                 }
             }
         }
-        return d;
+        return null;
     }
 
     @Nullable
-    static Long int64(CharSequence... ts) {
-        return int64Safe(null, ts);
+    static BigDecimal decimal(CharSequence... ts) {
+        if (ts == null) return null;
+        for (CharSequence t : ts) {
+            if (t != null && t.length() > 0) {
+                String s = t.toString().trim();
+                if (!s.isEmpty()) {
+                    try {
+                        return new BigDecimal(s);
+                    }
+                    catch (Exception e) {
+                        DummyBlock.ignore(e);
+                    }
+                }
+            }
+        }
+        return null;
     }
 
-    @Nullable
-    static Long int64(Iterable<? extends CharSequence> ts) {
-        return int64Safe(null, ts);
+    @Contract("!null,_ ->!null")
+    static BigDecimal decimalSure(BigDecimal d, CharSequence... ts) {
+        BigDecimal t = decimal(ts);
+        return t == null ? d : t;
+    }
+
+    @Contract("!null,_ ->!null")
+    static BigDecimal decimalSure(BigDecimal d, Iterable<? extends CharSequence> ts) {
+        BigDecimal t = decimal(ts);
+        return t == null ? d : t;
     }
 
     /**
-     * The first non-null long that can be converted
+     * The first non-null decimal that can be converted
      */
     @Contract("!null,_ ->!null")
-    static Long int64Safe(Long d, CharSequence... ts) {
-        if (ts == null) return d;
-        return int64Safe(d, Arrays.asList(ts));
+    static BigDecimal decimalSafe(Supplier<BigDecimal> d, CharSequence... ts) {
+        BigDecimal t = decimal(ts);
+        return t == null ? d.get() : t;
     }
 
     @Contract("!null,_ ->!null")
-    static Long int64Safe(Long d, Iterable<? extends CharSequence> ts) {
-        if (ts == null) return d;
+    static BigDecimal decimalSafe(Supplier<BigDecimal> d, Iterable<? extends CharSequence> ts) {
+        BigDecimal t = decimal(ts);
+        return t == null ? d.get() : t;
+    }
+
+    //// int64
+
+    @Nullable
+    static Long int64(Iterable<? extends CharSequence> ts) {
+        if (ts == null) return null;
         for (CharSequence t : ts) {
             if (t != null && t.length() > 0) {
                 String s = t.toString().trim();
@@ -187,31 +255,58 @@ public interface Z {
                 }
             }
         }
-        return d;
+        return null;
     }
 
     @Nullable
-    static Integer int32(CharSequence... ts) {
-        return int32Safe(null, ts);
+    static Long int64(CharSequence... ts) {
+        if (ts == null) return null;
+        for (CharSequence t : ts) {
+            if (t != null && t.length() > 0) {
+                String s = t.toString().trim();
+                if (!s.isEmpty()) {
+                    try {
+                        return Long.valueOf(s);
+                    }
+                    catch (Exception e) {
+                        DummyBlock.ignore(e);
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * The first non-null long that can be converted
+     */
+    @Contract("!null,_ ->!null")
+    static Long int64Sure(Long d, CharSequence... ts) {
+        Long t = int64(ts);
+        return t == null ? d : t;
+    }
+
+    @Contract("!null,_ ->!null")
+    static Long int64Sure(Long d, Iterable<? extends CharSequence> ts) {
+        Long t = int64(ts);
+        return t == null ? d : t;
+    }
+
+    @Contract("!null,_ ->!null")
+    static Long int64Safe(Supplier<Long> d, CharSequence... ts) {
+        Long t = int64(ts);
+        return t == null ? d.get() : t;
+    }
+
+    @Contract("!null,_ ->!null")
+    static Long int64Safe(Supplier<Long> d, Iterable<? extends CharSequence> ts) {
+        Long t = int64(ts);
+        return t == null ? d.get() : t;
     }
 
     @Nullable
     static Integer int32(Iterable<? extends CharSequence> ts) {
-        return int32Safe(null, ts);
-    }
-
-    /**
-     * The first non-null integer that can be converted
-     */
-    @Contract("!null,_ ->!null")
-    static Integer int32Safe(Integer d, CharSequence... ts) {
-        if (ts == null) return d;
-        return int32Safe(d, Arrays.asList(ts));
-    }
-
-    @Contract("!null,_ ->!null")
-    static Integer int32Safe(Integer d, Iterable<? extends CharSequence> ts) {
-        if (ts == null) return d;
+        if (ts == null) return null;
         for (CharSequence t : ts) {
             if (t != null && t.length() > 0) {
                 String s = t.toString().trim();
@@ -225,114 +320,196 @@ public interface Z {
                 }
             }
         }
-        return d;
+        return null;
+    }
+
+    @Nullable
+    static Integer int32(CharSequence... ts) {
+        if (ts == null) return null;
+        for (CharSequence t : ts) {
+            if (t != null && t.length() > 0) {
+                String s = t.toString().trim();
+                if (!s.isEmpty()) {
+                    try {
+                        return Integer.valueOf(s);
+                    }
+                    catch (Exception e) {
+                        DummyBlock.ignore(e);
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * The first non-null integer that can be converted
+     */
+    @Contract("!null,_ ->!null")
+    static Integer int32Sure(Integer d, CharSequence... ts) {
+        Integer t = int32(ts);
+        return t == null ? d : t;
+    }
+
+    @Contract("!null,_ ->!null")
+    static Integer int32Sure(Integer d, Iterable<? extends CharSequence> ts) {
+        Integer t = int32(ts);
+        return t == null ? d : t;
+    }
+
+    @Contract("!null,_ ->!null")
+    static Integer int32Safe(Supplier<Integer> d, CharSequence... ts) {
+        Integer t = int32(ts);
+        return t == null ? d.get() : t;
+    }
+
+    @Contract("!null,_ ->!null")
+    static Integer int32Safe(Supplier<Integer> d, Iterable<? extends CharSequence> ts) {
+        Integer t = int32(ts);
+        return t == null ? d.get() : t;
+    }
+
+    //// notNull
+
+    @Nullable
+    static <T> T notNull(Iterable<? extends T> ts) {
+        if (ts == null) return null;
+        for (T t : ts) {
+            if (t != null) return t;
+        }
+        return null;
     }
 
     @SafeVarargs
     @Nullable
     static <T> T notNull(T... ts) {
-        return notNullSafe((T) null, ts);
-    }
-
-    @Nullable
-    static <T> T notNull(Iterable<? extends T> ts) {
-        return notNullSafe((T) null, ts);
+        if (ts == null) return null;
+        for (T t : ts) {
+            if (t != null) return t;
+        }
+        return null;
     }
 
     @Contract("!null,_ ->!null")
-    static <T> T notNullSafe(T d, T t) {
+    @SafeVarargs
+    static <T> T notNullSure(T d, T... ts) {
+        T t = notNull(ts);
+        return t == null ? d : t;
+    }
+
+    @Contract("!null,_ ->!null")
+    static <T> T notNullSure(T d, Iterable<? extends T> ts) {
+        T t = notNull(ts);
         return t == null ? d : t;
     }
 
     @Contract("!null,_ ->!null")
     @SafeVarargs
-    static <T> T notNullSafe(T d, T... ts) {
-        return notNullSafe(d, Arrays.asList(ts));
-    }
-
-    @Contract("!null,_ ->!null")
-    static <T> T notNullSafe(T d, Iterable<? extends T> ts) {
-        if (ts == null) return d;
-        for (T t : ts) {
-            if (t != null) return t;
-        }
-        return d;
-    }
-
-    @Contract("!null,_ ->!null")
-    static <T> T notNullSafe(Supplier<T> d, T t) {
+    static <T> T notNullSafe(Supplier<T> d, T... ts) {
+        T t = notNull(ts);
         return t == null ? d.get() : t;
     }
 
     @Contract("!null,_ ->!null")
-    @SafeVarargs
-    static <T> T notNullSafe(Supplier<T> d, T... ts) {
-        return notNullSafe(d, Arrays.asList(ts));
-    }
-
-    @Contract("!null,_ ->!null")
     static <T> T notNullSafe(Supplier<T> d, Iterable<? extends T> ts) {
-        if (ts == null) return d.get();
-        for (T t : ts) {
-            if (t != null) return t;
-        }
-        return d.get();
+        T t = notNull(ts);
+        return t == null ? d.get() : t;
     }
 
+    //// notEmpty
+
+    @Nullable
+    static <T extends CharSequence> T notEmpty(Iterable<? extends T> ts) {
+        if (ts == null) return null;
+        for (T t : ts) {
+            if (t != null && t.length() > 0) return t;
+        }
+        return null;
+    }
 
     @SafeVarargs
     @Nullable
     static <T extends CharSequence> T notEmpty(T... ts) {
-        return notEmptySafe(null, ts);
-    }
-
-    @Nullable
-    static <T extends CharSequence> T notEmpty(Iterable<? extends T> ts) {
-        return notEmptySafe(null, ts);
+        if (ts == null) return null;
+        for (T t : ts) {
+            if (t != null && t.length() > 0) return t;
+        }
+        return null;
     }
 
     @Contract("!null,_ ->!null")
     @SafeVarargs
-    static <T extends CharSequence> T notEmptySafe(T d, T... ts) {
-        if (ts == null) return d;
-        return notEmptySafe(d, Arrays.asList(ts));
+    static <T extends CharSequence> T notEmptySure(T d, T... ts) {
+        T t = notEmpty(ts);
+        return t == null ? d : t;
     }
 
     @Contract("!null,_ ->!null")
-    static <T extends CharSequence> T notEmptySafe(T d, Iterable<? extends T> ts) {
-        if (ts == null) return d;
-        for (T t : ts) {
-            if (t != null && t.length() > 0) return t;
-        }
-        return d;
+    static <T extends CharSequence> T notEmptySure(T d, Iterable<? extends T> ts) {
+        T t = notEmpty(ts);
+        return t == null ? d : t;
     }
 
-    @Nullable
-    static String notBlank(CharSequence... ts) {
-        return notBlankSafe(null, ts);
+    @Contract("!null,_ ->!null")
+    @SafeVarargs
+    static <T extends CharSequence> T notEmptySafe(Supplier<T> d, T... ts) {
+        T t = notEmpty(ts);
+        return t == null ? d.get() : t;
     }
+
+    @Contract("!null,_ ->!null")
+    static <T extends CharSequence> T notEmptySafe(Supplier<T> d, Iterable<? extends T> ts) {
+        T t = notEmpty(ts);
+        return t == null ? d.get() : t;
+    }
+
+    //// notBlank
 
     @Nullable
     static String notBlank(Iterable<? extends CharSequence> ts) {
-        return notBlankSafe(null, ts);
-    }
-
-
-    @Contract("!null,_ ->!null")
-    static String notBlankSafe(String d, CharSequence... ts) {
-        if (ts == null) return d;
-        return notBlankSafe(d, Arrays.asList(ts));
-    }
-
-    @Contract("!null,_ ->!null")
-    static String notBlankSafe(String d, Iterable<? extends CharSequence> ts) {
-        if (ts == null) return d;
+        if (ts == null) return null;
         for (CharSequence t : ts) {
             if (t != null && t.length() > 0) {
                 String s = t.toString().trim();
                 if (!s.isEmpty()) return s;
             }
         }
-        return d;
+        return null;
+    }
+
+    @Nullable
+    static String notBlank(CharSequence... ts) {
+        if (ts == null) return null;
+        for (CharSequence t : ts) {
+            if (t != null && t.length() > 0) {
+                String s = t.toString().trim();
+                if (!s.isEmpty()) return s;
+            }
+        }
+        return null;
+    }
+
+    @Contract("!null,_ ->!null")
+    static String notBlankSure(String d, CharSequence... ts) {
+        String t = notBlank(ts);
+        return t == null ? d : t;
+    }
+
+    @Contract("!null,_ ->!null")
+    static String notBlankSure(String d, Iterable<? extends CharSequence> ts) {
+        String t = notBlank(ts);
+        return t == null ? d : t;
+    }
+
+    @Contract("!null,_ ->!null")
+    static String notBlankSafe(Supplier<String> d, CharSequence... ts) {
+        String t = notBlank(ts);
+        return t == null ? d.get() : t;
+    }
+
+    @Contract("!null,_ ->!null")
+    static String notBlankSafe(Supplier<String> d, Iterable<? extends CharSequence> ts) {
+        String t = notBlank(ts);
+        return t == null ? d.get() : t;
     }
 }
