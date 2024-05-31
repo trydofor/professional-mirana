@@ -2,7 +2,7 @@ package pro.fessional.mirana.time;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import pro.fessional.mirana.SystemOut;
+import pro.fessional.mirana.Testing;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -194,14 +194,14 @@ public class DateFormatterTest {
         // 2021-05-06 20:28:26.883 +0800 Asia/Shanghai
         DateTimeFormatter d2 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS ZZ VV");
         final ZonedDateTime now = ZonedDateTime.now();
-        SystemOut.println(now.format(d1));
-        SystemOut.println(now.format(d2));
+        Testing.println(now.format(d1));
+        Testing.println(now.format(d2));
 
         for (String zid : ZoneId.getAvailableZoneIds()) {
-            SystemOut.println(zid);
+            Testing.println(zid);
         }
-        SystemOut.println(DateFormatter.fullTz(now));
-        SystemOut.println(DateFormatter.fullTz(now.toOffsetDateTime()));
+        Testing.println(DateFormatter.fullTz(now));
+        Testing.println(DateFormatter.fullTz(now.toOffsetDateTime()));
     }
 
     @Test

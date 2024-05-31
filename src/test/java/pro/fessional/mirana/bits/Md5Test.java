@@ -2,7 +2,7 @@ package pro.fessional.mirana.bits;
 
 
 import org.junit.jupiter.api.Test;
-import pro.fessional.mirana.SystemOut;
+import pro.fessional.mirana.Testing;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,6 +22,6 @@ public class Md5Test {
         String sum = Md5.sum(new FileInputStream(f));
         boolean check = Md5.check(sum, new FileInputStream(f));
         assertTrue(check);
-        SystemOut.println(sum);
+        Testing.println(sum);
     }
 }

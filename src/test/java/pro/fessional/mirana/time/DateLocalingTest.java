@@ -2,7 +2,7 @@ package pro.fessional.mirana.time;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import pro.fessional.mirana.SystemOut;
+import pro.fessional.mirana.Testing;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -35,21 +35,21 @@ public class DateLocalingTest {
 
     @Test
     public void infoPrint() {
-        SystemOut.println(jpLdt);
-        SystemOut.println(DateLocaling.useLdt(jpLdt, cnZid));
-        SystemOut.println(DateLocaling.local(jpZid, jpLdt, cnZid));
-        SystemOut.println(DateLocaling.local(jpZdt, cnZid));
-        SystemOut.println(DateLocaling.dateTime(cnZid));
-        SystemOut.println(DateLocaling.dateTime(jpZid));
-        SystemOut.println("thisMonday=" + DateLocaling.monday(jpZid));
-        SystemOut.println("thisSunday=" + DateLocaling.sunday(jpZid));
-        SystemOut.println("thisMonth=" + DateLocaling.month(jpZid));
-        SystemOut.println("today=" + DateLocaling.today(jpZid));
+        Testing.println(jpLdt);
+        Testing.println(DateLocaling.useLdt(jpLdt, cnZid));
+        Testing.println(DateLocaling.local(jpZid, jpLdt, cnZid));
+        Testing.println(DateLocaling.local(jpZdt, cnZid));
+        Testing.println(DateLocaling.dateTime(cnZid));
+        Testing.println(DateLocaling.dateTime(jpZid));
+        Testing.println("thisMonday=" + DateLocaling.monday(jpZid));
+        Testing.println("thisSunday=" + DateLocaling.sunday(jpZid));
+        Testing.println("thisMonth=" + DateLocaling.month(jpZid));
+        Testing.println("today=" + DateLocaling.today(jpZid));
         //
-        SystemOut.println("2020-01-31@2=" + LocalDate.of(2020, 1, 31).withMonth(2));
-        SystemOut.println("2020-01-31+1M=" + LocalDate.of(2020, 1, 31).plusMonths(1));
+        Testing.println("2020-01-31@2=" + LocalDate.of(2020, 1, 31).withMonth(2));
+        Testing.println("2020-01-31+1M=" + LocalDate.of(2020, 1, 31).plusMonths(1));
 
-        SystemOut.printf("%,.2f%%", 300000.14159);
+        Testing.printf("%,.2f%%", 300000.14159);
     }
 
     @Test

@@ -13,7 +13,7 @@ import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
-import pro.fessional.mirana.SystemOut;
+import pro.fessional.mirana.Testing;
 import pro.fessional.mirana.bits.Aes128;
 import pro.fessional.mirana.bits.Aes256;
 
@@ -61,7 +61,7 @@ public class AesMain {
             new Runner(opt).run();
         }
         catch (RunnerException e) {
-            SystemOut.printStackTrace(e);
+            Testing.printStackTrace(e);
         }
     }
 }

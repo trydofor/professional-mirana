@@ -2,7 +2,7 @@ package pro.fessional.mirana.code;
 
 
 import org.junit.jupiter.api.Test;
-import pro.fessional.mirana.SystemOut;
+import pro.fessional.mirana.Testing;
 
 import java.util.Random;
 
@@ -65,20 +65,20 @@ public class LeapCodeTest {
     public void printRandom() {
         for (int i = 0; i < 1000; i++) {
             String e = codeSystem.encode(26, i, 20);
-            SystemOut.println("e=" + e + ",i=" + i);
+            Testing.println("e=" + e + ",i=" + i);
         }
         for (int i = 0; i < 1000; i++) {
             String e = codeSystem.encode(32, i, 20);
-            SystemOut.println("e=" + e + ",i=" + i);
+            Testing.println("e=" + e + ",i=" + i);
         }
     }
 
     @Test
     public void printBound() {
-        SystemOut.println("max32=" + codeSystem.encode32(LeapCode.MAX_NUMBER));
-        SystemOut.println("min32=" + codeSystem.encode32(LeapCode.MIN_NUMBER));
-        SystemOut.println("max26=" + codeSystem.encode26(LeapCode.MAX_NUMBER));
-        SystemOut.println("min26=" + codeSystem.encode26(LeapCode.MIN_NUMBER));
+        Testing.println("max32=" + codeSystem.encode32(LeapCode.MAX_NUMBER));
+        Testing.println("min32=" + codeSystem.encode32(LeapCode.MIN_NUMBER));
+        Testing.println("max26=" + codeSystem.encode26(LeapCode.MAX_NUMBER));
+        Testing.println("min26=" + codeSystem.encode26(LeapCode.MIN_NUMBER));
     }
 
 }

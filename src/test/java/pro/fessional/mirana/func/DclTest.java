@@ -2,7 +2,7 @@ package pro.fessional.mirana.func;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import pro.fessional.mirana.SystemOut;
+import pro.fessional.mirana.Testing;
 import pro.fessional.mirana.func.LazyHolder.Dog;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -51,7 +51,7 @@ class DclTest {
         final AtomicInteger c2 = new AtomicInteger(0);
         Dcl<Void> d2 = Dcl.of(() -> {
             c2.getAndIncrement();
-            SystemOut.println("");
+            Testing.println("");
         });
         d2.runIfDirty();
         Assertions.assertEquals(1, c2.get());

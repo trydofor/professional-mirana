@@ -2,7 +2,7 @@ package pro.fessional.mirana.page;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import pro.fessional.mirana.SystemOut;
+import pro.fessional.mirana.Testing;
 import pro.fessional.mirana.data.R;
 
 import java.util.Arrays;
@@ -59,8 +59,8 @@ public class PageResultTest {
         final PageResult<Integer> p1 = PageResult.ok(10, ls, 1, 4);
         final PageResult<String> p2 = p1.into(String::valueOf);
         final PageResult<Integer> p3 = p2.into(Integer::parseInt);
-        SystemOut.println(p1);
-        SystemOut.println(p2);
+        Testing.println(p1);
+        Testing.println(p2);
         Assertions.assertEquals(p1, p3);
     }
 }

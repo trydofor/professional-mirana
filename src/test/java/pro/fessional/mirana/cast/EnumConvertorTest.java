@@ -1,7 +1,7 @@
 package pro.fessional.mirana.cast;
 
 import org.junit.jupiter.api.Test;
-import pro.fessional.mirana.SystemOut;
+import pro.fessional.mirana.Testing;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -35,8 +35,8 @@ public class EnumConvertorTest {
         final String e0 = Tx.ONE.name();
         final String e1 = EnumConvertor.enum2Str(Tx.ONE);
         final String e2 = EnumConvertor.enum2Str($Ic.Ix.TWO);
-        SystemOut.println(e1);
-        SystemOut.println(e2);
+        Testing.println(e1);
+        Testing.println(e2);
 
         assertSame(Tx.ONE, EnumConvertor.str2Enum(Tx.class, e0));
         assertSame(Tx.ONE, EnumConvertor.str2Enum(Tx.class, e1));

@@ -295,7 +295,6 @@
                                 <exclude>**/data/U.*</exclude>
                                 <exclude>**/data/U$*</exclude>
                                 <!-- exception thrown -->
-                                <exclude>**/flow/FlowBreak.*</exclude>
                                 <exclude>**/evil/*Attention.*</exclude>
                                 <!-- stat manually checked -->
                                 <exclude>**/stat/GitStat*</exclude>

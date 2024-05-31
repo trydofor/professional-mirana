@@ -1,7 +1,7 @@
 package pro.fessional.mirana.tk;
 
 import org.junit.jupiter.api.Test;
-import pro.fessional.mirana.SystemOut;
+import pro.fessional.mirana.Testing;
 import pro.fessional.mirana.bits.Aes;
 import pro.fessional.mirana.bits.Aes256;
 import pro.fessional.mirana.bits.Base64;
@@ -23,7 +23,7 @@ class AnyTicketTest {
 
     @Test
     void builder0() {
-        SystemOut.println("current second=" + (System.currentTimeMillis() / 1000));
+        Testing.println("current second=" + (System.currentTimeMillis() / 1000));
         for (int i = 0; i < 10; i++) {
             String salt = RandCode.human(20);
             final byte[] key = salt.getBytes();
@@ -58,7 +58,7 @@ class AnyTicketTest {
 
     private void printTicket(Ticket tk) {
         final String str = tk.serialize();
-        SystemOut.printf("%3d %s\n", str.length(), str);
+        Testing.printf("%3d %s\n", str.length(), str);
     }
 
     private void builderMd0(int seq, MdHelp md, String salt) {

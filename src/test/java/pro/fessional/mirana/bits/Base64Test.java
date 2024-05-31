@@ -2,7 +2,7 @@ package pro.fessional.mirana.bits;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import pro.fessional.mirana.SystemOut;
+import pro.fessional.mirana.Testing;
 import pro.fessional.mirana.code.RandCode;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -68,8 +68,8 @@ class Base64Test {
         String de = "MTIzNDU2Nzg5MA==";
         final String b64 = Base64.encode(en);
         String str = Base64.de2str(de);
-        SystemOut.println(b64);
-        SystemOut.println(str);
+        Testing.println(b64);
+        Testing.println(str);
         Assertions.assertTrue(de.contains(b64));
         Assertions.assertEquals(en,str);
     }

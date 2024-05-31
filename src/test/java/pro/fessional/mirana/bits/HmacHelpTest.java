@@ -1,7 +1,7 @@
 package pro.fessional.mirana.bits;
 
 import org.junit.jupiter.api.Test;
-import pro.fessional.mirana.SystemOut;
+import pro.fessional.mirana.Testing;
 import pro.fessional.mirana.code.RandCode;
 
 import javax.crypto.Mac;
@@ -56,9 +56,9 @@ class HmacHelpTest {
         final String macSha1 = sha1Help.sum(mes);
         final String macSha256 = sha256Help.sum(mes);
 
-        SystemOut.println("macMd5    =" + macMd5);
-        SystemOut.println("macSha1   =" + macSha1);
-        SystemOut.println("macSha256 =" + macSha256);
+        Testing.println("macMd5    =" + macMd5);
+        Testing.println("macSha1   =" + macSha1);
+        Testing.println("macSha256 =" + macSha256);
     }
 
     @Test
