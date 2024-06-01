@@ -556,7 +556,7 @@ public class DateFormatter {
         }
 
         StringBuilder buf = new StringBuilder(19);
-        int[] idx = new int[]{0, 0};
+        int[] idx = new int[]{ 0, 0 };
 
         // yyyy-MM-dd
         fillDigit(tmp, 4, idx, buf, 1970, '-');

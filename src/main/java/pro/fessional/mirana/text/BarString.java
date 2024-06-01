@@ -44,17 +44,17 @@ public class BarString {
     public static final char DoubleDandaBar = '॥';
 
     private static final char[] Bars = {
-            SingleBar, // '|'
-            BrokenBar, // '¦'
-            FullwidthBar, // '｜'
-            DentalBar, // 'ǀ'
-            DividesBar, // '∣'
-            DrawingBar, // '│'
-            DandaBar, // '।'
-            DoubleBar, // '‖'
-            ParallelBar, // '∥'
-            LateralBar, // 'ǁ'
-            DoubleDandaBar, // '॥'
+        SingleBar, // '|'
+        BrokenBar, // '¦'
+        FullwidthBar, // '｜'
+        DentalBar, // 'ǀ'
+        DividesBar, // '∣'
+        DrawingBar, // '│'
+        DandaBar, // '।'
+        DoubleBar, // '‖'
+        ParallelBar, // '∥'
+        LateralBar, // 'ǁ'
+        DoubleDandaBar, // '॥'
     };
 
     private int index = 0;

@@ -16,40 +16,40 @@ import java.util.List;
 public class WhiteUtil {
 
     private static final char[] WS = {
-            0x0009, //U+0009 character tabulation
-            0x000A, //U+000A line feed
-            0x000B, //U+000B line tabulation
-            0x000C, //U+000C form feed
-            0x000D, //U+000D carriage return
-            0x0020, //U+0020 space
-            0x0085, //U+0085 next line
-            0x00A0, //U+00A0 no-break space
-            0x1680, //U+1680 ogham space mark
-            0x2000, //U+2000 en quad
-            0x2001, //U+2001 em quad
-            0x2002, //U+2002 en space
-            0x2003, //U+2003 em space
-            0x2004, //U+2004 three-per-em space
-            0x2005, //U+2005 four-per-em space
-            0x2006, //U+2006 six-per-em space
-            0x2007, //U+2007 figure space
-            0x2008, //U+2008 punctuation space
-            0x2009, //U+2009 thin space
-            0x200A, //U+200A hair space
-            0x202C, //U+202C POP DIRECTIONAL FORMATTING
-            0x202D, //U+202D LEFT-TO-RIGHT OVERRIDE
-            0x202E, //U+202E U+202E RIGHT-TO-LEFT OVERRIDE
-            0x2028, //U+2028 line separator
-            0x2029, //U+2029 paragraph separator
-            0x202F, //U+202F narrow no-break space
-            0x205F, //U+205F medium mathematical space
-            0x3000, //U+3000 ideographic space
-            0x180E, //U+180E mongolian vowel separator
-            0x200B, //U+200B zero width space
-            0x200C, //U+200C zero width non-joiner
-            0x200D, //U+200D zero width joiner
-            0x2060, //U+2060 word joiner
-            0xFEFF,//U+FEFF zero width non-breaking
+        0x0009, //U+0009 character tabulation
+        0x000A, //U+000A line feed
+        0x000B, //U+000B line tabulation
+        0x000C, //U+000C form feed
+        0x000D, //U+000D carriage return
+        0x0020, //U+0020 space
+        0x0085, //U+0085 next line
+        0x00A0, //U+00A0 no-break space
+        0x1680, //U+1680 ogham space mark
+        0x2000, //U+2000 en quad
+        0x2001, //U+2001 em quad
+        0x2002, //U+2002 en space
+        0x2003, //U+2003 em space
+        0x2004, //U+2004 three-per-em space
+        0x2005, //U+2005 four-per-em space
+        0x2006, //U+2006 six-per-em space
+        0x2007, //U+2007 figure space
+        0x2008, //U+2008 punctuation space
+        0x2009, //U+2009 thin space
+        0x200A, //U+200A hair space
+        0x202C, //U+202C POP DIRECTIONAL FORMATTING
+        0x202D, //U+202D LEFT-TO-RIGHT OVERRIDE
+        0x202E, //U+202E U+202E RIGHT-TO-LEFT OVERRIDE
+        0x2028, //U+2028 line separator
+        0x2029, //U+2029 paragraph separator
+        0x202F, //U+202F narrow no-break space
+        0x205F, //U+205F medium mathematical space
+        0x3000, //U+3000 ideographic space
+        0x180E, //U+180E mongolian vowel separator
+        0x200B, //U+200B zero width space
+        0x200C, //U+200C zero width non-joiner
+        0x200D, //U+200D zero width joiner
+        0x2060, //U+2060 word joiner
+        0xFEFF,//U+FEFF zero width non-breaking
     };
 
     static {

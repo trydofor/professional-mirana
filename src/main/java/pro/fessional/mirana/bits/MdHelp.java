@@ -133,10 +133,10 @@ public class MdHelp {
     /**
      * guess hex sum length, return 0 if not (MD5,SHA-1,SHA-256)
      */
-    public static int guessHexLength(@NotNull String algorithm){
-        if(MD_MD5.equalsIgnoreCase(algorithm)) return LEN_MD5_HEX;
-        if(MD_SHA1.equalsIgnoreCase(algorithm)) return LEN_SHA1_HEX;
-        if(MD_SHA256.equalsIgnoreCase(algorithm)) return LEN_SHA256_HEX;
+    public static int guessHexLength(@NotNull String algorithm) {
+        if (MD_MD5.equalsIgnoreCase(algorithm)) return LEN_MD5_HEX;
+        if (MD_SHA1.equalsIgnoreCase(algorithm)) return LEN_SHA1_HEX;
+        if (MD_SHA256.equalsIgnoreCase(algorithm)) return LEN_SHA256_HEX;
         return 0;
     }
 

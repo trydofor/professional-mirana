@@ -11,8 +11,8 @@ import java.lang.reflect.Method;
  * Lam.<String>ref(p1::split);
  * </pre>
  *
- * @see SerializedLambda
  * @author trydofor
+ * @see SerializedLambda
  * @since 2022-12-13
  */
 public interface Lam extends Serializable {

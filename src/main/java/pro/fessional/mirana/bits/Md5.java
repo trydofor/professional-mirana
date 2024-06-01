@@ -12,11 +12,11 @@ import java.io.InputStream;
  */
 public class Md5 {
 
-    public static boolean isSum(String str){
+    public static boolean isSum(String str) {
         return MdHelp.md5.isSum(str);
     }
 
-    public static boolean asSum(String str){
+    public static boolean asSum(String str) {
         return MdHelp.md5.asSum(str);
     }
 

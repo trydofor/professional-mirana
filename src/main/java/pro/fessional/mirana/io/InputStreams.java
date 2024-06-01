@@ -87,7 +87,7 @@ public class InputStreams {
     }
 
     /**
-     *  read all to builder and close
+     * read all to builder and close
      */
     public static void readText(StringBuilder sb, InputStream is, Charset cs) {
         if (is == null) return;

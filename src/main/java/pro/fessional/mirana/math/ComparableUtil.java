@@ -9,14 +9,14 @@ package pro.fessional.mirana.math;
 public class ComparableUtil {
 
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public static <T extends Comparable> T min(T a, T b) {
         if (a == null) return b;
         if (b == null) return a;
         return a.compareTo(b) < 0 ? a : b;
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public static <T extends Comparable> T min(T a, T b, T... c) {
         T r = min(a, b);
         if (c == null) return r;
@@ -31,14 +31,14 @@ public class ComparableUtil {
         return r;
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public static <T extends Comparable> T max(T a, T b) {
         if (a == null) return b;
         if (b == null) return a;
         return a.compareTo(b) > 0 ? a : b;
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public static <T extends Comparable> T max(T a, T b, T... c) {
         T r = max(a, b);
         if (c == null) return r;

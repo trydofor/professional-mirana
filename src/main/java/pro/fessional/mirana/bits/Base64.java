@@ -193,9 +193,9 @@ public class Base64 {
                 break;
             }
         }
-        java.util.Base64.Decoder decoder = urlSafe ?
-                                           java.util.Base64.getUrlDecoder() :
-                                           java.util.Base64.getDecoder();
+        java.util.Base64.Decoder decoder = urlSafe
+            ? java.util.Base64.getUrlDecoder()
+            : java.util.Base64.getDecoder();
         return decoder.decode(bytes);
     }
 

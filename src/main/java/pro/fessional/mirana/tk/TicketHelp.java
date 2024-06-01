@@ -98,8 +98,8 @@ public class TicketHelp {
     public static Ticket parse(String tk, BiFunction<String, String, Ticket.Mutable>... accept) {
         if (tk == null) return null;
 
-        final int[] pos = {-1, -1, -1, -1};
-        final char[] tkn = {'-', '-', '.', '.'};
+        final int[] pos = { -1, -1, -1, -1 };
+        final char[] tkn = { '-', '-', '.', '.' };
         int off = 0;
         for (int i = 0, x = tkn.length - 1; i <= x; i++) {
             final int j = tk.indexOf(tkn[i], off);

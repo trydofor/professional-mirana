@@ -116,7 +116,7 @@ public class ThrowableUtil {
                     buffer.append("Unknown");
                 }
                 else {
-                    if (nfn){
+                    if (nfn) {
                         buffer.append(fn);
                         nfn = false;
                     }

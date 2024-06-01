@@ -45,7 +45,7 @@ public class SslTrustAll {
 
             // Install the all-trusting trust manager
             final SSLContext sslContext = SSLContext.getInstance("SSL");
-            sslContext.init(null, new X509TrustManager[]{trust}, new java.security.SecureRandom());
+            sslContext.init(null, new X509TrustManager[]{ trust }, new java.security.SecureRandom());
 
             SSL_CONTEXT = sslContext;
             SSL_SOCKET_FACTORY = sslContext.getSocketFactory();
