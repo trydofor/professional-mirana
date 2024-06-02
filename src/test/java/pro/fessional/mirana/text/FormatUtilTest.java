@@ -139,13 +139,18 @@ public class FormatUtilTest {
             Object[] args = new Object[]{"1", 2, 3};
             assertEquals("a 1 2 b", FormatUtil.logback(pattern, args));
         }
+        {
+            assertEquals("a 1 null b", FormatUtil.logback("a {} {} b", "1"));
+        }
     }
 
     @Test
     public void format() {
         String f = "%s-%s-%s%%";
         assertEquals("1--%", FormatUtil.format(f, "1"));
-        assertEquals("1--%", FormatUtil.format(f, "1", null));
+        // IDE warn les args
+        // https://youtrack.jetbrains.com/issue/IDEA-283556/Add-annotation-to-printf-like-methods
+        assertEquals("1--%", FormatUtil.format("%s-%s-%s%%", "1", null));
     }
 
     @Test
