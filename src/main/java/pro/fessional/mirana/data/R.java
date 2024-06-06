@@ -21,9 +21,13 @@ import java.util.function.Supplier;
  * * `code` - business code. Note CodeEnum auto set the code.
  * * `data` - business data to use if available.
  *
- * The following are `@Transient`, should ignore for `hashCode`, `equals` and `json`, but not for kryo.
+ * The following are `@Transient`, should ignore for `hashCode`, `equals` and `json`
  * * `cause` - Internal error for tracking. Such as exceptions, strings, enum, etc.
  * * `i18nCode`/`i18nArgs` - I18N messages instead of `message`.
+ *
+ * kryo - ignore transient field
+ * jackson - ignore transient field and @Transient method
+ * fastjson - ignore transient field
  *
  * When using the`cast*` method, be careful to avoid the ClassCastException.
  *
@@ -42,7 +46,8 @@ public class R<T> implements DataResult<T>, I18nAware {
     protected String code;
     protected Object data;
 
-    // transient by Getter, not field
+    // @Transient by Getter, not field, because kryo use this
+    // fastjson do NOT work on @Transient
     protected Object cause = null;
     protected String i18nCode = null;
     protected Object[] i18nArgs = null;
