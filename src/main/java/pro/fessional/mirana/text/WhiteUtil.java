@@ -56,6 +56,90 @@ public class WhiteUtil {
         Arrays.sort(WS);
     }
 
+    /**
+     * <pre>
+     * whether is BOM, 0x20, \t, \r, \n
+     * * UTF-8 BOM: EF BB BF
+     * * UTF-16 BE BOM: FE FF
+     * * UTF-16 LE BOM: FF FE
+     * * UTF-32 BE BOM: 00 00 FE FF
+     * * UTF-32 LE BOM: FF FE 00 00
+     * </pre>
+     */
+    public static boolean isWhite(byte b) {
+        return b == 0x20 || b == 0x0A || b == 0x09 || b == 0x0D
+               || b == (byte) 0xEF || b == (byte) 0xBB || b == (byte) 0xBF
+               || b == (byte) 0xFF || b == (byte) 0xFE || b == 0x00;
+    }
+
+    /**
+     * find first non-white byte, return 0x00 if not found
+     */
+    public static byte firstNonWhite(byte[] bs) {
+        if (bs == null) return 0x00;
+        for (byte b : bs) {
+            if (!isWhite(b)) return b;
+        }
+        return 0x00;
+    }
+
+    /**
+     * find last non-white byte, return 0x00 if not found
+     */
+    public static byte lastNonWhite(byte[] bs) {
+        if (bs == null) return 0x00;
+        for (int i = bs.length - 1; i >= 0; i--) {
+            if (!isWhite(bs[i])) return bs[i];
+        }
+        return 0x00;
+    }
+
+    /**
+     * find first non-white char, return 0x00 if not found
+     */
+    public static char firstNonWhite(char[] cs) {
+        if (cs == null) return 0x00;
+        for (char c : cs) {
+            if (notWhiteSpace(c)) return c;
+        }
+        return 0x00;
+    }
+
+    /**
+     * find last non-white char, return 0x00 if not found
+     */
+    public static char lastNonWhite(char[] cs) {
+        if (cs == null) return 0x00;
+        for (int i = cs.length - 1; i >= 0; i--) {
+            if (notWhiteSpace(cs[i])) return cs[i];
+        }
+        return 0x00;
+    }
+
+    /**
+     * find first non-white char, return 0x00 if not found
+     */
+    public static char firstNonWhite(CharSequence cs) {
+        if (cs == null) return 0x00;
+        for (int i = 0, len = cs.length(); i < len; i++) {
+            char c = cs.charAt(i);
+            if (notWhiteSpace(c)) return c;
+        }
+        return 0x00;
+    }
+
+    /**
+     * find last non-white char, return 0x00 if not found
+     */
+    public static char lastNonWhite(CharSequence cs) {
+        if (cs == null) return 0x00;
+        for (int i = cs.length() - 1; i >= 0; i--) {
+            char c = cs.charAt(i);
+            if (notWhiteSpace(c)) return c;
+        }
+        return 0x00;
+    }
+
     public static boolean notWhiteSpace(char c) {
         return Arrays.binarySearch(WS, c) < 0;
     }
