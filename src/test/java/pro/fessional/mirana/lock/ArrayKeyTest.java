@@ -31,10 +31,10 @@ class ArrayKeyTest {
         assertSame(k12, map.get(k11));
         assertSame(k22, map.get(new ArrayKey(1)));
 
-        Integer[] ar = new Integer[]{2};
-        ArrayKey k31 = new ArrayKey((Object[]) ar);
+        Integer[] ar = new Integer[]{ 2 };
+        ArrayKey k31 = new ArrayKey(true, (Object[]) ar);
         ar[0] = 3;
-        ArrayKey k32 = new ArrayKey((Object[]) ar);
+        ArrayKey k32 = new ArrayKey(true, (Object[]) ar);
         map.put(k31, k31);
         map.put(k32, k32);
         assertEquals(4, map.size());
