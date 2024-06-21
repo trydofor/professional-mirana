@@ -3,6 +3,7 @@ package pro.fessional.mirana.pain;
 import org.junit.jupiter.api.Test;
 import pro.fessional.mirana.Testing;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -59,6 +60,7 @@ class ThrowableUtilTest {
         catch (Exception e) {
             Throwable root = ThrowableUtil.root(e);
             assertSame(e0, root);
+            assertEquals(ThrowableUtil.rootString(e), ThrowableUtil.rootString(root));
         }
     }
 
@@ -72,6 +74,21 @@ class ThrowableUtilTest {
             assertTrue(ThrowableUtil.contains(e, IllegalArgumentException.class));
             assertFalse(ThrowableUtil.contains(e, IllegalStateException.class));
         }
+    }
+
+    @Test
+    void cause() {
+        assertSame(e0, ThrowableUtil.cause(e0, -1));
+        assertSame(e0, ThrowableUtil.cause(e0, 0));
+        assertSame(e0, ThrowableUtil.cause(e0, 1));
+        assertSame(e0, ThrowableUtil.cause(e0, 2));
+
+        assertSame(e1, ThrowableUtil.cause(e1, -1));
+        assertSame(e1, ThrowableUtil.cause(e1, 0));
+        assertSame(e0, ThrowableUtil.cause(e1, 1));
+        assertSame(e0, ThrowableUtil.cause(e1, 2));
+
+        assertEquals(ThrowableUtil.causeString(e1, 1), ThrowableUtil.toString(e0));
     }
 
     @Test

@@ -151,6 +151,15 @@ public class ThrowableUtil {
     }
 
     /**
+     * print N level StackTrace to String
+     */
+    @NotNull
+    public static String causeString(Throwable t, int level) {
+        Throwable r = cause(t, level);
+        return toString(r);
+    }
+
+    /**
      * get the root StackTrace which is the root cause.
      */
     @Contract("!null->!null")
@@ -165,6 +174,24 @@ public class ThrowableUtil {
             }
         }
         return null;
+    }
+
+    /**
+     * get the N level StackTrace.
+     */
+    @Contract("!null,_->!null")
+    public static Throwable cause(Throwable t, int level) {
+        int count = 0;
+        while (t != null && count++ < level) {
+            Throwable x = t.getCause();
+            if (x == null) {
+                return t;
+            }
+            else {
+                t = x;
+            }
+        }
+        return t;
     }
 
     /**
