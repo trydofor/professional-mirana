@@ -1,7 +1,5 @@
 package pro.fessional.mirana.jmh;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -17,20 +15,19 @@ import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 import pro.fessional.mirana.Testing;
+import pro.fessional.mirana.cond.IfSetter;
 
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 /**
- * Benchmark                         Mode  Cnt       Score        Error   Units
- * SetterSugarMain.plainGetterNull  thrpt    6  402458.060 ±  51442.077  ops/ms
- * SetterSugarMain.plainIfNotNull   thrpt    6  308546.178 ±  60143.877  ops/ms
- * SetterSugarMain.plainTPredicate  thrpt    6  328409.328 ±  58813.521  ops/ms
- * SetterSugarMain.sugarGetterNull  thrpt    6  287615.753 ±  29257.135  ops/ms
- * SetterSugarMain.sugarIfNotNull   thrpt    6  930139.484 ± 163078.750  ops/ms
- * SetterSugarMain.sugarTPredicate  thrpt    6  416374.704 ± 104093.854  ops/ms
+ * Benchmark                    Mode  Cnt       Score        Error   Units
+ * SetterMain.plainGetterNull  thrpt    6  394899.519 ±  79310.657  ops/ms
+ * SetterMain.plainIfNotNull   thrpt    6  350178.905 ±  38254.829  ops/ms
+ * SetterMain.plainTPredicate  thrpt    6  364232.408 ±  32504.479  ops/ms
+ * SetterMain.sugarGetterNull  thrpt    6  296769.982 ± 102189.704  ops/ms
+ * SetterMain.sugarIfNotNull   thrpt    6  918656.605 ± 215644.924  ops/ms
+ * SetterMain.sugarTPredicate  thrpt    6  490125.486 ±  61287.620  ops/ms
  *
  * @author trydofor
  * @since 2022-10-10
@@ -43,27 +40,6 @@ import java.util.function.Predicate;
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @State(Scope.Benchmark)
 public class SetterMain {
-
-    /**
-     * set if value is not null
-     */
-    public static <T> void If(@NotNull Consumer<T> setter, @Nullable T value) {
-        if (value != null) setter.accept(value);
-    }
-
-    /**
-     * set if truthy
-     */
-    public static <T> void If(@NotNull Consumer<T> setter, @Nullable T value, boolean truthy) {
-        if (truthy) setter.accept(value);
-    }
-
-    /**
-     * set if truthy test value
-     */
-    public static <T> void If(@NotNull Consumer<T> setter, @Nullable T value, @NotNull Predicate<T> truthy) {
-        if (truthy.test(value)) setter.accept(value);
-    }
 
     public static class Dto {
         private String str;
@@ -109,24 +85,24 @@ public class SetterMain {
 
     @Benchmark
     public void sugarIfNotNull() {
-        If(dto::setStr, str);
+        IfSetter.nonnull(dto::setStr, str);
     }
 
     @Benchmark
     public void sugarGetterNull() {
-        If(dto::setStr, str, dto.getStr() == null);
+        IfSetter.valid(dto::setStr, str, dto.getStr() == null);
     }
 
     @Benchmark
     public void sugarTPredicate() {
-        If(dto::setStr, str, Objects::nonNull);
+        IfSetter.valid(dto::setStr, str, Objects::nonNull);
     }
 
 
     public static void main(String[] args) {
         Options opt = new OptionsBuilder()
-                .include(SetterMain.class.getSimpleName())
-                .build();
+            .include(SetterMain.class.getSimpleName())
+            .build();
         try {
             new Runner(opt).run();
         }

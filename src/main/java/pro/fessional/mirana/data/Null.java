@@ -332,6 +332,9 @@ public class Null {
         return v == null ? e : v;
     }
 
+    /**
+     * @deprecated replaced by {@link pro.fessional.mirana.cond.IfSetter#nonnull(Consumer, Object)}
+     */
     public static <T> void notNull(@Nullable T obj, @NotNull Consumer<T> con) {
         if (obj != null) con.accept(obj);
     }
