@@ -104,7 +104,7 @@ class AnyTicketTest {
         final byte[] key = salt.getBytes();
         String biz0 = RandCode.human(30);
         String bizPart = Aes256.of(salt).encode64(biz0);
-        byte[] sig0 = md.digest((mod + "-" + exp + "-" + seq + "." + bizPart + salt).getBytes());
+        byte[] sig0 = md.digest((mod + "-" + exp + "-" + seq + "~" + bizPart + salt).getBytes());
         final String sigPart = Base64.encode(sig0);
         AnyTicket at1 = new AnyTicket(mod, exp, seq, bizPart, sigPart);
 
@@ -176,7 +176,7 @@ class AnyTicketTest {
         String biz0 = RandCode.human(30);
         final Aes aes = Aes256.of(key);
         String bizPart = aes.encode64(biz0);
-        byte[] sig0 = md.digest((mod + "-" + exp + "-" + seq + "." + bizPart).getBytes());
+        byte[] sig0 = md.digest((mod + "-" + exp + "-" + seq + "~" + bizPart).getBytes());
         final String sigPart = Base64.encode(sig0);
         AnyTicket at1 = new AnyTicket(mod, exp, seq, bizPart, sigPart);
 

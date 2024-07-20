@@ -96,10 +96,24 @@ public class TicketHelp {
     @SafeVarargs
     @Nullable
     public static Ticket parse(String tk, BiFunction<String, String, Ticket.Mutable>... accept) {
+        return parse(Ticket.Sep1, Ticket.Sep2, tk, accept);
+    }
+
+    /**
+     * Parse any accepted Ticket with separator
+     *
+     * @param sep1   separator of pub data
+     * @param sep2   separator of parts
+     * @param tk     ticket string
+     * @param accept validate and return Ticket, otherwise return null
+     * @return parsed Ticket or null
+     */
+    @SafeVarargs
+    public static Ticket parse(char sep1, char sep2, String tk, BiFunction<String, String, Ticket.Mutable>... accept) {
         if (tk == null) return null;
 
         final int[] pos = { -1, -1, -1, -1 };
-        final char[] tkn = { '-', '-', '.', '.' };
+        final char[] tkn = { sep1, sep1, sep2, sep2 };
         int off = 0;
         for (int i = 0, x = tkn.length - 1; i <= x; i++) {
             final int j = tk.indexOf(tkn[i], off);

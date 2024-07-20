@@ -9,13 +9,13 @@ import java.io.Serializable;
  * A short, expireable, kickable, verifiable, with some business meaning, instead of meaningless random token.
  * Where `Data` suffix is business semantics, `Part` suffix is transfer semantics, and the layout of different perspectives is.
  *
- * Business layout: SigData + `.` + SigPart
- * - SigData = PubPart + (`.` + BizData)?
+ * Business layout: SigData + `~` + SigPart
+ * - SigData = PubPart + (`~` + BizData)?
  * - PubPart = `mod` + `-` + `due` + `-` + `seq`
  * - BizData: business data, e.g. plaintext Json
  *
- * Transfer layout: PubPart + `.` + SecPart
- * - SecPart = (BizPart + `.`)? + SigPart
+ * Transfer layout: PubPart + `~` + SecPart
+ * - SecPart = (BizPart + `~`)? + SigPart
  * - BizPart: encrypted BizData
  * - SigPart: Signature data, sign the SigData data.
  *
@@ -25,9 +25,9 @@ import java.io.Serializable;
  * `salt`: encryption or signing secret key, such as symmetric secret key, asymmetric private key.
  *
  * When parsing, the easier to understand steps are,
- * (1) Split the Ticket with the 1st `.` into 2 segments: PubData and SecData.
+ * (1) Split the Ticket with the 1st `~` into 2 segments: PubData and SecData.
  * (2) Split the 1st segment into 3 parts with 2 `-`: PubMod, PubDue, PubSeq.
- * (3) Split the 2nd segment into 2 parts with 1 `.`: BizPart, SigPart
+ * (3) Split the 2nd segment into 2 parts with 1 `~`: BizPart, SigPart
  * (4) Decrypt BizPart and verify SigData signature with PubMod convention.
  *
  * </pre>
@@ -36,6 +36,17 @@ import java.io.Serializable;
  * @since 2021-01-24
  */
 public interface Ticket extends Serializable {
+
+    /**
+     * default separator of pub
+     */
+    char Sep1 = '-';
+
+    /**
+     * default separator of parts
+     */
+    char Sep2 = '~';
+
     /**
      * The convention schema, including encryption algorithm, signature method,
      * is a convention of the BizPart structure, supported [az09].
@@ -69,7 +80,7 @@ public interface Ticket extends Serializable {
     String getSigPart();
 
     /**
-     * Get the signature data, i.e. `pub-part` + (`. ` + `biz-part`)?
+     * Get the signature data, i.e. `pub-part` + (`~ ` + `biz-part`)?
      * When parsing the ticket string, cache the biz-data of the original ticket.
      *
      * @return the signature part
@@ -78,10 +89,10 @@ public interface Ticket extends Serializable {
     default String getSigData() {
         final String biz = getBizPart();
         if (biz.isEmpty()) {
-            return getPubMod() + "-" + getPubDue() + "-" + getPubSeq();
+            return getPubMod() + Sep1 + getPubDue() + Sep1 + getPubSeq();
         }
         else {
-            return getPubMod() + "-" + getPubDue() + "-" + getPubSeq() + "." + biz;
+            return getPubMod() + Sep1 + getPubDue() + Sep1 + getPubSeq() + Sep2 + biz;
         }
     }
 
@@ -92,6 +103,16 @@ public interface Ticket extends Serializable {
      */
     @NotNull
     default String serialize() {
+        return serialize(Sep1, Sep2);
+    }
+
+    /**
+     * serialize the Ticket
+     *
+     * @return Ticket
+     */
+    @NotNull
+    default String serialize(char sep1, char sep2) {
         final String mod = getPubMod();
         final String sig = getSigPart();
         if (mod.isEmpty() || sig.isEmpty()) {
@@ -100,12 +121,12 @@ public interface Ticket extends Serializable {
         final String biz = getBizPart();
         StringBuilder sb = new StringBuilder(biz.length() + 100);
         sb.append(mod);
-        sb.append('-').append(getPubDue());
-        sb.append('-').append(getPubSeq());
+        sb.append(sep1).append(getPubDue());
+        sb.append(sep1).append(getPubSeq());
         if (!biz.isEmpty()) {
-            sb.append('.').append(biz);
+            sb.append(sep2).append(biz);
         }
-        sb.append('.').append(sig);
+        sb.append(sep2).append(sig);
         return sb.toString();
     }
 

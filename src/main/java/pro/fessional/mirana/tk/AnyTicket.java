@@ -15,11 +15,11 @@ public class AnyTicket implements Ticket.Mutable {
 
     private static final long serialVersionUID = 19791023L;
 
-    private String pubMod = Null.Str;
-    private long pubExp = 0;
-    private int pubSeq = 0;
-    private String bizPart = Null.Str;
-    private String sigPart = Null.Str;
+    protected String pubMod = Null.Str;
+    protected long pubExp = 0;
+    protected int pubSeq = 0;
+    protected String bizPart = Null.Str;
+    protected String sigPart = Null.Str;
 
     public AnyTicket() {
     }
@@ -91,15 +91,15 @@ public class AnyTicket implements Ticket.Mutable {
 
     @Override
     @NotNull
-    public String serialize() {
-        StringBuilder sb = new StringBuilder();
+    public String serialize(char sep1, char sep2) {
+        StringBuilder sb = new StringBuilder(pubMod.length() + bizPart.length() + sigPart.length() + 40);
         sb.append(pubMod);
-        sb.append('-').append(pubExp);
-        sb.append('-').append(pubSeq);
+        sb.append(sep1).append(pubExp);
+        sb.append(sep1).append(pubSeq);
         if (!bizPart.isEmpty()) {
-            sb.append('.').append(bizPart);
+            sb.append(sep2).append(bizPart);
         }
-        sb.append('.').append(sigPart);
+        sb.append(sep2).append(sigPart);
         return sb.toString();
     }
 
