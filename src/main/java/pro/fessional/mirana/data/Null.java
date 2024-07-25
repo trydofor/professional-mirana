@@ -3,6 +3,7 @@ package pro.fessional.mirana.data;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
@@ -21,6 +22,15 @@ public class Null {
         Null
     }
 
+    private static Method Nu() {
+        try {
+            return Null.class.getDeclaredMethod("Nu");
+        }
+        catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static final boolean Int01 = false;
     public static final byte Int08 = 0;
     public static final char Int16 = 0;
@@ -31,6 +41,7 @@ public class Null {
 
     public static final @NotNull Enum<?> Enm = Eu.Null;
     public static final @NotNull Class<?> Clz = Void.class;
+    public static final @NotNull Method Mtd = Nu();
 
     //
     public static final @NotNull String Str = "";
@@ -168,6 +179,10 @@ public class Null {
         return v == null || v == Clz;
     }
 
+    public static boolean asNull(Method m) {
+        return m == null || m == Mtd;
+    }
+
     // /////////////////
 
     public static boolean notNull(Boolean v) {
@@ -250,6 +265,10 @@ public class Null {
         return v == null ? Clz : v;
     }
 
+    public static @NotNull Method notNull(Method m) {
+        return m == null ? Mtd : m;
+    }
+
     // /////////////////
 
     public static boolean notNull(Boolean v, boolean e) {
@@ -330,6 +349,10 @@ public class Null {
 
     public static <T> @NotNull Class<T> notNull(Class<T> v, Class<T> e) {
         return v == null ? e : v;
+    }
+
+    public static @NotNull Method notNull(Method m, Method e) {
+        return m == null ? e : m;
     }
 
     /**

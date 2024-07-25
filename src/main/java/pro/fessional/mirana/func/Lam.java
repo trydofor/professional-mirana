@@ -1,5 +1,8 @@
 package pro.fessional.mirana.func;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.Serializable;
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Method;
@@ -7,8 +10,9 @@ import java.lang.reflect.Method;
 /**
  * <pre>
  * Object references must be used to capture the object itself and its methods.
- * Lam.ref(object::method)
- * Lam.<String>ref(p1::split);
+ * * Lam.ref(String::charAt) - object is null
+ * * Lam.ref(bean::method) - object is bean
+ * * Lam.<String>ref(p1::split) - object is p1
  * </pre>
  *
  * @author trydofor
@@ -182,10 +186,10 @@ public interface Lam extends Serializable {
     }
 
     class Ref {
-        public final Method method;
-        public final Object object;
+        public final @NotNull Method method;
+        public final @Nullable Object object;
 
-        private Ref(Method method, Object object) {
+        private Ref(@NotNull Method method, @Nullable Object object) {
             this.method = method;
             this.object = object;
         }
@@ -193,7 +197,7 @@ public interface Lam extends Serializable {
         private static Ref ref(Lam lam) {
             try {
                 SerializedLambda lambda = Clz.referLambda(lam);
-                if (lambda == null || lambda.getCapturedArgCount() != 1) {
+                if (lambda == null) {
                     throw new IllegalStateException("failed to serializedLambda, need 'Lam.ref(object::method)' style");
                 }
 
@@ -201,7 +205,8 @@ public interface Lam extends Serializable {
                 final String methodName = lambda.getImplMethodName();
                 Class<?>[] params = Clz.parseParam(lambda.getImplMethodSignature());
                 Method tgt = Class.forName(className).getDeclaredMethod(methodName, params);
-                return new Ref(tgt, lambda.getCapturedArg(0));
+                Object obj = lambda.getCapturedArgCount() == 0 ? null : lambda.getCapturedArg(0);
+                return new Ref(tgt, obj);
             }
             catch (SecurityException | ReflectiveOperationException e) {
                 throw new IllegalStateException("failed to refer, need 'Lam.ref(object::method)' style", e);
