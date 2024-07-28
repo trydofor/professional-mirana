@@ -190,4 +190,14 @@ class ThrowableUtilTest {
             Testing.println(sb);
         }
     }
+
+    @Test
+    void printUnchecked() {
+        Exception e1 = new Exception("root Exception");
+        UncheckedException ue = new UncheckedException(e1);
+        System.out.println("====");
+        Testing.printStackTrace(e1);
+        System.out.println("====");
+        Testing.printStackTrace(ue);
+    }
 }
