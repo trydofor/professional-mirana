@@ -120,7 +120,7 @@ class ThrowableUtilTest {
                 ex2();
             }
             catch (Exception e) {
-                ThrowableUtil.throwMatch(e, IllegalArgumentException.class);
+                throw ThrowableUtil.runtimeMatch(e, IllegalArgumentException.class);
             }
         });
 
@@ -129,7 +129,7 @@ class ThrowableUtilTest {
                 ex2();
             }
             catch (Exception e) {
-                ThrowableUtil.throwMatch(e, IllegalStateException.class);
+                throw ThrowableUtil.runtimeMatch(e, IllegalStateException.class);
             }
         });
         assertThrows(IllegalArgumentException.class, () -> {
@@ -137,7 +137,7 @@ class ThrowableUtilTest {
                 ex2();
             }
             catch (Exception e) {
-                ThrowableUtil.throwMatch(e, RuntimeException.class);
+                throw ThrowableUtil.runtimeMatch(e, RuntimeException.class);
             }
         });
     }
@@ -149,7 +149,7 @@ class ThrowableUtilTest {
                 ex2();
             }
             catch (Exception e) {
-                ThrowableUtil.throwCause(e, NullPointerException.class);
+                throw ThrowableUtil.runtimeCause(e, NullPointerException.class);
             }
         });
     }

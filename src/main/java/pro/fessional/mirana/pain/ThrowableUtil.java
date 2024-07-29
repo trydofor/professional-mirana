@@ -49,6 +49,7 @@ public class ThrowableUtil {
 
     private static void print(@Out final Appendable buffer, final Throwable t, final boolean reverse, final boolean shorten, final int stack, final int max, final int cur) {
         if (t == null || max < cur) return;
+
         final Throwable c = t.getCause();
         int nextDepth = cur + 1;
         boolean caused = c != null;
@@ -134,6 +135,7 @@ public class ThrowableUtil {
     @NotNull
     public static String toString(Throwable t) {
         if (t == null) return "";
+
         StringWriter sw = new StringWriter();
         try (PrintWriter pw = new PrintWriter(sw)) {
             t.printStackTrace(pw);
@@ -155,8 +157,8 @@ public class ThrowableUtil {
      */
     @NotNull
     public static String causeString(Throwable t, int level) {
-        Throwable r = cause(t, level);
-        return toString(r);
+        Throwable c = cause(t, level);
+        return toString(c);
     }
 
     /**
@@ -165,13 +167,9 @@ public class ThrowableUtil {
     @Contract("!null->!null")
     public static Throwable root(Throwable t) {
         while (t != null) {
-            Throwable x = t.getCause();
-            if (x == null) {
-                return t;
-            }
-            else {
-                t = x;
-            }
+            Throwable c = t.getCause();
+            if (c == null) return t;
+            t = c;
         }
         return null;
     }
@@ -183,13 +181,9 @@ public class ThrowableUtil {
     public static Throwable cause(Throwable t, int level) {
         int count = 0;
         while (t != null && count++ < level) {
-            Throwable x = t.getCause();
-            if (x == null) {
-                return t;
-            }
-            else {
-                t = x;
-            }
+            Throwable c = t.getCause();
+            if (c == null) return t;
+            t = c;
         }
         return t;
     }
@@ -221,9 +215,7 @@ public class ThrowableUtil {
         if (e == null) return null;
         T f = null;
         while (t != null) {
-            if (e.isInstance(t)) {
-                f = (T) t;
-            }
+            if (e.isInstance(t)) f = (T) t; // keep and find next
             t = t.getCause();
         }
         return f;
@@ -240,48 +232,47 @@ public class ThrowableUtil {
     public static <T extends Throwable> T lastCause(Throwable t, Class<T> e) {
         if (e == null) return null;
         while (t != null) {
-            if (e.isInstance(t)) {
-                return (T) t;
-            }
+            if (e.isInstance(t)) return (T) t;
             t = t.getCause();
         }
         return null;
     }
 
-    @SafeVarargs
-    public static void throwMatch(Throwable t, Class<? extends RuntimeException>... runtime) {
-        if (runtime != null) {
-            for (Class<? extends RuntimeException> re : runtime) {
-                if (re.isInstance(t)) {
-                    throw (RuntimeException) t;
-                }
-            }
-        }
+    @NotNull
+    public static RuntimeException runtime(@NotNull Throwable t) {
         if (t instanceof RuntimeException) {
-            throw (RuntimeException) t;
+            return (RuntimeException) t;
         }
         else {
-            throw new RuntimeException(t);
+            return new UncheckedException(t);
         }
     }
 
     @SafeVarargs
-    public static void throwCause(Throwable t, Class<? extends RuntimeException>... runtime) {
-        if (runtime != null && runtime.length > 0) {
-            while (t != null) {
-                for (Class<? extends RuntimeException> e : runtime) {
-                    if (e.isInstance(t)) {
-                        throw (RuntimeException) t;
-                    }
-                }
-                t = t.getCause();
+    @NotNull
+    public static RuntimeException runtimeMatch(@NotNull Throwable t, Class<? extends RuntimeException>... runtime) {
+        if (runtime != null) {
+            for (Class<? extends RuntimeException> re : runtime) {
+                if (re.isInstance(t)) return (RuntimeException) t;
             }
         }
-        if (t instanceof RuntimeException) {
-            throw (RuntimeException) t;
+
+        return runtime(t);
+    }
+
+    @SafeVarargs
+    @NotNull
+    public static RuntimeException runtimeCause(@NotNull Throwable t, Class<? extends RuntimeException>... runtime) {
+        if (runtime != null && runtime.length > 0) {
+            Throwable c = t;
+            while (c != null) {
+                for (Class<? extends RuntimeException> e : runtime) {
+                    if (e.isInstance(c)) return (RuntimeException) c;
+                }
+                c = c.getCause();
+            }
         }
-        else {
-            throw new RuntimeException(t);
-        }
+
+        return runtime(t);
     }
 }

@@ -19,13 +19,4 @@ public class UncheckedException extends RuntimeException {
     public UncheckedException(String message, @NotNull Throwable cause) {
         super(message != null ? message : cause.getClass().getName() + ": " + cause.getMessage(), cause, true, false);
     }
-
-    public static RuntimeException runtime(@NotNull Throwable t) {
-        if (t instanceof RuntimeException) {
-            throw (RuntimeException) t;
-        }
-        else {
-            throw new UncheckedException(t);
-        }
-    }
 }
