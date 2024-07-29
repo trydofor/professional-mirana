@@ -1,6 +1,5 @@
 package pro.fessional.mirana.time;
 
-import java.io.Closeable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -154,7 +153,7 @@ public class StopWatch {
     }
 
     //
-    public static final class Watch implements Closeable {
+    public static final class Watch implements AutoCloseable {
 
         public final String name;
         public final long start;

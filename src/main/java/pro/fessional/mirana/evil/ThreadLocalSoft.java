@@ -2,7 +2,6 @@ package pro.fessional.mirana.evil;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.Closeable;
 import java.lang.ref.SoftReference;
 
 /**
@@ -15,7 +14,7 @@ import java.lang.ref.SoftReference;
  * @author trydofor
  * @since 2022-09-22
  */
-public abstract class ThreadLocalSoft<T> implements Closeable {
+public abstract class ThreadLocalSoft<T> implements AutoCloseable {
 
     /** follow usage pattern */
     private final ThreadLocal<SoftReference<T>> threadLocal;
