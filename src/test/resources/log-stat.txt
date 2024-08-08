@@ -1,0 +1,35 @@
+2021-07-11 00:15:58.183 DEBUG 24430 --- [XNIO-1 task-5] org.jooq.tools.LoggerListener            :                          : +--------+
+2021-07-11 00:15:58.183 DEBUG 24430 --- [XNIO-1 task-5] org.jooq.tools.LoggerListener            :                          : |225.0900|
+2021-07-11 00:15:58.183 DEBUG 24430 --- [XNIO-1 task-5] org.jooq.tools.LoggerListener            :                          : +--------+
+2021-07-11 00:15:58.183 DEBUG 24430 --- [XNIO-1 task-5] org.jooq.tools.LoggerListener            : Fetched row(s)           : 1
+2021-07-11 00:15:58.184 DEBUG 24430 --- [XNIO-1 task-5] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [applicatio
+n/json, application/*+json, application/json, application/*+json, application/xml;charset=UTF-8, text/xml;charset=UTF-8, application/*+xml;charset=UTF-8, application/xml;charset=UTF-8, text/xm
+l;charset=UTF-8, application/*+xml;charset=UTF-8]
+2021-07-11 00:15:58.184 DEBUG 24430 --- [XNIO-1 task-5] m.m.a.RequestResponseBodyMethodProcessor : Writing [SimpleResult{success=true, message='null', code='null', data=225.09}]
+2021-07-11 00:15:58.184 DEBUG 24430 --- [XNIO-1 task-5] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2021-07-11 00:16:22.884 DEBUG 24430 --- [XNIO-1 task-5] o.s.web.servlet.DispatcherServlet        : POST "/user/info.json", parameters={}
+2021-07-11 00:16:22.885 DEBUG 24430 --- [XNIO-1 task-5] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.jiayu.bbl.front.controller.UserController#userInfo()
+2021-07-11 00:16:22.890 ERROR 24430 --- [XNIO-1 task-5] c.j.bbl.front.controller.UserController  : get user info error !
+a11111111111111111
+a22222222222222222
+a33333333333333333
+a44444444444444444
+a55555555555555555
+a66666666666666666
+a77777777777777777
+a88888888888888888
+a99999999999999999
+2021-07-11 00:35:42.397  WARN 24430 --- [pool-1355-thread-3] c.j.b.c.s.f.w.rate.FedexRateService      : PAYOR_ACCOUNT_PACKAGE:TotalBase=1361.55,TotalSur=126.15,TotalNet=1487.7 
+b11111111111111111
+b22222222222222222
+b33333333333333333
+b44444444444444444
+b55555555555555555
+b66666666666666666
+b77777777777777777
+b88888888888888888
+b99999999999999999
+2021-07-11 00:42:42.244  WARN 24430 --- [pool-1358-thread-3] c.j.b.c.s.f.w.rate.FedexRateService      : PAYOR_ACCOUNT_SHIPMENT:TotalBase=64.0,TotalSur=5.95,TotalNet=69.95
+c11111111111111111
+c22222222222222222
+2021-07-11 00:42:42.244  ERROR 24430 --- [pool-1358-thread-3] c.j.b.c.s.f.w.rate.FedexRateService      : PAYOR_ACCOUNT_SHIPMENT:TotalBase=64.0,TotalSur=5.95,TotalNet=69.95

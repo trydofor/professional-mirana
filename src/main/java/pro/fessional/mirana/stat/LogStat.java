@@ -313,7 +313,10 @@ public class LogStat {
                 int readOff = 0, readEnd, readLen;
                 int findLen = -1, lineEnd, nextOff;
                 int viewLen = 0;
-
+                int kwc = 1;
+                byte[] kwh = "######### #".getBytes();
+                byte[] kwb = " KEYWORD: ".getBytes();
+                byte[] kwt = " #########\n".getBytes();
                 while ((readLen = raf.read(buff, readOff, cap - readOff)) >= 0) {
                     readEnd = readOff + readLen;
                     lineEnd = 0;
@@ -335,6 +338,11 @@ public class LogStat {
                                 if (len >= keyMax) {
                                     Word m = find(buff, i, lineEnd, keys);
                                     if (m != null) {
+                                        fos.write(kwh);
+                                        fos.write(String.valueOf(kwc++).getBytes());
+                                        fos.write(kwb);
+                                        fos.write(m.bytes);
+                                        fos.write(kwt);
                                         findLen = m.bytes.length;
                                         viewLen = preview;
                                         i = i + findLen - 1;
@@ -413,14 +421,14 @@ public class LogStat {
 
     public static void main(String[] args) {
         if (args.length == 1 && "clean".equalsIgnoreCase(args[0])) {
-            clean("/Users/trydofor/Downloads/tmp/admin.log", -1);
+            clean("target/test-classes/log-stat.txt", -1);
             System.exit(0);
         }
 //        System.exit(0);
 
         System.out.println("usage: log-file:File [byte-from:Long] [Word:String,rang1:int,rang2:int]");
         final int aln = args.length;
-        final String log = aln > 0 ? args[0] : "/Users/trydofor/Downloads/tmp/admin.log";
+        final String log = aln > 0 ? args[0] : "target/test-classes/log-stat.txt";
         final long from = aln > 1 ? Long.parseLong(args[1]) : 0;
         final Word[] wd;
         if (aln > 2) {
