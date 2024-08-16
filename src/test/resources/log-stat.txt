@@ -3,18 +3,16 @@
 2021-07-11 00:15:58.183 DEBUG 24430 --- [XNIO-1 task-5] org.jooq.tools.LoggerListener            :                          : +--------+
 2021-07-11 00:15:58.183 DEBUG 24430 --- [XNIO-1 task-5] org.jooq.tools.LoggerListener            : Fetched row(s)           : 1
 2021-07-11 00:15:58.184 DEBUG 24430 --- [XNIO-1 task-5] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [applicatio
-n/json, application/*+json, application/json, application/*+json, application/xml;charset=UTF-8, text/xml;charset=UTF-8, application/*+xml;charset=UTF-8, application/xml;charset=UTF-8, text/xm
-l;charset=UTF-8, application/*+xml;charset=UTF-8]
 2021-07-11 00:15:58.184 DEBUG 24430 --- [XNIO-1 task-5] m.m.a.RequestResponseBodyMethodProcessor : Writing [SimpleResult{success=true, message='null', code='null', data=225.09}]
 2021-07-11 00:15:58.184 DEBUG 24430 --- [XNIO-1 task-5] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
 2021-07-11 00:16:22.884 DEBUG 24430 --- [XNIO-1 task-5] o.s.web.servlet.DispatcherServlet        : POST "/user/info.json", parameters={}
 2021-07-11 00:16:22.885 DEBUG 24430 --- [XNIO-1 task-5] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.jiayu.bbl.front.controller.UserController#userInfo()
 2021-07-11 00:16:22.890 ERROR 24430 --- [XNIO-1 task-5] c.j.bbl.front.controller.UserController  : get user info error !
 a11111111111111111
-a22222222222222222
-a33333333333333333
+  a22222222222222222
+  a33333333333333333
 a44444444444444444
-a55555555555555555
+  a55555555555555555
 a66666666666666666
 a77777777777777777
 a88888888888888888
