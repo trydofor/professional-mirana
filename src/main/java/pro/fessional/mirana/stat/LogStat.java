@@ -111,6 +111,9 @@ public class LogStat {
     }
 
     public static final String Suffix = ".scanned.tmp";
+    public static final String SectionHead = "######### #";
+    public static final String SectionWord = " KEYWORD: ";
+    public static final String SectionFoot = " #########";
     public static final int Preview = 5;
     public static final int Section = 30;
 
@@ -343,9 +346,9 @@ public class LogStat {
                 int viewLen = 0;
                 int sectLen = 0;
                 int kwc = 1;
-                byte[] kwh = "######### #".getBytes();
-                byte[] kwb = " KEYWORD: ".getBytes();
-                byte[] kwt = " #########\n".getBytes();
+                byte[] kwh = SectionHead.getBytes();
+                byte[] kwb = SectionWord.getBytes();
+                byte[] kwt = SectionFoot.getBytes();
                 while ((readLen = raf.read(buff, readOff, cap - readOff)) >= 0) {
                     readEnd = readOff + readLen;
                     lineEnd = 0;
@@ -355,25 +358,28 @@ public class LogStat {
                             lineEnd = i + 1;
 
                             if (findLen > 0) {
+                                final int le = lineEnd - lb;
                                 if (section > 0) {
                                     if (buff[lb] == ' ' || buff[lb] == '\t') {
                                         sectLen--;
                                         if (sectLen >= 0) {
-                                            fos.write(buff, lb, lineEnd - lb);
+                                            fos.write(buff, lb, le);
                                         }
                                         else {
+                                            fos.write('.');
+                                            fos.write('.');
                                             fos.write('.');
                                         }
                                         viewLen++;
                                     }
                                     else {
                                         if (sectLen < 0) fos.write('\n');
-                                        fos.write(buff, lb, lineEnd - lb);
                                         sectLen = section;
+                                        fos.write(buff, lb, le);
                                     }
                                 }
                                 else {
-                                    fos.write(buff, lb, lineEnd - lb);
+                                    fos.write(buff, lb, le);
                                 }
 
                                 if (viewLen-- <= 0) {
@@ -383,22 +389,23 @@ public class LogStat {
                             }
                         }
                         else {
-                            if (findLen <= 0) {
-                                int len = buff.length - i;
-                                if (len >= keyMax) {
-                                    Word m = find(buff, i, lineEnd, keys);
-                                    if (m != null) {
-                                        fos.write(kwh);
-                                        fos.write(String.valueOf(kwc++).getBytes());
-                                        fos.write(kwb);
-                                        fos.write(m.bytes);
-                                        fos.write(kwt);
-                                        findLen = m.bytes.length;
-                                        viewLen = preview;
-                                        i = i + findLen - 1;
-                                    }
+                            int len = buff.length - i;
+                            if (len >= keyMax) {
+                                Word m = find(buff, i, lineEnd, keys);
+                                if (m != null) {
+                                    fos.write(kwh);
+                                    fos.write(String.valueOf(kwc++).getBytes());
+                                    fos.write(kwb);
+                                    fos.write(m.bytes);
+                                    fos.write(kwt);
+                                    fos.write('\n');
+                                    findLen = m.bytes.length;
+                                    viewLen = preview;
+                                    i = i + findLen - 1;
                                 }
-                                else {
+                            }
+                            else {
+                                if (findLen <= 0) {
                                     findLen = -1;
                                     break;
                                 }
