@@ -1,12 +1,14 @@
 package pro.fessional.mirana.text;
 
 
+import org.intellij.lang.annotations.PrintFormat;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pro.fessional.mirana.data.Null;
 import pro.fessional.mirana.evil.ThreadLocalAttention;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.SortedMap;
@@ -87,6 +89,8 @@ public class FormatUtil {
         return builder.length() > 0 ? builder.substring(join1.length()) : "";
     }
 
+    private static final ConcurrentHashMap<String, ArrayList<String>> Logback = new ConcurrentHashMap<>();
+
     /**
      * <pre>
      * handle `{}` slf4j's placeholder, eg.
@@ -106,29 +110,47 @@ public class FormatUtil {
     @NotNull
     public static String logback(CharSequence fmt, Object... args) {
         if (fmt == null || fmt.length() == 0) return Null.Str;
+
         StringBuilder builder = Holder.use();
+        ArrayList<String> tmpl = Logback.computeIfAbsent(fmt.toString(), FormatUtil::parseLogback);
+        int i = 0;
+        for (String s : tmpl) {
+            if (s == null) {
+                Object arg = null;
+                if (args != null && i < args.length) {
+                    arg = args[i++];
+                }
+                builder.append(arg);
+            }
+            else {
+                builder.append(s);
+            }
+        }
+        return builder.toString();
+    }
+
+    private static ArrayList<String> parseLogback(String fmt) {
+        ArrayList<String> arr = new ArrayList<>();
         char c;
         boolean start = false;
-        for (int i = 0, j = 0, n = fmt.length(); j < n; j++) {
+        StringBuilder builder = new StringBuilder(fmt.length());
+
+        for (int j = 0, n = fmt.length(); j < n; j++) {
 
             switch (c = fmt.charAt(j)) {
                 case '{':
                     if (start) builder.append('{');
                     else start = true;
                     break;
-
                 case '}':
                     if (!start) builder.append('}');
                     else {
-                        Object arg = null;
-                        if (args != null && i < args.length) {
-                            arg = args[i++];
-                        }
                         start = false;
-                        builder.append(arg);
+                        arr.add(builder.toString());
+                        arr.add(null);
+                        builder.setLength(0);
                     }
                     break;
-
                 case '\\':
                     if (start) {
                         start = false;
@@ -156,8 +178,10 @@ public class FormatUtil {
                     break;
             }
         }
+
         if (start) builder.append('{');
-        return builder.toString();
+        if (builder.length() > 0) arr.add(builder.toString());
+        return arr;
     }
 
     /** no leak, for static */
@@ -187,8 +211,8 @@ public class FormatUtil {
 
     /**
      * <pre>
-     * handle `%` in printf,Involves copying arrays, with a small performance loss.
      * Thread-safe, auto-complete String#format.
+     * handle `%` in printf, check and fill null by empty-str with a small performance loss.
      * A more elegant format suggests using java.text.MessageFormat.
      * </pre>
      *
@@ -196,18 +220,16 @@ public class FormatUtil {
      * @see String#format(String, Object...)
      */
     @NotNull
-    public static String format(CharSequence fmt, Object... args) {
+    public static String format(@PrintFormat String fmt, Object... args) {
         if (fmt == null) return Null.Str;
-        final String str = fmt.toString();
 
-        final int size = Printf.computeIfAbsent(str, k -> {
+        final int size = Printf.computeIfAbsent(fmt, k -> {
             int[] count = count(k, "%", "%%");
             return count[0] - count[1] * 2;
         });
 
-        return String.format(str, fixArgs(size, args));
+        return String.format(fmt, fixArgs(size, args));
     }
-
 
     /**
      * Completing and padding null parameters with empty string

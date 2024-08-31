@@ -2,7 +2,7 @@ package pro.fessional.mirana.stat;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import pro.fessional.mirana.SystemOut;
+import pro.fessional.mirana.Testing;
 import pro.fessional.mirana.time.Sleep;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -17,22 +17,22 @@ class JvmStatTest {
     void infoStat(){
         int pid = JvmStat.jvmPid();
         String jvm = JvmStat.jvmName();
-        SystemOut.println(pid);
-        SystemOut.println(jvm);
+        Testing.println(pid);
+        Testing.println(jvm);
 
         final JvmStat.Stat stat = JvmStat.stat();
         JvmStat.buildCpuLoad(stat);
         JvmStat.buildMemory(stat);
         JvmStat.buildThread(stat);
         JvmStat.buildRuntime(stat);
-        SystemOut.println(stat);
+        Testing.println(stat);
     }
 
     @Test
     @Disabled("pressure")
     void pressure() {
         final int p = Runtime.getRuntime().availableProcessors();
-        SystemOut.println("Processors=" + p);
+        Testing.println("Processors=" + p);
         AtomicInteger count = new AtomicInteger(p);
         for (int i = 0; i < p; i++) {
             new Thread(() -> {
@@ -47,10 +47,10 @@ class JvmStatTest {
         while (count.get() > 0) {
             final JvmStat.Stat stat = JvmStat.stat();
             Runtime runtime = Runtime.getRuntime();
-            SystemOut.println(stat);
-            SystemOut.println("runtime total=" + runtime.totalMemory()
-                               + ", free=" + runtime.freeMemory()
-                               + ", max=" + runtime.maxMemory()
+            Testing.println(stat);
+            Testing.println("runtime total=" + runtime.totalMemory()
+                            + ", free=" + runtime.freeMemory()
+                            + ", max=" + runtime.maxMemory()
             );
             Sleep.ignoreInterrupt(1_000L);
         }

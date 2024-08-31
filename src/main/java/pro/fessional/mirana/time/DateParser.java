@@ -57,9 +57,6 @@ import static java.time.temporal.ChronoField.YEAR;
  */
 public class DateParser {
 
-    protected DateParser() {
-    }
-
     public static final TemporalQuery<LocalTime> QueryTime = (temporal) -> {
         if (temporal instanceof LocalTime) {
             return (LocalTime) temporal;
@@ -716,10 +713,10 @@ public class DateParser {
     // /////////////////////////////
 
     public enum Ptn {
-        DATE(8, new String[]{"2000", "01", "01"}),
-        TIME(9, new String[]{"00", "00", "00", "000"}),
-        FULL(17, new String[]{"2000", "01", "01", "00", "00", "00", "000"}),
-        ZONE(17, new String[]{"2000", "01", "01", "00", "00", "00", "000"}),
+        DATE(8, new String[]{ "2000", "01", "01" }),
+        TIME(9, new String[]{ "00", "00", "00", "000" }),
+        FULL(17, new String[]{ "2000", "01", "01", "00", "00", "00", "000" }),
+        ZONE(17, new String[]{ "2000", "01", "01", "00", "00", "00", "000" }),
         ;
         final int len;
         final String[] pad;

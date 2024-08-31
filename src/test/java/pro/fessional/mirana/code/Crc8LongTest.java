@@ -2,7 +2,7 @@ package pro.fessional.mirana.code;
 
 
 import org.junit.jupiter.api.Test;
-import pro.fessional.mirana.SystemOut;
+import pro.fessional.mirana.Testing;
 
 import java.util.Random;
 
@@ -61,7 +61,7 @@ public class Crc8LongTest {
             long m = Crc8LongUtil.MID.encode(i);
             long l = Crc8LongUtil.LOW.encode(i);
 
-            SystemOut.printf("\n%d\t\t\t%d\t\t\t%d\t\t\t%d", i, b, m, l);
+            Testing.printf("\n%d\t\t\t%d\t\t\t%d\t\t\t%d", i, b, m, l);
         }
     }
 }

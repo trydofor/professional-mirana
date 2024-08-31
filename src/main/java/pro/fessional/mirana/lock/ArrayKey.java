@@ -13,13 +13,23 @@ public class ArrayKey {
     private final Object[] keys;
     private final int hashCode;
 
+    /**
+     * construct by immutable keys
+     */
     public ArrayKey(Object... keys) {
+        this(false, keys);
+    }
+
+    /**
+     * shallow clone keys array (NOT item) if mutable
+     */
+    public ArrayKey(boolean mutable, Object... keys) {
         if (keys == null || keys.length == 0) {
             this.keys = Null.Objects;
             this.hashCode = Integer.MIN_VALUE;
         }
         else {
-            this.keys = keys.clone();
+            this.keys = mutable ? keys.clone() : keys;
             this.hashCode = Arrays.deepHashCode(keys);
         }
     }

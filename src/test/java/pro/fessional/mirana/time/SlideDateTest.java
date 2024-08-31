@@ -2,7 +2,7 @@ package pro.fessional.mirana.time;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import pro.fessional.mirana.SystemOut;
+import pro.fessional.mirana.Testing;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -23,24 +23,24 @@ class SlideDateTest {
         final SlideDate sd = SlideDate.of(os1);
 
 
-        SystemOut.println("=== LocalDate");
-        SystemOut.println(LocalDate.now());
-        SystemOut.println(sd.localDate());
+        Testing.println("=== LocalDate");
+        Testing.println(LocalDate.now());
+        Testing.println(sd.localDate());
 
-        SystemOut.println("=== LocalTime");
-        SystemOut.println(LocalTime.now());
-        SystemOut.println(sd.localTime());
-        SystemOut.println("=== UtilDate");
-        SystemOut.println(new Date());
-        SystemOut.println(sd.utilDate());
+        Testing.println("=== LocalTime");
+        Testing.println(LocalTime.now());
+        Testing.println(sd.localTime());
+        Testing.println("=== UtilDate");
+        Testing.println(new Date());
+        Testing.println(sd.utilDate());
 
         Assertions.assertEquals(os1, sd.getOffset());
 
-        SystemOut.println("=== LocalDateTime");
+        Testing.println("=== LocalDateTime");
         LocalDateTime ldt0 = LocalDateTime.now();
         LocalDateTime ldt1 = sd.localDateTime();
-        SystemOut.println(ldt0);
-        SystemOut.println(ldt1);
+        Testing.println(ldt0);
+        Testing.println(ldt1);
         Assertions.assertTrue(Duration.between(ldt1, ldt0).toMinutes() >= 4);
 
         long ms0 = System.currentTimeMillis();

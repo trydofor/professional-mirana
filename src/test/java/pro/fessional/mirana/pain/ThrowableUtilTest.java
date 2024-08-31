@@ -1,8 +1,9 @@
 package pro.fessional.mirana.pain;
 
 import org.junit.jupiter.api.Test;
-import pro.fessional.mirana.SystemOut;
+import pro.fessional.mirana.Testing;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -47,7 +48,7 @@ class ThrowableUtilTest {
         }
         catch (Exception e) {
             final String s = ThrowableUtil.toString(e);
-            SystemOut.println(s);
+            Testing.println(s);
         }
     }
 
@@ -59,6 +60,7 @@ class ThrowableUtilTest {
         catch (Exception e) {
             Throwable root = ThrowableUtil.root(e);
             assertSame(e0, root);
+            assertEquals(ThrowableUtil.rootString(e), ThrowableUtil.rootString(root));
         }
     }
 
@@ -72,6 +74,21 @@ class ThrowableUtilTest {
             assertTrue(ThrowableUtil.contains(e, IllegalArgumentException.class));
             assertFalse(ThrowableUtil.contains(e, IllegalStateException.class));
         }
+    }
+
+    @Test
+    void cause() {
+        assertSame(e0, ThrowableUtil.cause(e0, -1));
+        assertSame(e0, ThrowableUtil.cause(e0, 0));
+        assertSame(e0, ThrowableUtil.cause(e0, 1));
+        assertSame(e0, ThrowableUtil.cause(e0, 2));
+
+        assertSame(e1, ThrowableUtil.cause(e1, -1));
+        assertSame(e1, ThrowableUtil.cause(e1, 0));
+        assertSame(e0, ThrowableUtil.cause(e1, 1));
+        assertSame(e0, ThrowableUtil.cause(e1, 2));
+
+        assertEquals(ThrowableUtil.causeString(e1, 1), ThrowableUtil.toString(e0));
     }
 
     @Test
@@ -103,7 +120,7 @@ class ThrowableUtilTest {
                 ex2();
             }
             catch (Exception e) {
-                ThrowableUtil.throwMatch(e, IllegalArgumentException.class);
+                throw ThrowableUtil.runtimeMatch(e, IllegalArgumentException.class);
             }
         });
 
@@ -112,7 +129,7 @@ class ThrowableUtilTest {
                 ex2();
             }
             catch (Exception e) {
-                ThrowableUtil.throwMatch(e, IllegalStateException.class);
+                throw ThrowableUtil.runtimeMatch(e, IllegalStateException.class);
             }
         });
         assertThrows(IllegalArgumentException.class, () -> {
@@ -120,7 +137,7 @@ class ThrowableUtilTest {
                 ex2();
             }
             catch (Exception e) {
-                ThrowableUtil.throwMatch(e, RuntimeException.class);
+                throw ThrowableUtil.runtimeMatch(e, RuntimeException.class);
             }
         });
     }
@@ -132,7 +149,7 @@ class ThrowableUtilTest {
                 ex2();
             }
             catch (Exception e) {
-                ThrowableUtil.throwCause(e, NullPointerException.class);
+                throw ThrowableUtil.runtimeCause(e, NullPointerException.class);
             }
         });
     }
@@ -140,37 +157,47 @@ class ThrowableUtilTest {
     @Test
     void print() {
         String e2str = ThrowableUtil.toString(e2);
-        SystemOut.println(e2str);
+        Testing.println(e2str);
 
         {
-            SystemOut.println("true, true, 5, 10");
+            Testing.println("true, true, 5, 10");
             StringBuilder sb = new StringBuilder();
             ThrowableUtil.print(sb, e2, true, true, 5, 10);
-            SystemOut.println(sb);
+            Testing.println(sb);
         }
         {
-            SystemOut.println("true, false, 5, 10");
+            Testing.println("true, false, 5, 10");
             StringBuilder sb = new StringBuilder();
             ThrowableUtil.print(sb, e2, true, false, 5, 10);
-            SystemOut.println(sb);
+            Testing.println(sb);
         }
         {
-            SystemOut.println("false, true, 5, 10");
+            Testing.println("false, true, 5, 10");
             StringBuilder sb = new StringBuilder();
             ThrowableUtil.print(sb, e2, false, true, 5, 10);
-            SystemOut.println(sb);
+            Testing.println(sb);
         }
         {
-            SystemOut.println("false, false, 5, 10");
+            Testing.println("false, false, 5, 10");
             StringBuilder sb = new StringBuilder();
             ThrowableUtil.print(sb, e2, false, false, 5, 10);
-            SystemOut.println(sb);
+            Testing.println(sb);
         }
         {
-            SystemOut.println("false, false, 5, 1");
+            Testing.println("false, false, 5, 1");
             StringBuilder sb = new StringBuilder();
             ThrowableUtil.print(sb, e2, false, false, 5, 1);
-            SystemOut.println(sb);
+            Testing.println(sb);
         }
+    }
+
+    @Test
+    void printUnchecked() {
+        Exception e1 = new Exception("root Exception");
+        UncheckedException ue = new UncheckedException(e1);
+        System.out.println("====");
+        Testing.printStackTrace(e1);
+        System.out.println("====");
+        Testing.printStackTrace(ue);
     }
 }

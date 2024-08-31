@@ -15,7 +15,7 @@ import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
-import pro.fessional.mirana.SystemOut;
+import pro.fessional.mirana.Testing;
 import pro.fessional.mirana.id.LightIdBufferedProvider;
 import pro.fessional.mirana.id.LightIdProvider;
 import pro.fessional.mirana.id.LightIdStampedProvider;
@@ -115,7 +115,7 @@ public class LightIdMain {
             new Runner(opt).run();
         }
         catch (RunnerException e) {
-            SystemOut.printStackTrace(e);
+            Testing.printStackTrace(e);
         }
     }
 }

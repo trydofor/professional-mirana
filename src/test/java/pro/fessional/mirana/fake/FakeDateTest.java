@@ -2,7 +2,7 @@ package pro.fessional.mirana.fake;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import pro.fessional.mirana.SystemOut;
+import pro.fessional.mirana.Testing;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -21,9 +21,9 @@ public class FakeDateTest {
         LocalDateTime max = LocalDateTime.of(2019, 5, 21, 13, 0, 0);
 
         for (int i = 0; i < 20; i++) {
-            SystemOut.println(FakeDate.dateTime(min1, off * i));
-            SystemOut.println(FakeDate.dateTime(min1, off * i, max.toLocalDate()));
-            SystemOut.println(FakeDate.dateTime(min2, off * i));
+            Testing.println(FakeDate.dateTime(min1, off * i));
+            Testing.println(FakeDate.dateTime(min1, off * i, max.toLocalDate()));
+            Testing.println(FakeDate.dateTime(min2, off * i));
         }
 
          LocalDateTime d2 = FakeDate.dateTime(min2, off, max);

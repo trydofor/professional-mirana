@@ -21,8 +21,8 @@ public class HalfCharUtil {
             }
             else //noinspection UnnecessaryUnicodeEscape
                 if (c > '\uFF00' && c < '\uFF5F') {
-                c = (char) (c - 65248);
-            }
+                    c = (char) (c - 65248);
+                }
             sb.append(c);
         }
         return sb.toString();
@@ -34,8 +34,8 @@ public class HalfCharUtil {
         }
         else //noinspection UnnecessaryUnicodeEscape
             if (c > '\uFF00' && c < '\uFF5F') {
-            c = (char) (c - 65248);
-        }
+                c = (char) (c - 65248);
+            }
         return c;
     }
 }

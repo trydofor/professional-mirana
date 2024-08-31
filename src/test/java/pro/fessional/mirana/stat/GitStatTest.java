@@ -3,7 +3,7 @@ package pro.fessional.mirana.stat;
 import com.mysql.cj.jdbc.MysqlDataSource;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import pro.fessional.mirana.SystemOut;
+import pro.fessional.mirana.Testing;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -49,10 +49,10 @@ public class GitStatTest {
     public void test() {
         byte[] c = "Tst\344\270\255\346\226\207\344\271\237\345\210\206\350\241\250Record.java".getBytes(StandardCharsets.ISO_8859_1);
         String x = new String(c, StandardCharsets.UTF_8);
-        SystemOut.println(x);
+        Testing.println(x);
 
         String s = GitStat.trimFile("Tst\\344\\270\\255\\346\\226\\207\\344\\271\\237\\345\\210\\206\\350\\241\\250Record.java");
-        SystemOut.println(s);
+        Testing.println(s);
         assertEquals(x, s);
     }
 }

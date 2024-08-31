@@ -12,6 +12,14 @@ import java.io.InputStream;
  */
 public class Md5 {
 
+    public static boolean isSum(String str) {
+        return MdHelp.md5.isSum(str);
+    }
+
+    public static boolean asSum(String str) {
+        return MdHelp.md5.asSum(str);
+    }
+
     @NotNull
     public static String sum(@Nullable String str) {
         return MdHelp.md5.sum(str);

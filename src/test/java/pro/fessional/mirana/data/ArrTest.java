@@ -264,4 +264,22 @@ class ArrTest {
         Assertions.assertEquals(v2, b3[2]);
     }
 
+    @Test
+    void ofString() {
+        String v1 = "x";
+        String v2 = "y";
+        String[] b0 = null;
+        String[] b1 = Arr.obj(b0);
+        String[] b2 = Arr.obj(v1, v2);
+        String[] b3 = Arr.obj(v1);
+
+        Assertions.assertNull(b1);
+
+        Assertions.assertNotNull(b3);
+        Assertions.assertEquals(1, b3.length);
+
+        Assertions.assertEquals(2, b2.length);
+        Assertions.assertEquals(v1, b2[0]);
+        Assertions.assertEquals(v2, b2[1]);
+    }
 }

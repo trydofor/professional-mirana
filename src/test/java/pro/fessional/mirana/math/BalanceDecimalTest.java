@@ -2,7 +2,7 @@ package pro.fessional.mirana.math;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import pro.fessional.mirana.SystemOut;
+import pro.fessional.mirana.Testing;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -40,7 +40,7 @@ class BalanceDecimalTest {
         BigDecimal sumBal = BigDecimal.ZERO;
         for (BigDecimal v : avg) {
             sumBal = sumBal.add(v);
-            SystemOut.println(v);
+            Testing.println(v);
         }
 
         assertEquals(0, total.compareTo(sumBal));

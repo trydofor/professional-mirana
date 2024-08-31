@@ -59,7 +59,7 @@ public class Java {
             final JavaByte byteObject = new JavaByte(fullPath);
 
             JavaFileManager fileManager = new ForwardingJavaFileManager<StandardJavaFileManager>
-                    (compiler.getStandardFileManager(null, null, null)) {
+                (compiler.getStandardFileManager(null, null, null)) {
                 @Override
                 public JavaFileObject getJavaFileForOutput(Location location,
                                                            String className, JavaFileObject.Kind kind,
@@ -71,8 +71,8 @@ public class Java {
             JavaCode stringObject = new JavaCode(fullPath, javaCode);
 
             JavaCompiler.CompilationTask task = compiler.getTask(
-                    null, fileManager, null, null, null,
-                    Collections.singletonList(stringObject));
+                null, fileManager, null, null, null,
+                Collections.singletonList(stringObject));
 
             //
             task.call();

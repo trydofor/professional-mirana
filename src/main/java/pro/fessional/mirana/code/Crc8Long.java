@@ -60,7 +60,7 @@ public class Crc8Long {
     /**
      * The 8 bits of crc8 should be inserted where to the right side of 63bit, in the range [1,60].
      */
-    private final int[] pseudoSeed = new int[]{51, 43, 37, 31, 23, 17, 11, 2};
+    private final int[] pseudoSeed = new int[]{ 51, 43, 37, 31, 23, 17, 11, 2 };
 
     /**
      * Use the default pseudo-random seed

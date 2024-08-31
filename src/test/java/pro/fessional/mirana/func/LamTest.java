@@ -15,6 +15,10 @@ class LamTest {
 
     @Test
     void ref() {
+        final Lam.Ref rx = Lam.ref(String::charAt);
+        Assertions.assertEquals("charAt", rx.method.getName());
+        Assertions.assertNull(rx.object);
+
         final ArrayList<Object> p0 = new ArrayList<>();
         final Lam.Ref r0 = Lam.ref(p0::clear);
         Assertions.assertEquals("clear", r0.method.getName());

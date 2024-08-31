@@ -4,6 +4,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pro.fessional.mirana.pain.NoStackRuntimeException;
+import pro.fessional.mirana.pain.ThrowableUtil;
 
 /**
  * return or exception
@@ -70,7 +71,7 @@ public class ReturnOrException extends NoStackRuntimeException {
     @Nullable
     @SuppressWarnings("unchecked")
     public <T> T returnOrThrow() {
-        checkException();
+        if (cause != null) throw ThrowableUtil.runtime(cause);
         return (T) value;
     }
 
@@ -81,7 +82,7 @@ public class ReturnOrException extends NoStackRuntimeException {
     @Contract("!null -> !null")
     @SuppressWarnings("unchecked")
     public <T> T returnOrThrow(@Nullable T elze) {
-        checkException();
+        if (cause != null) throw ThrowableUtil.runtime(cause);
         return value == null ? elze : (T) value;
     }
 
@@ -105,15 +106,5 @@ public class ReturnOrException extends NoStackRuntimeException {
     @Override
     public String toString() {
         return getMessage();
-    }
-
-    private void checkException() {
-        if (cause == null) return;
-        if (cause instanceof RuntimeException) {
-            throw (RuntimeException) cause;
-        }
-        else {
-            throw new RuntimeException(cause);
-        }
     }
 }

@@ -111,11 +111,20 @@ public class LogStat {
     }
 
     public static final String Suffix = ".scanned.tmp";
+    public static final String SectionHead = "######### #";
+    public static final String SectionWord = " KEYWORD: ";
+    public static final String SectionFoot = " #########";
     public static final int Preview = 5;
+    public static final int Section = 30;
 
     @NotNull
     public static Stat stat(String log, long from, String... keys) {
-        return stat(log, from, Preview, keys);
+        return stat(log, from, Preview, Section, keys);
+    }
+
+    @NotNull
+    public static Stat stat(String log, long from, int preview, String... keys) {
+        return stat(log, from, preview, Section, keys);
     }
 
     /**
@@ -126,22 +135,28 @@ public class LogStat {
      * @param from    Start byte, negative means start at the end
      * @param keys    keyword in utf8
      * @param preview preview lines after matched key
+     * @param section section size of intended lines
      * @return stat
      */
     @NotNull
-    public static Stat stat(String log, long from, int preview, String... keys) {
+    public static Stat stat(String log, long from, int preview, int section, String... keys) {
         Word[] words = new Word[keys.length];
         for (int i = 0; i < keys.length; i++) {
             Word wd = new Word();
             wd.bytes = keys[i].getBytes(StandardCharsets.UTF_8);
             words[i] = wd;
         }
-        return stat(log, from, preview, words);
+        return stat(log, from, preview, section, words);
     }
 
     @NotNull
     public static Stat stat(String log, long from, byte[]... keys) {
-        return stat(log, from, Preview, keys);
+        return stat(log, from, Preview, Section, keys);
+    }
+
+    @NotNull
+    public static Stat stat(String log, long from, int preview, byte[]... keys) {
+        return stat(log, from, preview, Section, keys);
     }
 
     /**
@@ -152,22 +167,28 @@ public class LogStat {
      * @param from    Start byte, negative means start at the end
      * @param keys    keyword in bytes
      * @param preview preview lines after matched key
+     * @param section section size of intended lines
      * @return stat
      */
     @NotNull
-    public static Stat stat(String log, long from, int preview, byte[]... keys) {
+    public static Stat stat(String log, long from, int preview, int section, byte[]... keys) {
         Word[] words = new Word[keys.length];
         for (int i = 0; i < keys.length; i++) {
             Word wd = new Word();
             wd.bytes = keys[i];
             words[i] = wd;
         }
-        return stat(log, from, preview, words);
+        return stat(log, from, preview, section, words);
     }
 
     @NotNull
     public static Stat stat(String log, long from, Word... keys) {
-        return stat(log, from, Preview, Arrays.asList(keys));
+        return stat(log, from, Preview, Section, Arrays.asList(keys));
+    }
+
+    @NotNull
+    public static Stat stat(String log, long from, int preview, Word... keys) {
+        return stat(log, from, preview, Section, Arrays.asList(keys));
     }
 
     /**
@@ -178,16 +199,22 @@ public class LogStat {
      * @param from    Start byte, negative means start at the end
      * @param keys    keyword
      * @param preview preview lines after matched key
+     * @param section section size of intended lines
      * @return stat
      */
     @NotNull
-    public static Stat stat(String log, long from, int preview, Word... keys) {
-        return stat(log, from, preview, Arrays.asList(keys));
+    public static Stat stat(String log, long from, int preview, int section, Word... keys) {
+        return stat(log, from, preview, section, Arrays.asList(keys));
     }
 
     @NotNull
     public static Stat stat(String log, long from, Collection<? extends Word> keys) {
-        return stat(log, from, Preview, keys);
+        return stat(log, from, Preview, Section, keys);
+    }
+
+    @NotNull
+    public static Stat stat(String log, long from, int preview, Collection<? extends Word> keys) {
+        return stat(log, from, preview, Section, keys);
     }
 
     /**
@@ -198,13 +225,14 @@ public class LogStat {
      * @param from    Start byte, negative means start at the end
      * @param keys    keyword
      * @param preview preview lines after matched key
+     * @param section section size of intended lines
      * @return stat
      */
     @NotNull
-    public static Stat stat(String log, long from, int preview, Collection<? extends Word> keys) {
+    public static Stat stat(String log, long from, int preview, int section, Collection<? extends Word> keys) {
         final Stat stat;
         try {
-            stat = buildStat(log, from, keys, Suffix, preview);
+            stat = buildStat(log, from, keys, Suffix, preview, section);
         }
         catch (IOException e) {
             throw new RuntimeException(e);
@@ -255,14 +283,18 @@ public class LogStat {
      * @return stat
      */
     public static Stat buildStat(String log, long from, Collection<? extends Word> keys) throws IOException {
-        return buildStat(log, from, keys, Suffix, 0);
+        return buildStat(log, from, keys, Suffix, Preview, Section);
     }
 
     public static Stat buildStat(String log, long from, Collection<? extends Word> keys, String suffix) throws IOException {
-        return buildStat(log, from, keys, suffix, 0);
+        return buildStat(log, from, keys, suffix, Preview, Section);
     }
 
     public static Stat buildStat(String log, long from, Collection<? extends Word> keys, String suffix, int preview) throws IOException {
+        return buildStat(log, from, keys, suffix, preview, Section);
+    }
+
+    public static Stat buildStat(String log, long from, Collection<? extends Word> keys, String suffix, int preview, int section) throws IOException {
         final long bgn = System.currentTimeMillis();
 
         final Stat stat = new Stat();
@@ -309,38 +341,71 @@ public class LogStat {
                 raf.seek(from);
 
                 final byte[] buff = new byte[cap];
-                final byte cr = '\n';
                 int readOff = 0, readEnd, readLen;
-                int findLen = -1, lineEnd, nextOff;
+                int findLen = -1, lineEnd;
                 int viewLen = 0;
-
+                int sectLen = 0;
+                int kwc = 1;
+                byte[] kwh = SectionHead.getBytes();
+                byte[] kwb = SectionWord.getBytes();
+                byte[] kwt = SectionFoot.getBytes();
                 while ((readLen = raf.read(buff, readOff, cap - readOff)) >= 0) {
                     readEnd = readOff + readLen;
                     lineEnd = 0;
                     for (int i = findLen == -1 ? 0 : readOff; i < readEnd; i++) {
-                        if (buff[i] == cr) {
-                            nextOff = i + 1;
+                        if (buff[i] == '\n') {
+                            final int lb = lineEnd;
+                            lineEnd = i + 1;
+
                             if (findLen > 0) {
-                                fos.write(buff, lineEnd, nextOff - lineEnd);
+                                final int le = lineEnd - lb;
+                                if (section > 0) {
+                                    if (buff[lb] == ' ' || buff[lb] == '\t') {
+                                        sectLen--;
+                                        if (sectLen >= 0) {
+                                            fos.write(buff, lb, le);
+                                        }
+                                        else {
+                                            fos.write('.');
+                                            fos.write('.');
+                                            fos.write('.');
+                                        }
+                                        viewLen++;
+                                    }
+                                    else {
+                                        if (sectLen < 0) fos.write('\n');
+                                        sectLen = section;
+                                        fos.write(buff, lb, le);
+                                    }
+                                }
+                                else {
+                                    fos.write(buff, lb, le);
+                                }
+
                                 if (viewLen-- <= 0) {
                                     findLen = 0;
                                     viewLen = 0;
                                 }
                             }
-                            lineEnd = nextOff;
                         }
                         else {
-                            if (findLen <= 0) {
-                                int len = buff.length - i;
-                                if (len >= keyMax) {
-                                    Word m = find(buff, i, lineEnd, keys);
-                                    if (m != null) {
-                                        findLen = m.bytes.length;
-                                        viewLen = preview;
-                                        i = i + findLen - 1;
-                                    }
+                            int len = buff.length - i;
+                            if (len >= keyMax) {
+                                Word m = find(buff, i, lineEnd, keys);
+                                if (m != null) {
+                                    fos.write(kwh);
+                                    fos.write(String.valueOf(kwc++).getBytes());
+                                    fos.write(kwb);
+                                    fos.write(m.bytes);
+                                    fos.write(kwt);
+                                    fos.write('\n');
+                                    findLen = m.bytes.length;
+                                    viewLen = preview;
+                                    i = i + findLen - 1;
                                 }
-                                else {
+                            }
+                            else {
+                                if (findLen <= 0) {
                                     findLen = -1;
                                     break;
                                 }
@@ -413,14 +478,14 @@ public class LogStat {
 
     public static void main(String[] args) {
         if (args.length == 1 && "clean".equalsIgnoreCase(args[0])) {
-            clean("/Users/trydofor/Downloads/tmp/admin.log", -1);
+            clean("target/test-classes/log-stat.txt", -1);
             System.exit(0);
         }
 //        System.exit(0);
 
         System.out.println("usage: log-file:File [byte-from:Long] [Word:String,rang1:int,rang2:int]");
         final int aln = args.length;
-        final String log = aln > 0 ? args[0] : "/Users/trydofor/Downloads/tmp/admin.log";
+        final String log = aln > 0 ? args[0] : "target/test-classes/log-stat.txt";
         final long from = aln > 1 ? Long.parseLong(args[1]) : 0;
         final Word[] wd;
         if (aln > 2) {

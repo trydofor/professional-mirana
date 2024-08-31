@@ -37,9 +37,9 @@ import java.util.function.BiConsumer;
 public class GitStat {
 
     private static final List<String> LOG_PARA = Arrays.asList(
-            "--all",
-            "--pretty=##%H,%an,%ai,%s",
-            "--numstat");
+        "--all",
+        "--pretty=##%H,%an,%ai,%s",
+        "--numstat");
 
 
     public static class S {
@@ -282,9 +282,9 @@ public class GitStat {
             }
 
             PreparedStatement pstm = conn.prepareStatement(
-                    "INSERT IGNORE INTO " + table +
-                    "(origin_repo,commit_hash,author_name,author_date,commit_info,linenum_add,linenum_del,commit_file,rename_file) VALUES" +
-                    "(?,?,?,?,?,?,?,?,?)");
+                "INSERT IGNORE INTO " + table +
+                "(origin_repo,commit_hash,author_name,author_date,commit_info,linenum_add,linenum_del,commit_file,rename_file) VALUES" +
+                "(?,?,?,?,?,?,?,?,?)");
             // order by author date asc
             infos.sort(Comparator.comparing(o -> o.authorDate));
 
@@ -379,7 +379,7 @@ public class GitStat {
             String k = formatter.format(s.authorDate);
             LinkedHashMap<String, C> r = rows.computeIfAbsent(k, s1 -> new LinkedHashMap<>());
             String auth = alias.computeIfAbsent(s.authorName.toLowerCase(), s1 -> s.authorName);
-            int[] maxs = authors.computeIfAbsent(auth, s1 -> new int[]{1, 1, 1, 1});
+            int[] maxs = authors.computeIfAbsent(auth, s1 -> new int[]{ 1, 1, 1, 1 });
             C cnt = r.computeIfAbsent(auth, s1 -> new C());
 
             cnt.commits.add(s.commitHash);
@@ -413,10 +413,12 @@ public class GitStat {
         for (Map.Entry<String, int[]> e : authors.entrySet()) {
             String name = e.getKey();
             int[] mx = e.getValue();
-            int[] ln = new int[]{String.valueOf(mx[0]).length(),
-                                 String.valueOf(mx[1]).length(),
-                                 String.valueOf(mx[2]).length(),
-                                 String.valueOf(mx[3]).length()};
+            int[] ln = new int[]{
+                String.valueOf(mx[0]).length(),
+                String.valueOf(mx[1]).length(),
+                String.valueOf(mx[2]).length(),
+                String.valueOf(mx[3]).length()
+            };
 
             int tl = ln[0] + ln[1] + ln[2] + ln[3];
             int nl = name.length();
@@ -468,16 +470,16 @@ public class GitStat {
                 int[] m = s.getValue();
                 if (row0 != null) {
                     row0.append(String.format("%s%" + m[0] + "s %" + m[1] + "s %" + m[2] + "s %" + m[3] + "s",
-                            bar, "C", "F", "A", "D").replace(' ', '-'));
+                        bar, "C", "F", "A", "D").replace(' ', '-'));
                 }
 
                 if (c == null) {
                     rowN.append(String.format("%s%" + m[0] + "s %" + m[1] + "s %" + m[2] + "s %" + m[3] + "s",
-                            bar, "-", "-", "-", "-"));
+                        bar, "-", "-", "-", "-"));
                 }
                 else {
                     rowN.append(String.format("%s%" + m[0] + "s %" + m[1] + "s %" + m[2] + "s %" + m[3] + "s",
-                            bar, c.commits.size(), c.cofiles.size(), c.linenumAdd, c.linenumDel));
+                        bar, c.commits.size(), c.cofiles.size(), c.linenumAdd, c.linenumDel));
                 }
             }
             if (row0 != null) {

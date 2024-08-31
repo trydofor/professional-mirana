@@ -4,6 +4,7 @@ import pro.fessional.mirana.data.CodeEnum;
 
 /**
  * Stackless exceptions used only to output business messages.
+ * the tweaking priority is para, code, DefaultStack.
  *
  * @author trydofor
  * @since 2022-09-05
@@ -12,20 +13,22 @@ public class MessageException extends CodeException {
 
     private static final long serialVersionUID = 3630382084139069605L;
 
+    public static Boolean DefaultStack = false;
+
     public MessageException(String code) {
-        super(code);
+        super(TweakStack.current(code, MessageException.class, DefaultStack), code);
     }
 
     public MessageException(String code, String message) {
-        super(code, message);
+        super(TweakStack.current(code, MessageException.class, DefaultStack), code, message);
     }
 
     public MessageException(CodeEnum code) {
-        super(code);
+        super(TweakStack.current(code, MessageException.class, DefaultStack), code);
     }
 
     public MessageException(CodeEnum code, Object... args) {
-        super(code, args);
+        super(TweakStack.current(code, MessageException.class, DefaultStack), code, args);
     }
 
     public MessageException(boolean stack, String code) {

@@ -27,9 +27,6 @@ import java.time.ZonedDateTime;
  */
 public class DateNumber {
 
-    protected DateNumber() {
-    }
-
     /**
      * convert to yyyyMMdd
      */

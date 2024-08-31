@@ -2,7 +2,7 @@ package pro.fessional.mirana.math;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import pro.fessional.mirana.SystemOut;
+import pro.fessional.mirana.Testing;
 
 /**
  * @author trydofor
@@ -62,7 +62,7 @@ class AnyIntegerUtilTest {
         int next = 0;
         for (int i = 0; i < 100; i++) {
             if (i % unit == 0) next += unit;
-            if (i <= 20) SystemOut.println("i=" + i + ", next=" + next);
+            if (i <= 20) Testing.println("i=" + i + ", next=" + next);
             Assertions.assertEquals(next, AnyIntegerUtil.next32(i, unit));
             Assertions.assertEquals(next, AnyIntegerUtil.next32((Integer) i, unit));
             Assertions.assertEquals(next, AnyIntegerUtil.next32(String.valueOf(i), unit));
@@ -70,7 +70,7 @@ class AnyIntegerUtilTest {
         int prev = -unit;
         for (int i = 0; i < 100; i++) {
             if (i % unit == 1) prev += unit;
-            if (i <= 20) SystemOut.println("i=" + i + ", prev=" + prev);
+            if (i <= 20) Testing.println("i=" + i + ", prev=" + prev);
             Assertions.assertEquals(prev, AnyIntegerUtil.prev32(i, unit));
             Assertions.assertEquals(prev, AnyIntegerUtil.prev32((Integer) i, unit));
             Assertions.assertEquals(prev, AnyIntegerUtil.prev32(String.valueOf(i), unit));
@@ -83,7 +83,7 @@ class AnyIntegerUtilTest {
         int next = 0;
         for (long i = 0; i < 100; i++) {
             if (i % unit == 0) next += unit;
-            if (i <= 20) SystemOut.println("i=" + i + ", next=" + next);
+            if (i <= 20) Testing.println("i=" + i + ", next=" + next);
             Assertions.assertEquals(next, AnyIntegerUtil.next64(i, unit));
             Assertions.assertEquals(next, AnyIntegerUtil.next64((Long) i, unit));
             Assertions.assertEquals(next, AnyIntegerUtil.next64(String.valueOf(i), unit));
@@ -91,7 +91,7 @@ class AnyIntegerUtilTest {
         int prev = -unit;
         for (long i = 0; i < 100; i++) {
             if (i % unit == 1) prev += unit;
-            if (i <= 20) SystemOut.println("i=" + i + ", prev=" + prev);
+            if (i <= 20) Testing.println("i=" + i + ", prev=" + prev);
             Assertions.assertEquals(prev, AnyIntegerUtil.prev64(i, unit));
             Assertions.assertEquals(prev, AnyIntegerUtil.prev64((Long) i, unit));
             Assertions.assertEquals(prev, AnyIntegerUtil.prev64(String.valueOf(i), unit));

@@ -1,13 +1,11 @@
 package pro.fessional.mirana.data;
 
 import org.junit.jupiter.api.Test;
-import pro.fessional.mirana.SystemOut;
+import pro.fessional.mirana.Testing;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author trydofor
@@ -19,17 +17,17 @@ class NullTest {
     void notNull() {
         List<String> list = null;
         for (String s : Null.notNull(list)) {
-            SystemOut.println(s);
+            Testing.println(s);
         }
 
         Set<String> set = null;
         for (String s : Null.notNull(set)) {
-            SystemOut.println(s);
+            Testing.println(s);
         }
 
         Map<String, Integer> map = null;
         for (Map.Entry<String, Integer> en : Null.notNull(map).entrySet()) {
-            SystemOut.println(en.getKey() + "=" + en.getValue());
+            Testing.println(en.getKey() + "=" + en.getValue());
         }
     }
 }

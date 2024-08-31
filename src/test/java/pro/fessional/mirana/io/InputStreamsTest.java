@@ -1,7 +1,7 @@
 package pro.fessional.mirana.io;
 
 import org.junit.jupiter.api.Test;
-import pro.fessional.mirana.SystemOut;
+import pro.fessional.mirana.Testing;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -18,18 +18,18 @@ public class InputStreamsTest {
 
     @Test
     public void readText() throws IOException {
-        SystemOut.println(InputStreams.readText(new FileInputStream(pom)));
+        Testing.println(InputStreams.readText(new FileInputStream(pom)));
     }
 
     @Test
     public void readLine() throws IOException {
-        SystemOut.println(InputStreams.readLine(new FileInputStream(pom)));
+        Testing.println(InputStreams.readLine(new FileInputStream(pom)));
     }
 
     @Test
     public void saveTemp() {
         ByteArrayInputStream bis = new ByteArrayInputStream("1234567890".getBytes());
         File file = InputStreams.saveTemp(bis);
-        SystemOut.println(file.getAbsolutePath());
+        Testing.println(file.getAbsolutePath());
     }
 }

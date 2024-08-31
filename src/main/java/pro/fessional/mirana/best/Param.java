@@ -2,7 +2,11 @@ package pro.fessional.mirana.best;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * @author trydofor
@@ -17,7 +21,7 @@ public interface Param {
     @Retention(RetentionPolicy.CLASS)
     @Target(ElementType.PARAMETER)
     @NotNull
-    @interface Out {
+    public @interface Out {
         String value() default "";
     }
 
@@ -28,7 +32,7 @@ public interface Param {
     @Retention(RetentionPolicy.CLASS)
     @Target(ElementType.PARAMETER)
     @NotNull
-    @interface InOut {
+    public @interface InOut {
         String value() default "";
     }
 
@@ -38,7 +42,7 @@ public interface Param {
     @Documented
     @Retention(RetentionPolicy.CLASS)
     @Target(ElementType.PARAMETER)
-    @interface HadClose {
+    public @interface HadClose {
         String value() default "";
     }
 
@@ -49,7 +53,7 @@ public interface Param {
     @Documented
     @Retention(RetentionPolicy.CLASS)
     @Target(ElementType.PARAMETER)
-    @interface NotClose {
+    public @interface NotClose {
         String value() default "";
     }
 }

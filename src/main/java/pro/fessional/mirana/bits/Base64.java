@@ -38,6 +38,82 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  */
 public class Base64 {
 
+    public static boolean isB64(char c) {
+        return ((c >= '0' && c <= '9') ||
+                (c >= 'a' && c <= 'z') ||
+                (c >= 'A' && c <= 'Z') ||
+                c == '=' ||
+                c == '-' || c == '_' ||
+                c == '+' || c == '/');
+    }
+
+    public static boolean isB64(char c, boolean urlSafe) {
+        return ((c >= '0' && c <= '9') ||
+                (c >= 'a' && c <= 'z') ||
+                (c >= 'A' && c <= 'Z') ||
+                c == '=' ||
+                (urlSafe && (c == '-' || c == '_')) ||
+                (!urlSafe && (c == '+' || c == '/')));
+    }
+
+    /**
+     * check base64 char URLSAFE and Default, empty string means false always
+     */
+    public static boolean isB64(String b64) {
+        if (b64 == null) return false;
+        final int len = b64.length();
+        if (len == 0) return false;
+        for (int i = 0; i < len; i++) {
+            char c = b64.charAt(i);
+            if (!isB64(c)) return false;
+        }
+        return true;
+    }
+
+    /**
+     * check base64 char URLSAFE or Default, empty string means false always
+     */
+    public static boolean isB64(String b64, boolean urlSafe) {
+        if (b64 == null) return false;
+        final int len = b64.length();
+        if (len == 0) return false;
+        for (int i = 0; i < len; i++) {
+            char c = b64.charAt(i);
+            if (!isB64(c, urlSafe)) return false;
+        }
+        return true;
+    }
+
+    /**
+     * check base64 char URLSAFE and Default, empty string means false always
+     */
+    public static boolean asB64(String b64) {
+        if (b64 == null) return false;
+        final int len = b64.length();
+        int i = 0;
+        for (; i < len; i++) {
+            char c = b64.charAt(i);
+            if (Bytes.isPad(c)) continue;
+            if (!isB64(c)) return false;
+        }
+        return i > 0;
+    }
+
+    /**
+     * check base64 char URLSAFE or Default, empty string means false always
+     */
+    public static boolean asB64(String b64, boolean urlSafe) {
+        if (b64 == null) return false;
+        final int len = b64.length();
+        int i = 0;
+        for (; i < len; i++) {
+            char c = b64.charAt(i);
+            if (Bytes.isPad(c)) continue;
+            if (!isB64(c, urlSafe)) return false;
+        }
+        return i > 0;
+    }
+
     public static java.util.Base64.Encoder getEncoder(boolean urlSafe) {
         return getEncoder(urlSafe, true);
     }
@@ -117,9 +193,9 @@ public class Base64 {
                 break;
             }
         }
-        java.util.Base64.Decoder decoder = urlSafe ?
-                                           java.util.Base64.getUrlDecoder() :
-                                           java.util.Base64.getDecoder();
+        java.util.Base64.Decoder decoder = urlSafe
+            ? java.util.Base64.getUrlDecoder()
+            : java.util.Base64.getDecoder();
         return decoder.decode(bytes);
     }
 

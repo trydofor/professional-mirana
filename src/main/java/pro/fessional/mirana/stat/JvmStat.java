@@ -234,7 +234,7 @@ public class JvmStat {
             // Sun Jvm More Real-Time Load Than getSystemLoadAverage
             MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
             ObjectName name = ObjectName.getInstance("java.lang:type=OperatingSystem");
-            AttributeList pcl = mbs.getAttributes(name, new String[]{"ProcessCpuLoad"});
+            AttributeList pcl = mbs.getAttributes(name, new String[]{ "ProcessCpuLoad" });
             if (!pcl.isEmpty()) {
                 Attribute att = (Attribute) pcl.get(0);
                 Double value = (Double) att.getValue();
@@ -243,7 +243,7 @@ public class JvmStat {
                 }
             }
 
-            AttributeList scl = mbs.getAttributes(name, new String[]{"SystemCpuLoad"});
+            AttributeList scl = mbs.getAttributes(name, new String[]{ "SystemCpuLoad" });
             if (!scl.isEmpty()) {
                 Attribute att = (Attribute) scl.get(0);
                 Double value = (Double) att.getValue();

@@ -16,6 +16,78 @@ import java.io.OutputStream;
 public class Bytes {
 
     /**
+     * check the hex char
+     */
+    public static boolean isHex(char c) {
+        return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F');
+    }
+
+    /**
+     * check the padding white char (0x20,\t\r\n)
+     */
+    public static boolean isPad(char c) {
+        return c == ' ' || c == '\t' || c == '\r' || c == '\n';
+    }
+
+    /**
+     * check the hex string exactly.
+     * empty string means false always
+     */
+    public static boolean isHex(@Nullable String hex) {
+        return isHex(hex, 0);
+    }
+
+    /**
+     * check the hex string and its length(0 do NOT check length) exactly.
+     * empty string means false always
+     */
+    public static boolean isHex(@Nullable String hex, int len) {
+        if (hex == null) return false;
+
+        final int sz = hex.length();
+        if (sz == 0 || len > 0 && sz != len) return false;
+
+        int i = 0;
+        for (; i < sz; i++) {
+            if (!isHex(hex.charAt(i))) return false;
+        }
+        return i == sz;
+    }
+
+    /**
+     * check the hex string ignoring whitespace(0x20,\t\r\n)
+     * empty string means false always
+     */
+    public static boolean asHex(@Nullable String hex) {
+        return asHex(hex, 0);
+    }
+
+    /**
+     * check the hex string ignoring whitespace(0x20,\t\r\n) and its length(0 do NOT check length)
+     * empty string means false always
+     */
+    public static boolean asHex(@Nullable String hex, int len) {
+        if (hex == null) return false;
+
+        final int sz = hex.length();
+        int count = 0;
+        for (int i = 0; i < sz; i++) {
+            char c = hex.charAt(i);
+            if (isPad(c)) continue;
+            if (!isHex(c)) return false;
+
+            count++;
+            if (len > 0 && count > len) break;
+        }
+        if (len > 0) {
+            return count == len;
+        }
+        else {
+            return count > 0;
+        }
+    }
+
+    /**
      * Parse HEX string (can contain `0x20\t\r\n` case insensitive) into bytes.
      */
     public static byte[] hex(@Nullable String hex) {
@@ -92,8 +164,8 @@ public class Bytes {
         return sb.toString();
     }
 
-    private static final char[] HEX_UPPER = new char[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
-    private static final char[] HEX_LOWER = new char[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+    private static final char[] HEX_UPPER = new char[]{ '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+    private static final char[] HEX_LOWER = new char[]{ '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
 
     /**
      * get HEX by lookup table
@@ -107,7 +179,7 @@ public class Bytes {
         sb.append(table[(b & 0x0F)]);
     }
 
-    private static final byte[] HEX_BYTE = new byte[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+    private static final byte[] HEX_BYTE = new byte[]{ '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
     /**
      * <pre>

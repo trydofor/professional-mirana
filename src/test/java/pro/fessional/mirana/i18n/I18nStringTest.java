@@ -1,7 +1,7 @@
 package pro.fessional.mirana.i18n;
 
 import org.junit.jupiter.api.Test;
-import pro.fessional.mirana.SystemOut;
+import pro.fessional.mirana.Testing;
 
 import java.util.Locale;
 
@@ -31,8 +31,8 @@ class I18nStringTest {
         I18nString s2 = new I18nString("200", "name");
         assertEquals(s1, s2);
 
-        SystemOut.println(s1);
-        SystemOut.println(s2);
+        Testing.println(s1);
+        Testing.println(s2);
 
         I18nString s3 = new I18nString("200", "{0} is ok", "name");
         final String s = s3.toString(Locale.ENGLISH);

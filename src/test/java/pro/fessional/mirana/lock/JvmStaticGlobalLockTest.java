@@ -1,7 +1,8 @@
 package pro.fessional.mirana.lock;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import pro.fessional.mirana.SystemOut;
+import pro.fessional.mirana.Testing;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
@@ -33,6 +34,23 @@ class JvmStaticGlobalLockTest {
         finally {
             lock.unlock();
         }
+
+        try (GlobalLock.AutoLock ignore = globalLock.lock("test-lock")) {
+            assertTrue(true, "get Lock");
+            CountDownLatch latch = new CountDownLatch(1);
+            lockFail(latch);
+            latch.await();
+        }
+
+        try (GlobalLock.AutoLock ignore = JvmStaticGlobalLock.autolock(new ArrayKey("test-lock"))) {
+            assertTrue(true, "get Lock");
+            CountDownLatch latch = new CountDownLatch(1);
+            lockFail(latch);
+            latch.await();
+        }
+
+        int lockCount = JvmStaticGlobalLock.countLocks();
+        Assertions.assertTrue(lockCount >= 1);
     }
 
     void lockFail(CountDownLatch latch) {
@@ -45,7 +63,7 @@ class JvmStaticGlobalLockTest {
                 assertFalse(b);
             }
             catch (InterruptedException e) {
-                SystemOut.printStackTrace(e);
+                Testing.printStackTrace(e);
             }
             latch.countDown();
         }).start();
@@ -67,7 +85,7 @@ class JvmStaticGlobalLockTest {
                         Thread.sleep((j % 5) + 1);
                     }
                     catch (InterruptedException e) {
-                        SystemOut.printStackTrace(e);
+                        Testing.printStackTrace(e);
                     }
                     final Lock lk = globalLock.getLock("lock-" + j);
                     if (j < hld) {
@@ -89,14 +107,14 @@ class JvmStaticGlobalLockTest {
         int tm = 1;
         while (JvmStaticGlobalLock.countLocks() > hld) {
             System.gc();
-            SystemOut.println("gc and sleep " + (tm++) + " second");
+            Testing.println("gc and sleep " + (tm++) + " second");
             Thread.sleep(1_000);
         }
-        SystemOut.println("init lock=" + lcs + " and gc left=" + hld);
+        Testing.println("init lock=" + lcs + " and gc left=" + hld);
 
         for (int i = 1; i <= 10; i++) {
             System.gc();
-            SystemOut.println("gc and sleep " + i + " second");
+            Testing.println("gc and sleep " + i + " second");
             Thread.sleep(1_000);
         }
         assertEquals(hld, JvmStaticGlobalLock.countLocks());

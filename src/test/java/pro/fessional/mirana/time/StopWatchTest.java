@@ -2,7 +2,7 @@ package pro.fessional.mirana.time;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import pro.fessional.mirana.SystemOut;
+import pro.fessional.mirana.Testing;
 
 /**
  * @author trydofor
@@ -24,7 +24,7 @@ class StopWatchTest {
                 tree1(0);
             }
             catch (InterruptedException e) {
-                SystemOut.printStackTrace(e);
+                Testing.printStackTrace(e);
             }
         }).start();
 
@@ -50,7 +50,7 @@ class StopWatchTest {
         Assertions.assertTrue(stopWatch.totalElapse() > 0);
         Assertions.assertFalse(stopWatch.getWatches().isEmpty());
         Assertions.assertFalse(stopWatch.isRunning());
-        SystemOut.println(stopWatch);
+        Testing.println(stopWatch);
         stopWatch.clear();
     }
 

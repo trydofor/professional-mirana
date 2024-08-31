@@ -3,7 +3,7 @@ package pro.fessional.mirana.id;
 import de.huxhorn.sulky.ulid.ULID;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import pro.fessional.mirana.SystemOut;
+import pro.fessional.mirana.Testing;
 
 /**
  * @author trydofor
@@ -22,7 +22,7 @@ class UlidTest {
          01GF53QXERPY037QK1J6VCBNJV
          */
         for (int i = 0; i < 10; i++) {
-            SystemOut.println(Ulid.next());
+            Testing.println(Ulid.next());
         }
 
         for (int i = 0; i < 100_000; i++) {

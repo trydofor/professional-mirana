@@ -1,7 +1,7 @@
 package pro.fessional.mirana.time;
 
 import org.junit.jupiter.api.Test;
-import pro.fessional.mirana.SystemOut;
+import pro.fessional.mirana.Testing;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -141,7 +141,8 @@ public class DateParserTest {
         List<DateTimeFormatter> dtf = Arrays.asList(
                 DateTimeFormatter.ofPattern("y-M-d"),
                 DateTimeFormatter.ofPattern("y-M-d[ H:m:s]"),
-                DateTimeFormatter.ofPattern("MMM/d/[yyyy][yy][ H:m:s]")
+                DateTimeFormatter.ofPattern("MMM/d/[yyyy][yy][ H:m:s]"),
+                DateTimeFormatter.ofPattern("H:m:s")
         );
 
         {
@@ -164,17 +165,22 @@ public class DateParserTest {
             final TemporalAccessor ta = DateParser.parseTemporal("Jan/2/2021 3:4:5", dtf, false);
             assertEquals(LocalDateTime.of(2021, 1, 2, 3, 4, 5), ta.query(LocalDateTime::from));
         }
+        {
+            final TemporalAccessor ta = DateParser.parseTemporal("3:4:5", dtf, false);
+            assertEquals(LocalTime.of(3, 4, 5), ta.query(LocalTime::from));
+        }
 
         List<DateParser.QuietPos> ta = DateParser.parseTemporal(dtf, "Jan/2/2021 3:4:5", false);
         for (DateParser.QuietPos qp : ta) {
-            SystemOut.println("====");
-            SystemOut.println("formatter=" + qp.getFormatter().toString());
-            SystemOut.println("error index=" + qp.getErrorIndexReal());
-            SystemOut.println("index=" + qp.getIndex());
-            SystemOut.println("Temporal=" + qp.getTemporal());
+            Testing.println("====");
+            Testing.println("formatter=" + qp.getFormatter().toString());
+            Testing.println("error index=" + qp.getErrorIndexReal());
+            Testing.println("index=" + qp.getIndex());
+            Testing.println("Temporal=" + qp.getTemporal());
             final RuntimeException ex = qp.getException();
             if (ex != null) {
-                SystemOut.printStackTrace(ex);
+                Testing.println("ignore this exception");
+                Testing.printStackTrace(ex);
             }
         }
     }

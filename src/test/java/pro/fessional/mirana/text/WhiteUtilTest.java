@@ -54,4 +54,49 @@ class WhiteUtilTest {
         Assertions.assertEquals("a a", WhiteUtil.space("a \t \n a\r "));
         Assertions.assertEquals("a a", WhiteUtil.space("a \t \n \r a"));
     }
+
+
+    @Test
+    void white() {
+        Assertions.assertFalse(WhiteUtil.isWhite((byte) '1'));
+
+        Assertions.assertTrue(WhiteUtil.isWhite((byte) '\t'));
+        Assertions.assertTrue(WhiteUtil.isWhite((byte) '\r'));
+        Assertions.assertTrue(WhiteUtil.isWhite((byte) '\n'));
+
+        // UTF-8 BOM: EF BB BF
+        Assertions.assertTrue(WhiteUtil.isWhite((byte) 0xEF));
+        Assertions.assertTrue(WhiteUtil.isWhite((byte) 0xBB));
+        Assertions.assertTrue(WhiteUtil.isWhite((byte) 0xBF));
+        // UTF-16 BE BOM: FE FF
+        Assertions.assertTrue(WhiteUtil.isWhite((byte) 0xFE));
+        Assertions.assertTrue(WhiteUtil.isWhite((byte) 0xFF));
+        // UTF-16 LE BOM: FF FE
+        Assertions.assertTrue(WhiteUtil.isWhite((byte) 0xFF));
+        Assertions.assertTrue(WhiteUtil.isWhite((byte) 0xFE));
+        // UTF-32 BE BOM: 00 00 FE FF
+        Assertions.assertTrue(WhiteUtil.isWhite((byte) 0x00));
+        Assertions.assertTrue(WhiteUtil.isWhite((byte) 0xFE));
+        Assertions.assertTrue(WhiteUtil.isWhite((byte) 0xFF));
+        // UTF-32 LE BOM: FF FE 00 00
+        Assertions.assertTrue(WhiteUtil.isWhite((byte) 0xFF));
+        Assertions.assertTrue(WhiteUtil.isWhite((byte) 0xFE));
+        Assertions.assertTrue(WhiteUtil.isWhite((byte) 0x00));
+    }
+
+    @Test
+    void firstLast() {
+        String str = " 0\r\n";
+        Assertions.assertEquals((byte)'0', WhiteUtil.firstNonWhite(str));
+        Assertions.assertEquals((byte)'0', WhiteUtil.lastNonWhite(str));
+
+        byte[] bs = str.getBytes();
+        Assertions.assertEquals((byte)'0', WhiteUtil.firstNonWhite(bs));
+        Assertions.assertEquals((byte)'0', WhiteUtil.lastNonWhite(bs));
+
+        char[] cs = str.toCharArray();
+        Assertions.assertEquals((byte)'0', WhiteUtil.firstNonWhite(cs));
+        Assertions.assertEquals((byte)'0', WhiteUtil.lastNonWhite(cs));
+
+    }
 }

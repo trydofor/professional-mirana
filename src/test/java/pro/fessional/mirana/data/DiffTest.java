@@ -2,7 +2,7 @@ package pro.fessional.mirana.data;
 
 
 import org.junit.jupiter.api.Test;
-import pro.fessional.mirana.SystemOut;
+import pro.fessional.mirana.Testing;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -34,9 +34,8 @@ public class DiffTest {
         assertEquals(v1, dv.getV1());
         assertEquals(v2, dv.getV2());
 
-
-        assertEquals(dv, Diff.v(v1, v2));
-        SystemOut.println(dv);
+        Testing.assertEqualsHashCodeToString(dv, Diff.v(v1, v2));
+        Testing.println(dv);
     }
 
     @Test
@@ -73,11 +72,18 @@ public class DiffTest {
             return s;
         };
 
-        Diff.D<String> d1 = Diff.of(a, b, f1, String::equalsIgnoreCase);
+        Diff.D<String> d0 = Diff.of(a, b, Function.identity());
+        Diff.D<String> d1 = Diff.of(a, b, f1);
         Diff.D<String> d2 = Diff.of(Collections.emptyList(), b, f1, String::equalsIgnoreCase);
         Diff.D<String> d3 = Diff.of(b, Collections.emptyList(), f1, String::equalsIgnoreCase);
 
         HashSet<String> d4 = new HashSet<>(b);
+
+        assertTrue(d0.newInsert.contains("1N") && d0.newInsert.size() == 2);
+        assertTrue(d0.newInsert.contains("3N"));
+        assertTrue(d0.oldDelete.contains("4D") && d0.oldDelete.size() == 2);
+        assertTrue(d0.oldDelete.contains("3O"));
+        assertTrue(d0.oldEqsNew.contains("2N") && d0.oldEqsNew.size() == 1);
 
         assertTrue(d1.newInsert.contains("1N") && d1.newInsert.size() == 1);
         assertTrue(d1.newUpdate.contains("3N") && d1.newUpdate.size() == 1);

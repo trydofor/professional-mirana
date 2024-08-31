@@ -1,7 +1,7 @@
 package pro.fessional.mirana.text;
 
 import org.junit.jupiter.api.Test;
-import pro.fessional.mirana.SystemOut;
+import pro.fessional.mirana.Testing;
 import pro.fessional.mirana.evil.ThreadLocalAttention;
 
 import java.util.Arrays;
@@ -22,12 +22,12 @@ public class FormatUtilTest {
     @Test
     public void count() {
         FormatUtil.V all = (fmt, idx, str, sub) -> {
-            SystemOut.printf("%d,%d,%s\n", idx, sub, str);
+            Testing.printf("%d,%d,%s\n", idx, sub, str);
             return true;
         };
 
         String ptn = "%s-%s-%s%%%%";
-        SystemOut.println(ptn);
+        Testing.println(ptn);
         int[] r1 = FormatUtil.count(all, ptn, "%", "%%", "%%%", "%%%%");
         assertEquals(7, r1[0]);
         assertEquals(2, r1[1]);
@@ -35,7 +35,7 @@ public class FormatUtilTest {
         assertEquals(1, r1[3]);
 
         FormatUtil.V fst = (fmt, idx, str, sub) -> {
-            SystemOut.printf("%d,%d,%s\n", idx, sub, str);
+            Testing.printf("%d,%d,%s\n", idx, sub, str);
             return false;
         };
 
@@ -139,13 +139,18 @@ public class FormatUtilTest {
             Object[] args = new Object[]{"1", 2, 3};
             assertEquals("a 1 2 b", FormatUtil.logback(pattern, args));
         }
+        {
+            assertEquals("a 1 null b", FormatUtil.logback("a {} {} b", "1"));
+        }
     }
 
     @Test
     public void format() {
         String f = "%s-%s-%s%%";
         assertEquals("1--%", FormatUtil.format(f, "1"));
-        assertEquals("1--%", FormatUtil.format(f, "1", null));
+        // IDE warn les args
+        // https://youtrack.jetbrains.com/issue/IDEA-283556/Add-annotation-to-printf-like-methods
+        assertEquals("1--%", FormatUtil.format("%s-%s-%s%%", "1", null));
     }
 
     @Test

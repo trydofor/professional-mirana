@@ -30,7 +30,7 @@ public abstract class RandCode {
      * 800 Chinese Chars Commonly Used in China, Japan and Korea
      */
     public static final Seed Cjk = Seed.chars((
-            // @formatter:off
+        // @formatter:off
             "一七三上下不世中主久乘九事二五井亡交京人仁今他仙代令以仰伏伐休位低住何佛作使来例依便俗保信修个借假伟" +
             "停备传伤价亿元兄充兆先光免儿入内全两八公六共兵典册再冬冰冷出刀分刑列初判别利到则前力功加助勇勉动务胜" +
             "劳势勤劝化北区十千午半卒协南印危卷厚原去参又及友反取受口古句可史右各合吉同名向君否吹告味呼命和哀品唱" +
@@ -55,7 +55,7 @@ public abstract class RandCode {
      * Family Names of chinese
      */
     public static final Seed Sur = Seed.chars((
-            // @formatter:off
+        // @formatter:off
             "李王张刘陈杨赵黄周吴徐孙胡朱高林何郭马罗梁宋郑谢韩唐冯于董萧程曹袁邓许傅沈曾彭吕苏卢蒋蔡贾丁魏薛叶阎\n" +
             "余潘杜戴夏钟汪田任姜范方石姚谭廖邹熊金陆郝孔白崔康毛邱秦江史顾侯邵孟龙万段漕钱汤尹黎易常武乔贺赖龚文\n" +
             "庞樊兰殷施陶洪翟安颜倪严牛温芦季俞章鲁葛伍韦申尤毕聂丛焦向柳邢路岳齐沿梅莫庄辛管祝左涂谷祁时舒耿牟卜\n" +
@@ -69,16 +69,16 @@ public abstract class RandCode {
      * remove 0oO,1il,cC,j,kK,mM,nN,pP,sS,uU,vV,wW,xX,y,zZ
      */
     private static final Seed[] Man = new Seed[]{
-            Seed.chars("23456789".toCharArray()),
-            Seed.chars("abdefghqrt".toCharArray()),
-            Seed.chars("ABDEFGHIJLQRTY".toCharArray())
+        Seed.chars("23456789".toCharArray()),
+        Seed.chars("abdefghqrt".toCharArray()),
+        Seed.chars("ABDEFGHIJLQRTY".toCharArray())
     };
 
     private static final Seed[] Mix = new Seed[]{
-            Seed.chars("23456789".toCharArray()),
-            Seed.chars("abdefghqrt".toCharArray()),
-            Seed.chars("ABDEFGHIJLQRTY".toCharArray()),
-            Cjk
+        Seed.chars("23456789".toCharArray()),
+        Seed.chars("abdefghqrt".toCharArray()),
+        Seed.chars("ABDEFGHIJLQRTY".toCharArray()),
+        Cjk
     };
 
     /**
@@ -247,7 +247,7 @@ public abstract class RandCode {
                 char max = range[i + 1];
                 char min = range[i];
                 AssertArgs.aGeb(max, min, "need max >= min in range");
-                rangeUniq.put(min + ":" + max, new char[]{min, max});
+                rangeUniq.put(min + ":" + max, new char[]{ min, max });
             }
 
             int rsiz = rangeUniq.size() * 2;

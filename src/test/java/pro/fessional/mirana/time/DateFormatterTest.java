@@ -2,19 +2,19 @@ package pro.fessional.mirana.time;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import pro.fessional.mirana.SystemOut;
+import pro.fessional.mirana.Testing;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.TimeZone;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static pro.fessional.mirana.time.DateFormatter.FMT_DATE_PSE;
 import static pro.fessional.mirana.time.DateFormatter.FMT_TIME_PSE;
 import static pro.fessional.mirana.time.DateFormatter.PTN_FULL_19;
@@ -194,24 +194,85 @@ public class DateFormatterTest {
         // 2021-05-06 20:28:26.883 +0800 Asia/Shanghai
         DateTimeFormatter d2 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS ZZ VV");
         final ZonedDateTime now = ZonedDateTime.now();
-        SystemOut.println(now.format(d1));
-        SystemOut.println(now.format(d2));
+        Testing.println(now.format(d1));
+        Testing.println(now.format(d2));
 
         for (String zid : ZoneId.getAvailableZoneIds()) {
-            SystemOut.println(zid);
+            Testing.println(zid);
         }
-        SystemOut.println(DateFormatter.fullTz(now));
-        SystemOut.println(DateFormatter.fullTz(now.toOffsetDateTime()));
+        Testing.println(DateFormatter.fullTz(now));
+        Testing.println(DateFormatter.fullTz(now.toOffsetDateTime()));
     }
 
     @Test
     public void testPnt() {
-        assertEquals(LocalTime.of(1, 2, 3), LocalTime.parse("1:2:3", FMT_TIME_PSE));
-        assertEquals(LocalTime.of(1, 2, 0), LocalTime.parse("1:2", FMT_TIME_PSE));
-        assertEquals(LocalTime.of(1, 0, 0), LocalTime.parse("1", FMT_TIME_PSE));
+        Assertions.assertEquals(LocalTime.of(1, 2, 3), LocalTime.parse("1:2:3", FMT_TIME_PSE));
+        Assertions.assertEquals(LocalTime.of(1, 2, 0), LocalTime.parse("1:2", FMT_TIME_PSE));
+        Assertions.assertEquals(LocalTime.of(1, 0, 0), LocalTime.parse("1", FMT_TIME_PSE));
 
-        assertEquals(LocalDate.of(2021, 1, 2), FMT_DATE_PSE.parse("21-1-2", DateParser.QueryDate));
-        assertEquals(LocalDate.of(2021, 1, 2), FMT_DATE_PSE.parse("2021/1/2", DateParser.QueryDate));
-        assertEquals(LocalDate.of(2021, 1, 1), FMT_DATE_PSE.parse("21-1", DateParser.QueryDate));
+        Assertions.assertEquals(LocalDate.of(2021, 1, 2), FMT_DATE_PSE.parse("21-1-2", DateParser.QueryDate));
+        Assertions.assertEquals(LocalDate.of(2021, 1, 2), FMT_DATE_PSE.parse("2021/1/2", DateParser.QueryDate));
+        Assertions.assertEquals(LocalDate.of(2021, 1, 1), FMT_DATE_PSE.parse("21-1", DateParser.QueryDate));
+    }
+
+    @Test
+    public void testZone() {
+
+        ZoneId zidUs = ZoneId.of("America/New_York");
+        ZoneId zidJp = ZoneId.of("Asia/Tokyo");
+        ZoneId zidUtc = ZoneId.of("UTC");
+        LocalDateTime ldt = LocalDateTime.of(2023,4,5,6,7,8,0);
+
+        ZonedDateTime zdtUtc = ldt.atZone(zidUtc);
+        Assertions.assertEquals("2023-04-05 06:07:08 UTC", DateFormatter.FMT_FULL_TZ.format(zdtUtc));
+        Assertions.assertEquals("2023-04-05 06:07:08 +00:00", DateFormatter.FMT_FULL_OZ.format(zdtUtc));
+        assertEquals(zdtUtc, "2023-04-05 06:07:08 UTC");
+        assertEquals(zdtUtc, "2023-04-05 06:07:08 [UTC]");
+        assertEquals(zdtUtc, "2023-04-05T06:07:08[UTC]");
+        OffsetDateTime odtUtc = zdtUtc.toOffsetDateTime();
+        assertEquals(odtUtc, "2023-04-05 06:07:08 +00:00");
+        assertEquals(odtUtc, "2023-04-05T06:07:08+00:00");
+        assertEquals(odtUtc, "2023-04-05T06:07:08Z");
+
+        ZonedDateTime zdtUs = ldt.atZone(zidUs);
+        Assertions.assertEquals("2023-04-05 06:07:08 America/New_York", DateFormatter.FMT_FULL_TZ.format(zdtUs));
+        Assertions.assertEquals("2023-04-05 06:07:08 -04:00", DateFormatter.FMT_FULL_OZ.format(zdtUs));
+        assertEquals(zdtUs, "2023-04-05 06:07:08 America/New_York");
+        assertEquals(zdtUs, "2023-04-05 06:07:08 [America/New_York]");
+        assertEquals(zdtUs, "2023-04-05T06:07:08 [America/New_York]");
+        assertEquals(zdtUs, "2023-04-05T06:07:08[America/New_York]");
+        assertEquals(zdtUs, "2023-04-05T06:07:08-04:00[America/New_York]");
+        assertEquals(zdtUs, "2023-04-05T06:07:08 -04:00[America/New_York]");
+        assertEquals(zdtUs, "2023-04-05T06:07:08 -04:00 [America/New_York]");
+        OffsetDateTime odtUs = zdtUs.toOffsetDateTime();
+        assertEquals(odtUs, "2023-04-05 06:07:08 -04:00");
+        assertEquals(odtUs, "2023-04-05 06:07:08-04:00");
+        assertEquals(odtUs, "2023-04-05T06:07:08-04:00");
+        assertEquals(odtUs, "2023-04-05T06:07:08-0400");
+
+        ZonedDateTime zdtJp = ldt.atZone(zidJp);
+        Assertions.assertEquals("2023-04-05 06:07:08 Asia/Tokyo", DateFormatter.FMT_FULL_TZ.format(zdtJp));
+        Assertions.assertEquals("2023-04-05 06:07:08 +09:00", DateFormatter.FMT_FULL_OZ.format(zdtJp));
+        assertEquals(zdtJp, "2023-04-05 06:07:08 Asia/Tokyo");
+        assertEquals(zdtJp, "2023-04-05 06:07:08 [Asia/Tokyo]");
+        assertEquals(zdtJp, "2023-04-05T06:07:08 [Asia/Tokyo]");
+        assertEquals(zdtJp, "2023-04-05T06:07:08[Asia/Tokyo]");
+        assertEquals(zdtJp, "2023-04-05T06:07:08 +09:00[Asia/Tokyo]");
+        assertEquals(zdtJp, "2023-04-05T06:07:08 +09:00[Asia/Tokyo]");
+        OffsetDateTime odtJp = zdtJp.toOffsetDateTime();
+        assertEquals(odtJp, "2023-04-05 06:07:08 +09:00");
+        assertEquals(odtJp, "2023-04-05 06:07:08 +0900");
+        assertEquals(odtJp, "2023-04-05 06:07:08+0900");
+        assertEquals(odtJp, "2023-04-05 06:07:08+09");
+        assertEquals(odtJp, "2023-04-05T06:07:08+09");
+    }
+
+    private void assertEquals(ZonedDateTime zdt, String str){
+        ZonedDateTime zdt2 = ZonedDateTime.parse(str, DateFormatter.FMT_ZONE_PSE);
+        Assertions.assertEquals(zdt, zdt2);
+    }
+    private void assertEquals(OffsetDateTime odt, String str){
+        OffsetDateTime odt2 = OffsetDateTime.parse(str, DateFormatter.FMT_ZONE_PSE);
+        Assertions.assertEquals(odt, odt2);
     }
 }

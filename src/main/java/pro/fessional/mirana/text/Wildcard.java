@@ -124,7 +124,7 @@ public class Wildcard {
                         }
                         final int repeat = index(igc, str, strIdx + 1, ptn[ptnIdx]);
                         if (repeat >= 0) {
-                            deque.push(new int[]{ptnIdx, repeat});
+                            deque.push(new int[]{ ptnIdx, repeat });
                         }
                     }
                     else {

@@ -33,8 +33,6 @@ import java.util.Date;
  */
 
 public class DateFormatter {
-    protected DateFormatter() {
-    }
 
     public static final String PTN_DATE_10 = "yyyy-MM-dd";
     public static final String PTN_TIME_08 = "HH:mm:ss";
@@ -48,10 +46,10 @@ public class DateFormatter {
     public static final String PTN_TIME_PSE = "H[:m][:s][.SSS]";
     public static final String PTN_DATE_PSE = "[yyyy][yy][-][/][.][M][-][/][.][d]";
     public static final String PTN_FULL_PSE = "[yyyy][yy][-][/][.][M][-][/][.][d][ ]['T'][H][:m][:s][.SSS]";
-    public static final String PTN_ZONE_PSE = "[yyyy][yy][-][/][.][M][-][/][.][d][ ]['T'][H][:m][:s][.SSS][XXX][XX][X]['['][ ][VV][']']";
+    public static final String PTN_ZONE_PSE = "[yyyy][yy][-][/][.][M][-][/][.][d][ ]['T'][H][:m][:s][.SSS][ ][XXXXX][XXXX][XXX][XX][X][ ]['['][VV][']']";
     public static final String PTN_DATE_PSE_US = "[MMMM][MMM][M][-][/][.][d][-][/][.][yyyy][yy]";
     public static final String PTN_FULL_PSE_US = "[MMMM][MMM][M][-][/][.][d][-][/][.][yyyy][yy][ ]['T'][H][:m][:s][.SSS]";
-    public static final String PTN_ZONE_PSE_US = "[MMMM][MMM][M][-][/][.][d][-][/][.][yyyy][yy][ ]['T'][H][:m][:s][.SSS][XXXXX][XXXX][XXX][XX][X]['['][ ][VV][']']";
+    public static final String PTN_ZONE_PSE_US = "[MMMM][MMM][M][-][/][.][d][-][/][.][yyyy][yy][ ]['T'][H][:m][:s][.SSS][ ][XXXXX][XXXX][XXX][XX][X][ ]['['][VV][']']";
 
     // This class is immutable and thread-safe.
     public static final DateTimeFormatter FMT_DATE_10 = DateTimeFormatter.ofPattern(PTN_DATE_10);
@@ -558,7 +556,7 @@ public class DateFormatter {
         }
 
         StringBuilder buf = new StringBuilder(19);
-        int[] idx = new int[]{0, 0};
+        int[] idx = new int[]{ 0, 0 };
 
         // yyyy-MM-dd
         fillDigit(tmp, 4, idx, buf, 1970, '-');
