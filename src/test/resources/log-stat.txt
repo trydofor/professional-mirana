@@ -29,5 +29,7 @@ b88888888888888888
 b99999999999999999
 2021-07-11 00:42:42.244  WARN 24430 --- [pool-1358-thread-3] c.j.b.c.s.f.w.rate.FedexRateService      : PAYOR_ACCOUNT_SHIPMENT:TotalBase=64.0,TotalSur=5.95,TotalNet=69.95
 c11111111111111111
+2021-07-11 00:42:42.244  WARN 24430 --- [pool-1358-thread-3] should squash to the previous line
+c11111111111111111
 c22222222222222222
 2021-07-11 00:42:42.244  ERROR 24430 --- [pool-1358-thread-3] c.j.b.c.s.f.w.rate.FedexRateService      : PAYOR_ACCOUNT_SHIPMENT:TotalBase=64.0,TotalSur=5.95,TotalNet=69.95

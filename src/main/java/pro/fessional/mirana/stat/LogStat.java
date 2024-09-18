@@ -346,6 +346,7 @@ public class LogStat {
                 int viewLen = 0;
                 int sectLen = 0;
                 int kwc = 1;
+                Word lwd = null;
                 byte[] kwh = SectionHead.getBytes();
                 byte[] kwb = SectionWord.getBytes();
                 byte[] kwt = SectionFoot.getBytes();
@@ -384,7 +385,7 @@ public class LogStat {
 
                                 if (viewLen-- <= 0) {
                                     findLen = 0;
-                                    viewLen = 0;
+//                                    viewLen = 0;
                                 }
                             }
                         }
@@ -393,12 +394,15 @@ public class LogStat {
                             if (len >= keyMax) {
                                 Word m = find(buff, i, lineEnd, keys);
                                 if (m != null) {
-                                    fos.write(kwh);
-                                    fos.write(String.valueOf(kwc++).getBytes());
-                                    fos.write(kwb);
-                                    fos.write(m.bytes);
-                                    fos.write(kwt);
-                                    fos.write('\n');
+                                    if (lwd == null || viewLen < 0 || !Arrays.equals(lwd.bytes, m.bytes)) {
+                                        fos.write(kwh);
+                                        fos.write(String.valueOf(kwc++).getBytes());
+                                        fos.write(kwb);
+                                        fos.write(m.bytes);
+                                        fos.write(kwt);
+                                        fos.write('\n');
+                                    }
+                                    lwd = m;
                                     findLen = m.bytes.length;
                                     viewLen = preview;
                                     i = i + findLen - 1;
