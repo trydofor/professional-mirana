@@ -27,7 +27,7 @@ public class RankTest {
         assertTrue(lineup0.isEmpty());
         ArrayList<String> lineup1 = Rank.lineup(Collections.emptyList(), e -> e.equals("2"));
         assertTrue(lineup1.isEmpty());
-        ArrayList<String> lineup2 = Rank.lineup(Collections.emptyList(), null);
+        ArrayList<String> lineup2 = Rank.lineup(Collections.emptyList(), (java.util.function.Predicate<String>[]) null);
         assertTrue(lineup2.isEmpty());
     }
 }

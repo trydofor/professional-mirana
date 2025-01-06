@@ -172,8 +172,8 @@ public class RatioNumber {
         private final int useRate;
 
         public Ratio(int oneRate, int useRate) {
-            AssertArgs.isTrue(oneRate > 0, "oneRate must > 0");
-            AssertArgs.isTrue(useRate > 0, "useRate must > 0");
+            AssertArgs.isTrue("oneRate", oneRate > 0, "must > 0");
+            AssertArgs.isTrue("useRate", useRate > 0, "must > 0");
             this.oneRate = oneRate;
             this.useRate = useRate;
         }

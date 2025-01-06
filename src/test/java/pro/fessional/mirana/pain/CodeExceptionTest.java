@@ -33,11 +33,11 @@ class CodeExceptionTest {
     }
 
     @Test
-    void testNull() {
-        final CodeException noc = new CodeException(false, (String) null);
+    void testEmpty() {
+        final CodeException noc = new CodeException(false, "");
 
         assertNull(noc.getCause());
-        assertNull(noc.getI18nCode());
+        assertEquals(Null.Str, noc.getI18nCode());
         assertEquals(Null.Str, noc.getCode());
         assertEquals(0, noc.getStackTrace().length);
         assertEquals(0, noc.getSuppressed().length);
@@ -81,12 +81,11 @@ class CodeExceptionTest {
 
         TweakStack.tweakGlobal(true);
         final MessageException st4 = new MessageException(stack);
-        Assertions.assertEquals(0, st4.getStackTrace().length);
+        Assertions.assertNotEquals(0, st4.getStackTrace().length);
 
-        MessageException.DefaultStack = null;
-        final MessageException st5 = new MessageException(stack);
-        Assertions.assertNotEquals(0, st5.getStackTrace().length);
         TweakStack.resetGlobal();
+        final MessageException st5 = new MessageException(stack);
+        Assertions.assertEquals(0, st5.getStackTrace().length);
     }
 
     @Test

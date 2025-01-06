@@ -2,7 +2,6 @@ package pro.fessional.mirana.i18n;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.beans.Transient;
 import java.text.MessageFormat;
@@ -12,24 +11,26 @@ import java.util.Objects;
 
 /**
  * <pre>
- * String can be used as i18n template,
+ * String can be used as i18n template (MessageFormat by default)
  * * code - template id
  * * args - template arguments
  * * hint - default text or template, not in hash and equals
- * * i18n - i18n text, not in hash and equals
  * </pre>
  *
  * @author trydofor
  * @since 2019-09-19
+ * @see MessageFormat
  */
 public class I18nString implements I18nAware {
     private static final long serialVersionUID = 19791023L;
     private static final Object[] EMPTY_ARGS = {};
 
+    @NotNull
     private final String code;
+    @NotNull
     private final Object[] args;
+    @NotNull
     private String hint;
-    private transient String i18n = null;
 
     public I18nString(String code) {
         this(code, "", EMPTY_ARGS);
@@ -60,36 +61,15 @@ public class I18nString implements I18nAware {
         return hint;
     }
 
-    @Nullable
-    public String getI18n() {
-        return i18n;
-    }
-
     @Contract("_ -> this")
     public I18nString setHint(String hint) {
         this.hint = hint == null ? "" : hint;
         return this;
     }
 
-    @Contract("_ -> this")
-    public I18nString setI18n(String i18n) {
-        this.i18n = i18n;
-        return this;
-    }
-
-    @NotNull
-    public String toString(Locale locale) {
-        String r = hint;
-        if (args.length > 0 && locale != null) {
-            r = new MessageFormat(hint, locale).format(args);
-        }
-        return r == null ? code : r;
-    }
-
     public boolean isEmpty() {
         return code.isEmpty();
     }
-
 
     @NotNull
     @Override
@@ -114,9 +94,7 @@ public class I18nString implements I18nAware {
 
     @Override
     public String toString() {
-        if (i18n != null && !i18n.isEmpty()) return i18n;
-        if (hint != null && !hint.isEmpty()) return hint;
-        return code;
+        return toString(Locale.getDefault());
     }
 
     @Override

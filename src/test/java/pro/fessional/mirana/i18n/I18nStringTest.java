@@ -7,7 +7,6 @@ import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * @author trydofor
@@ -24,9 +23,6 @@ class I18nStringTest {
         assertEquals("", s1.getI18nHint());
         assertEquals(0, s1.getArgs().length);
         assertEquals(0, s1.getI18nArgs().length);
-        assertNull(s1.getI18n());
-        s1.setI18n("i18n");
-        assertEquals("i18n", s1.getI18n());
         assertFalse(s1.isEmpty());
         I18nString s2 = new I18nString("200", "name");
         assertEquals(s1, s2);

@@ -4,6 +4,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
+import java.text.MessageFormat;
+import java.util.Locale;
 
 /**
  * @author trydofor
@@ -57,5 +59,28 @@ public interface I18nAware extends Serializable {
     default I18nString toI18nStringArgs(@Nullable Object... args) {
         args = args == null ? getI18nArgs() : args;
         return new I18nString(getI18nCode(), getI18nHint(), args);
+    }
+
+    @Nullable
+    default String toString(@Nullable Locale locale) {
+        String hint = getI18nHint();
+        Object[] args = getI18nArgs();
+        if (hint != null && !hint.isEmpty() && args != null && args.length > 0) {
+            if(locale != null) locale = Locale.getDefault();
+            hint = new MessageFormat(hint, locale).format(args);
+        }
+        return hint == null || hint.isEmpty() ? getI18nCode() : hint;
+    }
+
+    @Nullable
+    default String toString(@Nullable Locale locale, @Nullable I18nSource source) {
+        if (source == null) return null;
+        return source.getMessage(getI18nCode(), getI18nArgs(), getI18nHint(), locale);
+    }
+
+    @FunctionalInterface
+    interface I18nSource {
+        @Nullable
+        String getMessage(@Nullable String code, @Nullable Object[] args, @Nullable String hint, @Nullable Locale locale);
     }
 }

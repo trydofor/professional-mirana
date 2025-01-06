@@ -1,5 +1,6 @@
 package pro.fessional.mirana.pain;
 
+import org.jetbrains.annotations.NotNull;
 import pro.fessional.mirana.data.CodeEnum;
 
 /**
@@ -19,47 +20,57 @@ public class HttpStatusException extends MessageException {
     }
 
     public HttpStatusException(int status) {
-        super((String) null);
+        super(String.valueOf(status));
         this.status = status;
     }
 
-    public HttpStatusException(int status, String code) {
+    public HttpStatusException(int status, @NotNull String code) {
         super(code);
         this.status = status;
     }
 
-    public HttpStatusException(int status, String code, String message) {
+    public HttpStatusException(int status, @NotNull String code, String message) {
         super(code, message);
         this.status = status;
     }
 
-    public HttpStatusException(int status, CodeEnum code) {
+    public HttpStatusException(int status, @NotNull String code, String message, Object... args) {
+        super(code, message, args);
+        this.status = status;
+    }
+
+    public HttpStatusException(int status, @NotNull CodeEnum code) {
         super(code);
         this.status = status;
     }
 
-    public HttpStatusException(int status, CodeEnum code, Object... args) {
+    public HttpStatusException(int status, @NotNull CodeEnum code, Object... args) {
         super(code, args);
         this.status = status;
     }
 
 
-    public HttpStatusException(int status, Throwable cause, String code) {
+    public HttpStatusException(int status, @NotNull Throwable cause, @NotNull String code) {
         super(cause, code);
         this.status = status;
     }
 
-    public HttpStatusException(int status, Throwable cause, String code, String message) {
+    public HttpStatusException(int status, @NotNull Throwable cause, @NotNull String code, String message) {
         super(cause, code, message);
         this.status = status;
     }
 
-    public HttpStatusException(int status, Throwable cause, CodeEnum code) {
+    public HttpStatusException(int status, @NotNull Throwable cause, @NotNull String code, String message, Object... args) {
+        super(cause, code, message, args);
+        this.status = status;
+    }
+
+    public HttpStatusException(int status, @NotNull Throwable cause, @NotNull CodeEnum code) {
         super(cause, code);
         this.status = status;
     }
 
-    public HttpStatusException(int status, Throwable cause, CodeEnum code, Object... args) {
+    public HttpStatusException(int status, @NotNull Throwable cause, @NotNull CodeEnum code, Object... args) {
         super(cause, code, args);
         this.status = status;
     }

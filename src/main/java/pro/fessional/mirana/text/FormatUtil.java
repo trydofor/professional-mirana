@@ -232,6 +232,17 @@ public class FormatUtil {
     }
 
     /**
+     * <pre>
+     * concat name and value
+     * - 'name: value' - value is not null, NOTE, ': ' has a blank
+     * - 'name:' - value is null, NOTE, ':' has no blank
+     * </pre>
+     */
+    public static String named(@NotNull String name, Object value) {
+        return value == null ? name + ":" : name + ": " + value;
+    }
+
+    /**
      * Completing and padding null parameters with empty string
      */
     @NotNull

@@ -3,6 +3,7 @@ package pro.fessional.mirana.i18n;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import pro.fessional.mirana.best.AssertState;
+import pro.fessional.mirana.pain.BadStateException;
 import pro.fessional.mirana.pain.CodeException;
 
 /**
@@ -36,7 +37,7 @@ class I18nEnumTest {
     @Test
     void tweakStack() {
         try {
-            AssertState.notNull(null, Ti11.LGD, "");
+            AssertState.notNull("null", null, Ti11.LGD);
             Assertions.fail();
         }
         catch (Exception e) {
@@ -49,7 +50,7 @@ class I18nEnumTest {
 
         try {
             CodeException.TweakStack.tweakGlobal(true);
-            AssertState.notNull(null, Ti11.LGD, "");
+            AssertState.notNull("null", null, Ti11.LGD);
             Assertions.fail();
         }
         catch (Exception e) {

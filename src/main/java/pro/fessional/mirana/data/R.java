@@ -9,6 +9,9 @@ import pro.fessional.mirana.i18n.I18nString;
 import pro.fessional.mirana.pain.CodeException;
 
 import java.beans.Transient;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -16,28 +19,31 @@ import java.util.function.Supplier;
 /**
  * <pre>
  * Basic result container.
- * * `success` - whether the operation succeeded or failed.
- * * `message` - message to the user.
- * * `code` - business code. Note CodeEnum auto set the code.
- * * `data` - business data to use if available.
+ * - `success` - whether the operation succeeded or failed.
+ * - `message` - message (SHOULD i18n) to the user.
+ * - `code` - business code. CodeEnum auto set the code.
+ * - `data` - business/errors data determined by code.
  *
  * The following are `@Transient`, should ignore for `hashCode`, `equals` and `json`
- * * `cause` - Internal error for tracking. Such as exceptions, strings, enum, etc.
- * * `i18nCode`/`i18nArgs` - I18N messages instead of `message`.
+ * - `cause` - Internal error for tracking. Such as exceptions, strings, enum, etc.
+ * - `i18nCode`/`i18nArgs` - I18N messages instead of `message`.
  *
- * kryo - ignore transient field
- * jackson - ignore transient field and @Transient method
- * fastjson - ignore transient field
+ * `@Transient` and `transient` are difference,
+ * - kryo - ignore transient field
+ * - jackson - ignore transient field and @Transient method
+ * - fastjson - ignore transient field
  *
- * When using the`cast*` method, be careful to avoid the ClassCastException.
- *
- * should NOT use `@Transient` on any serial method, or jackson will ignore this properties,
+ * NOTE-1: should NOT use `@Transient` on any serial method, or jackson will ignore this properties,
  * see POJOPropertiesCollector#_removeUnwantedProperties and POJOPropertyBuilder#anyIgnorals
+ *
+ * NOTE-2: When using the`cast*` method, be careful to avoid the ClassCastException.
+ *
+ *
  * </pre>
  *
  * @param <T> Data Type
  */
-public class R<T> implements DataResult<T>, I18nAware {
+public class R<T> implements DataResult<T>, ErrorResult, I18nAware {
 
     private static final long serialVersionUID = 19791023L;
 
@@ -45,6 +51,7 @@ public class R<T> implements DataResult<T>, I18nAware {
     protected String message;
     protected String code;
     protected Object data;
+    protected List<Err> errors;
 
     // @Transient by Getter, not field, because kryo use this
     // fastjson do NOT work on @Transient
@@ -64,6 +71,22 @@ public class R<T> implements DataResult<T>, I18nAware {
         this.message = null;
         this.code = null;
         this.data = null;
+    }
+
+    public R(Err err) {
+        this.success = false;
+        this.message = null;
+        this.code = null;
+        this.data = null;
+        this.errors = Collections.singletonList(err);
+    }
+
+    public R(List<Err> errs) {
+        this.success = false;
+        this.message = null;
+        this.code = null;
+        this.data = null;
+        this.errors = errs;
     }
 
     protected R(boolean success, String message, String code, T data) {
@@ -308,6 +331,18 @@ public class R<T> implements DataResult<T>, I18nAware {
         return this;
     }
 
+    @Override
+    @Nullable
+    public List<Err> getErrors() {
+        return errors;
+    }
+
+    @Contract("_->this")
+    public R<T> setErrors(List<Err> errors) {
+        this.errors = errors;
+        return this;
+    }
+
     @Transient
     @Contract("_->this")
     public R<T> setDataIfOk(T data) {
@@ -363,6 +398,7 @@ public class R<T> implements DataResult<T>, I18nAware {
             this.code = code.getCode();
             this.message = code.getHint();
             this.i18nCode = code.getI18nCode();
+            this.i18nArgs = code.getI18nArgs();
         }
         return this;
     }
@@ -482,27 +518,33 @@ public class R<T> implements DataResult<T>, I18nAware {
 
     @Override
     public String toString() {
-        return "SimpleResult{" +
+        return "R{" +
                "success=" + success +
-               (message == null ? "" : ", message='" + message + '\'') +
-               (code == null ? "" : ", code='" + code + '\'') +
-               (data == null ? "" : ", data=" + data) +
+               ", message='" + message + '\'' +
+               ", code='" + code + '\'' +
+               ", data=" + data +
+               ", errors=" + errors +
+               ", cause=" + cause +
+               ", i18nCode='" + i18nCode + '\'' +
+               ", i18nArgs=" + Arrays.toString(i18nArgs) +
                '}';
     }
 
-    @Override public boolean equals(Object o) {
+    @Override
+    public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof R)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         R<?> r = (R<?>) o;
-        return success == r.success
-               && Objects.equals(message, r.message)
-               && Objects.equals(code, r.code)
-               && Objects.equals(data, r.data);
+        return isSuccess() == r.isSuccess()
+               && Objects.equals(getMessage(), r.getMessage())
+               && Objects.equals(getCode(), r.getCode())
+               && Objects.equals(getData(), r.getData())
+               && Objects.equals(getErrors(), r.getErrors());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(success, message, code, data);
+        return Objects.hash(isSuccess(), getMessage(), getCode(), getData(), getErrors());
     }
 
     // /////////////////////
@@ -885,6 +927,10 @@ public class R<T> implements DataResult<T>, I18nAware {
 
         @Override
         public R<T> setI18nMessage(Boolean replace, I18nAware message) {
+            throw new UnsupportedOperationException("Immutable");
+        }
+
+        @Override public R<T> setErrors(List<Err> errors) {
             throw new UnsupportedOperationException("Immutable");
         }
 

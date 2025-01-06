@@ -18,256 +18,343 @@ import java.util.Map;
  */
 public class AssertArgs {
 
-    @Contract("false, _ -> fail")
-    public static void isTrue(boolean b, @NotNull String msg) {
-        if (!b) throw new IllegalArgumentException(msg);
+    @Contract("_, false, _ -> fail")
+    public static void isTrue(@NotNull String name, boolean b, @NotNull String msg) {
+        if (!b) throw new IllegalArgumentException(FormatUtil.named(name, msg));
     }
 
-    @Contract("false, _, _ -> fail")
-    public static void isTrue(boolean b, @NotNull String msg, Object... args) {
-        if (!b) throw new IllegalArgumentException(FormatUtil.logback(msg, args));
+    @Contract("_, false, _, _ -> fail")
+    public static void isTrue(@NotNull String name, boolean b, @NotNull String msg, Object... args) {
+        if (!b) throw new IllegalArgumentException(FormatUtil.named(name, FormatUtil.logback(msg, args)));
     }
 
-    @Contract("false, _, _ -> fail")
-    public static void isTrue(boolean b, @NotNull CodeEnum code, Object... args) {
-        if (!b) throw new BadArgsException(code, args);
+    @Contract("_, false, _ -> fail")
+    public static void isTrue(@NotNull String name, boolean b, @NotNull CodeEnum code) {
+        if (!b) throw new BadArgsException(name, code);
     }
 
-    //
-    @Contract("true, _ -> fail")
-    public static void isFalse(boolean b, @NotNull String msg) {
-        if (b) throw new IllegalArgumentException(msg);
-    }
-
-    @Contract("true, _, _ -> fail")
-    public static void isFalse(boolean b, @NotNull String msg, Object... args) {
-        if (b) throw new IllegalArgumentException(FormatUtil.logback(msg, args));
-    }
-
-    @Contract("true, _, _ -> fail")
-    public static void isFalse(boolean b, @NotNull CodeEnum code, Object... args) {
-        if (b) throw new BadArgsException(code, args);
+    @Contract("_, false, _, _ -> fail")
+    public static void isTrue(@NotNull String name, boolean b, @NotNull CodeEnum code, Object... args) {
+        if (!b) throw new BadArgsException(name, code, args);
     }
 
     //
-    @Contract("!null, _ -> fail")
-    public static void isNull(@Nullable Object b, @NotNull String msg) {
-        if (b != null) throw new IllegalArgumentException(msg);
+    @Contract("_, true, _ -> fail")
+    public static void isFalse(@NotNull String name, boolean b, @NotNull String msg) {
+        if (b) throw new IllegalArgumentException(FormatUtil.named(name, msg));
     }
 
-    @Contract("!null, _, _ -> fail")
-    public static void isNull(@Nullable Object b, @NotNull String msg, Object... args) {
-        if (b != null) throw new IllegalArgumentException(FormatUtil.logback(msg, args));
+    @Contract("_, true, _, _ -> fail")
+    public static void isFalse(@NotNull String name, boolean b, @NotNull String msg, Object... args) {
+        if (b) throw new IllegalArgumentException(FormatUtil.named(name, FormatUtil.logback(msg, args)));
     }
 
-    @Contract("!null, _, _ -> fail")
-    public static void isNull(@Nullable Object b, @NotNull CodeEnum code, Object... args) {
-        if (b != null) throw new BadArgsException(code, args);
+    @Contract("_, true, _ -> fail")
+    public static void isFalse(@NotNull String name, boolean b, @NotNull CodeEnum code) {
+        if (b) throw new BadArgsException(name, code);
     }
 
-    //
-    @Contract("null, _ -> fail")
-    public static void notNull(@Nullable Object b, @NotNull String msg) {
-        if (b == null) throw new IllegalArgumentException(msg);
-    }
-
-    @Contract("null, _, _ -> fail")
-    public static void notNull(@Nullable Object b, @NotNull String msg, Object... args) {
-        if (b == null) throw new IllegalArgumentException(FormatUtil.logback(msg, args));
-    }
-
-    @Contract("null, _, _ -> fail")
-    public static void notNull(@Nullable Object b, @NotNull CodeEnum code, Object... args) {
-        if (b == null) throw new BadArgsException(code, args);
+    @Contract("_, true, _, _ -> fail")
+    public static void isFalse(@NotNull String name, boolean b, @NotNull CodeEnum code, Object... args) {
+        if (b) throw new BadArgsException(name, code, args);
     }
 
     // ////
-    public static void isEmpty(@Nullable CharSequence c, @NotNull String msg) {
-        if (c != null && c.length() > 0) throw new IllegalArgumentException(msg);
+    @Contract("_, !null, _ -> fail")
+    public static void isNull(@NotNull String name, @Nullable Object b, @NotNull String msg) {
+        if (b != null) throw new IllegalArgumentException(FormatUtil.named(name, msg));
     }
 
-    public static void isEmpty(@Nullable CharSequence c, @NotNull String msg, Object... args) {
-        if (c != null && c.length() > 0) throw new IllegalArgumentException(FormatUtil.logback(msg, args));
+    @Contract("_, !null, _, _ -> fail")
+    public static void isNull(@NotNull String name, @Nullable Object b, @NotNull String msg, Object... args) {
+        if (b != null) throw new IllegalArgumentException(FormatUtil.named(name, FormatUtil.logback(msg, args)));
     }
 
-    public static void isEmpty(@Nullable CharSequence c, @NotNull CodeEnum code, Object... args) {
-        if (c != null && c.length() > 0) throw new BadArgsException(code, args);
+    @Contract("_, !null, _ -> fail")
+    public static void isNull(@NotNull String name, @Nullable Object b, @NotNull CodeEnum code) {
+        if (b != null) throw new BadArgsException(name, code);
+    }
+
+    @Contract("_, !null, _, _ -> fail")
+    public static void isNull(@NotNull String name, @Nullable Object b, @NotNull CodeEnum code, Object... args) {
+        if (b != null) throw new BadArgsException(name, code, args);
     }
 
     //
-    @Contract("null, _ -> fail")
-    public static void notEmpty(@Nullable CharSequence c, @NotNull String msg) {
-        if (c == null || c.length() == 0) throw new IllegalArgumentException(msg);
+    @Contract("_, null, _ -> fail")
+    public static void notNull(@NotNull String name, @Nullable Object b, @NotNull String msg) {
+        if (b == null) throw new IllegalArgumentException(FormatUtil.named(name, msg));
     }
 
-    @Contract("null, _, _ -> fail")
-    public static void notEmpty(@Nullable CharSequence c, @NotNull String msg, Object... args) {
-        if (c == null || c.length() == 0) throw new IllegalArgumentException(FormatUtil.logback(msg, args));
+    @Contract("_, null, _, _ -> fail")
+    public static void notNull(@NotNull String name, @Nullable Object b, @NotNull String msg, Object... args) {
+        if (b == null) throw new IllegalArgumentException(FormatUtil.named(name, FormatUtil.logback(msg, args)));
     }
 
-    @Contract("null, _, _ -> fail")
-    public static void notEmpty(@Nullable CharSequence c, @NotNull CodeEnum code, Object... args) {
-        if (c == null || c.length() == 0) throw new BadArgsException(code, args);
+    @Contract("_, null, _ -> fail")
+    public static void notNull(@NotNull String name, @Nullable Object b, @NotNull CodeEnum code) {
+        if (b == null) throw new BadArgsException(name, code);
+    }
+
+    @Contract("_, null, _, _ -> fail")
+    public static void notNull(@NotNull String name, @Nullable Object b, @NotNull CodeEnum code, Object... args) {
+        if (b == null) throw new BadArgsException(name, code, args);
     }
 
     // ////
-    public static void isEmpty(@Nullable Collection<?> c, @NotNull String msg) {
-        if (c != null && !c.isEmpty()) throw new IllegalArgumentException(msg);
+    public static void isEmpty(@NotNull String name, @Nullable CharSequence c, @NotNull String msg) {
+        if (c != null && c.length() > 0) throw new IllegalArgumentException(FormatUtil.named(name, msg));
     }
 
-    public static void isEmpty(@Nullable Collection<?> c, @NotNull String msg, Object... args) {
-        if (c != null && !c.isEmpty()) throw new IllegalArgumentException(FormatUtil.logback(msg, args));
+    public static void isEmpty(@NotNull String name, @Nullable CharSequence c, @NotNull String msg, Object... args) {
+        if (c != null && c.length() > 0) throw new IllegalArgumentException(FormatUtil.named(name, FormatUtil.logback(msg, args)));
     }
 
-    public static void isEmpty(@Nullable Collection<?> c, @NotNull CodeEnum code, Object... args) {
-        if (c != null && !c.isEmpty()) throw new BadArgsException(code, args);
+    public static void isEmpty(@NotNull String name, @Nullable CharSequence c, @NotNull CodeEnum code) {
+        if (c != null && c.length() > 0) throw new BadArgsException(name, code);
+    }
+
+    public static void isEmpty(@NotNull String name, @Nullable CharSequence c, @NotNull CodeEnum code, Object... args) {
+        if (c != null && c.length() > 0) throw new BadArgsException(name, code, args);
     }
 
     //
-    @Contract("null, _ -> fail")
-    public static void notEmpty(@Nullable Collection<?> c, @NotNull String msg) {
-        if (c == null || c.isEmpty()) throw new IllegalArgumentException(msg);
+    @Contract("_, null, _ -> fail")
+    public static void notEmpty(@NotNull String name, @Nullable CharSequence c, @NotNull String msg) {
+        if (c == null || c.length() == 0) throw new IllegalArgumentException(FormatUtil.named(name, msg));
     }
 
-    @Contract("null, _, _ -> fail")
-    public static void notEmpty(@Nullable Collection<?> c, @NotNull String msg, Object... args) {
-        if (c == null || c.isEmpty()) throw new IllegalArgumentException(FormatUtil.logback(msg, args));
+    @Contract("_, null, _, _ -> fail")
+    public static void notEmpty(@NotNull String name, @Nullable CharSequence c, @NotNull String msg, Object... args) {
+        if (c == null || c.length() == 0) throw new IllegalArgumentException(FormatUtil.named(name, FormatUtil.logback(msg, args)));
     }
 
-    @Contract("null, _, _ -> fail")
-    public static void notEmpty(@Nullable Collection<?> c, @NotNull CodeEnum code, Object... args) {
-        if (c == null || c.isEmpty()) throw new BadArgsException(code, args);
+    @Contract("_, null, _ -> fail")
+    public static void notEmpty(@NotNull String name, @Nullable CharSequence c, @NotNull CodeEnum code) {
+        if (c == null || c.length() == 0) throw new BadArgsException(name, code);
+    }
+
+    @Contract("_, null, _, _ -> fail")
+    public static void notEmpty(@NotNull String name, @Nullable CharSequence c, @NotNull CodeEnum code, Object... args) {
+        if (c == null || c.length() == 0) throw new BadArgsException(name, code, args);
     }
 
     // ////
-    public static void isEmpty(@Nullable Map<?, ?> c, @NotNull String msg) {
-        if (c != null && !c.isEmpty()) throw new IllegalArgumentException(msg);
+    public static void isEmpty(@NotNull String name, @Nullable Collection<?> c, @NotNull String msg) {
+        if (c != null && !c.isEmpty()) throw new IllegalArgumentException(FormatUtil.named(name, msg));
     }
 
-    public static void isEmpty(@Nullable Map<?, ?> c, @NotNull String msg, Object... args) {
-        if (c != null && !c.isEmpty()) throw new IllegalArgumentException(FormatUtil.logback(msg, args));
+    public static void isEmpty(@NotNull String name, @Nullable Collection<?> c, @NotNull String msg, Object... args) {
+        if (c != null && !c.isEmpty()) throw new IllegalArgumentException(FormatUtil.named(name, FormatUtil.logback(msg, args)));
     }
 
-    public static void isEmpty(@Nullable Map<?, ?> c, @NotNull CodeEnum code, Object... args) {
-        if (c != null && !c.isEmpty()) throw new BadArgsException(code, args);
+    public static void isEmpty(@NotNull String name, @Nullable Collection<?> c, @NotNull CodeEnum code) {
+        if (c != null && !c.isEmpty()) throw new BadArgsException(name, code);
+    }
+
+    public static void isEmpty(@NotNull String name, @Nullable Collection<?> c, @NotNull CodeEnum code, Object... args) {
+        if (c != null && !c.isEmpty()) throw new BadArgsException(name, code, args);
     }
 
     //
-    @Contract("null, _ -> fail")
-    public static void notEmpty(@Nullable Map<?, ?> c, @NotNull String msg) {
-        if (c == null || c.isEmpty()) throw new IllegalArgumentException(msg);
+    @Contract("_, null, _ -> fail")
+    public static void notEmpty(@NotNull String name, @Nullable Collection<?> c, @NotNull String msg) {
+        if (c == null || c.isEmpty()) throw new IllegalArgumentException(FormatUtil.named(name, msg));
     }
 
-    @Contract("null, _, _ -> fail")
-    public static void notEmpty(@Nullable Map<?, ?> c, @NotNull String msg, Object... args) {
-        if (c == null || c.isEmpty()) throw new IllegalArgumentException(FormatUtil.logback(msg, args));
+    @Contract("_, null, _, _ -> fail")
+    public static void notEmpty(@NotNull String name, @Nullable Collection<?> c, @NotNull String msg, Object... args) {
+        if (c == null || c.isEmpty()) throw new IllegalArgumentException(FormatUtil.named(name, FormatUtil.logback(msg, args)));
     }
 
-    @Contract("null, _, _ -> fail")
-    public static void notEmpty(@Nullable Map<?, ?> c, @NotNull CodeEnum code, Object... args) {
-        if (c == null || c.isEmpty()) throw new BadArgsException(code, args);
+    @Contract("_, null, _ -> fail")
+    public static void notEmpty(@NotNull String name, @Nullable Collection<?> c, @NotNull CodeEnum code) {
+        if (c == null || c.isEmpty()) throw new BadArgsException(name, code);
+    }
+
+    @Contract("_, null, _, _ -> fail")
+    public static void notEmpty(@NotNull String name, @Nullable Collection<?> c, @NotNull CodeEnum code, Object... args) {
+        if (c == null || c.isEmpty()) throw new BadArgsException(name, code, args);
     }
 
     // ////
-    public static void isEmpty(@Nullable Object[] c, @NotNull String msg) {
-        if (c != null && c.length > 0) throw new IllegalArgumentException(msg);
+    public static void isEmpty(@NotNull String name, @Nullable Map<?, ?> c, @NotNull String msg) {
+        if (c != null && !c.isEmpty()) throw new IllegalArgumentException(FormatUtil.named(name, msg));
     }
 
-    public static void isEmpty(@Nullable Object[] c, @NotNull String msg, Object... args) {
-        if (c != null && c.length > 0) throw new IllegalArgumentException(FormatUtil.logback(msg, args));
+    public static void isEmpty(@NotNull String name, @Nullable Map<?, ?> c, @NotNull String msg, Object... args) {
+        if (c != null && !c.isEmpty()) throw new IllegalArgumentException(FormatUtil.named(name, FormatUtil.logback(msg, args)));
     }
 
-    public static void isEmpty(@Nullable Object[] c, @NotNull CodeEnum code, Object... args) {
-        if (c != null && c.length > 0) throw new BadArgsException(code, args);
+    public static void isEmpty(@NotNull String name, @Nullable Map<?, ?> c, @NotNull CodeEnum code) {
+        if (c != null && !c.isEmpty()) throw new BadArgsException(name, code);
     }
 
-    //
-    @Contract("null, _ -> fail")
-    public static void notEmpty(@Nullable Object[] c, @NotNull String msg) {
-        if (c == null || c.length == 0) throw new IllegalArgumentException(msg);
-    }
-
-    @Contract("null, _, _ -> fail")
-    public static void notEmpty(@Nullable Object[] c, @NotNull String msg, Object... args) {
-        if (c == null || c.length == 0) throw new IllegalArgumentException(FormatUtil.logback(msg, args));
-    }
-
-    @Contract("null, _, _ -> fail")
-    public static void notEmpty(@Nullable Object[] c, @NotNull CodeEnum code, Object... args) {
-        if (c == null || c.length == 0) throw new BadArgsException(code, args);
+    public static void isEmpty(@NotNull String name, @Nullable Map<?, ?> c, @NotNull CodeEnum code, Object... args) {
+        if (c != null && !c.isEmpty()) throw new BadArgsException(name, code, args);
     }
 
     //
-    public static <T extends Comparable<T>> void aEqb(@Nullable T a, @Nullable T b, @NotNull String msg) {
-        if (a == null && b == null) return;
-        if (a == null || !a.equals(b)) throw new IllegalArgumentException(msg);
+    @Contract("_, null, _ -> fail")
+    public static void notEmpty(@NotNull String name, @Nullable Map<?, ?> c, @NotNull String msg) {
+        if (c == null || c.isEmpty()) throw new IllegalArgumentException(FormatUtil.named(name, msg));
     }
 
-    public static <T extends Comparable<T>> void aEqb(@Nullable T a, @Nullable T b, @NotNull String msg, Object... args) {
-        if (a == null && b == null) return;
-        if (a == null || !a.equals(b)) throw new IllegalArgumentException(FormatUtil.logback(msg, args));
+    @Contract("_, null, _, _ -> fail")
+    public static void notEmpty(@NotNull String name, @Nullable Map<?, ?> c, @NotNull String msg, Object... args) {
+        if (c == null || c.isEmpty()) throw new IllegalArgumentException(FormatUtil.named(name, FormatUtil.logback(msg, args)));
     }
 
-    public static <T extends Comparable<T>> void aEqb(@Nullable T a, @Nullable T b, @NotNull CodeEnum code, Object... args) {
-        if (a == null && b == null) return;
-        if (a == null || !a.equals(b)) throw new BadArgsException(code, args);
+    @Contract("_, null, _ -> fail")
+    public static void notEmpty(@NotNull String name, @Nullable Map<?, ?> c, @NotNull CodeEnum code) {
+        if (c == null || c.isEmpty()) throw new BadArgsException(name, code);
     }
 
-    //
-    public static <T extends Comparable<T>> void aGeb(@Nullable T a, @Nullable T b, @NotNull String msg) {
-        if (a == null && b == null) return;
-        if (a == null || b == null || a.compareTo(b) < 0) throw new IllegalArgumentException(msg);
+    @Contract("_, null, _, _ -> fail")
+    public static void notEmpty(@NotNull String name, @Nullable Map<?, ?> c, @NotNull CodeEnum code, Object... args) {
+        if (c == null || c.isEmpty()) throw new BadArgsException(name, code, args);
     }
 
-    public static <T extends Comparable<T>> void aGeb(@Nullable T a, @Nullable T b, @NotNull String msg, Object... args) {
-        if (a == null && b == null) return;
-        if (a == null || b == null || a.compareTo(b) < 0) throw new IllegalArgumentException(FormatUtil.logback(msg, args));
+    // ////
+    public static void isEmpty(@NotNull String name, @Nullable Object[] c, @NotNull String msg) {
+        if (c != null && c.length > 0) throw new IllegalArgumentException(FormatUtil.named(name, msg));
     }
 
-    public static <T extends Comparable<T>> void aGeb(@Nullable T a, @Nullable T b, @NotNull CodeEnum code, Object... args) {
-        if (a == null && b == null) return;
-        if (a == null || b == null || a.compareTo(b) < 0) throw new BadArgsException(code, args);
+    public static void isEmpty(@NotNull String name, @Nullable Object[] c, @NotNull String msg, Object... args) {
+        if (c != null && c.length > 0) throw new IllegalArgumentException(FormatUtil.named(name, FormatUtil.logback(msg, args)));
     }
 
-    //
-    public static <T extends Comparable<T>> void aGtb(@Nullable T a, @Nullable T b, @NotNull String msg) {
-        if (a == null || b == null || a.compareTo(b) <= 0) throw new IllegalArgumentException(msg);
+    public static void isEmpty(@NotNull String name, @Nullable Object[] c, @NotNull CodeEnum code) {
+        if (c != null && c.length > 0) throw new BadArgsException(name, code);
     }
 
-    public static <T extends Comparable<T>> void aGtb(@Nullable T a, @Nullable T b, @NotNull String msg, Object... args) {
-        if (a == null || b == null || a.compareTo(b) <= 0) throw new IllegalArgumentException(FormatUtil.logback(msg, args));
-    }
-
-    public static <T extends Comparable<T>> void aGtb(@Nullable T a, @Nullable T b, @NotNull CodeEnum code, Object... args) {
-        if (a == null || b == null || a.compareTo(b) <= 0) throw new BadArgsException(code, args);
+    public static void isEmpty(@NotNull String name, @Nullable Object[] c, @NotNull CodeEnum code, Object... args) {
+        if (c != null && c.length > 0) throw new BadArgsException(name, code, args);
     }
 
     //
-    public static <T extends Comparable<T>> void aLeb(@Nullable T a, @Nullable T b, @NotNull String msg) {
-        if (a == null && b == null) return;
-        if (a == null || b == null || a.compareTo(b) > 0) throw new IllegalArgumentException(msg);
+    @Contract("_, null, _ -> fail")
+    public static void notEmpty(@NotNull String name, @Nullable Object[] c, @NotNull String msg) {
+        if (c == null || c.length == 0) throw new IllegalArgumentException(FormatUtil.named(name, msg));
     }
 
-    public static <T extends Comparable<T>> void aLeb(@Nullable T a, @Nullable T b, @NotNull String msg, Object... args) {
-        if (a == null && b == null) return;
-        if (a == null || b == null || a.compareTo(b) > 0) throw new IllegalArgumentException(FormatUtil.logback(msg, args));
+    @Contract("_, null, _, _ -> fail")
+    public static void notEmpty(@NotNull String name, @Nullable Object[] c, @NotNull String msg, Object... args) {
+        if (c == null || c.length == 0) throw new IllegalArgumentException(FormatUtil.named(name, FormatUtil.logback(msg, args)));
     }
 
-    public static <T extends Comparable<T>> void aLeb(@Nullable T a, @Nullable T b, @NotNull CodeEnum code, Object... args) {
-        if (a == null && b == null) return;
-        if (a == null || b == null || a.compareTo(b) > 0) throw new BadArgsException(code, args);
+    @Contract("_, null, _ -> fail")
+    public static void notEmpty(@NotNull String name, @Nullable Object[] c, @NotNull CodeEnum code) {
+        if (c == null || c.length == 0) throw new BadArgsException(name, code);
+    }
+
+    @Contract("_, null, _, _ -> fail")
+    public static void notEmpty(@NotNull String name, @Nullable Object[] c, @NotNull CodeEnum code, Object... args) {
+        if (c == null || c.length == 0) throw new BadArgsException(name, code, args);
     }
 
     //
-    public static <T extends Comparable<T>> void aLtb(@Nullable T a, @Nullable T b, @NotNull String msg) {
-        if (a == null || b == null || a.compareTo(b) >= 0) throw new IllegalArgumentException(msg);
+    @Contract("_, null, _, _ -> fail")
+    public static <T extends Comparable<T>> void aEqb(@NotNull String name, @Nullable T a, @NotNull T b, @NotNull String msg) {
+        if (a == null || !a.equals(b)) throw new IllegalArgumentException(FormatUtil.named(name, msg));
     }
 
-    public static <T extends Comparable<T>> void aLtb(@Nullable T a, @Nullable T b, @NotNull String msg, Object... args) {
-        if (a == null || b == null || a.compareTo(b) >= 0) throw new IllegalArgumentException(FormatUtil.logback(msg, args));
+    @Contract("_, null, _, _, _ -> fail")
+    public static <T extends Comparable<T>> void aEqb(@NotNull String name, @Nullable T a, @NotNull T b, @NotNull String msg, Object... args) {
+        if (a == null || !a.equals(b)) throw new IllegalArgumentException(FormatUtil.named(name, FormatUtil.logback(msg, args)));
     }
 
-    public static <T extends Comparable<T>> void aLtb(@Nullable T a, @Nullable T b, @NotNull CodeEnum code, Object... args) {
-        if (a == null || b == null || a.compareTo(b) >= 0) throw new BadArgsException(code, args);
+    @Contract("_, null, _, _ -> fail")
+    public static <T extends Comparable<T>> void aEqb(@NotNull String name, @Nullable T a, @NotNull T b, @NotNull CodeEnum code) {
+        if (a == null || !a.equals(b)) throw new BadArgsException(name, code);
+    }
+
+    @Contract("_, null, _, _, _ -> fail")
+    public static <T extends Comparable<T>> void aEqb(@NotNull String name, @Nullable T a, @NotNull T b, @NotNull CodeEnum code, Object... args) {
+        if (a == null || !a.equals(b)) throw new BadArgsException(name, code, args);
+    }
+
+    //
+    @Contract("_, null, _, _ -> fail")
+    public static <T extends Comparable<T>> void aGeb(@NotNull String name, @Nullable T a, @NotNull T b, @NotNull String msg) {
+        if (a == null || a.compareTo(b) < 0) throw new IllegalArgumentException(FormatUtil.named(name, msg));
+    }
+
+    @Contract("_, null, _, _, _ -> fail")
+    public static <T extends Comparable<T>> void aGeb(@NotNull String name, @Nullable T a, @NotNull T b, @NotNull String msg, Object... args) {
+        if (a == null || a.compareTo(b) < 0) throw new IllegalArgumentException(FormatUtil.named(name, FormatUtil.logback(msg, args)));
+    }
+
+    @Contract("_, null, _, _ -> fail")
+    public static <T extends Comparable<T>> void aGeb(@NotNull String name, @Nullable T a, @NotNull T b, @NotNull CodeEnum code) {
+        if (a == null || a.compareTo(b) < 0) throw new BadArgsException(name, code);
+    }
+
+    @Contract("_, null, _, _, _ -> fail")
+    public static <T extends Comparable<T>> void aGeb(@NotNull String name, @Nullable T a, @NotNull T b, @NotNull CodeEnum code, Object... args) {
+        if (a == null || a.compareTo(b) < 0) throw new BadArgsException(name, code, args);
+    }
+
+    //
+    @Contract("_, null, _, _ -> fail")
+    public static <T extends Comparable<T>> void aGtb(@NotNull String name, @Nullable T a, @NotNull T b, @NotNull String msg) {
+        if (a == null || a.compareTo(b) <= 0) throw new IllegalArgumentException(FormatUtil.named(name, msg));
+    }
+
+    @Contract("_, null, _, _, _ -> fail")
+    public static <T extends Comparable<T>> void aGtb(@NotNull String name, @Nullable T a, @NotNull T b, @NotNull String msg, Object... args) {
+        if (a == null || a.compareTo(b) <= 0) throw new IllegalArgumentException(FormatUtil.named(name, FormatUtil.logback(msg, args)));
+    }
+
+    @Contract("_, null, _, _ -> fail")
+    public static <T extends Comparable<T>> void aGtb(@NotNull String name, @Nullable T a, @NotNull T b, @NotNull CodeEnum code) {
+        if (a == null || a.compareTo(b) <= 0) throw new BadArgsException(name, code);
+    }
+
+    @Contract("_, null, _, _, _ -> fail")
+    public static <T extends Comparable<T>> void aGtb(@NotNull String name, @Nullable T a, @NotNull T b, @NotNull CodeEnum code, Object... args) {
+        if (a == null || a.compareTo(b) <= 0) throw new BadArgsException(name, code, args);
+    }
+
+    //
+    @Contract("_, null, _, _ -> fail")
+    public static <T extends Comparable<T>> void aLeb(@NotNull String name, @Nullable T a, @NotNull T b, @NotNull String msg) {
+        if (a == null || a.compareTo(b) > 0) throw new IllegalArgumentException(FormatUtil.named(name, msg));
+    }
+
+    @Contract("_, null, _, _, _ -> fail")
+    public static <T extends Comparable<T>> void aLeb(@NotNull String name, @Nullable T a, @NotNull T b, @NotNull String msg, Object... args) {
+        if (a == null || a.compareTo(b) > 0) throw new IllegalArgumentException(FormatUtil.named(name, FormatUtil.logback(msg, args)));
+    }
+
+    @Contract("_, null, _, _ -> fail")
+    public static <T extends Comparable<T>> void aLeb(@NotNull String name, @Nullable T a, @NotNull T b, @NotNull CodeEnum code) {
+        if (a == null || a.compareTo(b) > 0) throw new BadArgsException(name, code);
+    }
+
+    @Contract("_, null, _, _, _ -> fail")
+    public static <T extends Comparable<T>> void aLeb(@NotNull String name, @Nullable T a, @NotNull T b, @NotNull CodeEnum code, Object... args) {
+        if (a == null || a.compareTo(b) > 0) throw new BadArgsException(name, code, args);
+    }
+
+    //
+    @Contract("_, null, _, _ -> fail")
+    public static <T extends Comparable<T>> void aLtb(@NotNull String name, @Nullable T a, @NotNull T b, @NotNull String msg) {
+        if (a == null || a.compareTo(b) >= 0) throw new IllegalArgumentException(FormatUtil.named(name, msg));
+    }
+
+    @Contract("_, null, _, _, _ -> fail")
+    public static <T extends Comparable<T>> void aLtb(@NotNull String name, @Nullable T a, @NotNull T b, @NotNull String msg, Object... args) {
+        if (a == null || a.compareTo(b) >= 0) throw new IllegalArgumentException(FormatUtil.named(name, FormatUtil.logback(msg, args)));
+    }
+
+    @Contract("_, null, _, _ -> fail")
+    public static <T extends Comparable<T>> void aLtb(@NotNull String name, @Nullable T a, @NotNull T b, @NotNull CodeEnum code) {
+        if (a == null || a.compareTo(b) >= 0) throw new BadArgsException(name, code);
+    }
+
+    @Contract("_, null, _, _, _ -> fail")
+    public static <T extends Comparable<T>> void aLtb(@NotNull String name, @Nullable T a, @NotNull T b, @NotNull CodeEnum code, Object... args) {
+        if (a == null || a.compareTo(b) >= 0) throw new BadArgsException(name, code, args);
     }
 }
