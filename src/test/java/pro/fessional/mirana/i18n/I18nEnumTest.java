@@ -3,7 +3,6 @@ package pro.fessional.mirana.i18n;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import pro.fessional.mirana.best.AssertState;
-import pro.fessional.mirana.pain.BadStateException;
 import pro.fessional.mirana.pain.CodeException;
 
 /**

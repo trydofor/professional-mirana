@@ -1,38 +1,37 @@
 package pro.fessional.mirana.i18n;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.Locale;
 
 /**
+ * code should be fixed.
+ * hint and args can be changed.
+ *
  * @author trydofor
  * @since 2019-09-09
  */
 public interface I18nAware extends Serializable {
 
     /**
-     * get i18n code
+     * the i18n code, also template id
      */
-    @Nullable
     default String getI18nCode() {
         return null;
     }
 
     /**
-     * default message or template
+     * the default message or template (if no template by code)
      */
-    @Nullable
     default String getI18nHint() {
         return null;
     }
 
     /**
-     * get i18n args for template
+     * the args of template
      */
-    @Nullable
     default Object[] getI18nArgs() {
         return null;
     }
@@ -42,27 +41,29 @@ public interface I18nAware extends Serializable {
         return new I18nString(getI18nCode(), getI18nHint(), getI18nArgs());
     }
 
+    /**
+     * use getI18nHint() if hint is null
+     */
     @NotNull
-    default I18nString toI18nString(@Nullable String hint) {
+    default I18nString toI18nString(String hint) {
         hint = hint == null ? getI18nHint() : hint;
         return new I18nString(getI18nCode(), hint, getI18nArgs());
     }
 
+    /**
+     * use getI18nHint() if hint is null, getI18nArgs() if args is null
+     */
     @NotNull
-    default I18nString toI18nString(@Nullable String hint, @Nullable Object... args) {
+    default I18nString toI18nString(String hint, Object... args) {
         hint = hint == null ? getI18nHint() : hint;
         args = args == null ? getI18nArgs() : args;
         return new I18nString(getI18nCode(), hint, args);
     }
 
-    @NotNull
-    default I18nString toI18nStringArgs(@Nullable Object... args) {
-        args = args == null ? getI18nArgs() : args;
-        return new I18nString(getI18nCode(), getI18nHint(), args);
-    }
-
-    @Nullable
-    default String toString(@Nullable Locale locale) {
+    /**
+     * use Locale.getDefault() if locale is null
+     */
+    default String toString(Locale locale) {
         String hint = getI18nHint();
         Object[] args = getI18nArgs();
         if (hint != null && !hint.isEmpty() && args != null && args.length > 0) {
@@ -72,15 +73,12 @@ public interface I18nAware extends Serializable {
         return hint == null || hint.isEmpty() ? getI18nCode() : hint;
     }
 
-    @Nullable
-    default String toString(@Nullable Locale locale, @Nullable I18nSource source) {
-        if (source == null) return null;
+    default String toString(Locale locale, @NotNull I18nSource source) {
         return source.getMessage(getI18nCode(), getI18nArgs(), getI18nHint(), locale);
     }
 
     @FunctionalInterface
     interface I18nSource {
-        @Nullable
-        String getMessage(@Nullable String code, @Nullable Object[] args, @Nullable String hint, @Nullable Locale locale);
+        String getMessage(String code, Object[] args, String hint, Locale locale);
     }
 }

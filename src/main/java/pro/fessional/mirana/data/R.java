@@ -5,7 +5,8 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pro.fessional.mirana.i18n.I18nAware;
-import pro.fessional.mirana.i18n.I18nString;
+import pro.fessional.mirana.i18n.I18nMessage;
+import pro.fessional.mirana.i18n.I18nNotice;
 import pro.fessional.mirana.pain.CodeException;
 
 import java.beans.Transient;
@@ -18,88 +19,115 @@ import java.util.function.Supplier;
 
 /**
  * <pre>
- * Basic result container.
- * - `success` - whether the operation succeeded or failed.
- * - `message` - message (SHOULD i18n) to the user.
- * - `code` - business code. CodeEnum auto set the code.
- * - `data` - business/errors data determined by code.
+ * ## Conventions
+ *
+ * 1. if have errors -  the service is abnormal and incomplete, returns ErrorResult.
+ * 2. if no errors - the service is normal and complete, returns DataResult.
+ * 3. success - the success or failure of the service result.
+ * 3. if has message -  should tell to the user.
+ * 4. if has data - business data, regardless of success or failure.
+ * 5. if has code, business logic should be clear and detailed.
+ *
+ * ## Basic result container.
+ *
+ * - success - whether the result succeeded, default false.
+ * - data - business data in the result.
+ * - code - business code. CodeEnum auto set the code.
+ * - errors - errors thrown, no result.
+ * - message - default i18n message or template
+ * - i18nCode - i18n template code
+ * - i18nArgs - i18n template args
+ *
+ * ## serialize and @Transient
  *
  * The following are `@Transient`, should ignore for `hashCode`, `equals` and `json`
  * - `cause` - Internal error for tracking. Such as exceptions, strings, enum, etc.
- * - `i18nCode`/`i18nArgs` - I18N messages instead of `message`.
  *
  * `@Transient` and `transient` are difference,
  * - kryo - ignore transient field
  * - jackson - ignore transient field and @Transient method
  * - fastjson - ignore transient field
  *
- * NOTE-1: should NOT use `@Transient` on any serial method, or jackson will ignore this properties,
- * see POJOPropertiesCollector#_removeUnwantedProperties and POJOPropertyBuilder#anyIgnorals
+ * NOTE-1: should NOT use `@Transient` on any setter-like method, or jackson will ignore properties by name,
+ * e.g. setXxx or getXxx will ignore the xxx property, the param list are not considered,
+ * check <a href="https://github.com/FasterXML/jackson-databind/blob/bb5b3cc63a5a5594e3fe0d4fd105acffaa09b30a/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java#L1294">POJOPropertiesCollector#_removeUnwantedProperties</a>
+ * and <a href="https://github.com/FasterXML/jackson-databind/blob/bb5b3cc63a5a5594e3fe0d4fd105acffaa09b30a/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertyBuilder.java#L1170">POJOPropertyBuilder#anyIgnorals</a>
  *
  * NOTE-2: When using the`cast*` method, be careful to avoid the ClassCastException.
- *
  *
  * </pre>
  *
  * @param <T> Data Type
  */
-public class R<T> implements DataResult<T>, ErrorResult, I18nAware {
+public class R<T> extends I18nMessage implements DataResult<T>, ErrorResult, I18nAware {
 
     private static final long serialVersionUID = 19791023L;
 
-    protected boolean success;
-    protected String message;
-    protected String code;
+    protected boolean success = false;
     protected Object data;
-    protected List<Err> errors;
+    protected String code;
+    protected List<I18nNotice> errors;
 
     // @Transient by Getter, not field, because kryo use this
     // fastjson do NOT work on @Transient
     protected Object cause = null;
-    protected String i18nCode = null;
-    protected Object[] i18nArgs = null;
 
     public R() {
-        this.success = false;
-        this.message = null;
-        this.code = null;
-        this.data = null;
     }
 
     public R(boolean success) {
-        this.success = success;
-        this.message = null;
-        this.code = null;
-        this.data = null;
+        this(success, null, (String)null);
     }
 
-    public R(Err err) {
-        this.success = false;
-        this.message = null;
-        this.code = null;
-        this.data = null;
+    public R(boolean success, T data) {
+        this(success, data,  (String) null);
+    }
+
+    // ref to this
+    public R(boolean success, T data, String code) {
+        this.success = success;
+        this.data = data;
+        this.code = code;
+    }
+
+    public R(boolean success, T data, String code, String message) {
+        this(success, data, code);
+        super.setMessage(message);
+    }
+
+    public R(boolean success, T data, String code, String message, String i18nCode) {
+        this(success, data, code);
+        super.setMessage(message,i18nCode);
+    }
+
+    public R(boolean success, T data, String code, String message, String i18nCode, Object... i18nArgs) {
+        this(success, data, code);
+        super.setMessage(message,i18nCode, i18nArgs);
+    }
+
+    public R(boolean success, T data, String code, I18nAware message) {
+        this(success, data, code);
+        super.setMessage(message);
+    }
+
+    public R(boolean success, T data, I18nAware message) {
+        this(success, data);
+        super.setMessage(message);
+    }
+
+    public R(boolean success, T data, @NotNull CodeEnum code) {
+        this(success, data);
+        setCodeMessage(code);
+    }
+
+    public R(@NotNull I18nNotice err) {
+        this(false);
         this.errors = Collections.singletonList(err);
     }
 
-    public R(List<Err> errs) {
-        this.success = false;
-        this.message = null;
-        this.code = null;
-        this.data = null;
+    public R(@NotNull List<I18nNotice> errs) {
+        this(false);
         this.errors = errs;
-    }
-
-    protected R(boolean success, String message, String code, T data) {
-        this.success = success;
-        this.message = message;
-        this.code = code;
-        this.data = data;
-    }
-
-    protected R(boolean success, CodeEnum code, T data) {
-        this.success = success;
-        this.data = data;
-        setCode(code);
     }
 
     @Override
@@ -113,212 +141,6 @@ public class R<T> implements DataResult<T>, ErrorResult, I18nAware {
         return this;
     }
 
-    @Nullable
-    @Override
-    public String getMessage() {
-        return message;
-    }
-
-    @Contract("_->this")
-    public R<T> setMessage(String message) {
-        this.message = message;
-        return this;
-    }
-
-    @Transient
-    @Contract("_->this")
-    public R<T> setMessageIfOk(String message) {
-        return success ? setMessage(message) : this;
-    }
-
-    @Transient
-    @Contract("_->this")
-    public R<T> setMessageIfNg(String message) {
-        return success ? this : setMessage(message);
-    }
-
-    @Transient
-    @Contract("_->this")
-    public R<T> setMessageIfOk(@NotNull Supplier<String> message) {
-        return success ? setMessage(message.get()) : this;
-    }
-
-    @Transient
-    @Contract("_->this")
-    public R<T> setMessageIfNg(@NotNull Supplier<String> message) {
-        return success ? this : setMessage(message.get());
-    }
-
-    /**
-     * set i18nCode and i18nArgs.
-     * replace code and message only if it absent
-     */
-    @Transient
-    @Contract("_,_->this")
-    public R<T> setI18nMessage(CodeEnum ce, Object... arg) {
-        return setI18nMessage(null, ce, arg);
-    }
-
-    /**
-     * <pre>
-     * set i18nCode and i18nArgs.
-     * replace code and message if replace is
-     * - null - absent
-     * - true - both
-     * - false - none
-     * </pre>
-     */
-    @Transient
-    @Contract("_,_,_->this")
-    public R<T> setI18nMessage(Boolean replace, CodeEnum ce, Object... arg) {
-        if (replace == null) {
-            if (this.code == null) {
-                this.code = ce.getCode();
-            }
-            if (this.message == null) {
-                this.message = ce.getHint();
-            }
-        }
-        else if (replace) {
-            this.code = ce.getCode();
-            this.message = ce.getHint();
-        }
-        this.i18nCode = ce.getI18nCode();
-        this.i18nArgs = arg;
-        return this;
-    }
-
-    @Transient
-    @Contract("_,_->this")
-    public R<T> setI18nMessageIfOk(CodeEnum ce, Object... arg) {
-        return success ? setI18nMessage(null, ce, arg) : this;
-    }
-
-    @Transient
-    @Contract("_,_->this")
-    public R<T> setI18nMessageIfNg(CodeEnum ce, Object... arg) {
-        return success ? this : setI18nMessage(null, ce, arg);
-    }
-
-    @Contract("_,_,_->this")
-    public R<T> setI18nMessageIfOk(Boolean replace, CodeEnum ce, Object... arg) {
-        return success ? setI18nMessage(replace, ce, arg) : this;
-    }
-
-    @Transient
-    @Contract("_,_,_->this")
-    public R<T> setI18nMessageIfNg(Boolean replace, CodeEnum ce, Object... arg) {
-        return success ? this : setI18nMessage(replace, ce, arg);
-    }
-
-    /**
-     * set i18nCode and i18nArgs.
-     * replace message only if it absent
-     */
-    @Transient
-    @Contract("_->this")
-    public R<T> setI18nMessage(I18nAware message) {
-        return setI18nMessage(null, message);
-    }
-
-    /**
-     * <pre>
-     * set i18nCode and i18nArgs.
-     * replace code and message if replace is
-     * - null - absent
-     * - true - both
-     * - false - none
-     * </pre>
-     */
-    @Transient
-    @Contract("_,_->this")
-    public R<T> setI18nMessage(Boolean replace, I18nAware message) {
-        if (message instanceof I18nString) {
-            if (replace == null) {
-                if (this.message == null) {
-                    this.message = ((I18nString) message).getHint();
-                }
-            }
-            else if (replace) {
-                this.message = ((I18nString) message).getHint();
-            }
-        }
-
-        this.i18nCode = message.getI18nCode();
-        this.i18nArgs = message.getI18nArgs();
-
-        return this;
-    }
-
-    @Transient
-    @Contract("_->this")
-    public R<T> setI18nMessageIfOk(I18nAware message) {
-        return success ? setI18nMessage(null, message) : this;
-    }
-
-    @Transient
-    @Contract("_->this")
-    public R<T> setI18nMessageIfNg(I18nAware message) {
-        return success ? this : setI18nMessage(null, message);
-    }
-
-    @Transient
-    @Contract("_->this")
-    public R<T> setI18nMessageIfOk(Supplier<I18nAware> message) {
-        return success ? setI18nMessage(null, message.get()) : this;
-    }
-
-    @Transient
-    @Contract("_->this")
-    public R<T> setI18nMessageIfNg(Supplier<I18nAware> message) {
-        return success ? this : setI18nMessage(null, message.get());
-    }
-
-    @Transient
-    @Contract("_,_->this")
-    public R<T> setI18nMessageIfOk(Boolean replace, I18nAware message) {
-        return success ? setI18nMessage(replace, message) : this;
-    }
-
-    @Transient
-    @Contract("_,_->this")
-    public R<T> setI18nMessageIfNg(Boolean replace, I18nAware message) {
-        return success ? this : setI18nMessage(replace, message);
-    }
-
-    @Transient
-    @Contract("_,_->this")
-    public R<T> setI18nMessageIfOk(Boolean replace, Supplier<I18nAware> message) {
-        return success ? setI18nMessage(replace, message.get()) : this;
-    }
-
-    @Transient
-    @Contract("_,_->this")
-    public R<T> setI18nMessageIfNg(Boolean replace, Supplier<I18nAware> message) {
-        return success ? this : setI18nMessage(replace, message.get());
-    }
-
-    @Transient
-    @Contract("_,_->this")
-    public R<T> setI18nMessage(String i18nCode, Object... args) {
-        this.i18nCode = i18nCode;
-        i18nArgs = args;
-        return this;
-    }
-
-    @Transient
-    @Contract("_,_->this")
-    public R<T> setI18nMessageIfOk(String i18nCode, Object... arg) {
-        return success ? setI18nMessage(i18nCode, arg) : this;
-    }
-
-    @Transient
-    @Contract("_,_->this")
-    public R<T> setI18nMessageIfNg(String i18nCode, Object... arg) {
-        return success ? this : setI18nMessage(i18nCode, arg);
-    }
-
-    @Nullable
     @Override
     @SuppressWarnings("unchecked")
     public T getData() {
@@ -332,43 +154,6 @@ public class R<T> implements DataResult<T>, ErrorResult, I18nAware {
     }
 
     @Override
-    @Nullable
-    public List<Err> getErrors() {
-        return errors;
-    }
-
-    @Contract("_->this")
-    public R<T> setErrors(List<Err> errors) {
-        this.errors = errors;
-        return this;
-    }
-
-    @Transient
-    @Contract("_->this")
-    public R<T> setDataIfOk(T data) {
-        return success ? setData(data) : this;
-    }
-
-    @Transient
-    @Contract("_->this")
-    public R<T> setDataIfNg(T data) {
-        return success ? this : setData(data);
-    }
-
-    @Transient
-    @Contract("_->this")
-    public R<T> setDataIfOk(@NotNull Supplier<T> data) {
-        return success ? setData(data.get()) : this;
-    }
-
-    @Transient
-    @Contract("_->this")
-    public R<T> setDataIfNg(@NotNull Supplier<T> data) {
-        return success ? this : setData(data.get());
-    }
-
-    @Override
-    @Nullable
     public String getCode() {
         return code;
     }
@@ -379,52 +164,16 @@ public class R<T> implements DataResult<T>, ErrorResult, I18nAware {
         return this;
     }
 
-    @Transient
-    @Contract("_->this")
-    public R<T> setCodeIfOk(String code) {
-        return success ? setCode(code) : this;
+    @Override
+    @Nullable
+    public List<I18nNotice> getErrors() {
+        return errors;
     }
 
-    @Transient
     @Contract("_->this")
-    public R<T> setCodeIfNg(String code) {
-        return success ? this : setCode(code);
-    }
-
-    // @Transient // do NOT Transient, or jackson will ignore code field
-    @Contract("_->this")
-    public R<T> setCode(CodeEnum code) {
-        if (code != null) {
-            this.code = code.getCode();
-            this.message = code.getHint();
-            this.i18nCode = code.getI18nCode();
-            this.i18nArgs = code.getI18nArgs();
-        }
+    public R<T> setErrors(List<I18nNotice> errors) {
+        this.errors = errors;
         return this;
-    }
-
-    @Transient
-    @Contract("_->this")
-    public R<T> setCodeIfOk(CodeEnum code) {
-        return success ? setCode(code) : this;
-    }
-
-    @Transient
-    @Contract("_->this")
-    public R<T> setCodeIfNg(CodeEnum code) {
-        return success ? this : setCode(code);
-    }
-
-    @Transient
-    @Contract("_->this")
-    public R<T> setCodeIfOk(@NotNull Supplier<CodeEnum> code) {
-        return success ? setCode(code.get()) : this;
-    }
-
-    @Transient
-    @Contract("_->this")
-    public R<T> setCodeIfNg(@NotNull Supplier<CodeEnum> code) {
-        return success ? this : setCode(code.get());
     }
 
     @Transient
@@ -452,38 +201,95 @@ public class R<T> implements DataResult<T>, ErrorResult, I18nAware {
         return this;
     }
 
-    @Transient
-    @Nullable
-    @Override
-    public String getI18nCode() {
-        return i18nCode;
+    @Contract("_->this")
+    public R<T> setDataIfOk(T data) {
+        return success ? setData(data): this;
     }
 
-    @Transient
-    @Nullable
-    @Override
-    public Object[] getI18nArgs() {
-        return i18nArgs;
+    @Contract("_->this")
+    public R<T> setDataIfNg(T data) {
+        return success ? this : setData(data);
     }
 
-    @Transient
-    @Nullable
-    @Override
-    public String getI18nHint() {
-        return message;
+    @Contract("_->this")
+    public R<T> setDataIfOk(@NotNull Supplier<T> data) {
+        return success ? setData(data.get()) : this;
     }
 
-    /**
-     * force to cast to subclass
-     *
-     * @param <S> subclass type
-     * @param <D> data type
-     * @throws ClassCastException if type not match
-     */
-    @Contract("->this")
+    @Contract("_->this")
+    public R<T> setDataIfNg(@NotNull Supplier<T> data) {
+        return success ? this : setData(data.get());
+    }
+
+    @Contract("_->this")
+    public R<T> setCodeIfOk(String code) {
+        return success ? setCode(code) : this;
+    }
+
+    @Contract("_->this")
+    public R<T> setCodeIfNg(String code) {
+        return success ? this : setCode(code);
+    }
+
+    @Contract("_->this")
+    public R<T> setCodeIfOk(@NotNull Supplier<String> code) {
+        return success ? setCode(code.get()) : this;
+    }
+
+    @Contract("_->this")
+    public R<T> setCodeIfNg(@NotNull Supplier<String> code) {
+        return success ? this : setCode(code.get());
+    }
+
     @SuppressWarnings("unchecked")
-    public <S extends R<D>, D> S castType() {
-        return (S) this;
+    @Contract("_->this")
+    public R<T> setMessageIfOk(String message) {
+        return success ? (R<T>) setMessage(message) : this;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Contract("_->this")
+    public R<T> setMessageIfNg(String message) {
+        return success ? this : (R<T>) setMessage(message);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Contract("_->this")
+    public R<T> setMessageIfOk(@NotNull Supplier<String> message) {
+        return success ? (R<T>) setMessage(message.get()) : this;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Contract("_->this")
+    public R<T> setMessageIfNg(@NotNull Supplier<String> message) {
+        return success ? this : (R<T>) setMessage(message.get());
+    }
+
+    @Contract("_->this")
+    public R<T> setCodeMessage(@NotNull CodeEnum code) {
+        this.code = code.getCode();
+        super.setMessage(code);
+        return this;
+    }
+
+    @Contract("_->this")
+    public R<T> setCodeMessageIfOk(CodeEnum code) {
+        return success ? setCodeMessage(code) : this;
+    }
+
+    @Contract("_->this")
+    public R<T> setCodeMessageIfNg(CodeEnum code) {
+        return success ? this : setCodeMessage(code);
+    }
+
+    @Contract("_->this")
+    public R<T> setCodeMessageIfOk(@NotNull Supplier<CodeEnum> code) {
+        return success ? setCodeMessage(code.get()) : this;
+    }
+
+    @Contract("_->this")
+    public R<T> setCodeMessageIfNg(@NotNull Supplier<CodeEnum> code) {
+        return success ? this : setCodeMessage(code.get());
     }
 
     /**
@@ -512,91 +318,114 @@ public class R<T> implements DataResult<T>, ErrorResult, I18nAware {
     @Contract("_->this")
     @SuppressWarnings("unchecked")
     public <S extends R<D>, D> S castData(Function<T, D> fun) {
-        this.data = fun.apply((T) data);
-        return (S) this;
-    }
-
-    @Override
-    public String toString() {
-        return "R{" +
-               "success=" + success +
-               ", message='" + message + '\'' +
-               ", code='" + code + '\'' +
-               ", data=" + data +
-               ", errors=" + errors +
-               ", cause=" + cause +
-               ", i18nCode='" + i18nCode + '\'' +
-               ", i18nArgs=" + Arrays.toString(i18nArgs) +
-               '}';
+        return castData(fun.apply((T) data));
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
         R<?> r = (R<?>) o;
-        return isSuccess() == r.isSuccess()
-               && Objects.equals(getMessage(), r.getMessage())
-               && Objects.equals(getCode(), r.getCode())
-               && Objects.equals(getData(), r.getData())
-               && Objects.equals(getErrors(), r.getErrors());
+        return success == r.success
+               && Objects.equals(data, r.data)
+               && Objects.equals(code, r.code)
+               && Objects.equals(errors, r.errors);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(isSuccess(), getMessage(), getCode(), getData(), getErrors());
+        return Objects.hash(super.hashCode(), success, data, code, errors);
+    }
+
+    @Override public String toString() {
+        return "R{" +
+               "success=" + success +
+               ", data=" + data +
+               ", code='" + code + '\'' +
+               ", errors=" + errors +
+               ", cause=" + cause +
+               ", message='" + message + '\'' +
+               ", i18nCode='" + i18nCode + '\'' +
+               ", i18nArgs=" + Arrays.toString(i18nArgs) +
+               "} ";
     }
 
     // /////////////////////
 
-    public static <T> R<T> orMessage(boolean success, String okMessage, String ngMessage) {
-        String message = success ? okMessage : ngMessage;
-        return new R<>(success, message, null, null);
-    }
-
-    public static <T> R<T> orCode(boolean success, CodeEnum okCode, CodeEnum ngCode) {
-        CodeEnum code = success ? okCode : ngCode;
-        return new R<>(success, code, null);
+    public static <T> R<T> orData(boolean success, T okData, T ngData) {
+        T data = success ? okData : ngData;
+        return new R<>(success, data, null, (String) null);
     }
 
     public static <T> R<T> orCode(boolean success, String okCode, String ngCode) {
         String code = success ? okCode : ngCode;
-        return new R<>(success, null, code, null);
+        return new R<>(success, null, code, (String) null);
     }
 
-    public static <T> R<T> orData(boolean success, T okData, T ngData) {
-        T data = success ? okData : ngData;
-        return new R<>(success, null, null, data);
+    public static <T> R<T> orCode(boolean success, @NotNull CodeEnum okCode, @NotNull CodeEnum ngCode) {
+        CodeEnum code = success ? okCode : ngCode;
+        return new R<>(success, null, code.getCode(), (String) null);
+    }
+
+    public static <T> R<T> orMessage(boolean success, String okMessage, String ngMessage) {
+        String message = success ? okMessage : ngMessage;
+        return new R<>(success, null, null, message);
+    }
+
+    public static <T> R<T> orCodeMessage(boolean success, @NotNull CodeEnum okCode, @NotNull CodeEnum ngCode) {
+        CodeEnum code = success ? okCode : ngCode;
+        return new R<>(success, null, code);
     }
 
     // /////////////////////
 
     public static <T> R<T> of(boolean success) {
-        return new R<>(success, null, null, null);
+        return new R<>(success, null, null, (String) null);
     }
 
-    public static <T> R<T> of(boolean success, String message) {
-        return new R<>(success, message, null, null);
+    public static <T> R<T> of(boolean success, T data) {
+        return new R<>(success, data, null, (String) null);
     }
 
-    public static <T> R<T> of(boolean success, CodeEnum code) {
-        return new R<>(success, code, null);
+    public static <T> R<T> of(boolean success, T data, String code) {
+        return new R<>(success, data, code, (String) null);
     }
 
-    public static <T> R<T> of(boolean success, String message, String code) {
-        return new R<>(success, message, code, null);
+    public static <T> R<T> of(boolean success, T data, String code, String message) {
+        return new R<>(success, data, code, message);
     }
 
-    public static <T> R<T> of(boolean success, String message, String code, T data) {
-        return new R<>(success, message, code, data);
+    public static <T> R<T> of(boolean success, T data, String code, I18nAware message) {
+        return new R<>(success, data, code, message);
     }
 
-    public static <T> R<T> of(boolean success, CodeEnum code, T data) {
-        return new R<>(success, code, data);
+    public static <T> R<T> of(boolean success, T data, I18nAware message) {
+        return new R<>(success, data, message);
     }
 
-    public static <T> R<T> of(boolean success, CodeEnum code, String message, T data) {
-        return new R<>(success, code, data).setMessage(message);
+    public static <T> R<T> of(boolean success, T data, CodeEnum code) {
+        return new R<>(success, data, code);
+    }
+
+    public static <T> R<T> ofCode(boolean success, String code) {
+        return new R<>(success, null, code, (String) null);
+    }
+
+    public static <T> R<T> ofCode(boolean success, @NotNull CodeEnum code) {
+        return new R<>(success, null, code.getCode(), (String) null);
+    }
+
+    public static <T> R<T> ofMessage(boolean success, String message) {
+        return new R<>(success, null, null, message);
+    }
+
+    public static <T> R<T> ofMessage(boolean success, I18nAware message) {
+        return new R<>(success, null, message);
+    }
+
+    public static <T> R<T> ofCodeMessage(boolean success, @NotNull CodeEnum code) {
+        return new R<>(success, null, code);
     }
 
     // /////////////////
@@ -607,47 +436,51 @@ public class R<T> implements DataResult<T>, ErrorResult, I18nAware {
     }
 
     public static <T> R<T> ok() {
-        return new R<>(true, null, null, null);
+        return R.of(true);
     }
 
-    public static <T> R<T> ok(String message) {
-        return new R<>(true, message, null, null);
+    public static <T> R<T> ok(T data) {
+        return R.of(true, data);
     }
 
-    public static <T> R<T> ok(CodeEnum code) {
-        return new R<>(true, code, null);
+    public static <T> R<T> ok(T data, String code) {
+        return R.of(true, data, code);
     }
 
-    public static <T> R<T> ok(String message, T data) {
-        return new R<>(true, message, null, data);
+    public static <T> R<T> ok(T data, String code, String message) {
+        return R.of(true, data, code, message);
     }
 
-    public static <T> R<T> ok(String message, String code, T data) {
-        return new R<>(true, message, code, data);
+    public static <T> R<T> ok(T data, String code, I18nAware message) {
+        return R.of(true, data, code, message);
     }
 
-    public static <T> R<T> ok(CodeEnum code, T data) {
-        return new R<>(true, code, data);
+    public static <T> R<T> ok(T data, I18nAware code) {
+        return R.of(true, data, code);
+    }
+
+    public static <T> R<T> ok(T data, CodeEnum code) {
+        return R.of(true, data, code);
     }
 
     public static <T> R<T> okCode(String code) {
-        return new R<>(true, null, code, null);
+        return R.ofCode(true, code);
     }
 
-    public static <T> R<T> okCode(String code, String message) {
-        return new R<>(true, message, code, null);
+    public static <T> R<T> okCode(@NotNull CodeEnum code) {
+        return R.ofCode(true, code);
     }
 
-    public static <T> R<T> okCode(CodeEnum code, String message) {
-        return new R<T>(true, code, null).setMessage(message);
+    public static <T> R<T> okMessage(String message) {
+        return R.ofMessage(true, message);
     }
 
-    public static <T> R<T> okData(T data) {
-        return new R<>(true, null, null, data);
+    public static <T> R<T> okMessage(I18nAware message) {
+        return R.ofMessage(true, message);
     }
 
-    public static <T> R<T> okData(T data, String code) {
-        return new R<>(true, null, code, data);
+    public static <T> R<T> okCodeMessage(@NotNull CodeEnum code) {
+        return new R<>(true, null, code);
     }
 
     // /////////////////
@@ -658,201 +491,97 @@ public class R<T> implements DataResult<T>, ErrorResult, I18nAware {
     }
 
     public static <T> R<T> ng() {
-        return new R<>(false, null, null, null);
+        return R.of(false);
     }
 
-    public static <T> R<T> ng(String message) {
-        return new R<>(false, message, null, null);
+    public static <T> R<T> ng(T data) {
+        return R.of(false, data);
     }
 
-    public static <T> R<T> ng(CodeEnum code) {
-        return new R<>(false, code, null);
+    public static <T> R<T> ng(T data, String code) {
+        return R.of(false, data, code);
     }
 
-    public static <T> R<T> ng(String message, String code) {
-        return new R<>(false, message, code, null);
+    public static <T> R<T> ng(T data, String code, String message) {
+        return R.of(false, data, code, message);
     }
 
-    public static <T> R<T> ng(String message, String code, T data) {
-        return new R<>(false, message, code, data);
+    public static <T> R<T> ng(T data, String code, I18nAware message) {
+        return R.of(false, data, code, message);
     }
 
-    public static <T> R<T> ng(CodeEnum code, T data) {
-        return new R<>(false, code, data);
+    public static <T> R<T> ng(T data, I18nAware code) {
+        return R.of(false, data, code);
+    }
+
+    public static <T> R<T> ng(T data, CodeEnum code) {
+        return R.of(false, data, code);
     }
 
     public static <T> R<T> ngCode(String code) {
-        return new R<>(false, null, code, null);
+        return R.ofCode(false, code);
     }
 
-    public static <T> R<T> ngCode(String code, String message) {
-        return new R<>(false, message, code, null);
+    public static <T> R<T> ngCode(@NotNull CodeEnum code) {
+        return R.ofCode(false, code);
     }
 
-    public static <T> R<T> ngCode(CodeEnum code, String message) {
-        return new R<T>(false, code, null).setMessage(message);
+    public static <T> R<T> ngMessage(String message) {
+        return R.ofMessage(false, message);
     }
 
-    public static <T> R<T> ngData(T data) {
-        return new R<>(false, null, null, data);
+    public static <T> R<T> ngMessage(I18nAware message) {
+        return R.ofMessage(false, message);
     }
 
-    public static <T> R<T> ngData(T data, String code) {
-        return new R<>(false, null, code, data);
+    public static <T> R<T> ngCodeMessage(@NotNull CodeEnum code) {
+        return new R<>(false, null, code);
     }
 
-    public static <T> R<T> ngData(T data, Throwable t) {
-        final R<T> r = ng(t);
-        return r.setData(data);
-    }
-
-    public static <T> R<T> ngData(T data, CodeEnum code) {
-        return new R<>(false, code, data);
-    }
-
-    public static <T> R<T> ng(Throwable t) {
-        return ng(t, null, null);
-    }
-
-    public static <T> R<T> ng(Throwable t, String code) {
-        return ng(t, code, null);
-    }
-
-    public static <T> R<T> ng(Throwable t, String code, String message) {
-        if (message == null) message = t.getMessage();
-        R<T> tr = new R<>(false, message, code, null);
-        tr.cause = t;
+    public static <T> R<T> ngCause(@NotNull Throwable t) {
+        R<T> r = new R<>(false);
+        r.setCause(t);
+        r.setMessage(t.getMessage());
         if (t instanceof CodeException) {
             CodeException ce = (CodeException) t;
-            if (code == null) tr.code = ce.getCode();
-            tr.i18nCode = ce.getI18nCode();
-            tr.i18nArgs = ce.getI18nArgs();
+            r.code = ce.getCode();
+            r.i18nCode = ce.getI18nCode();
+            r.i18nArgs = ce.getI18nArgs();
         }
-        return tr;
+        return r;
     }
 
-    public static <T> R<T> ng(Throwable t, CodeEnum code) {
-        R<T> tr = new R<>(false, code, null);
-        tr.cause = t;
-        return tr;
+    public static <T> R<T> ngCause(@NotNull Throwable t, @NotNull String code) {
+        R<T> r = ngCause(t);
+        r.setCode(code);
+        return r;
     }
 
-    // /////////////////
-
-    public static <T, S extends R<T>> S ng(S sr) {
-        sr.setSuccess(false);
-        return sr;
+    public static <T> R<T> ngCause(@NotNull Throwable t, @NotNull String code, String message) {
+        R<T> r = ngCause(t);
+        r.setCode(code);
+        r.setMessage(message);
+        return r;
     }
 
-    public static <T, S extends R<T>> S ng(S sr, String message) {
-        sr.setSuccess(false);
-        sr.setMessage(message);
-        return sr;
+    public static <T> R<T> ngCause(@NotNull Throwable t, @NotNull String code, I18nAware message) {
+        R<T> r = ngCause(t);
+        r.setCode(code);
+        r.setMessage(message);
+        return r;
     }
 
-    public static <T, S extends R<T>> S ng(S sr, CodeEnum code) {
-        sr.setSuccess(false);
-        sr.setCode(code);
-        return sr;
+    public static <T> R<T> ngCause(Throwable t, I18nAware message) {
+        R<T> r = ngCause(t);
+        r.setMessage(message);
+        return r;
     }
 
-    public static <T, S extends R<T>> S ng(S sr, String message, String code) {
-        sr.setSuccess(false);
-        sr.setMessage(message);
-        sr.setCode(code);
-        return sr;
+    public static <T> R<T> ngCause(Throwable t, CodeEnum code) {
+        R<T> r = ngCause(t);
+        r.setCodeMessage(code);
+        return r;
     }
-
-    public static <T, S extends R<T>> S ng(S sr, String message, String code, T data) {
-        sr.setSuccess(false);
-        sr.setMessage(message);
-        sr.setCode(code);
-        sr.setData(data);
-        return sr;
-    }
-
-    public static <T, S extends R<T>> S ng(S sr, CodeEnum code, T data) {
-        sr.setSuccess(false);
-        sr.setCode(code);
-        sr.setData(data);
-        return sr;
-    }
-
-    public static <T, S extends R<T>> S ngCode(S sr, String code) {
-        sr.setSuccess(false);
-        sr.setCode(code);
-        return sr;
-    }
-
-    public static <T, S extends R<T>> S ngCode(S sr, String code, String message) {
-        sr.setSuccess(false);
-        sr.setMessage(message);
-        sr.setCode(code);
-        return sr;
-    }
-
-    public static <T, S extends R<T>> S ngCode(S sr, CodeEnum code, String message) {
-        sr.setSuccess(false);
-        sr.setCode(code);
-        sr.setMessage(message);
-        return sr;
-    }
-
-    public static <T, S extends R<T>> S ngData(S sr, T data) {
-        sr.setSuccess(false);
-        sr.setData(data);
-        return sr;
-    }
-
-    public static <T, S extends R<T>> S ngData(S sr, T data, String code) {
-        sr.setSuccess(false);
-        sr.setCode(code);
-        sr.setData(data);
-        return sr;
-    }
-
-    public static <T, S extends R<T>> S ngData(S sr, T data, Throwable t) {
-        ng(sr, t, null, null);
-        sr.setData(data);
-        return sr;
-    }
-
-    public static <T, S extends R<T>> S ngData(S sr, T data, CodeEnum code) {
-        sr.setSuccess(false);
-        sr.setCode(code);
-        sr.setData(data);
-        return sr;
-    }
-
-    public static <T, S extends R<T>> S ng(S sr, Throwable t) {
-        return ng(sr, t, null, null);
-    }
-
-    public static <T, S extends R<T>> S ng(S sr, Throwable t, String code) {
-        return ng(sr, t, code, null);
-    }
-
-    public static <T, S extends R<T>> S ng(S sr, Throwable t, String code, String message) {
-        if (message == null) message = t.getMessage();
-        sr.setMessage(message);
-        sr.setCode(code);
-        sr.setCause(t);
-
-        if (t instanceof CodeException) {
-            CodeException ce = (CodeException) t;
-            if (code == null) sr.setCode(ce.getCode());
-            sr.setI18nMessage(ce.getI18nCode(), ce.getI18nArgs());
-        }
-        return sr;
-    }
-
-    public static <T, S extends R<T>> S ng(S sr, Throwable t, CodeEnum code) {
-        sr.setSuccess(false);
-        sr.setCause(t);
-        sr.setCode(code);
-        return sr;
-    }
-
 
     // /////////////////////
 
@@ -861,86 +590,46 @@ public class R<T> implements DataResult<T>, ErrorResult, I18nAware {
      */
     public static class Immutable<T> extends R<T> {
 
-        public static final R<Void> OK = new Immutable<>(true, null, null, null);
-        public static final R<Void> NG = new Immutable<>(false, null, null, null);
-
+        public static final R<Void> OK = new Immutable<>(true);
+        public static final R<Void> NG = new Immutable<>(false);
 
         public Immutable(boolean success) {
             super(success);
         }
 
-        public Immutable(boolean success, String message, String code, T data) {
-            super(success, message, code, data);
-        }
-
-        public Immutable(boolean success, CodeEnum code, T data) {
-            super(success, code, data);
-        }
-
-        public Immutable(boolean success, String message, String code, T data, Object cause, String i18nCode, Object... i18nArgs) {
-            super(success, message, code, data);
-            this.cause = cause;
-            this.i18nCode = i18nCode;
-            this.i18nArgs = i18nArgs;
-        }
-
-        public Immutable(boolean success, CodeEnum code, T data, Object cause, Object... i18nArgs) {
-            super(success, code, data);
-            this.cause = cause;
-            this.i18nArgs = i18nArgs;
-        }
-
-        @Override
-        public R<T> setSuccess(boolean success) {
+        @Override public <S extends R<D>, D> S castData(D data) {
             throw new UnsupportedOperationException("Immutable");
         }
 
-        @Override
-        public R<T> setMessage(String message) {
+        @Override public R<T> setCause(Object cause) {
             throw new UnsupportedOperationException("Immutable");
         }
 
-        @Override
-        public R<T> setData(T data) {
+        @Override public R<T> setCode(String code) {
             throw new UnsupportedOperationException("Immutable");
         }
 
-        @Override
-        public R<T> setCode(String code) {
+        @Override public R<T> setData(T data) {
             throw new UnsupportedOperationException("Immutable");
         }
 
-        @Override
-        public R<T> setCode(CodeEnum code) {
+        @Override public R<T> setErrors(List<I18nNotice> errors) {
             throw new UnsupportedOperationException("Immutable");
         }
 
-        @Override
-        public R<T> setCause(Object cause) {
+        @Override public R<T> setSuccess(boolean success) {
             throw new UnsupportedOperationException("Immutable");
         }
 
-        @Override
-        public R<T> setI18nMessage(Boolean replace, CodeEnum ce, Object... arg) {
+        @Override public R<T> setI18nArgs(Object[] i18nArgs) {
             throw new UnsupportedOperationException("Immutable");
         }
 
-        @Override
-        public R<T> setI18nMessage(Boolean replace, I18nAware message) {
+        @Override public R<T> setI18nCode(String i18nCode) {
             throw new UnsupportedOperationException("Immutable");
         }
 
-        @Override public R<T> setErrors(List<Err> errors) {
-            throw new UnsupportedOperationException("Immutable");
-        }
-
-        @Override
-        public <S extends R<X>, X> S castData(X data) {
-            throw new UnsupportedOperationException("Immutable");
-        }
-
-        @Override
-        public <S extends R<D>, D> S castData(Function<T, D> fun) {
+        @Override public R<T> setMessage(String message) {
             throw new UnsupportedOperationException("Immutable");
         }
     }

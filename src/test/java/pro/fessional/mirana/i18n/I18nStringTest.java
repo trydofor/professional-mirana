@@ -17,11 +17,11 @@ class I18nStringTest {
     @Test
     void test() {
         I18nString s1 = new I18nString("200");
-        assertEquals("200", s1.getCode());
         assertEquals("200", s1.getI18nCode());
-        assertEquals("", s1.getHint());
+        assertEquals("200", s1.getI18nCode());
         assertEquals("", s1.getI18nHint());
-        assertEquals(0, s1.getArgs().length);
+        assertEquals("", s1.getI18nHint());
+        assertEquals(0, s1.getI18nArgs().length);
         assertEquals(0, s1.getI18nArgs().length);
         assertFalse(s1.isEmpty());
         I18nString s2 = new I18nString("200", "name");
