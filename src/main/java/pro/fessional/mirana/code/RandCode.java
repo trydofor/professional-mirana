@@ -241,12 +241,12 @@ public abstract class RandCode {
             if (chars == null) chars = Null.Chars;
 
             int rlen = range.length;
-            AssertArgs.isTrue("rlen", rlen % 2 == 0, "range must be [min,max]*");
+            AssertArgs.isTrue(rlen % 2 == 0, "range", "range must be [min,max]*");
             LinkedHashMap<String, char[]> rangeUniq = new LinkedHashMap<>(rlen);
             for (int i = 0; i < rlen; i += 2) {
                 char max = range[i + 1];
                 char min = range[i];
-                AssertArgs.isTrue("max", max >= min, "need max >= min in range");
+                AssertArgs.isTrue(max >= min, "max", "need max >= min in range");
                 rangeUniq.put(min + ":" + max, new char[]{ min, max });
             }
 
