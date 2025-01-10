@@ -528,7 +528,7 @@ public class BeanVisitor {
         }
 
         /**
-         * new instance, eg. Spring BeanUtils.instantiateClass
+         * new instance, e.g. Spring BeanUtils.instantiateClass
          */
         @NotNull
         @SuppressWarnings("unchecked")

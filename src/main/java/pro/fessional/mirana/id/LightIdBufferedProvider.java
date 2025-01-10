@@ -226,7 +226,7 @@ public class LightIdBufferedProvider implements LightIdProvider {
     /**
      * Preload all LightId's in the block, doing this once at startup is enough.
      *
-     * @param block Id's block
+     * @param block id's block
      */
     public void preload(int block) {
         List<Segment> segments = loader.preload(block);
@@ -239,8 +239,8 @@ public class LightIdBufferedProvider implements LightIdProvider {
     /**
      * clean the error, and reset the counter.
      *
-     * @param name  Id's name
-     * @param block Id's block
+     * @param name  id's name
+     * @param block id's block
      */
     public void cleanError(@NotNull String name, int block) {
         load(block, name).handleError(null);

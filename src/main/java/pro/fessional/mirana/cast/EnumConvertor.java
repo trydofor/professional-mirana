@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * Supports enum full-path fuzzy and exact serialization, with a default separator of `#`.
- * eg. pro.fessional.mirana.cast.Enums#VALUE of Enums.VALUE
+ * e.g. pro.fessional.mirana.cast.Enums#VALUE of Enums.VALUE
  *
  * @author trydofor
  * @since 2021-02-17

@@ -114,14 +114,14 @@ public interface LightIdProvider {
         }
 
         /**
-         * Id's name
+         * id's name
          */
         public String getName() {
             return name;
         }
 
         /**
-         * Id's block
+         * id's block
          */
         public int getBlock() {
             return block;

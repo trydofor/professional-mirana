@@ -26,7 +26,7 @@ public class LightIdUtil {
      * Force to use a different BIT_BLOCK layout than the LightId default
      * to adjust the Block and Sequence ratio
      *
-     * @param count bit count, should be in [3-23]
+     * @param count bits count, should be in [3-23]
      */
     public static void forceBlockBit(int count) {
         if (count < 3) {

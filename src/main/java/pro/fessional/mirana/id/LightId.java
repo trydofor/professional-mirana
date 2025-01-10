@@ -98,7 +98,7 @@ public class LightId {
         if (block < 0 || sequence < 0) return -1;
 
         int result = block;
-        result = 31 * result + (int) (sequence ^ (sequence >>> 32));
+        result = 31 * result + Long.hashCode(sequence);
         return result;
     }
 }

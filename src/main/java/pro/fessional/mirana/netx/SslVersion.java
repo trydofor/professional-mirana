@@ -13,7 +13,7 @@ package pro.fessional.mirana.netx;
 public class SslVersion {
 
     /**
-     * append TLSv1.2 to https.protocols if not exist
+     * append TLSv1.2 to https protocols if not exist
      *
      * @return getProperty(https.protocols)
      */
