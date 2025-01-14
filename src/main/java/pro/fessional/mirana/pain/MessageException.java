@@ -1,7 +1,7 @@
 package pro.fessional.mirana.pain;
 
 import org.jetbrains.annotations.NotNull;
-import pro.fessional.mirana.data.CodeEnum;
+import pro.fessional.mirana.i18n.CodeEnum;
 
 /**
  * Stackless exceptions used only to output business messages.

@@ -56,7 +56,7 @@ public class I18nMessage implements ChainingCast, I18nAware {
 
 
     @Contract("_->this")
-    public I18nMessage setI18nArgs(Object[] i18nArgs) {
+    public I18nMessage setI18nArgs(Object... i18nArgs) {
         this.i18nArgs = i18nArgs;
         return this;
     }

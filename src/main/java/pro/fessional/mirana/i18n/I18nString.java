@@ -18,8 +18,8 @@ import java.util.Objects;
  * </pre>
  *
  * @author trydofor
- * @since 2019-09-19
  * @see MessageFormat
+ * @since 2019-09-19
  */
 public class I18nString implements I18nAware {
     private static final long serialVersionUID = 19791023L;
@@ -102,5 +102,12 @@ public class I18nString implements I18nAware {
         int result = Objects.hash(i18nCode);
         result = 31 * result + Arrays.hashCode(i18nArgs);
         return result;
+    }
+
+    /**
+     * the string as i18nCode, empty args and hint
+     */
+    public static I18nString of(String str) {
+        return new I18nString(str);
     }
 }

@@ -1,7 +1,6 @@
 package pro.fessional.mirana.i18n;
 
 import org.jetbrains.annotations.NotNull;
-import pro.fessional.mirana.data.CodeEnum;
 
 /**
  * Empower i18n capability to common enums

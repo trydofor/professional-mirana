@@ -281,7 +281,6 @@
                         <configuration>
                             <excludes>
                                 <!-- mark or assert -->
-                                <exclude>**/best/Assert*</exclude>
                                 <exclude>**/best/Dummy*</exclude>
                                 <exclude>**/best/Param*</exclude>
                                 <exclude>**/best/Typed*</exclude>
@@ -304,8 +303,6 @@
                                 <exclude>**/img/StreamJpg*</exclude>
                                 <exclude>**/img/Watermark*</exclude>
                                 <exclude>**/img/ZoomRotateCrop*</exclude>
-                                <!-- aware interface -->
-                                <exclude>**/i18n/*Aware.*</exclude>
                                 <!-- simple or manully checked -->
                                 <exclude>**/io/CompatibleObjectStream*</exclude>
                                 <exclude>**/io/DirHasher*</exclude>

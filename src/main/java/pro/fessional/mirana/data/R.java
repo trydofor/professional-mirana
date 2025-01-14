@@ -4,6 +4,7 @@ package pro.fessional.mirana.data;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import pro.fessional.mirana.i18n.CodeEnum;
 import pro.fessional.mirana.i18n.I18nAware;
 import pro.fessional.mirana.i18n.I18nMessage;
 import pro.fessional.mirana.i18n.I18nNotice;
@@ -621,7 +622,7 @@ public class R<T> extends I18nMessage implements DataResult<T>, ErrorResult, I18
             throw new UnsupportedOperationException("Immutable");
         }
 
-        @Override public R<T> setI18nArgs(Object[] i18nArgs) {
+        @Override public R<T> setI18nArgs(Object... i18nArgs) {
             throw new UnsupportedOperationException("Immutable");
         }
 

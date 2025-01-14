@@ -38,7 +38,7 @@ public interface I18nAware extends Serializable {
 
     @NotNull
     default I18nString toI18nString() {
-        return new I18nString(getI18nCode(), getI18nHint(), getI18nArgs());
+        return toI18nString(null, (Object[]) null);
     }
 
     /**
@@ -46,8 +46,7 @@ public interface I18nAware extends Serializable {
      */
     @NotNull
     default I18nString toI18nString(String hint) {
-        hint = hint == null ? getI18nHint() : hint;
-        return new I18nString(getI18nCode(), hint, getI18nArgs());
+        return toI18nString(hint, (Object[]) null);
     }
 
     /**
@@ -61,24 +60,54 @@ public interface I18nAware extends Serializable {
     }
 
     /**
-     * use Locale.getDefault() if locale is null
+     * use Locale.getDefault() if locale is null.
+     * return the i18nCode if message format get empty.
      */
     default String toString(Locale locale) {
-        String hint = getI18nHint();
-        Object[] args = getI18nArgs();
-        if (hint != null && !hint.isEmpty() && args != null && args.length > 0) {
-            if(locale != null) locale = Locale.getDefault();
-            hint = new MessageFormat(hint, locale).format(args);
-        }
-        return hint == null || hint.isEmpty() ? getI18nCode() : hint;
+        return toString(locale, (code, args, hint, lang) -> {
+            if (hint == null || hint.isEmpty() || args == null || args.length == 0) return hint;
+
+            return new MessageFormat(hint, lang == null ? Locale.getDefault() : lang)
+                .format(args);
+        });
     }
 
+    /**
+     * <pre>
+     * should use Locale.getDefault() if locale is null.
+     * return the i18nCode if message format get empty.
+     * recursively evaluate the I18nAware in i18nArgs.
+     * </pre>
+     */
     default String toString(Locale locale, @NotNull I18nSource source) {
-        return source.getMessage(getI18nCode(), getI18nArgs(), getI18nHint(), locale);
+        Object[] args = getI18nArgs();
+        if (args != null) {
+            for (int i = 0; i < args.length; i++) {
+                if (args[i] instanceof I18nAware) {
+                    args[i] = ((I18nAware) args[i]).toString(locale, source);
+                }
+            }
+        }
+        String msg = source.getMessage(getI18nCode(), args, getI18nHint(), locale);
+        return msg == null || msg.isEmpty() ? getI18nCode() : msg;
     }
 
     @FunctionalInterface
     interface I18nSource {
-        String getMessage(String code, Object[] args, String hint, Locale locale);
+        /**
+         * <pre>
+         * should return null or code if template is not found by code.
+         * hint is the default message or template
+         * refer spring MessageSource
+         * </pre>
+         */
+        String getMessage(String code, Object[] args, String hint, Locale lang);
+
+        /**
+         * varargs sugar for coding
+         */
+        default String getMessage(String code, Locale lang, String hint, Object[] args) {
+            return getMessage(code, args, hint, lang);
+        }
     }
 }

@@ -4,7 +4,8 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pro.fessional.mirana.cond.PredictVal;
-import pro.fessional.mirana.data.CodeEnum;
+import pro.fessional.mirana.i18n.AssertErrorEnum;
+import pro.fessional.mirana.i18n.CodeEnum;
 import pro.fessional.mirana.pain.MessageException;
 import pro.fessional.mirana.text.FormatUtil;
 
@@ -44,6 +45,11 @@ public class AssertMessage {
         if (!b) throw new MessageException(code, args);
     }
 
+    @Contract("false->fail")
+    public static void isTrue(boolean b) {
+        isTrue(b, AssertErrorEnum.AssertTrue);
+    }
+
     //
     @Contract("null,_->fail")
     public static void isTrue(boolean[] bs, @NotNull String msg) {
@@ -63,6 +69,11 @@ public class AssertMessage {
     @Contract("null,_,_->fail")
     public static void isTrue(boolean[] bs, @NotNull CodeEnum code, Object... args) {
         isTrue(PredictVal.is(bs, true), code, args);
+    }
+
+    @Contract("null->fail")
+    public static void isTrue(boolean[] bs) {
+        isTrue(bs, AssertErrorEnum.AssertTrue);
     }
 
     //
@@ -86,6 +97,10 @@ public class AssertMessage {
         if (b) throw new MessageException(code, args);
     }
 
+    @Contract("true->fail")
+    public static void isFalse(boolean b) {
+        isFalse(b, AssertErrorEnum.AssertFalse);
+    }
     //
     @Contract("null,_->fail")
     public static void isFalse(boolean[] bs, @NotNull String msg) {
@@ -105,6 +120,11 @@ public class AssertMessage {
     @Contract("null,_,_->fail")
     public static void isFalse(boolean[] bs, @NotNull CodeEnum code, Object... args) {
         isTrue(PredictVal.is(bs, false), code, args);
+    }
+
+    @Contract("null->fail")
+    public static void isFalse(boolean[] bs) {
+        isFalse(bs, AssertErrorEnum.AssertFalse);
     }
 
     // ////
@@ -128,6 +148,11 @@ public class AssertMessage {
         if (b != null) throw new MessageException(code, args);
     }
 
+    @Contract("!null->fail")
+    public static void isNull(@Nullable Object b) {
+        isNull(b, AssertErrorEnum.AssertNull);
+    }
+
     //
     @Contract("null,_->fail")
     public static void notNull(@Nullable Object b, @NotNull String msg) {
@@ -149,6 +174,11 @@ public class AssertMessage {
         if (b == null) throw new MessageException(code, args);
     }
 
+    @Contract("null->fail")
+    public static void notNull(@Nullable Object b) {
+        notNull(b, AssertErrorEnum.AssertNotNull);
+    }
+
     // ////
     public static void isEmpty(@Nullable CharSequence c, @NotNull String msg) {
         if (c != null && c.length() > 0) throw new MessageException(msg);
@@ -164,6 +194,10 @@ public class AssertMessage {
 
     public static void isEmpty(@Nullable CharSequence c, @NotNull CodeEnum code, Object... args) {
         if (c != null && c.length() > 0) throw new MessageException(code, args);
+    }
+
+    public static void isEmpty(@Nullable CharSequence c) {
+        isEmpty(c, AssertErrorEnum.AssertEmpty);
     }
 
     //
@@ -187,6 +221,11 @@ public class AssertMessage {
         if (c == null || c.length() == 0) throw new MessageException(code, args);
     }
 
+    @Contract("null->fail")
+    public static void notEmpty(@Nullable CharSequence c) {
+        notEmpty(c, AssertErrorEnum.AssertNotEmpty);
+    }
+
     // ////
     public static void isEmpty(@Nullable Collection<?> c, @NotNull String msg) {
         if (c != null && !c.isEmpty()) throw new MessageException(msg);
@@ -202,6 +241,10 @@ public class AssertMessage {
 
     public static void isEmpty(@Nullable Collection<?> c, @NotNull CodeEnum code, Object... args) {
         if (c != null && !c.isEmpty()) throw new MessageException(code, args);
+    }
+
+    public static void isEmpty(@Nullable Collection<?> c) {
+        isEmpty(c, AssertErrorEnum.AssertEmpty);
     }
 
     //
@@ -225,6 +268,11 @@ public class AssertMessage {
         if (c == null || c.isEmpty()) throw new MessageException(code, args);
     }
 
+    @Contract("null->fail")
+    public static void notEmpty(@Nullable Collection<?> c) {
+        notEmpty(c, AssertErrorEnum.AssertNotEmpty);
+    }
+
     // ////
     public static void isEmpty(@Nullable Map<?, ?> c, @NotNull String msg) {
         if (c != null && !c.isEmpty()) throw new MessageException(msg);
@@ -240,6 +288,10 @@ public class AssertMessage {
 
     public static void isEmpty(@Nullable Map<?, ?> c, @NotNull CodeEnum code, Object... args) {
         if (c != null && !c.isEmpty()) throw new MessageException(code, args);
+    }
+
+    public static void isEmpty(@Nullable Map<?, ?> c) {
+        isEmpty(c, AssertErrorEnum.AssertEmpty);
     }
 
     //
@@ -263,6 +315,11 @@ public class AssertMessage {
         if (c == null || c.isEmpty()) throw new MessageException(code, args);
     }
 
+    @Contract("null->fail")
+    public static void notEmpty(@Nullable Map<?, ?> c) {
+        notEmpty(c, AssertErrorEnum.AssertNotEmpty);
+    }
+
     // ////
     public static void isEmpty(@Nullable Object[] c, @NotNull String msg) {
         if (c != null && c.length > 0) throw new MessageException(msg);
@@ -278,6 +335,10 @@ public class AssertMessage {
 
     public static void isEmpty(@Nullable Object[] c, @NotNull CodeEnum code, Object... args) {
         if (c != null && c.length > 0) throw new MessageException(code, args);
+    }
+
+    public static void isEmpty(@Nullable Object[] c) {
+        isEmpty(c, AssertErrorEnum.AssertEmpty);
     }
 
     //
@@ -301,6 +362,11 @@ public class AssertMessage {
         if (c == null || c.length == 0) throw new MessageException(code, args);
     }
 
+    @Contract("null->fail")
+    public static void notEmpty(@Nullable Object[] c) {
+        notEmpty(c, AssertErrorEnum.AssertNotEmpty);
+    }
+
     //
     @Contract("null,_,_->fail")
     public static void isEqual(@Nullable Object a, @NotNull Object b, @NotNull String msg) {
@@ -322,27 +388,31 @@ public class AssertMessage {
         if (a == null || !a.equals(b)) throw new MessageException(code, args);
     }
 
+    @Contract("null,_->fail")
+    public static void isEqual(@Nullable Object a, @NotNull Object b) {
+        isEqual(a, b, AssertErrorEnum.AssertEqual1, b);
+    }
+
     //
-    @Contract("null,_,_->fail")
     public static void notEqual(@Nullable Object a, @NotNull Object b, @NotNull String msg) {
-        if (a == null || a.equals(b)) throw new MessageException(msg);
+        if (a != null && a.equals(b)) throw new MessageException(msg);
     }
 
-    @Contract("null,_,_,_->fail")
     public static void notEqual(@Nullable Object a, @NotNull Object b, @NotNull String msg, Object... args) {
-        if (a == null || a.equals(b)) throw new MessageException(FormatUtil.logback(msg, args));
+        if (a != null && a.equals(b)) throw new MessageException(FormatUtil.logback(msg, args));
     }
 
-    @Contract("null,_,_->fail")
     public static void notEqual(@Nullable Object a, @NotNull Object b, @NotNull CodeEnum code) {
-        if (a == null || a.equals(b)) throw new MessageException(code);
+        if (a != null && a.equals(b)) throw new MessageException(code);
     }
 
-    @Contract("null,_,_,_->fail")
     public static void notEqual(@Nullable Object a, @NotNull Object b, @NotNull CodeEnum code, Object... args) {
-        if (a == null || a.equals(b)) throw new MessageException(code, args);
+        if (a != null && a.equals(b)) throw new MessageException(code, args);
     }
 
+    public static void notEqual(@Nullable Object a, @NotNull Object b) {
+        notEqual(a, b, AssertErrorEnum.AssertNotEqual1, b);
+    }
     //
     @Contract("null,_,_->fail")
     public static <T extends Comparable<T>> void eqObj(@Nullable T a, @NotNull T b, @NotNull String msg) {
@@ -362,6 +432,11 @@ public class AssertMessage {
     @Contract("null,_,_,_->fail")
     public static <T extends Comparable<T>> void eqObj(@Nullable T a, @NotNull T b, @NotNull CodeEnum code, Object... args) {
         if (a == null || a.compareTo(b) != 0) throw new MessageException(code, args);
+    }
+
+    @Contract("null,_->fail")
+    public static <T extends Comparable<T>> void eqObj(@Nullable T a, @NotNull T b) {
+        eqObj(a, b, AssertErrorEnum.AssertEqual1, b);
     }
 
     //
@@ -385,6 +460,11 @@ public class AssertMessage {
         if (a == null || a.compareTo(b) == 0) throw new MessageException(code, args);
     }
 
+    @Contract("null,_->fail")
+    public static <T extends Comparable<T>> void neObj(@Nullable T a, @NotNull T b) {
+        neObj(a, b, AssertErrorEnum.AssertNotEqual1, b);
+    }
+
     //
     @Contract("null,_,_->fail")
     public static <T extends Comparable<T>> void geObj(@Nullable T a, @NotNull T b, @NotNull String msg) {
@@ -404,6 +484,11 @@ public class AssertMessage {
     @Contract("null,_,_,_->fail")
     public static <T extends Comparable<T>> void geObj(@Nullable T a, @NotNull T b, @NotNull CodeEnum code, Object... args) {
         if (a == null || a.compareTo(b) < 0) throw new MessageException(code, args);
+    }
+
+    @Contract("null,_->fail")
+    public static <T extends Comparable<T>> void geObj(@Nullable T a, @NotNull T b) {
+        geObj(a, b, AssertErrorEnum.AssertGreaterEqual1, b);
     }
 
     //
@@ -427,6 +512,11 @@ public class AssertMessage {
         if (a == null || a.compareTo(b) <= 0) throw new MessageException(code, args);
     }
 
+    @Contract("null,_->fail")
+    public static <T extends Comparable<T>> void gtObj(@Nullable T a, @NotNull T b) {
+        gtObj(a, b, AssertErrorEnum.AssertGreater1, b);
+    }
+
     //
     @Contract("null,_,_->fail")
     public static <T extends Comparable<T>> void leObj(@Nullable T a, @NotNull T b, @NotNull String msg) {
@@ -446,6 +536,11 @@ public class AssertMessage {
     @Contract("null,_,_,_->fail")
     public static <T extends Comparable<T>> void leObj(@Nullable T a, @NotNull T b, @NotNull CodeEnum code, Object... args) {
         if (a == null || a.compareTo(b) > 0) throw new MessageException(code, args);
+    }
+
+    @Contract("null,_->fail")
+    public static <T extends Comparable<T>> void leObj(@Nullable T a, @NotNull T b) {
+        leObj(a, b, AssertErrorEnum.AssertLessEqual1, b);
     }
 
     //
@@ -469,6 +564,11 @@ public class AssertMessage {
         if (a == null || a.compareTo(b) >= 0) throw new MessageException(code, args);
     }
 
+    @Contract("null,_->fail")
+    public static <T extends Comparable<T>> void ltObj(@Nullable T a, @NotNull T b) {
+        ltObj(a, b, AssertErrorEnum.AssertLess1, b);
+    }
+
     //
     public static void eqVal(int a, int b, @NotNull String msg) {
         if (a != b) throw new MessageException(msg);
@@ -486,6 +586,10 @@ public class AssertMessage {
         if (a != b) throw new MessageException(code, args);
     }
 
+    public static void eqVal(int a, int b) {
+        eqVal(a, b, AssertErrorEnum.AssertEqual1, b);
+    }
+
     //
     public static void eqVal(long a, long b, @NotNull String msg) {
         if (a != b) throw new MessageException(msg);
@@ -501,6 +605,10 @@ public class AssertMessage {
 
     public static void eqVal(long a, long b, @NotNull CodeEnum code, Object... args) {
         if (a != b) throw new MessageException(code, args);
+    }
+
+    public static void eqVal(long a, long b) {
+        eqVal(a, b, AssertErrorEnum.AssertEqual1, b);
     }
 
     //
@@ -524,6 +632,11 @@ public class AssertMessage {
         isTrue(PredictVal.eq(as, b), code, args);
     }
 
+    @Contract("null,_->fail")
+    public static void eqVal(int[] as, int b) {
+        eqVal(as, b, AssertErrorEnum.AssertEqual1, b);
+    }
+
     //
     @Contract("null,_,_->fail")
     public static void eqVal(long[] as, long b, @NotNull String msg) {
@@ -545,6 +658,11 @@ public class AssertMessage {
         isTrue(PredictVal.eq(as, b), code, args);
     }
 
+    @Contract("null,_->fail")
+    public static void eqVal(long[] as, long b) {
+        eqVal(as, b, AssertErrorEnum.AssertEqual1, b);
+    }
+
     //
     public static void neVal(int a, int b, @NotNull String msg) {
         if (a == b) throw new MessageException(msg);
@@ -562,6 +680,10 @@ public class AssertMessage {
         if (a == b) throw new MessageException(code, args);
     }
 
+    public static void neVal(int a, int b) {
+        neVal(a, b, AssertErrorEnum.AssertNotEqual1, b);
+    }
+
     //
     public static void neVal(long a, long b, @NotNull String msg) {
         if (a == b) throw new MessageException(msg);
@@ -577,6 +699,10 @@ public class AssertMessage {
 
     public static void neVal(long a, long b, @NotNull CodeEnum code, Object... args) {
         if (a == b) throw new MessageException(code, args);
+    }
+
+    public static void neVal(long a, long b) {
+        neVal(a, b, AssertErrorEnum.AssertNotEqual1, b);
     }
 
     //
@@ -600,6 +726,11 @@ public class AssertMessage {
         isTrue(PredictVal.ne(as, b), code, args);
     }
 
+    @Contract("null,_->fail")
+    public static void neVal(int[] as, int b) {
+        neVal(as, b, AssertErrorEnum.AssertNotEqual1, b);
+    }
+
     //
     @Contract("null,_,_->fail")
     public static void neVal(long[] as, long b, @NotNull String msg) {
@@ -621,6 +752,11 @@ public class AssertMessage {
         isTrue(PredictVal.ne(as, b), code, args);
     }
 
+    @Contract("null,_->fail")
+    public static void neVal(long[] as, long b) {
+        neVal(as, b, AssertErrorEnum.AssertNotEqual1, b);
+    }
+
     //
     public static void geVal(int a, int b, @NotNull String msg) {
         if (a < b) throw new MessageException(msg);
@@ -638,6 +774,10 @@ public class AssertMessage {
         if (a < b) throw new MessageException(code, args);
     }
 
+    public static void geVal(int a, int b) {
+        geVal(a, b, AssertErrorEnum.AssertGreaterEqual1, b);
+    }
+
     //
     public static void geVal(long a, long b, @NotNull String msg) {
         if (a < b) throw new MessageException(msg);
@@ -653,6 +793,10 @@ public class AssertMessage {
 
     public static void geVal(long a, long b, @NotNull CodeEnum code, Object... args) {
         if (a < b) throw new MessageException(code, args);
+    }
+
+    public static void geVal(long a, long b) {
+        geVal(a, b, AssertErrorEnum.AssertGreaterEqual1, b);
     }
 
     //
@@ -676,6 +820,11 @@ public class AssertMessage {
         isTrue(PredictVal.ge(as, b), code, args);
     }
 
+    @Contract("null,_->fail")
+    public static void geVal(int[] as, int b) {
+        geVal(as, b, AssertErrorEnum.AssertGreaterEqual1, b);
+    }
+
     //
     @Contract("null,_,_->fail")
     public static void geVal(long[] as, long b, @NotNull String msg) {
@@ -697,6 +846,11 @@ public class AssertMessage {
         isTrue(PredictVal.ge(as, b), code, args);
     }
 
+    @Contract("null,_->fail")
+    public static void geVal(long[] as, long b) {
+        geVal(as, b, AssertErrorEnum.AssertGreaterEqual1, b);
+    }
+
 
     //
     public static void gtVal(int a, int b, @NotNull String msg) {
@@ -715,6 +869,10 @@ public class AssertMessage {
         if (a <= b) throw new MessageException(code, args);
     }
 
+    public static void gtVal(int a, int b) {
+        gtVal(a, b, AssertErrorEnum.AssertGreater1, b);
+    }
+
     //
     public static void gtVal(long a, long b, @NotNull String msg) {
         if (a <= b) throw new MessageException(msg);
@@ -730,6 +888,10 @@ public class AssertMessage {
 
     public static void gtVal(long a, long b, @NotNull CodeEnum code, Object... args) {
         if (a <= b) throw new MessageException(code, args);
+    }
+
+    public static void gtVal(long a, long b) {
+        gtVal(a, b, AssertErrorEnum.AssertGreater1, b);
     }
 
     //
@@ -753,6 +915,11 @@ public class AssertMessage {
         isTrue(PredictVal.gt(as, b), code, args);
     }
 
+    @Contract("null,_->fail")
+    public static void gtVal(int[] as, int b) {
+        gtVal(as, b, AssertErrorEnum.AssertGreater1, b);
+    }
+
     //
     @Contract("null,_,_->fail")
     public static void gtVal(long[] as, long b, @NotNull String msg) {
@@ -774,6 +941,11 @@ public class AssertMessage {
         isTrue(PredictVal.gt(as, b), code, args);
     }
 
+    @Contract("null,_->fail")
+    public static void gtVal(long[] as, long b) {
+        gtVal(as, b, AssertErrorEnum.AssertGreater1, b);
+    }
+
     //
     public static void leVal(int a, int b, @NotNull String msg) {
         if (a > b) throw new MessageException(msg);
@@ -791,6 +963,10 @@ public class AssertMessage {
         if (a > b) throw new MessageException(code, args);
     }
 
+    public static void leVal(int a, int b) {
+        leVal(a, b, AssertErrorEnum.AssertLessEqual1, b);
+    }
+
     //
     public static void leVal(long a, long b, @NotNull String msg) {
         if (a > b) throw new MessageException(msg);
@@ -806,6 +982,10 @@ public class AssertMessage {
 
     public static void leVal(long a, long b, @NotNull CodeEnum code, Object... args) {
         if (a > b) throw new MessageException(code, args);
+    }
+
+    public static void leVal(long a, long b) {
+        leVal(a, b, AssertErrorEnum.AssertLessEqual1, b);
     }
 
     //
@@ -829,6 +1009,11 @@ public class AssertMessage {
         isTrue(PredictVal.le(as, b), code, args);
     }
 
+    @Contract("null,_->fail")
+    public static void leVal(int[] as, int b) {
+        leVal(as, b, AssertErrorEnum.AssertLessEqual1, b);
+    }
+
     //
     @Contract("null,_,_->fail")
     public static void leVal(long[] as, long b, @NotNull String msg) {
@@ -850,6 +1035,11 @@ public class AssertMessage {
         isTrue(PredictVal.le(as, b), code, args);
     }
 
+    @Contract("null,_->fail")
+    public static void leVal(long[] as, long b) {
+        leVal(as, b, AssertErrorEnum.AssertLessEqual1, b);
+    }
+
     //
     public static void ltVal(int a, int b, @NotNull String msg) {
         if (a >= b) throw new MessageException(msg);
@@ -867,6 +1057,10 @@ public class AssertMessage {
         if (a >= b) throw new MessageException(code, args);
     }
 
+    public static void ltVal(int a, int b) {
+        ltVal(a, b, AssertErrorEnum.AssertLess1, b);
+    }
+
     //
     public static void ltVal(long a, long b, @NotNull String msg) {
         if (a >= b) throw new MessageException(msg);
@@ -882,6 +1076,10 @@ public class AssertMessage {
 
     public static void ltVal(long a, long b, @NotNull CodeEnum code, Object... args) {
         if (a >= b) throw new MessageException(code, args);
+    }
+
+    public static void ltVal(long a, long b) {
+        ltVal(a, b, AssertErrorEnum.AssertLess1, b);
     }
 
     //
@@ -905,6 +1103,11 @@ public class AssertMessage {
         isTrue(PredictVal.lt(as, b), code, args);
     }
 
+    @Contract("null,_->fail")
+    public static void ltVal(int[] as, int b) {
+        ltVal(as, b, AssertErrorEnum.AssertLess1, b);
+    }
+
     //
     @Contract("null,_,_->fail")
     public static void ltVal(long[] as, long b, @NotNull String msg) {
@@ -924,5 +1127,10 @@ public class AssertMessage {
     @Contract("null,_,_,_->fail")
     public static void ltVal(long[] as, long b, @NotNull CodeEnum code, Object... args) {
         isTrue(PredictVal.lt(as, b), code, args);
+    }
+
+    @Contract("null,_->fail")
+    public static void ltVal(long[] as, long b) {
+        ltVal(as, b, AssertErrorEnum.AssertLess1, b);
     }
 }

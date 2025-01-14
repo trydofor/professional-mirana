@@ -1,7 +1,6 @@
-package pro.fessional.mirana.data;
+package pro.fessional.mirana.i18n;
 
 import org.jetbrains.annotations.NotNull;
-import pro.fessional.mirana.i18n.I18nAware;
 
 import java.beans.Transient;
 
