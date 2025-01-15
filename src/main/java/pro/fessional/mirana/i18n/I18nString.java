@@ -12,9 +12,10 @@ import java.util.Objects;
 /**
  * <pre>
  * String can be used as i18n template (MessageFormat by default)
- * * i18nCode - template id, default empty
- * * i18nArgs - template arguments, default empty
- * * i18nHint - default text or template, not in hash and equals, default empty
+ * - i18nCode - template id, default empty
+ * - i18nArgs - template arguments, default empty
+ * - i18nHint - default text or template, not in hash and equals, default empty
+ * - i18nCache - cached value for performance
  * </pre>
  *
  * @author trydofor
@@ -31,6 +32,8 @@ public class I18nString implements I18nAware {
     private final Object[] i18nArgs;
     @NotNull
     private String i18nHint;
+
+    private transient String i18nCache = null;
 
     public I18nString(String i18nCode) {
         this(i18nCode, "", EMPTY_ARGS);
@@ -80,12 +83,29 @@ public class I18nString implements I18nAware {
         return setI18nHint(toString(locale, source));
     }
 
+    @Nullable
+    public String getI18nCache() {
+        return i18nCache;
+    }
+
+    @Contract("_->this")
+    public I18nString setI18nCache(String i18nCache) {
+        this.i18nCache = i18nCache;
+        return this;
+    }
+
+    @Contract("_,_->this")
+    public I18nString setI18nCache(@Nullable Locale locale, @NotNull I18nSource source) {
+        return setI18nCache(toString(locale, source));
+    }
+
     public boolean isEmpty() {
         return i18nCode.isEmpty();
     }
 
     @Override
     public String toString() {
+        if (i18nCache != null) return i18nCache;
         return toString(Locale.getDefault());
     }
 

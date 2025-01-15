@@ -59,17 +59,8 @@ public interface I18nAware extends Serializable {
         return new I18nString(getI18nCode(), hint, args);
     }
 
-    /**
-     * use Locale.getDefault() if locale is null.
-     * return the i18nCode if message format get empty.
-     */
     default String toString(Locale locale) {
-        return toString(locale, (code, args, hint, lang) -> {
-            if (hint == null || hint.isEmpty() || args == null || args.length == 0) return hint;
-
-            return new MessageFormat(hint, lang == null ? Locale.getDefault() : lang)
-                .format(args);
-        });
+        return toString(locale, I18nSource.Default);
     }
 
     /**
@@ -94,6 +85,17 @@ public interface I18nAware extends Serializable {
 
     @FunctionalInterface
     interface I18nSource {
+
+        /**
+         * ignore i18nCode, format hint with args by MessageFormat.
+         */
+        I18nSource Default = (ignoreCode, args, hint, lang) -> {
+            if (hint == null || hint.isEmpty()) return null;
+            if (args == null || args.length == 0) return hint;
+            if (lang == null) lang = Locale.getDefault();
+            return new MessageFormat(hint, lang).format(args);
+        };
+
         /**
          * <pre>
          * should return null or code if template is not found by code.

@@ -42,7 +42,7 @@ class I18nStringTest {
     void testConstructorWithArgs() {
         I18nString i18nString = new I18nString("testCode", "testHint", "arg1", "arg2");
         assertEquals("testCode", i18nString.getI18nCode());
-        assertArrayEquals(new Object[]{"arg1", "arg2"}, i18nString.getI18nArgs());
+        assertArrayEquals(new Object[]{ "arg1", "arg2" }, i18nString.getI18nArgs());
         assertEquals("testHint", i18nString.getI18nHint());
     }
 
@@ -126,11 +126,15 @@ class I18nStringTest {
         assertEquals("name is ok", s1.toString(Locale.ENGLISH));
 
         I18nString s2 = new I18nString("200", "{0} is ok", I18nString.of("name"));
-        final String str2 = s2.toString(Locale.ENGLISH, (code, args, hint, lang) -> {
-            if(code.equals("name")) return "trydofor";
+        I18nAware.I18nSource i18nSource = (code, args, hint, lang) -> {
+            if (code.equals("name")) return "trydofor";
             return new MessageFormat(hint, lang).format(args);
-        });
+        };
+        final String str2 = s2.toString(Locale.ENGLISH, i18nSource);
         assertEquals("trydofor is ok", str2);
+        s2.setI18nCache(Locale.ENGLISH, i18nSource);
+        assertEquals(str2, s2.getI18nCache());
+        assertEquals(str2, s2.toString());
 
         I18nString s3 = s1.toI18nString();
         assertEquals(s1, s3);
