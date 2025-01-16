@@ -67,8 +67,9 @@ public class I18nMessage implements ChainingCast, I18nAware {
         return message;
     }
 
+    @Transient
     @Contract("_->this")
-    public I18nMessage setMessage(I18nAware ia) {
+    public I18nMessage setMessageBy(I18nAware ia) {
         if (ia != null) {
             setMessage(ia.getI18nHint());
             setI18nCode(ia.getI18nCode());
@@ -77,35 +78,39 @@ public class I18nMessage implements ChainingCast, I18nAware {
         return this;
     }
 
+    @Transient
     @Contract("_,_->this")
-    public I18nMessage setMessage(String message, I18nAware ia) {
-        setMessage(ia);
+    public I18nMessage setMessageBy(String message, I18nAware ia) {
+        setMessageBy(ia);
         setMessage(message);
         return this;
     }
 
+    @Transient
     @Contract("_,_->this")
-    public I18nMessage setMessage(String message, String i18nCode) {
+    public I18nMessage setMessageBy(String message, String i18nCode) {
         setMessage(message);
         setI18nCode(i18nCode);
         return this;
     }
 
+    @Transient
     @Contract("_,_,_->this")
-    public I18nMessage setMessage(String message, String i18nCode, Object... i18nArgs) {
+    public I18nMessage setMessageBy(String message, String i18nCode, Object... i18nArgs) {
         setMessage(message);
         setI18nCode(i18nCode);
         setI18nArgs(i18nArgs);
         return this;
     }
 
+    @Transient
     @Contract("_->this")
-    public I18nMessage setMessage(Locale locale) {
+    public I18nMessage setMessageBy(Locale locale) {
         return setMessage(toString(locale));
     }
 
     @Contract("_,_->this")
-    public I18nMessage setMessage(Locale locale, @NotNull I18nSource source) {
+    public I18nMessage setMessageBy(Locale locale, @NotNull I18nSource source) {
         return setMessage(toString(locale, source));
     }
 

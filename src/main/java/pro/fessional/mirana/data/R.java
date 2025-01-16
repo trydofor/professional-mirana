@@ -98,22 +98,22 @@ public class R<T> extends I18nMessage implements DataResult<T>, ErrorResult, I18
 
     public R(boolean success, T data, String code, String message, String i18nCode) {
         this(success, data, code);
-        super.setMessage(message,i18nCode);
+        super.setMessageBy(message,i18nCode);
     }
 
     public R(boolean success, T data, String code, String message, String i18nCode, Object... i18nArgs) {
         this(success, data, code);
-        super.setMessage(message,i18nCode, i18nArgs);
+        super.setMessageBy(message,i18nCode, i18nArgs);
     }
 
     public R(boolean success, T data, String code, I18nAware message) {
         this(success, data, code);
-        super.setMessage(message);
+        super.setMessageBy(message);
     }
 
     public R(boolean success, T data, I18nAware message) {
         this(success, data);
-        super.setMessage(message);
+        super.setMessageBy(message);
     }
 
     public R(boolean success, T data, @NotNull CodeEnum code) {
@@ -202,92 +202,109 @@ public class R<T> extends I18nMessage implements DataResult<T>, ErrorResult, I18
         return this;
     }
 
+    @Transient
     @Contract("_->this")
     public R<T> setDataIfOk(T data) {
         return success ? setData(data): this;
     }
 
+    @Transient
     @Contract("_->this")
     public R<T> setDataIfNg(T data) {
         return success ? this : setData(data);
     }
 
+    @Transient
     @Contract("_->this")
     public R<T> setDataIfOk(@NotNull Supplier<T> data) {
         return success ? setData(data.get()) : this;
     }
 
+    @Transient
     @Contract("_->this")
     public R<T> setDataIfNg(@NotNull Supplier<T> data) {
         return success ? this : setData(data.get());
     }
 
+    @Transient
     @Contract("_->this")
     public R<T> setCodeIfOk(String code) {
         return success ? setCode(code) : this;
     }
 
+    @Transient
     @Contract("_->this")
     public R<T> setCodeIfNg(String code) {
         return success ? this : setCode(code);
     }
 
+    @Transient
     @Contract("_->this")
     public R<T> setCodeIfOk(@NotNull Supplier<String> code) {
         return success ? setCode(code.get()) : this;
     }
 
+    @Transient
     @Contract("_->this")
     public R<T> setCodeIfNg(@NotNull Supplier<String> code) {
         return success ? this : setCode(code.get());
     }
 
+    @Transient
     @SuppressWarnings("unchecked")
     @Contract("_->this")
     public R<T> setMessageIfOk(String message) {
         return success ? (R<T>) setMessage(message) : this;
     }
 
+    @Transient
     @SuppressWarnings("unchecked")
     @Contract("_->this")
     public R<T> setMessageIfNg(String message) {
         return success ? this : (R<T>) setMessage(message);
     }
 
+    @Transient
     @SuppressWarnings("unchecked")
     @Contract("_->this")
     public R<T> setMessageIfOk(@NotNull Supplier<String> message) {
         return success ? (R<T>) setMessage(message.get()) : this;
     }
 
+    @Transient
     @SuppressWarnings("unchecked")
     @Contract("_->this")
     public R<T> setMessageIfNg(@NotNull Supplier<String> message) {
         return success ? this : (R<T>) setMessage(message.get());
     }
 
+    @Transient
     @Contract("_->this")
     public R<T> setCodeMessage(@NotNull CodeEnum code) {
         this.code = code.getCode();
-        super.setMessage(code);
+        super.setMessageBy(code);
         return this;
     }
 
+    @Transient
     @Contract("_->this")
     public R<T> setCodeMessageIfOk(CodeEnum code) {
         return success ? setCodeMessage(code) : this;
     }
 
+    @Transient
     @Contract("_->this")
     public R<T> setCodeMessageIfNg(CodeEnum code) {
         return success ? this : setCodeMessage(code);
     }
 
+    @Transient
     @Contract("_->this")
     public R<T> setCodeMessageIfOk(@NotNull Supplier<CodeEnum> code) {
         return success ? setCodeMessage(code.get()) : this;
     }
 
+    @Transient
     @Contract("_->this")
     public R<T> setCodeMessageIfNg(@NotNull Supplier<CodeEnum> code) {
         return success ? this : setCodeMessage(code.get());
@@ -567,14 +584,14 @@ public class R<T> extends I18nMessage implements DataResult<T>, ErrorResult, I18
 
     public static <T> R<T> ngCause(@NotNull Throwable t, @NotNull String code, I18nAware message) {
         R<T> r = ngCause(t);
+        r.setMessageBy(message);
         r.setCode(code);
-        r.setMessage(message);
         return r;
     }
 
     public static <T> R<T> ngCause(Throwable t, I18nAware message) {
         R<T> r = ngCause(t);
-        r.setMessage(message);
+        r.setMessageBy(message);
         return r;
     }
 

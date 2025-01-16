@@ -24,13 +24,13 @@ class I18nMessageTest {
         assertArrayEquals(args, m1.getI18nArgs());
 
         I18nMessage m2 = new I18nMessage();
-        m2.setMessage("Test message", "test.code");
+        m2.setMessageBy("Test message", "test.code");
         assertEquals("Test message", m2.getMessage());
         assertEquals("Test message", m2.toString(Locale.US));
         assertEquals("test.code", m2.getI18nCode());
 
         I18nMessage m3 = new I18nMessage();
-        m3.setMessage("Test message", "test.code", args);
+        m3.setMessageBy("Test message", "test.code", args);
         assertEquals("Test message", m3.getMessage());
         assertEquals("Test message", m3.toString(Locale.US));
         assertEquals("test.code", m3.getI18nCode());
@@ -57,13 +57,13 @@ class I18nMessageTest {
             }
         };
 
-        message.setMessage(aware);
+        message.setMessageBy(aware);
 
         assertEquals("hint.from.aware", message.getMessage());
         assertEquals("code.from.aware", message.getI18nCode());
         assertArrayEquals(new Object[]{"arg1", 2}, message.getI18nArgs());
 
-        message.setMessage("", aware);
+        message.setMessageBy("", aware);
         assertEquals("", message.getMessage());
         assertEquals("code.from.aware", message.getI18nCode());
         assertArrayEquals(new Object[]{"arg1", 2}, message.getI18nArgs());
@@ -72,13 +72,13 @@ class I18nMessageTest {
     @Test
     public void testSetMessageWithLocale() {
         I18nMessage message = new I18nMessage();
-        message.setMessage(Locale.US);
+        message.setMessageBy(Locale.US);
         assertNull(message.getMessage());
 
         message.setMessage("{0} is ok")
             .setI18nCode("test.code")
             .setI18nArgs("name");
-        message.setMessage(Locale.US);
+        message.setMessageBy(Locale.US);
         assertEquals("name is ok", message.getMessage());
     }
 
@@ -86,7 +86,7 @@ class I18nMessageTest {
     public void testSetMessageWithLocaleAndSource() {
         I18nMessage message = new I18nMessage();
         I18nAware.I18nSource source = (code, args, hint, lang) -> "Message from source: " + code;
-        message.setMessage(Locale.US, source);
+        message.setMessageBy(Locale.US, source);
         assertEquals("Message from source: null", message.getMessage());
     }
 

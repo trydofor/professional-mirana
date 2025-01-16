@@ -58,7 +58,7 @@ class I18nStringTest {
     @Test
     void testSetI18nHintWithLocale() {
         I18nString i18nString = new I18nString("testCode");
-        i18nString.setI18nHint(Locale.US);
+        i18nString.setI18nHintBy(Locale.US);
         assertNotNull(i18nString.getI18nHint());
     }
 
@@ -67,7 +67,7 @@ class I18nStringTest {
     void testSetI18nHintWithLocaleAndSource() {
         I18nString i18nString = new I18nString("testCode");
         I18nAware.I18nSource mockSource = (code, args, hint, lang) -> "mockedString";
-        i18nString.setI18nHint(Locale.US, mockSource);
+        i18nString.setI18nHintBy(Locale.US, mockSource);
         assertNotNull(i18nString.getI18nHint());
     }
 
@@ -132,7 +132,7 @@ class I18nStringTest {
         };
         final String str2 = s2.toString(Locale.ENGLISH, i18nSource);
         assertEquals("trydofor is ok", str2);
-        s2.setI18nCache(Locale.ENGLISH, i18nSource);
+        s2.setI18nCacheBy(Locale.ENGLISH, i18nSource);
         assertEquals(str2, s2.getI18nCache());
         assertEquals(str2, s2.toString());
 

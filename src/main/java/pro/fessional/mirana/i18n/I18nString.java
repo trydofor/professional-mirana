@@ -4,6 +4,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.beans.Transient;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Locale;
@@ -73,13 +74,15 @@ public class I18nString implements I18nAware {
         return this;
     }
 
+    @Transient
     @Contract("_->this")
-    public I18nString setI18nHint(@Nullable Locale locale) {
+    public I18nString setI18nHintBy(@Nullable Locale locale) {
         return setI18nHint(toString(locale));
     }
 
+    @Transient
     @Contract("_,_->this")
-    public I18nString setI18nHint(@Nullable Locale locale, @NotNull I18nSource source) {
+    public I18nString setI18nHintBy(@Nullable Locale locale, @NotNull I18nSource source) {
         return setI18nHint(toString(locale, source));
     }
 
@@ -94,11 +97,13 @@ public class I18nString implements I18nAware {
         return this;
     }
 
+    @Transient
     @Contract("_,_->this")
-    public I18nString setI18nCache(@Nullable Locale locale, @NotNull I18nSource source) {
+    public I18nString setI18nCacheBy(@Nullable Locale locale, @NotNull I18nSource source) {
         return setI18nCache(toString(locale, source));
     }
 
+    @Transient
     public boolean isEmpty() {
         return i18nCode.isEmpty();
     }
