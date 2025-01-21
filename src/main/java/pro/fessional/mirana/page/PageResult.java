@@ -189,12 +189,6 @@ public class PageResult<E> extends R<Collection<E>> implements Iterable<E> {
         return this;
     }
 
-    @Override
-    public boolean hasData() {
-        final Collection<E> data = getData();
-        return !data.isEmpty();
-    }
-
     @NotNull
     @Override
     public Iterator<E> iterator() {

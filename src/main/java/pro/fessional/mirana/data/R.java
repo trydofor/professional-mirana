@@ -25,7 +25,7 @@ import java.util.function.Supplier;
  * 1. if have errors -  the service is abnormal and incomplete, returns ErrorResult.
  * 2. if no errors - the service is normal and complete, returns DataResult.
  * 3. success - the success or failure of the service result.
- * 3. if has message -  should tell to the user.
+ * 3. if has message -  should tell to the user or show detailed errors.
  * 4. if has data - business data, regardless of success or failure.
  * 5. if has code, business logic should be clear and detailed.
  *
