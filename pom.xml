@@ -281,11 +281,8 @@
                         <configuration>
                             <excludes>
                                 <!-- mark or assert -->
-                                <exclude>**/best/Dummy*</exclude>
                                 <exclude>**/best/Param*</exclude>
-                                <exclude>**/best/Typed*</exclude>
                                 <!-- data struct -->
-                                <exclude>**/data/DataResult.*</exclude>
                                 <exclude>**/data/Null*</exclude>
                                 <exclude>**/data/Q.*</exclude>
                                 <exclude>**/data/Q$*</exclude>

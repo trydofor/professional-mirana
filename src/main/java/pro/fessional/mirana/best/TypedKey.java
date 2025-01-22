@@ -2,13 +2,14 @@ package pro.fessional.mirana.best;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 /**
  * <pre>
@@ -43,22 +44,55 @@ public abstract class TypedKey<V> {
         INSTANCE.put(clz.getName(), this);
     }
 
-    @SuppressWarnings("unchecked")
-    @Nullable
-    public V get(@NotNull Map<?, ?> map) throws ClassCastException {
-        final Object o = map.get(this);
-        return (V) o;
+    public void set(@NotNull BiConsumer<TypedKey<V>, V> fun, V value) {
+        fun.accept(this, value);
+    }
+
+    public void set(@NotNull Map<TypedKey<V>, ? super V> map, V value) {
+        map.put(this, value);
+    }
+
+    @Contract("_,true->!null")
+    public V get(@NotNull Function<TypedKey<V>, V> fun, boolean nonnull) {
+        V obj = fun.apply(this);
+        if (obj == null && nonnull) {
+            throw new NullPointerException("cannot be null, regType=" + regType);
+        }
+        return obj;
+    }
+
+    @Contract("_,true->!null")
+    public V get(@NotNull Map<TypedKey<V>, ? extends V> map, boolean nonnull) {
+        V obj = map.get(this);
+        if (obj == null && nonnull) {
+            throw new NullPointerException("cannot be null, regType=" + regType);
+        }
+        return obj;
     }
 
     @Contract("_,!null ->!null")
-    public V getOr(@NotNull Map<?, ?> map, V elze) throws ClassCastException {
-        final V obj = get(map);
+    public V getOr(@NotNull Function<TypedKey<V>, V> fun, V elze) {
+        final V obj = fun.apply(this);
+        return obj != null ? obj : elze;
+    }
+
+    @Contract("_,!null ->!null")
+    public V getOr(@NotNull Map<TypedKey<V>, ? extends V> map, V elze) {
+        final V obj = map.get(this);
         return obj != null ? obj : elze;
     }
 
     @SuppressWarnings("unchecked")
     @Contract("_,!null ->!null")
-    public V tryOr(@Nullable Object obj, V elze) throws ClassCastException {
+    public V tryOr(@NotNull Function<TypedKey<V>, ?> fun, V elze) throws ClassCastException {
+        final Object obj = fun.apply(this);
+        return obj != null ? (V) obj : elze;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Contract("_,!null ->!null")
+    public V tryOr(@NotNull Map<?, ?> map, V elze) throws ClassCastException {
+        final Object obj = map.get(this);
         return obj != null ? (V) obj : elze;
     }
 
@@ -108,7 +142,7 @@ public abstract class TypedKey<V> {
     public static <K> TypedKey<K> deserialize(@NotNull String clz, boolean nonnull) {
         TypedKey<?> ins = INSTANCE.get(clz);
         if (ins == null && nonnull) {
-            throw new ClassCastException("instance not found, class=" + clz);
+            throw new NullPointerException("instance not found, class=" + clz);
         }
         else {
             return (TypedKey<K>) ins;
