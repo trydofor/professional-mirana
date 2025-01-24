@@ -24,17 +24,17 @@ import java.util.function.Supplier;
  *
  * 1. if have errors -  the service is abnormal and incomplete, returns ErrorResult.
  * 2. if no errors - the service is normal and complete, returns DataResult.
- * 3. success - the success or failure of the service result.
+ * 3. success - the success or failure of the result.
+ * 5. if has code - the biz/err is more clear and detailed.
+ * 4. if has data - biz-data, regardless of success or failure.
  * 3. if has message -  should tell to the user or show detailed errors.
- * 4. if has data - business data, regardless of success or failure.
- * 5. if has code, business logic should be clear and detailed.
  *
  * ## Basic result container.
  *
  * - success - whether the result succeeded, default false.
+ * - code - biz/err code. CodeEnum auto set the code.
  * - data - business data in the result.
- * - code - business code. CodeEnum auto set the code.
- * - errors - errors thrown, no result.
+ * - errors - errors thrown, success must be false.
  * - message - default i18n message or template
  * - i18nCode - i18n template code
  * - i18nArgs - i18n template args
@@ -77,11 +77,11 @@ public class R<T> extends I18nMessage implements DataResult<T>, ErrorResult, I18
     }
 
     public R(boolean success) {
-        this(success, null, (String)null);
+        this(success, null, (String) null);
     }
 
     public R(boolean success, T data) {
-        this(success, data,  (String) null);
+        this(success, data, (String) null);
     }
 
     // ref to this
@@ -93,27 +93,27 @@ public class R<T> extends I18nMessage implements DataResult<T>, ErrorResult, I18
 
     public R(boolean success, T data, String code, String message) {
         this(success, data, code);
-        super.setMessage(message);
+        setMessage(message);
     }
 
     public R(boolean success, T data, String code, String message, String i18nCode) {
         this(success, data, code);
-        super.setMessageBy(message,i18nCode);
+        setMessageBy(message, i18nCode);
     }
 
     public R(boolean success, T data, String code, String message, String i18nCode, Object... i18nArgs) {
         this(success, data, code);
-        super.setMessageBy(message,i18nCode, i18nArgs);
+        setMessageBy(message, i18nCode, i18nArgs);
     }
 
     public R(boolean success, T data, String code, I18nAware message) {
         this(success, data, code);
-        super.setMessageBy(message);
+        setMessageBy(message);
     }
 
     public R(boolean success, T data, I18nAware message) {
         this(success, data);
-        super.setMessageBy(message);
+        setMessageBy(message);
     }
 
     public R(boolean success, T data, @NotNull CodeEnum code) {
@@ -205,7 +205,7 @@ public class R<T> extends I18nMessage implements DataResult<T>, ErrorResult, I18
     @Transient
     @Contract("_->this")
     public R<T> setDataIfOk(T data) {
-        return success ? setData(data): this;
+        return success ? setData(data) : this;
     }
 
     @Transient
@@ -281,8 +281,16 @@ public class R<T> extends I18nMessage implements DataResult<T>, ErrorResult, I18
     @Transient
     @Contract("_->this")
     public R<T> setCodeMessage(@NotNull CodeEnum code) {
-        this.code = code.getCode();
-        super.setMessageBy(code);
+        setCode(code.getCode());
+        setMessageBy(code);
+        return this;
+    }
+
+    @Transient
+    @Contract("_,_->this")
+    public R<T> setCodeMessage(String code, String message) {
+        setCode(code);
+        setMessage(message);
         return this;
     }
 

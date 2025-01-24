@@ -9,13 +9,7 @@ import org.jetbrains.annotations.Nullable;
 public interface DataResult<T> extends ActionResult {
 
     /**
-     * the biz code to caller
-     */
-    @Nullable
-    String getCode();
-
-    /**
-     * the biz data to caller
+     * the biz-data to caller
      */
     @Nullable
     T getData();

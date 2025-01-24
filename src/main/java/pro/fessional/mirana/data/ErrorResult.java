@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * <pre>
  * - success is false, not complete because of errors
- * - message ars '\n'-joined of errors.message
+ * - code the err-code more than errors
  * - errors should null if error is empty
  * </pre>
  *
