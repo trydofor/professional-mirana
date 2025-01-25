@@ -1,6 +1,7 @@
 package pro.fessional.mirana.i18n;
 
 import org.junit.jupiter.api.Test;
+import pro.fessional.mirana.i18n.I18nNotice.Type;
 
 import java.util.Locale;
 
@@ -23,11 +24,11 @@ public class I18nNoticeTest {
     @Test
     void testI18nNoticeEquals() {
         I18nNotice notice1 = new I18nNotice();
-        notice1.setType("BindingValidation");
+        notice1.setType(Type.IllegalState.name());
         notice1.setTarget("city");
 
         I18nNotice notice2 = new I18nNotice();
-        notice2.setType("BindingValidation");
+        notice2.setType(Type.IllegalState.name());
         notice2.setTarget("city");
 
         I18nNotice notice3 = new I18nNotice();
@@ -41,11 +42,11 @@ public class I18nNoticeTest {
     @Test
     void testI18nNoticeHashCode() {
         I18nNotice notice1 = new I18nNotice();
-        notice1.setType("BindingValidation");
+        notice1.setType(Type.IllegalArgument.name());
         notice1.setTarget("city");
 
         I18nNotice notice2 = new I18nNotice();
-        notice2.setType("BindingValidation");
+        notice2.setType(Type.IllegalArgument.name());
         notice2.setTarget("city");
 
         assertEquals(notice1.hashCode(), notice2.hashCode());
@@ -54,13 +55,13 @@ public class I18nNoticeTest {
     @Test
     void testI18nNoticeToString() {
         I18nNotice notice = new I18nNotice();
-        notice.setType("BindingValidation");
+        notice.setType(Type.Validation.name());
         notice.setTarget("city");
         notice.message = "default message";
         notice.i18nCode = "i18n_code";
         notice.i18nArgs = new Object[]{ "arg1", "arg2" };
 
-        String expected = "I18nNotice{type='BindingValidation', target='city', message='default message', i18nCode='i18n_code', i18nArgs=[arg1, arg2]} ";
+        String expected = "I18nNotice{type='Validation', target='city', message='default message', i18nCode='i18n_code', i18nArgs=[arg1, arg2]} ";
         assertEquals(expected, notice.toString());
     }
 

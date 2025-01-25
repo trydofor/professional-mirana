@@ -10,7 +10,7 @@ import java.util.Objects;
  * <pre>
  * specified message for user to know what and why.
  *
- * - type - notice type, 'BindingValidation', 'IllegalArgument', 'IllegalState'
+ * - type - notice type, 'Validation', 'IllegalArgument', 'IllegalState'
  * - target - target input name, 'city', 'tab1.zipcode'
  * - message - default i18n message
  * - i18nCode - i18n template code
@@ -21,6 +21,15 @@ import java.util.Objects;
  * @since 2025-01-07
  */
 public class I18nNotice extends I18nMessage {
+
+    /**
+     * the notice type that should be able to locate the input
+     */
+    public enum Type {
+        Validation,
+        IllegalArgument,
+        IllegalState,
+    }
 
     protected String type;
     protected String target;
