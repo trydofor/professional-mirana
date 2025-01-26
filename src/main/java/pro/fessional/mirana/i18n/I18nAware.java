@@ -1,6 +1,8 @@
 package pro.fessional.mirana.i18n;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.text.MessageFormat;
@@ -18,22 +20,70 @@ public interface I18nAware extends Serializable {
     /**
      * the i18n code, also template id
      */
-    default String getI18nCode() {
+    @Nullable
+    default String getI18nCode(){
         return null;
+    }
+
+    @Contract("true->!null")
+    default String getI18nCodeIf(boolean nonnull) {
+        String code = getI18nCode();
+        if (nonnull && code == null) {
+            throw new NullPointerException("code must be nonnull");
+        }
+        return code;
+    }
+
+    @Contract("!null->!null")
+    default String getI18nCodeOr(String elze) {
+        String code = getI18nCode();
+        return code == null ? elze : code;
     }
 
     /**
      * the default message or template (if no template by code)
      */
-    default String getI18nHint() {
+    @Nullable
+    default String getI18nHint(){
         return null;
+    }
+
+    @Contract("true->!null")
+    default String getI18nHintIf(boolean nonnull) {
+        String hint = getI18nHint();
+        if (nonnull && hint == null) {
+            throw new NullPointerException("hint must be nonnull");
+        }
+        return hint;
+    }
+
+    @Contract("!null->!null")
+    default String getI18nHintOr(String elze) {
+        String hint = getI18nHint();
+        return hint == null ? elze : hint;
     }
 
     /**
      * the args of template
      */
-    default Object[] getI18nArgs() {
+    @Nullable
+    default Object[] getI18nArgs(){
         return null;
+    }
+
+    @Contract("true->!null")
+    default Object[] getI18nArgsIf(boolean nonnull) {
+        Object[] args = getI18nArgs();
+        if (nonnull && args == null) {
+            throw new NullPointerException("args must be nonnull");
+        }
+        return args;
+    }
+
+    @Contract("!null->!null")
+    default Object[] getI18nArgsOr(Object... elze) {
+        Object[] args = getI18nArgs();
+        return args == null ? elze : args;
     }
 
     @NotNull

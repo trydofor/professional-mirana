@@ -4,11 +4,12 @@ package pro.fessional.mirana.data;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import pro.fessional.mirana.i18n.CodeAware;
 import pro.fessional.mirana.i18n.CodeEnum;
 import pro.fessional.mirana.i18n.I18nAware;
 import pro.fessional.mirana.i18n.I18nMessage;
 import pro.fessional.mirana.i18n.I18nNotice;
-import pro.fessional.mirana.pain.CodeException;
+import pro.fessional.mirana.i18n.NameAware;
 
 import java.beans.Transient;
 import java.util.Arrays;
@@ -564,15 +565,63 @@ public class R<T> extends I18nMessage implements DataResult<T>, ErrorResult, I18
         return new R<>(false, null, code);
     }
 
+    public static <T> R<T> ngError(I18nNotice error) {
+        return new R<>(error);
+    }
+
+    public static <T> R<T> ngError(I18nNotice error, String code) {
+        R<T> r = ngError(error);
+        r.setCode(code);
+        return r;
+    }
+
+    public static <T> R<T> ngError(List<I18nNotice> errors) {
+        return new R<>(errors);
+    }
+
+    public static <T> R<T> ngError(List<I18nNotice> errors, String code) {
+        R<T> r = ngError(errors);
+        r.setCode(code);
+        return r;
+    }
+
+    public static <T> R<T> ngError(@NotNull Throwable t) {
+        R<T> r = new R<>(false);
+        I18nNotice ntc = new I18nNotice();
+
+        if (t instanceof I18nAware) {
+            ntc.setMessageBy((I18nAware) t);
+        }
+        else {
+            ntc.setMessage(t.getMessage());
+        }
+
+        if (t instanceof NameAware) {
+            ntc.setTarget(((NameAware) t).getName());
+        }
+
+        if (t instanceof CodeAware) {
+            r.setCode(((CodeAware) t).getCode());
+        }
+
+        r.setErrors(Collections.singletonList(ntc));
+        return r;
+    }
+
+    public static <T> R<T> ngError(@NotNull Throwable t, String code) {
+        R<T> r = ngError(t);
+        r.setCode(code);
+        return r;
+    }
+
     public static <T> R<T> ngCause(@NotNull Throwable t) {
         R<T> r = new R<>(false);
         r.setCause(t);
-        r.setMessage(t.getMessage());
-        if (t instanceof CodeException) {
-            CodeException ce = (CodeException) t;
-            r.code = ce.getCode();
-            r.i18nCode = ce.getI18nCode();
-            r.i18nArgs = ce.getI18nArgs();
+        if (t instanceof I18nAware) {
+            r.setMessageBy((I18nAware) t);
+        }
+        else {
+            r.setMessage(t.getMessage());
         }
         return r;
     }

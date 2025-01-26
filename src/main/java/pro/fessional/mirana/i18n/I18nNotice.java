@@ -2,6 +2,7 @@ package pro.fessional.mirana.i18n;
 
 
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -33,6 +34,7 @@ public class I18nNotice extends I18nMessage {
 
     protected String type;
     protected String target;
+
     public String getType() {
         return type;
     }
@@ -77,5 +79,22 @@ public class I18nNotice extends I18nMessage {
                ", i18nCode='" + i18nCode + '\'' +
                ", i18nArgs=" + Arrays.toString(i18nArgs) +
                "} ";
+    }
+
+    @NotNull
+    public static I18nNotice of(@NotNull I18nAware i18n) {
+        I18nNotice ntc = new I18nNotice();
+        ntc.setMessage(i18n.getI18nHint());
+        ntc.setI18nCode(i18n.getI18nCode());
+        ntc.setI18nArgs(i18n.getI18nArgs());
+        return ntc;
+    }
+
+    @NotNull
+    public static I18nNotice of(@NotNull I18nNotice i18n) {
+        I18nNotice ntc = I18nNotice.of((I18nAware) i18n);
+        ntc.setType(i18n.getType());
+        ntc.setTarget(i18n.getTarget());
+        return ntc;
     }
 }

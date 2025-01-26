@@ -9,7 +9,7 @@ import java.util.Objects;
  * @author trydofor
  * @since 2025-01-14
  */
-public class I18nName implements I18nAware {
+public class I18nName implements I18nAware, NameAware {
 
     private final String name;
 
@@ -17,6 +17,7 @@ public class I18nName implements I18nAware {
         this.name = name;
     }
 
+    @Override
     public String getName() {
         return name;
     }

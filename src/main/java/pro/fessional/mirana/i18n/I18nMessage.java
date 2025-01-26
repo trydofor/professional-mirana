@@ -137,4 +137,12 @@ public class I18nMessage implements ChainingCast, I18nAware {
                ", i18nArgs=" + Arrays.toString(i18nArgs) +
                '}';
     }
+
+    public static I18nMessage of(@NotNull I18nAware i18n){
+        I18nMessage msg = new I18nMessage();
+        msg.setMessage(i18n.getI18nHint());
+        msg.setI18nCode(i18n.getI18nCode());
+        msg.setI18nArgs(i18n.getI18nArgs());
+        return msg;
+    }
 }

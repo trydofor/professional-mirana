@@ -2,6 +2,7 @@ package pro.fessional.mirana.pain;
 
 import org.jetbrains.annotations.NotNull;
 import pro.fessional.mirana.i18n.CodeEnum;
+import pro.fessional.mirana.i18n.NameAware;
 
 /**
  * Used for pre-check of arguments
@@ -9,11 +10,12 @@ import pro.fessional.mirana.i18n.CodeEnum;
  * @author trydofor
  * @since 2019-10-05
  */
-public class BadArgsException extends CodeException {
+public class BadArgsException extends CodeException implements NameAware {
     private static final long serialVersionUID = 19791023L;
     
     private final String name;
 
+    @Override
     public String getName() {
         return name;
     }

@@ -2,6 +2,7 @@ package pro.fessional.mirana.pain;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import pro.fessional.mirana.i18n.CodeAware;
 import pro.fessional.mirana.i18n.CodeEnum;
 import pro.fessional.mirana.evil.TweakingContext;
 import pro.fessional.mirana.i18n.I18nAware;
@@ -16,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author trydofor
  * @since 2019-05-29
  */
-public class CodeException extends RuntimeException implements I18nAware {
+public class CodeException extends RuntimeException implements I18nAware, CodeAware {
     private static final long serialVersionUID = 19791023L;
     public static final boolean DefaultStack = false;
     public static final TweakingCodeException TweakStack = new TweakingCodeException(DefaultStack);
@@ -123,6 +124,7 @@ public class CodeException extends RuntimeException implements I18nAware {
     }
 
     @NotNull
+    @Override
     public String getCode() {
         return code;
     }

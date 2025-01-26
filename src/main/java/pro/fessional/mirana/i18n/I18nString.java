@@ -135,4 +135,11 @@ public class I18nString implements I18nAware {
     public static I18nString of(String str) {
         return new I18nString(str);
     }
+
+    /**
+     * the string as i18nCode, empty args and hint
+     */
+    public static I18nString of(@NotNull I18nAware i18n) {
+        return new I18nString(i18n.getI18nCode(), i18n.getI18nHint(), i18n.getI18nArgs());
+    }
 }
