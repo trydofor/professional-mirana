@@ -4,17 +4,17 @@ package pro.fessional.mirana.data;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import pro.fessional.mirana.i18n.CodeAware;
+import org.jetbrains.annotations.Unmodifiable;
 import pro.fessional.mirana.i18n.CodeEnum;
 import pro.fessional.mirana.i18n.I18nAware;
 import pro.fessional.mirana.i18n.I18nMessage;
 import pro.fessional.mirana.i18n.I18nNotice;
-import pro.fessional.mirana.i18n.NameAware;
 
 import java.beans.Transient;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -23,12 +23,15 @@ import java.util.function.Supplier;
  * <pre>
  * ## Conventions
  *
- * 1. if have errors -  the service is abnormal and incomplete, returns ErrorResult.
- * 2. if no errors - the service is normal and complete, returns DataResult.
- * 3. success - the success or failure of the result.
- * 5. if has code - the biz/err is more clear and detailed.
- * 4. if has data - biz-data, regardless of success or failure.
- * 3. if has message -  should tell to the user or show detailed errors.
+ * 1. ErrorResult with errors -  the service is abnormal and incomplete.
+ * 1.1. success - must be false.
+ * 1.2. if has i18n-message - should be the 1st error message.
+ * 1.3. if has code - the err-code to clarify the detailed error.
+ * 2. DataResult without errors - the service is normal and complete.
+ * 2.1. success - can be true or false.
+ * 2.2. if has i18n-message -  give more information to the user.
+ * 2.3. if has code - the biz-code to clarify the detailed data.
+ * 2.4. if has data - the biz-data to the user, regardless of success.
  *
  * ## Basic result container.
  *
@@ -175,6 +178,41 @@ public class R<T> extends I18nMessage implements DataResult<T>, ErrorResult, I18
     @Contract("_->this")
     public R<T> setErrors(List<I18nNotice> errors) {
         this.errors = errors;
+        return this;
+    }
+
+
+    @Transient
+    @Contract("->this")
+    public R<T> setMessageByErrors() {
+        if (errors != null && !errors.isEmpty()) {
+            setMessageBy(errors.get(0));
+        }
+        return this;
+    }
+
+    @Override
+    @Transient
+    @Contract("_->this")
+    public R<T> setMessageBy(Locale locale) {
+        super.setMessageBy(locale);
+        if (errors != null) {
+            for (I18nNotice er : errors) {
+                er.setMessageBy(locale);
+            }
+        }
+        return this;
+    }
+
+    @Override
+    @Contract("_,_->this")
+    public R<T> setMessageBy(Locale locale, @NotNull I18nSource source) {
+        super.setMessageBy(locale, source);
+        if (errors != null) {
+            for (I18nNotice er : errors) {
+                er.setMessageBy(locale, source);
+            }
+        }
         return this;
     }
 
@@ -585,7 +623,8 @@ public class R<T> extends I18nMessage implements DataResult<T>, ErrorResult, I18
         return r;
     }
 
-    public static <T> R<T> ngError(@NotNull Throwable t) {
+    @SuppressWarnings("unchecked")
+    public static <T> R<T> ngError(@NotNull Throwable t, String type) {
         R<T> r = new R<>(false);
         I18nNotice ntc = new I18nNotice();
 
@@ -600,17 +639,17 @@ public class R<T> extends I18nMessage implements DataResult<T>, ErrorResult, I18
             ntc.setTarget(((NameAware) t).getName());
         }
 
+        ntc.setType(type);
+
         if (t instanceof CodeAware) {
             r.setCode(((CodeAware) t).getCode());
         }
+        if (t instanceof DataAware<?>) {
+            Object dt = ((DataAware<?>) t).getData();
+            r.setData((T) dt);
+        }
 
         r.setErrors(Collections.singletonList(ntc));
-        return r;
-    }
-
-    public static <T> R<T> ngError(@NotNull Throwable t, String code) {
-        R<T> r = ngError(t);
-        r.setCode(code);
         return r;
     }
 
@@ -663,6 +702,7 @@ public class R<T> extends I18nMessage implements DataResult<T>, ErrorResult, I18
     /**
      * throw UnsupportedOperationException if modify
      */
+    @Unmodifiable
     public static class Immutable<T> extends R<T> {
 
         public static final R<Void> OK = new Immutable<>(true);

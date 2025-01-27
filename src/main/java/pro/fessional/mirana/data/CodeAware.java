@@ -1,4 +1,4 @@
-package pro.fessional.mirana.i18n;
+package pro.fessional.mirana.data;
 
 
 import org.jetbrains.annotations.Contract;

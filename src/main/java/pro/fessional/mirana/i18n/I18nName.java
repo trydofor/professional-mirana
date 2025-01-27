@@ -1,6 +1,9 @@
 package pro.fessional.mirana.i18n;
 
 
+import org.jetbrains.annotations.Nullable;
+import pro.fessional.mirana.data.NameAware;
+
 import java.util.Objects;
 
 /**
@@ -25,6 +28,18 @@ public class I18nName implements I18nAware, NameAware {
     @Override
     public String getI18nCode() {
         return name;
+    }
+
+    @Override
+    @Nullable
+    public Object[] getI18nArgs() {
+        return null;
+    }
+
+    @Override
+    @Nullable
+    public String getI18nHint() {
+        return null;
     }
 
     @Override

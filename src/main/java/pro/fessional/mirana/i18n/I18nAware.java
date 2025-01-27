@@ -21,9 +21,7 @@ public interface I18nAware extends Serializable {
      * the i18n code, also template id
      */
     @Nullable
-    default String getI18nCode(){
-        return null;
-    }
+    String getI18nCode();
 
     @Contract("true->!null")
     default String getI18nCodeIf(boolean nonnull) {
@@ -44,9 +42,7 @@ public interface I18nAware extends Serializable {
      * the default message or template (if no template by code)
      */
     @Nullable
-    default String getI18nHint(){
-        return null;
-    }
+    String getI18nHint();
 
     @Contract("true->!null")
     default String getI18nHintIf(boolean nonnull) {
@@ -67,9 +63,7 @@ public interface I18nAware extends Serializable {
      * the args of template
      */
     @Nullable
-    default Object[] getI18nArgs(){
-        return null;
-    }
+    Object[] getI18nArgs();
 
     @Contract("true->!null")
     default Object[] getI18nArgsIf(boolean nonnull) {
@@ -109,19 +103,29 @@ public interface I18nAware extends Serializable {
         return new I18nString(getI18nCode(), hint, args);
     }
 
+    /**
+     * @see #toString(Locale, I18nSource, String, String, Object...)
+     */
     default String toString(Locale locale) {
-        return toString(locale, I18nSource.Default);
+        return toString(locale, I18nSource.Default, getI18nCode(), getI18nHint(), getI18nArgs());
+    }
+
+    /**
+     * @see #toString(Locale, I18nSource, String, String, Object...)
+     */
+    default String toString(Locale locale, @NotNull I18nSource source) {
+        return toString(locale, source, getI18nCode(), getI18nHint(), getI18nArgs());
     }
 
     /**
      * <pre>
      * should use Locale.getDefault() if locale is null.
-     * return the i18nCode if message format get empty.
-     * recursively evaluate the I18nAware in i18nArgs.
+     * return the code if format message get empty.
+     * recursively evaluate the args if its item is I18nAware
      * </pre>
      */
-    default String toString(Locale locale, @NotNull I18nSource source) {
-        Object[] args = getI18nArgs();
+    @Contract("_,_,!null,_,_->!null")
+    static String toString(Locale locale, @NotNull I18nSource source, String code, String hint, Object... args) {
         if (args != null) {
             for (int i = 0; i < args.length; i++) {
                 if (args[i] instanceof I18nAware) {
@@ -129,8 +133,8 @@ public interface I18nAware extends Serializable {
                 }
             }
         }
-        String msg = source.getMessage(getI18nCode(), args, getI18nHint(), locale);
-        return msg == null || msg.isEmpty() ? getI18nCode() : msg;
+        String msg = source.getMessage(code, args, hint, locale);
+        return msg == null || msg.isEmpty() ? code : msg;
     }
 
     @FunctionalInterface
@@ -158,7 +162,7 @@ public interface I18nAware extends Serializable {
         /**
          * varargs sugar for coding
          */
-        default String getMessage(String code, Locale lang, String hint, Object[] args) {
+        default String getMessage(Locale lang, String code, String hint, Object... args) {
             return getMessage(code, args, hint, lang);
         }
     }

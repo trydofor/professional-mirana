@@ -2,7 +2,7 @@ package pro.fessional.mirana.pain;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import pro.fessional.mirana.i18n.CodeAware;
+import pro.fessional.mirana.data.CodeAware;
 import pro.fessional.mirana.i18n.CodeEnum;
 import pro.fessional.mirana.evil.TweakingContext;
 import pro.fessional.mirana.i18n.I18nAware;

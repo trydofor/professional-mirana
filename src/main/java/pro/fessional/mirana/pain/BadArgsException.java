@@ -2,7 +2,7 @@ package pro.fessional.mirana.pain;
 
 import org.jetbrains.annotations.NotNull;
 import pro.fessional.mirana.i18n.CodeEnum;
-import pro.fessional.mirana.i18n.NameAware;
+import pro.fessional.mirana.data.NameAware;
 
 /**
  * Used for pre-check of arguments
