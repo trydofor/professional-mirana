@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
+import pro.fessional.mirana.best.ReadOnly;
 import pro.fessional.mirana.i18n.CodeEnum;
 import pro.fessional.mirana.i18n.I18nAware;
 import pro.fessional.mirana.i18n.I18nMessage;
@@ -703,7 +704,7 @@ public class R<T> extends I18nMessage implements DataResult<T>, ErrorResult, I18
      * throw UnsupportedOperationException if modify
      */
     @Unmodifiable
-    public static class Immutable<T> extends R<T> {
+    public static class Immutable<T> extends R<T> implements ReadOnly {
 
         public static final R<Void> OK = new Immutable<>(true);
         public static final R<Void> NG = new Immutable<>(false);
