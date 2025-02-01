@@ -14,7 +14,7 @@ import java.util.Map;
 
 /**
  * <pre>
- * pre-check / post-check. throw MessageException(without stack) if not match.
+ * pre-check / post-check. throw MessageException(default stackless) if not match.
  *
  * NOTE1: should use isTure/isFalse instead of xxObj to assert primitive type (int/long/float/double)
  * </pre>

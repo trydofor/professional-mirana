@@ -15,7 +15,7 @@ import java.util.Map;
 
 /**
  * <pre>
- * post-check. throw IllegalStateException or BadStateException(without stack) if not match.
+ * post-check. throw IllegalStateException or BadStateException(default stackless) if not match.
  *
  * NOTE1: should use isTure/isFalse instead of xxObj to assert primitive type (int/long/float/double)
  * </pre>

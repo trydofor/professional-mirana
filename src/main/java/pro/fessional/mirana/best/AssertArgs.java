@@ -15,7 +15,7 @@ import java.util.Map;
 
 /**
  * <pre>
- * pre-check. throw IllegalArgumentException or BadArgsException(without stack) if not match.
+ * pre-check. throw IllegalArgumentException or BadArgsException(default stackless) if not match.
  *
  * NOTE1: should use isTure/isFalse instead of xxObj to assert primitive type (int/long/float/double)
  * </pre>
