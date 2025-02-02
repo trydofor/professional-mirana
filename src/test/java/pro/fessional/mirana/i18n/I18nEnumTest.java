@@ -36,7 +36,7 @@ class I18nEnumTest {
     @Test
     void tweakStack() {
         try {
-            AssertState.notNull(null,"test.null", Ti11.LGD);
+            AssertState.notNull(null,Ti11.LGD);
             Assertions.fail();
         }
         catch (Exception e) {
@@ -49,7 +49,7 @@ class I18nEnumTest {
 
         try {
             CodeException.TweakStack.tweakGlobal(true);
-            AssertState.notNull(null, "test.null", Ti11.LGD);
+            AssertState.notNull(null, Ti11.LGD);
             Assertions.fail();
         }
         catch (Exception e) {
