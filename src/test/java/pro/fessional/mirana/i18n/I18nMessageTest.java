@@ -85,9 +85,29 @@ class I18nMessageTest {
     @Test
     public void testSetMessageWithLocaleAndSource() {
         I18nMessage message = new I18nMessage();
-        I18nAware.I18nSource source = (code, args, hint, lang) -> "Message from source: " + code;
+        I18nAware.I18nSource source = (code, args, hint, lang) -> "test.code".equals(code)
+            ? "Message from source: " + code
+            : hint;
+
         message.setMessageBy(Locale.US, source);
-        assertEquals("Message from source: null", message.getMessage());
+        assertNull(message.getMessage());
+
+        message.setMessage("message");
+        message.setMessageBy(Locale.US, source);
+        assertEquals("message", message.getMessage());
+
+        message.setI18nCode("test.code");
+        message.setMessageBy(Locale.US, source);
+        assertEquals("Message from source: test.code", message.getMessage());
+
+        message.setMessage("message");
+        message.setI18nCode("test.code2");
+        message.setMessageBy(Locale.US, source);
+        assertEquals("message", message.getMessage());
+
+        message.setMessage(null);
+        message.setMessageBy(Locale.US, source);
+        assertEquals("test.code2", message.getMessage());
     }
 
     @Test

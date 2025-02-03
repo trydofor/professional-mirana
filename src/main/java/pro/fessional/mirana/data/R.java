@@ -121,17 +121,19 @@ public class R<T> extends I18nMessage implements DataResult<T>, ErrorResult, I18
         setMessageBy(message);
     }
 
-    public R(boolean success, T data, @NotNull CodeEnum code) {
+    public R(boolean success, T data, CodeEnum code) {
         this(success, data);
         setCodeMessage(code);
     }
 
-    public R(@NotNull I18nNotice err) {
+    public R(I18nNotice err) {
         this(false);
-        this.errors = Collections.singletonList(err);
+        if (err != null) {
+            this.errors = Collections.singletonList(err);
+        }
     }
 
-    public R(@NotNull List<I18nNotice> errs) {
+    public R(List<I18nNotice> errs) {
         this(false);
         this.errors = errs;
     }
@@ -179,16 +181,6 @@ public class R<T> extends I18nMessage implements DataResult<T>, ErrorResult, I18
     @Contract("_->this")
     public R<T> setErrors(List<I18nNotice> errors) {
         this.errors = errors;
-        return this;
-    }
-
-
-    @Transient
-    @Contract("->this")
-    public R<T> setMessageByErrors() {
-        if (errors != null && !errors.isEmpty()) {
-            setMessageBy(errors.get(0));
-        }
         return this;
     }
 
@@ -320,9 +312,11 @@ public class R<T> extends I18nMessage implements DataResult<T>, ErrorResult, I18
 
     @Transient
     @Contract("_->this")
-    public R<T> setCodeMessage(@NotNull CodeEnum code) {
-        setCode(code.getCode());
-        setMessageBy(code);
+    public R<T> setCodeMessage(CodeEnum code) {
+        if (code != null) {
+            setCode(code.getCode());
+            setMessageBy(code);
+        }
         return this;
     }
 
@@ -429,9 +423,9 @@ public class R<T> extends I18nMessage implements DataResult<T>, ErrorResult, I18
         return new R<>(success, null, code, (String) null);
     }
 
-    public static <T> R<T> orCode(boolean success, @NotNull CodeEnum okCode, @NotNull CodeEnum ngCode) {
+    public static <T> R<T> orCode(boolean success, CodeEnum okCode, CodeEnum ngCode) {
         CodeEnum code = success ? okCode : ngCode;
-        return new R<>(success, null, code.getCode(), (String) null);
+        return new R<>(success, null, code == null ? null : code.getCode(), (String) null);
     }
 
     public static <T> R<T> orMessage(boolean success, String okMessage, String ngMessage) {
@@ -439,7 +433,7 @@ public class R<T> extends I18nMessage implements DataResult<T>, ErrorResult, I18
         return new R<>(success, null, null, message);
     }
 
-    public static <T> R<T> orCodeMessage(boolean success, @NotNull CodeEnum okCode, @NotNull CodeEnum ngCode) {
+    public static <T> R<T> orCodeMessage(boolean success, CodeEnum okCode, CodeEnum ngCode) {
         CodeEnum code = success ? okCode : ngCode;
         return new R<>(success, null, code);
     }
@@ -478,8 +472,8 @@ public class R<T> extends I18nMessage implements DataResult<T>, ErrorResult, I18
         return new R<>(success, null, code, (String) null);
     }
 
-    public static <T> R<T> ofCode(boolean success, @NotNull CodeEnum code) {
-        return new R<>(success, null, code.getCode(), (String) null);
+    public static <T> R<T> ofCode(boolean success, CodeEnum code) {
+        return new R<>(success, null, code == null ? null : code.getCode(), (String) null);
     }
 
     public static <T> R<T> ofMessage(boolean success, String message) {
@@ -490,7 +484,7 @@ public class R<T> extends I18nMessage implements DataResult<T>, ErrorResult, I18
         return new R<>(success, null, message);
     }
 
-    public static <T> R<T> ofCodeMessage(boolean success, @NotNull CodeEnum code) {
+    public static <T> R<T> ofCodeMessage(boolean success, CodeEnum code) {
         return new R<>(success, null, code);
     }
 
@@ -533,7 +527,7 @@ public class R<T> extends I18nMessage implements DataResult<T>, ErrorResult, I18
         return R.ofCode(true, code);
     }
 
-    public static <T> R<T> okCode(@NotNull CodeEnum code) {
+    public static <T> R<T> okCode(CodeEnum code) {
         return R.ofCode(true, code);
     }
 
@@ -545,7 +539,7 @@ public class R<T> extends I18nMessage implements DataResult<T>, ErrorResult, I18
         return R.ofMessage(true, message);
     }
 
-    public static <T> R<T> okCodeMessage(@NotNull CodeEnum code) {
+    public static <T> R<T> okCodeMessage(CodeEnum code) {
         return new R<>(true, null, code);
     }
 
@@ -588,7 +582,7 @@ public class R<T> extends I18nMessage implements DataResult<T>, ErrorResult, I18
         return R.ofCode(false, code);
     }
 
-    public static <T> R<T> ngCode(@NotNull CodeEnum code) {
+    public static <T> R<T> ngCode(CodeEnum code) {
         return R.ofCode(false, code);
     }
 
@@ -600,7 +594,7 @@ public class R<T> extends I18nMessage implements DataResult<T>, ErrorResult, I18
         return R.ofMessage(false, message);
     }
 
-    public static <T> R<T> ngCodeMessage(@NotNull CodeEnum code) {
+    public static <T> R<T> ngCodeMessage(CodeEnum code) {
         return new R<>(false, null, code);
     }
 
@@ -625,22 +619,22 @@ public class R<T> extends I18nMessage implements DataResult<T>, ErrorResult, I18
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> R<T> ngError(@NotNull Throwable t, String type) {
+    public static <T> R<T> ngError(Throwable t, String type) {
         R<T> r = new R<>(false);
         I18nNotice ntc = new I18nNotice();
+        ntc.setType(type);
+
 
         if (t instanceof I18nAware) {
             ntc.setMessageBy((I18nAware) t);
         }
-        else {
+        else if (t != null) {
             ntc.setMessage(t.getMessage());
         }
 
         if (t instanceof NameAware) {
             ntc.setTarget(((NameAware) t).getName());
         }
-
-        ntc.setType(type);
 
         if (t instanceof CodeAware) {
             r.setCode(((CodeAware) t).getCode());
@@ -654,32 +648,32 @@ public class R<T> extends I18nMessage implements DataResult<T>, ErrorResult, I18
         return r;
     }
 
-    public static <T> R<T> ngCause(@NotNull Throwable t) {
+    public static <T> R<T> ngCause(Throwable t) {
         R<T> r = new R<>(false);
         r.setCause(t);
         if (t instanceof I18nAware) {
             r.setMessageBy((I18nAware) t);
         }
-        else {
+        else if (t != null) {
             r.setMessage(t.getMessage());
         }
         return r;
     }
 
-    public static <T> R<T> ngCause(@NotNull Throwable t, @NotNull String code) {
+    public static <T> R<T> ngCause(Throwable t, String code) {
         R<T> r = ngCause(t);
         r.setCode(code);
         return r;
     }
 
-    public static <T> R<T> ngCause(@NotNull Throwable t, @NotNull String code, String message) {
+    public static <T> R<T> ngCause(Throwable t, String code, String message) {
         R<T> r = ngCause(t);
         r.setCode(code);
         r.setMessage(message);
         return r;
     }
 
-    public static <T> R<T> ngCause(@NotNull Throwable t, @NotNull String code, I18nAware message) {
+    public static <T> R<T> ngCause(Throwable t, String code, I18nAware message) {
         R<T> r = ngCause(t);
         r.setMessageBy(message);
         r.setCode(code);

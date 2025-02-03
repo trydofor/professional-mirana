@@ -120,12 +120,15 @@ public interface I18nAware extends Serializable {
     /**
      * <pre>
      * should use Locale.getDefault() if locale is null.
+     * return the hint if code is empty.
      * return the code if format message get empty.
      * recursively evaluate the args if its item is I18nAware
      * </pre>
      */
     @Contract("_,_,!null,_,_->!null")
     static String toString(Locale locale, @NotNull I18nSource source, String code, String hint, Object... args) {
+        if (code == null || code.isEmpty()) return hint;
+
         if (args != null) {
             for (int i = 0; i < args.length; i++) {
                 if (args[i] instanceof I18nAware) {
