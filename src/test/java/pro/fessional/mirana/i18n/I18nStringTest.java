@@ -10,7 +10,6 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -19,7 +18,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 class I18nStringTest {
 
-    // 测试默认构造函数
     @Test
     void testDefaultConstructor() {
         I18nString i18nString = new I18nString("testCode");
@@ -28,7 +26,6 @@ class I18nStringTest {
         assertEquals("", i18nString.getI18nHint());
     }
 
-    // 测试带 i18nHint 构造函数
     @Test
     void testConstructorWithHint() {
         I18nString i18nString = new I18nString("testCode", "testHint");
@@ -37,7 +34,6 @@ class I18nStringTest {
         assertEquals("testHint", i18nString.getI18nHint());
     }
 
-    // 测试完整参数构造函数
     @Test
     void testConstructorWithArgs() {
         I18nString i18nString = new I18nString("testCode", "testHint", "arg1", "arg2");
@@ -46,29 +42,11 @@ class I18nStringTest {
         assertEquals("testHint", i18nString.getI18nHint());
     }
 
-    // 测试 setI18nHint 方法，使用字符串参数
     @Test
     void testSetI18nHintWithString() {
         I18nString i18nString = new I18nString("testCode");
         i18nString.setI18nHint("newHint");
         assertEquals("newHint", i18nString.getI18nHint());
-    }
-
-    // 测试 setI18nHint 方法，使用 Locale 参数
-    @Test
-    void testSetI18nHintWithLocale() {
-        I18nString i18nString = new I18nString("testCode");
-        i18nString.setI18nHintBy(Locale.US);
-        assertNotNull(i18nString.getI18nHint());
-    }
-
-    // 测试 setI18nHint 方法，使用 Locale 和 I18nSource 参数
-    @Test
-    void testSetI18nHintWithLocaleAndSource() {
-        I18nString i18nString = new I18nString("testCode");
-        I18nAware.I18nSource mockSource = (code, args, hint, lang) -> "mockedString";
-        i18nString.setI18nHintBy(Locale.US, mockSource);
-        assertNotNull(i18nString.getI18nHint());
     }
 
     @Test
@@ -132,7 +110,7 @@ class I18nStringTest {
         };
         final String str2 = s2.toString(Locale.ENGLISH, i18nSource);
         assertEquals("trydofor is ok", str2);
-        s2.setI18nCacheBy(Locale.ENGLISH, i18nSource);
+        s2.applyLocale(Locale.ENGLISH, i18nSource);
         assertEquals(str2, s2.getI18nCache());
         assertEquals(str2, s2.toString());
 

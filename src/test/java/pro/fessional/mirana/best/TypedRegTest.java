@@ -36,8 +36,6 @@ class TypedRegTest {
         assertSame(Test2, t2);
     }
 
-
-    // 测试构造函数
     @Test
     void testConstructor() {
         TypedReg<Integer, String> reg = new TypedReg<Integer, String>() {};
@@ -48,7 +46,6 @@ class TypedRegTest {
         assertEquals("java.lang.String", reg.valType.getTypeName());
     }
 
-    // 测试 Key 类的行为
     @Test
     void testKeyBehavior() {
         TypedReg<Integer, String> reg = new TypedReg<Integer, String>() {};
@@ -113,7 +110,6 @@ class TypedRegTest {
         assertThrows(ClassCastException.class, () -> key.tryOr(invalidMap, defaultValue));
     }
 
-    // 测试 Key 的 equals 和 hashCode
     @Test
     void testKeyEqualsAndHashCode() {
         TypedReg<Integer, String> reg = new TypedReg<Integer, String>() {};
@@ -124,7 +120,6 @@ class TypedRegTest {
         assertEquals(key1.hashCode(), key2.hashCode());
     }
 
-    // 测试 serialize 和 deserialize
     @Test
     void testSerializeAndDeserialize() {
         TypedReg<Integer, String> reg = new TypedReg<Integer, String>() {};
@@ -136,7 +131,6 @@ class TypedRegTest {
         assertEquals(reg, deserialized);
     }
 
-    // 测试 deserialize 的异常情况
     @Test
     void testDeserializeException() {
         assertThrows(NullPointerException.class, () -> TypedReg.deserialize("NonExistentClass"));

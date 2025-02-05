@@ -74,38 +74,27 @@ public class I18nString implements I18nAware {
         return this;
     }
 
-    @Transient
-    @Contract("_->this")
-    public I18nString setI18nHintBy(@Nullable Locale locale) {
-        return setI18nHint(toString(locale));
-    }
-
-    @Transient
-    @Contract("_,_->this")
-    public I18nString setI18nHintBy(@Nullable Locale locale, @NotNull I18nSource source) {
-        return setI18nHint(toString(locale, source));
-    }
-
     @Nullable
+    @Transient
     public String getI18nCache() {
         return i18nCache;
     }
 
     @Contract("_->this")
+    @Transient
     public I18nString setI18nCache(String i18nCache) {
         this.i18nCache = i18nCache;
         return this;
     }
 
     @Transient
-    @Contract("_,_->this")
-    public I18nString setI18nCacheBy(@Nullable Locale locale, @NotNull I18nSource source) {
-        return setI18nCache(toString(locale, source));
-    }
-
-    @Transient
     public boolean isEmpty() {
         return i18nCode.isEmpty();
+    }
+
+    @Override
+    public void applyLocale(Locale locale, @NotNull I18nSource source) {
+        this.i18nCache = toString(locale, source);
     }
 
     @Override

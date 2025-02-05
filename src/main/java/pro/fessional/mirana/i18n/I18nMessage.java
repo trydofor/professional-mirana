@@ -103,15 +103,9 @@ public class I18nMessage implements ChainingCast, I18nAware {
         return this;
     }
 
-    @Transient
-    @Contract("_->this")
-    public I18nMessage setMessageBy(Locale locale) {
-        return setMessage(toString(locale));
-    }
-
-    @Contract("_,_->this")
-    public I18nMessage setMessageBy(Locale locale, @NotNull I18nSource source) {
-        return setMessage(toString(locale, source));
+    @Override
+    public void applyLocale(Locale locale, @NotNull I18nSource source) {
+        setMessage(toString(locale, source));
     }
 
     @Override

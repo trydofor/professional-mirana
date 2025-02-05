@@ -3,10 +3,11 @@ package pro.fessional.mirana.pain;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pro.fessional.mirana.data.CodeAware;
-import pro.fessional.mirana.i18n.CodeEnum;
 import pro.fessional.mirana.evil.TweakingContext;
+import pro.fessional.mirana.i18n.CodeEnum;
 import pro.fessional.mirana.i18n.I18nAware;
 
+import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -26,6 +27,8 @@ public class CodeException extends RuntimeException implements I18nAware, CodeAw
     private final String code;
     private final String i18nCode;
     private final Object[] i18nArgs;
+
+    private String localizedMessage;
 
     /**
      * Constructs a stacked or unstacked exception directly.
@@ -121,6 +124,21 @@ public class CodeException extends RuntimeException implements I18nAware, CodeAw
 
     public CodeException(@NotNull Throwable cause, @NotNull CodeEnum code, Object... args) {
         this(cause, code.getCode(), code.getHint(), args);
+    }
+
+    @Override
+    public String getMessage() {
+        return localizedMessage != null ? localizedMessage : super.getMessage();
+    }
+
+    @Override
+    public String getLocalizedMessage() {
+        return localizedMessage != null ? localizedMessage : super.getLocalizedMessage();
+    }
+
+    @Override
+    public void applyLocale(Locale locale, @NotNull I18nSource source) {
+        localizedMessage = toString(locale, source);
     }
 
     @NotNull

@@ -118,6 +118,15 @@ public interface I18nAware extends Serializable {
     }
 
     /**
+     * apply the internal locale and updates the i18n state based on the provided source.
+     *
+     * @param locale the locale to be applied
+     * @param source the i18n source providing the translations
+     */
+    default void applyLocale(Locale locale, @NotNull I18nSource source){
+    }
+
+    /**
      * <pre>
      * should use Locale.getDefault() if locale is null.
      * return the hint if code is empty.

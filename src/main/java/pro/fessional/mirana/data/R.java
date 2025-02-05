@@ -184,29 +184,15 @@ public class R<T> extends I18nMessage implements DataResult<T>, ErrorResult, I18
         return this;
     }
 
-    @Override
-    @Transient
-    @Contract("_->this")
-    public R<T> setMessageBy(Locale locale) {
-        super.setMessageBy(locale);
-        if (errors != null) {
-            for (I18nNotice er : errors) {
-                er.setMessageBy(locale);
-            }
-        }
-        return this;
-    }
 
     @Override
-    @Contract("_,_->this")
-    public R<T> setMessageBy(Locale locale, @NotNull I18nSource source) {
-        super.setMessageBy(locale, source);
+    public void applyLocale(Locale locale, @NotNull I18nSource source) {
+        super.applyLocale(locale, source);
         if (errors != null) {
             for (I18nNotice er : errors) {
-                er.setMessageBy(locale, source);
+                er.applyLocale(locale, source);
             }
         }
-        return this;
     }
 
     @Transient
