@@ -67,7 +67,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.test.skip>true</maven.test.skip>
         <!-- main -->
-        <nonull.version>24.1.0</nonull.version>
+        <annotations.version>26.0.2</annotations.version>
         <jcip-anno.version>1.0-1</jcip-anno.version>
         <!-- test -->
         <junit.version>5.10.1</junit.version>
@@ -86,7 +86,7 @@
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <version>${nonull.version}</version>
+            <version>${annotations.version}</version>
         </dependency>
         <!-- test -->
         <dependency>
