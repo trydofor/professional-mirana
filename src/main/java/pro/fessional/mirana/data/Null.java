@@ -33,7 +33,8 @@ public class Null {
 
     public static final boolean Int01 = false;
     public static final byte Int08 = 0;
-    public static final char Int16 = 0;
+    public static final char Char0 = 0;
+    public static final short Int16 = 0;
     public static final int Int32 = 0;
     public static final long Int64 = 0L;
     public static final float Flt32 = 0.0F;
@@ -76,7 +77,7 @@ public class Null {
     }
 
     public static boolean asNull(char v) {
-        return v == Int16;
+        return v == Char0;
     }
 
     public static boolean asNull(short v) {
@@ -108,7 +109,7 @@ public class Null {
     }
 
     public static boolean asNull(Character v) {
-        return v == null || v == Int16;
+        return v == null || v == Char0;
     }
 
     public static boolean asNull(Short v) {
@@ -194,11 +195,11 @@ public class Null {
     }
 
     public static char notNull(Character v) {
-        return v == null ? Int16 : v;
+        return v == null ? Char0 : v;
     }
 
     public static short notNull(Short v) {
-        return v == null ? (short) Int16 : v;
+        return v == null ? Int16 : v;
     }
 
     public static int notNull(Integer v) {

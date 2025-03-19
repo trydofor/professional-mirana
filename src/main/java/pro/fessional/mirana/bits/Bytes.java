@@ -18,6 +18,7 @@ public class Bytes {
     /**
      * check the hex char
      */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean isHex(char c) {
         return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F');
     }
@@ -88,7 +89,7 @@ public class Bytes {
     }
 
     /**
-     * Parse HEX string (can contain `0x20\t\r\n` case insensitive) into bytes.
+     * Parse HEX string (can contain `0x20\t\r\n` case-insensitive) into bytes.
      */
     public static byte[] hex(@Nullable String hex) {
         if (hex == null || hex.isEmpty()) return Null.Bytes;
@@ -98,7 +99,7 @@ public class Bytes {
     }
 
     /**
-     * Parse HEX string (can contain `0x20\t\r\n` case insensitive) into stream.
+     * Parse HEX string (can contain `0x20\t\r\n` case-insensitive) into stream.
      *
      * @return count of bytes wrote to the stream
      */

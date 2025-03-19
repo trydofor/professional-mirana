@@ -50,8 +50,8 @@
 
     <scm>
         <connection>scm:git:git@github.com:trydofor/professional-mirana.git</connection>
-        <url>scm:git:git@github.com:trydofor/professional-mirana.git</url>
-        <developerConnection>scm:git:git@github.com:trydofor/professional-mirana.git</developerConnection>
+        <developerConnection>scm:git:git://github.com:trydofor/professional-mirana.git</developerConnection>
+        <url>scm:git:git://github.com:trydofor/professional-mirana.git</url>
     </scm>
 
     <issueManagement>
@@ -60,14 +60,14 @@
     </issueManagement>
 
     <properties>
-        <revision>2.7.3-SNAPSHOT</revision>
+        <revision>3.0.0-SNAPSHOT</revision>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.test.skip>true</maven.test.skip>
         <!-- main -->
-        <nonull.version>24.1.0</nonull.version>
+        <annotations.version>26.0.2</annotations.version>
         <jcip-anno.version>1.0-1</jcip-anno.version>
         <!-- test -->
         <junit.version>5.10.1</junit.version>
@@ -86,7 +86,7 @@
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <version>${nonull.version}</version>
+            <version>${annotations.version}</version>
         </dependency>
         <!-- test -->
         <dependency>
@@ -281,12 +281,8 @@
                         <configuration>
                             <excludes>
                                 <!-- mark or assert -->
-                                <exclude>**/best/Assert*</exclude>
-                                <exclude>**/best/Dummy*</exclude>
                                 <exclude>**/best/Param*</exclude>
-                                <exclude>**/best/Typed*</exclude>
                                 <!-- data struct -->
-                                <exclude>**/data/DataResult.*</exclude>
                                 <exclude>**/data/Null*</exclude>
                                 <exclude>**/data/Q.*</exclude>
                                 <exclude>**/data/Q$*</exclude>
@@ -304,8 +300,6 @@
                                 <exclude>**/img/StreamJpg*</exclude>
                                 <exclude>**/img/Watermark*</exclude>
                                 <exclude>**/img/ZoomRotateCrop*</exclude>
-                                <!-- aware interface -->
-                                <exclude>**/i18n/*Aware.*</exclude>
                                 <!-- simple or manully checked -->
                                 <exclude>**/io/CompatibleObjectStream*</exclude>
                                 <exclude>**/io/DirHasher*</exclude>
@@ -422,9 +416,9 @@
                                 </goals>
                                 <configuration>
                                     <target>
-                                        <delete dir="${deploy.old.todir}" failonerror="false"/>
+                                        <delete dir="${deploy.old.todir}" failonerror="false" />
                                         <copy todir="${deploy.old.todir}" overwrite="true">
-                                            <fileset dir="${project.build.directory}" includes="${deploy.old.files}"/>
+                                            <fileset dir="${project.build.directory}" includes="${deploy.old.files}" />
                                         </copy>
                                     </target>
                                 </configuration>
@@ -439,7 +433,7 @@
                                 <configuration>
                                     <target>
                                         <copy todir="${project.build.directory}" overwrite="true">
-                                            <fileset dir="${deploy.old.todir}" includes="${deploy.old.files}" erroronmissingdir="false"/>
+                                            <fileset dir="${deploy.old.todir}" includes="${deploy.old.files}" erroronmissingdir="false" />
                                         </copy>
                                     </target>
                                 </configuration>

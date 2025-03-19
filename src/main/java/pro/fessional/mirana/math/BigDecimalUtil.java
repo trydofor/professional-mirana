@@ -239,7 +239,7 @@ public class BigDecimalUtil {
      */
     @NotNull
     public static BigDecimal ifElse(boolean cond, Supplier<?> a, Supplier<?> b) {
-        final BigDecimal d = cond ? object((Object) a) : object((Object) b);
+        final BigDecimal d = cond ? object(a) : object(b);
         return Objects.requireNonNull(d);
     }
 
@@ -1137,7 +1137,7 @@ public class BigDecimalUtil {
 
         @Contract("_,_,_->this")
         public W addIf(boolean c, Supplier<?> a, Supplier<?> b) {
-            final BigDecimal num = c ? object((Object) a) : object((Object) b);
+            final BigDecimal num = c ? object(a) : object(b);
             value = BigDecimalUtil.add(value, num);
             return this;
         }
@@ -1195,7 +1195,7 @@ public class BigDecimalUtil {
 
         @Contract("_,_,_->this")
         public W subIf(boolean c, Supplier<?> a, Supplier<?> b) {
-            final BigDecimal num = c ? object((Object) a) : object((Object) b);
+            final BigDecimal num = c ? object(a) : object(b);
             value = BigDecimalUtil.sub(value, num);
             return this;
         }
@@ -1251,7 +1251,7 @@ public class BigDecimalUtil {
 
         @Contract("_,_,_->this")
         public W mulIf(boolean c, Supplier<?> a, Supplier<?> b) {
-            final BigDecimal num = c ? object((Object) a) : object((Object) b);
+            final BigDecimal num = c ? object(a) : object(b);
             value = BigDecimalUtil.mul(value, num);
             return this;
         }
@@ -1309,7 +1309,7 @@ public class BigDecimalUtil {
 
         @Contract("_,_,_->this")
         public W divIf(boolean c, Supplier<?> a, Supplier<?> b) {
-            final BigDecimal num = c ? object((Object) a) : object((Object) b);
+            final BigDecimal num = c ? object(a) : object(b);
             value = BigDecimalUtil.div(value, num);
             return this;
         }

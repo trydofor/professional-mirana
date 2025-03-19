@@ -1,7 +1,8 @@
-package pro.fessional.mirana.data;
+package pro.fessional.mirana.i18n;
 
 import org.jetbrains.annotations.NotNull;
-import pro.fessional.mirana.i18n.I18nAware;
+import org.jetbrains.annotations.Nullable;
+import pro.fessional.mirana.data.CodeAware;
 
 import java.beans.Transient;
 
@@ -11,13 +12,14 @@ import java.beans.Transient;
  * @author trydofor
  * @since 2019-09-17
  */
-public interface CodeEnum extends I18nAware {
+public interface CodeEnum extends I18nAware, CodeAware {
     /**
      * business code
      *
      * @return code
      */
     @NotNull
+    @Override
     String getCode();
 
     /**
@@ -40,5 +42,11 @@ public interface CodeEnum extends I18nAware {
     @Override
     default String getI18nHint() {
         return getHint();
+    }
+
+    @Override
+    @Transient
+    @Nullable default Object[] getI18nArgs() {
+        return null;
     }
 }

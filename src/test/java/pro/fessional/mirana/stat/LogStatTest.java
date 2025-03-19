@@ -55,6 +55,8 @@ class LogStatTest {
                      + "######### #3 KEYWORD: WARN #########\n"
                      + "2021-07-11 00:42:42.244  WARN 24430 --- [pool-1358-thread-3] c.j.b.c.s.f.w.rate.FedexRateService      : PAYOR_ACCOUNT_SHIPMENT:TotalBase=64.0,TotalSur=5.95,TotalNet=69.95\n"
                      + "c11111111111111111\n"
+                     + "2021-07-11 00:42:42.244  WARN 24430 --- [pool-1358-thread-3] should squash to the previous line\n"
+                     + "c11111111111111111\n"
                      + "c22222222222222222\n"
                      + "######### #4 KEYWORD: ERROR #########\n"
                      + "2021-07-11 00:42:42.244  ERROR 24430 --- [pool-1358-thread-3] c.j.b.c.s.f.w.rate.FedexRateService      : PAYOR_ACCOUNT_SHIPMENT:TotalBase=64.0,TotalSur=5.95,TotalNet=69.95\n";

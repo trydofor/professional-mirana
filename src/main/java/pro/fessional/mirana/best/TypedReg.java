@@ -9,6 +9,8 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 /**
  * <pre>
@@ -45,6 +47,10 @@ public abstract class TypedReg<K, V> {
         keyType = tps[0];
         valType = tps[1];
         INSTANCE.put(clz.getName(), this);
+    }
+
+    public Key<K, V> key(K key) {
+        return new Key<>(this, key);
     }
 
     @Override
@@ -93,15 +99,11 @@ public abstract class TypedReg<K, V> {
     public static <K, V> TypedReg<K, V> deserialize(@NotNull String clz, boolean nonnull) {
         TypedReg<?, ?> ins = INSTANCE.get(clz);
         if (ins == null && nonnull) {
-            throw new ClassCastException("instance not found, class=" + clz);
+            throw new NullPointerException("instance not found, class=" + clz);
         }
         else {
             return (TypedReg<K, V>) ins;
         }
-    }
-
-    public static <K, V> Key<K, V> key(@NotNull TypedReg<K, V> reg, K key) {
-        return new Key<>(reg, key);
     }
 
     public static class Key<K, V> {
@@ -114,22 +116,55 @@ public abstract class TypedReg<K, V> {
             this.key = key;
         }
 
-        @SuppressWarnings("unchecked")
+        public void set(@NotNull BiConsumer<Key<K, V>, V> fun, V value) {
+            fun.accept(this, value);
+        }
+
+        public void set(@NotNull Map<Key<K, V>, ? super V> map, V value) {
+            map.put(this, value);
+        }
+
         @Nullable
-        public V get(@NotNull Map<?, ?> map) throws ClassCastException {
-            final Object o = map.get(this);
-            return (V) o;
+        public V get(@NotNull Function<Key<K, V>, V> fun, boolean nonnull) {
+            V obj = fun.apply(this);
+            if (obj == null && nonnull) {
+                throw new NullPointerException("cannot be null, key=" + key + ", reg=" + reg);
+            }
+            return obj;
+        }
+
+        @Nullable
+        public V get(@NotNull Map<Key<K, V>, ? extends V> map, boolean nonnull) {
+            V obj = map.get(this);
+            if (obj == null && nonnull) {
+                throw new NullPointerException("cannot be null, key=" + key + ", reg=" + reg);
+            }
+            return obj;
         }
 
         @Contract("_,!null ->!null")
-        public V getOr(@NotNull Map<?, ?> map, V elze) throws ClassCastException {
-            final V obj = get(map);
+        public V getOr(@NotNull Function<Key<K, V>, V> fun, V elze) {
+            final V obj = fun.apply(this);
+            return obj != null ? obj : elze;
+        }
+
+        @Contract("_,!null ->!null")
+        public V getOr(@NotNull Map<Key<K, V>, ? extends V> map, V elze) {
+            final V obj = map.get(this);
             return obj != null ? obj : elze;
         }
 
         @SuppressWarnings("unchecked")
         @Contract("_,!null ->!null")
-        public V tryOr(@Nullable Object obj, V elze) throws ClassCastException {
+        public V tryOr(@NotNull Function<Key<K, V>, ?> fun, V elze) throws ClassCastException {
+            final Object obj = fun.apply(this);
+            return obj != null ? (V) obj : elze;
+        }
+
+        @SuppressWarnings("unchecked")
+        @Contract("_,!null ->!null")
+        public V tryOr(@NotNull Map<?, ?> map, V elze) throws ClassCastException {
+            final Object obj = map.get(this);
             return obj != null ? (V) obj : elze;
         }
 

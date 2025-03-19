@@ -1,6 +1,8 @@
 package pro.fessional.mirana.pain;
 
-import pro.fessional.mirana.data.CodeEnum;
+import org.jetbrains.annotations.NotNull;
+import pro.fessional.mirana.i18n.CodeEnum;
+import pro.fessional.mirana.data.NameAware;
 
 /**
  * Used for pre-check of arguments
@@ -8,54 +10,88 @@ import pro.fessional.mirana.data.CodeEnum;
  * @author trydofor
  * @since 2019-10-05
  */
-public class BadArgsException extends CodeException {
+public class BadArgsException extends CodeException implements NameAware {
     private static final long serialVersionUID = 19791023L;
+    
+    private final String name;
 
-    public BadArgsException(String code) {
-        super(code);
+    @Override
+    public String getName() {
+        return name;
     }
 
-    public BadArgsException(String code, String message) {
-        super(code, message);
+    public BadArgsException(@NotNull String name, @NotNull String code) {
+        super(TweakStack.current(code, BadArgsException.class, null), code);
+        this.name = name;
     }
 
-    public BadArgsException(CodeEnum code) {
-        super(code);
-    }
-
-    public BadArgsException(CodeEnum code, Object... args) {
-        super(code, args);
-    }
-
-    public BadArgsException(boolean stack, String code) {
+    public BadArgsException(@NotNull String name, boolean stack, @NotNull String code) {
         super(stack, code);
+        this.name = name;
     }
 
-    public BadArgsException(boolean stack, String code, String message) {
+    public BadArgsException(@NotNull String name, @NotNull String code, String message) {
+        super(TweakStack.current(code, BadArgsException.class, null), code, message);
+        this.name = name;
+    }
+
+    public BadArgsException(@NotNull String name, boolean stack, @NotNull String code, String message) {
         super(stack, code, message);
+        this.name = name;
     }
 
-    public BadArgsException(boolean stack, CodeEnum code) {
+    public BadArgsException(@NotNull String name, @NotNull String code, String message, Object... args) {
+        super(TweakStack.current(code, BadArgsException.class, null), code, message, args);
+        this.name = name;
+    }
+
+    public BadArgsException(@NotNull String name, boolean stack, @NotNull String code, String message, Object... args) {
+        super(stack, code, message, args);
+        this.name = name;
+    }
+
+    public BadArgsException(@NotNull String name, @NotNull CodeEnum code) {
+        super(TweakStack.current(code, BadArgsException.class, null), code);
+        this.name = name;
+    }
+
+    public BadArgsException(@NotNull String name, boolean stack, @NotNull CodeEnum code) {
         super(stack, code);
+        this.name = name;
     }
 
-    public BadArgsException(boolean stack, CodeEnum code, Object... args) {
+    public BadArgsException(@NotNull String name, @NotNull CodeEnum code, Object... args) {
+        super(TweakStack.current(code, BadArgsException.class, null), code, args);
+        this.name = name;
+    }
+
+    public BadArgsException(@NotNull String name, boolean stack, @NotNull CodeEnum code, Object... args) {
         super(stack, code, args);
+        this.name = name;
     }
 
-    public BadArgsException(Throwable cause, String code) {
+    public BadArgsException(@NotNull String name, @NotNull Throwable cause, @NotNull String code) {
         super(cause, code);
+        this.name = name;
     }
 
-    public BadArgsException(Throwable cause, String code, String message) {
+    public BadArgsException(@NotNull String name, @NotNull Throwable cause, @NotNull String code, String message) {
         super(cause, code, message);
+        this.name = name;
     }
 
-    public BadArgsException(Throwable cause, CodeEnum code) {
+    public BadArgsException(@NotNull String name, @NotNull Throwable cause, @NotNull String code, String message, Object... args) {
+        super(cause, code, message, args);
+        this.name = name;
+    }
+
+    public BadArgsException(@NotNull String name, @NotNull Throwable cause, @NotNull CodeEnum code) {
         super(cause, code);
+        this.name = name;
     }
 
-    public BadArgsException(Throwable cause, CodeEnum code, Object... args) {
+    public BadArgsException(@NotNull String name, @NotNull Throwable cause, @NotNull CodeEnum code, Object... args) {
         super(cause, code, args);
+        this.name = name;
     }
 }
